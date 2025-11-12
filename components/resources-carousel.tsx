@@ -25,12 +25,12 @@ export function ResourcesCarousel({ resources, durationSeconds = 45 }: Resources
       if (resource.website) {
         const url = new URL(resource.website)
         const domain = url.hostname.replace(/^www\./, "")
-        return `https://logo.clearbit.com/${domain}`
+        return `/logo.webp`
       }
     } catch {
       // ignore parse errors
     }
-    return "/placeholder-logo.png"
+    return "/logo.webp"
   }
 
   return (

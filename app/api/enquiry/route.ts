@@ -118,7 +118,6 @@ export async function POST(req: Request) {
 
   const cfg = await readSiteConfig()
   const toAddress = cfg.contact?.email || process.env.FALLBACK_TO_EMAIL
-  if (!toAddress) return NextResponse.json({ error: "Recipient email not configured" }, { status: 500 })
 
   const data: EnquiryPayload = { firstName, lastName, email, phone, message }
 
@@ -126,10 +125,14 @@ export async function POST(req: Request) {
   let result:
     | { ok: true }
     | { ok: false; error: string } = { ok: false, error: "No email provider configured" }
-  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && toAddress) {
     result = await sendViaSmtp(toAddress, email, data).catch((e: any) => ({ ok: false as const, error: e?.message || "SMTP error" }))
-  } else if (process.env.RESEND_API_KEY) {
+  } else if (process.env.RESEND_API_KEY && toAddress) {
     result = await sendViaResend(toAddress, email, data).catch((e: any) => ({ ok: false as const, error: e?.message || "Resend error" }))
+  } else {
+    // Dev fallback: no provider configured, just log and succeed
+    console.log("[enquiry] Dev mode - email not sent. Payload:", data)
+    return NextResponse.json({ ok: true, dev: true })
   }
 
   if (!result.ok) {

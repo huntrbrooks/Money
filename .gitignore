@@ -25,3 +25,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# system
+.DS_Store
+public/.DS_Store
+
+# local tooling/artifacts
+.dev-log.txt
+.assistant.html
+.page.html
+.cookies.txt
