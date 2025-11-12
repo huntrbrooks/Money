@@ -35,14 +35,14 @@ export default function BookingsPage() {
     },
     {
       id: "home",
-      title: "Your Home",
+      title: "Home Visit",
       description: "Therapy in your familiar environment",
       icon: Home,
       price: "$180",
     },
     {
       id: "office",
-      title: "My Rooms",
+      title: "In‑Person (Office)",
       description: "Professional setting in Melbourne",
       icon: Building,
       price: "$150",
@@ -87,27 +87,27 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F3ED]">
+    <div className="min-h-screen bg-muted">
       {/* Navigation Component */}
       <Navigation />
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-6 md:px-8 py-12">
         <div className="max-w-5xl mx-auto">
           <div className="mb-8">
-            <h1 className="font-serif text-4xl md:text-5xl text-[#28436C] mb-4">Book Your Appointment</h1>
-            <p className="text-lg text-[#28436C]/70">Schedule a consultation with Dan Lobel</p>
+            <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] mb-4">Book a Confidential Consultation</h1>
+            <p className="text-lg text-[var(--primary)]/80">You choose the format and pace that feel safest for you.</p>
           </div>
 
           {/* Prepayment Notice */}
-          <Card className="mb-8 border-[#7CAE0A] bg-[#7CAE0A]/5">
+          <Card className="mb-8 border-[var(--accent)] bg-[var(--accent)]/5">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#28436C]">
-                <CheckCircle2 className="w-5 h-5 text-[#7CAE0A]" />
+              <CardTitle className="flex items-center gap-2 text-[var(--foreground)]">
+                <CheckCircle2 className="w-5 h-5 text-[var(--accent)]" />
                 Booking Process
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 text-[#28436C]/80">
+            <CardContent className="space-y-3 text-[var(--primary)]/80">
               <p className="flex items-start gap-2">
                 <span className="font-medium">1.</span>
                 <span>Select your preferred consultation format, date, and time below</span>
@@ -131,8 +131,8 @@ export default function BookingsPage() {
             {/* Consultation Format Selection */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-[#28436C]">1. Choose Consultation Format</CardTitle>
-                <CardDescription>Select how you'd like to meet with Dan</CardDescription>
+                <CardTitle className="text-[var(--foreground)]">1. Choose Consultation Format</CardTitle>
+              <CardDescription>Choose what feels safest and most comfortable for you</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 md:grid-cols-2">
@@ -145,18 +145,18 @@ export default function BookingsPage() {
                         onClick={() => setSelectedFormat(format.id)}
                         className={`p-6 rounded-lg border-2 text-left transition-all ${
                           selectedFormat === format.id
-                            ? "border-[#7CAE0A] bg-[#7CAE0A]/5"
-                            : "border-[#28436C]/20 hover:border-[#2A7477]"
+                            ? "border-[var(--accent)] bg-[var(--accent)]/5"
+                            : "border-[var(--foreground)]/20 hover:border-[var(--primary)]/40"
                         }`}
                       >
                         <div className="flex items-start gap-4">
                           <Icon
-                            className={`w-6 h-6 mt-1 ${selectedFormat === format.id ? "text-[#7CAE0A]" : "text-[#28436C]"}`}
+                            className={`w-6 h-6 mt-1 ${selectedFormat === format.id ? "text-[var(--accent)]" : "text-[var(--foreground)]"}`}
                           />
                           <div className="flex-1">
-                            <h3 className="font-medium text-lg text-[#28436C] mb-1">{format.title}</h3>
-                            <p className="text-sm text-[#28436C]/70 mb-2">{format.description}</p>
-                            <p className="text-lg font-medium text-[#2A7477]">{format.price}</p>
+                            <h3 className="font-medium text-lg text-[var(--foreground)] mb-1">{format.title}</h3>
+                            <p className="text-sm text-[var(--primary)]/70 mb-2">{format.description}</p>
+                            <p className="text-lg font-medium text-[var(--accent)]">{format.price}</p>
                           </div>
                         </div>
                       </button>
@@ -169,12 +169,12 @@ export default function BookingsPage() {
             {/* Date Selection */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-[#28436C]">2. Select Date</CardTitle>
+                <CardTitle className="text-[var(--foreground)]">2. Select Date</CardTitle>
                 <CardDescription>Choose your preferred appointment date</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-3">
-                  <Calendar className="w-5 h-5 text-[#28436C]" />
+                  <Calendar className="w-5 h-5 text-[var(--primary)]" />
                   <Input
                     type="date"
                     value={selectedDate}
@@ -189,7 +189,7 @@ export default function BookingsPage() {
             {/* Time Selection */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-[#28436C]">3. Select Time</CardTitle>
+                <CardTitle className="text-[var(--foreground)]">3. Select Time</CardTitle>
                 <CardDescription>Choose your preferred appointment time</CardDescription>
               </CardHeader>
               <CardContent>
@@ -201,8 +201,8 @@ export default function BookingsPage() {
                       onClick={() => setSelectedTime(time)}
                       className={`p-3 rounded-lg border-2 text-center transition-all ${
                         selectedTime === time
-                          ? "border-[#7CAE0A] bg-[#7CAE0A]/5 text-[#28436C]"
-                          : "border-[#28436C]/20 hover:border-[#2A7477] text-[#28436C]"
+                          ? "border-[var(--accent)] bg-[var(--accent)]/5 text-[var(--foreground)]"
+                          : "border-[var(--foreground)]/20 hover:border-[var(--primary)]/40 text-[var(--foreground)]"
                       }`}
                     >
                       <Clock className="w-4 h-4 mx-auto mb-1" />
@@ -216,7 +216,7 @@ export default function BookingsPage() {
             {/* Contact Information */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-[#28436C]">4. Your Contact Information</CardTitle>
+                <CardTitle className="text-[var(--foreground)]">4. Your Contact Information</CardTitle>
                 <CardDescription>We'll use this to confirm your appointment</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -266,20 +266,20 @@ export default function BookingsPage() {
             </Card>
 
             {/* Reminders Info */}
-            <Card className="bg-[#30A3B0]/5 border-[#30A3B0]">
+            <Card className="bg-[var(--primary)]/5 border-[var(--primary)]">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-[#28436C]">
-                  <Mail className="w-5 h-5 text-[#30A3B0]" />
+                <CardTitle className="flex items-center gap-2 text-[var(--foreground)]">
+                  <Mail className="w-5 h-5 text-[var(--primary)]" />
                   Appointment Reminders
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2 text-[#28436C]/80">
+              <CardContent className="space-y-2 text-[var(--primary)]/80">
                 <p className="flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4 text-[#30A3B0]" />
+                  <MessageSquare className="w-4 h-4 text-[var(--primary)]" />
                   <span>You'll receive an SMS reminder 24 hours before your appointment</span>
                 </p>
                 <p className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-[#30A3B0]" />
+                  <Mail className="w-4 h-4 text-[var(--primary)]" />
                   <span>An email confirmation will be sent after booking confirmation</span>
                 </p>
               </CardContent>
@@ -290,7 +290,7 @@ export default function BookingsPage() {
               <Button type="button" variant="outline" asChild>
                 <Link href="/">Cancel</Link>
               </Button>
-              <Button type="submit" size="lg" className="bg-[#7CAE0A] hover:bg-[#7CAE0A]/90 text-white">
+            <Button type="submit" size="lg" className="bg-[var(--accent)] hover:opacity-90 text-white">
                 Submit Booking Request
               </Button>
             </div>
