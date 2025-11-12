@@ -47,7 +47,7 @@
     "title": "Financial Trauma & Monetary Psychotherapy",
     "subtitle": "Dan Lobel",
     "description": "D.Couns., B.Couns., MCouns&Psych",
-    "imageUrl": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_1469a-0Ivt3omzLN4pdHB0y2lffT6PoXhJwA.webp"
+    "imageUrl": "/Dan.png"
   },
   "about": {
     "title": "Trauma‑Informed Financial Therapy",
@@ -83,6 +83,11 @@
       "format": "Extended Consultations",
       "price": "From $220",
       "duration": "Various"
+    },
+    {
+      "format": "Phone Consultations",
+      "price": "$160",
+      "duration": "50 mins"
     }
   ],
   "resources": [

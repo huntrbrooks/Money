@@ -73,14 +73,18 @@ export default async function HomePage() {
 
             {/* Right Column - Image */}
             <div className="relative lg:pl-8">
-              <div className="relative aspect-[3/4] max-w-md mx-auto">
-                <div className="absolute inset-0 bg-[var(--accent)]/30 rounded-lg translate-x-6 translate-y-6" />
-                <div className="relative bg-white p-3 rounded-lg shadow-2xl">
+              <div className="relative aspect-[3/4] max-w-[39.2rem] mx-auto">
+                {/* Navy offset panel behind the photo */}
+                <div className="absolute inset-0 translate-x-8 translate-y-10 rounded-xl bg-[var(--foreground)] shadow-xl" />
+                {/* Main white framed photo card */}
+                <div className="relative bg-white p-4 rounded-xl shadow-2xl ring-1 ring-black/5">
                   <img
                     src={config.hero.imageUrl}
                     alt="Portrait of Dan Lobel, counsellor in Melbourne"
                     className="w-full h-full object-cover rounded-lg"
                   />
+                  {/* Slim green accent bar near the bottom edge of the white frame */}
+                  <div className="absolute -bottom-3 left-6 right-6 h-2 bg-[var(--accent)] rounded-sm shadow-md" />
                 </div>
               </div>
             </div>
@@ -205,9 +209,9 @@ export default async function HomePage() {
                 </div>
                 <div className="pt-2 text-sm">
                   <span className="text-[var(--primary)]/80">Further reading: </span>
-                  <Link href="/blog/why-money-triggers-anxiety" className="mr-3">Why Money Triggers Anxiety</Link>
-                  <Link href="/blog/financial-abuse-and-emotional-healing" className="mr-3">Financial Abuse and Emotional Healing</Link>
-                  <Link href="/blog/the-psychology-behind-spending-habits">The Psychology Behind Spending Habits</Link>
+                  <Link href="/why-money-triggers-anxiety-dan-lobel.html" className="mr-3">Why Money Triggers Anxiety</Link>
+                  <Link href="/financial-abuse-emotional-healing-dan-lobel.html" className="mr-3">Financial Abuse and Emotional Healing</Link>
+                  <Link href="/the-psychology-behind-spending-habits-dan-lobel.html">The Psychology Behind Spending Habits</Link>
                 </div>
               </div>
             </div>
@@ -223,24 +227,50 @@ export default async function HomePage() {
               <p className="text-[var(--primary)]">Quick access to key information</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <Button asChild className="bg-[var(--accent)] hover:opacity-90 text-white h-12 font-medium">
-                <Link href="/bookings">Book a Session</Link>
-              </Button>
-              <Button asChild variant="outline" className="h-12 font-medium">
-                <Link href="/privacy">Privacy Policy</Link>
-              </Button>
-              <Button asChild variant="outline" className="h-12 font-medium">
-                <Link href="/terms">Terms of Service</Link>
-              </Button>
-              <Button asChild variant="outline" className="h-12 font-medium">
-                <Link href="/blog/why-money-triggers-anxiety">Why Money Triggers Anxiety</Link>
-              </Button>
-              <Button asChild variant="outline" className="h-12 font-medium">
-                <Link href="/blog/financial-abuse-and-emotional-healing">Financial Abuse and Emotional Healing</Link>
-              </Button>
-              <Button asChild variant="outline" className="h-12 font-medium">
-                <Link href="/blog/the-psychology-behind-spending-habits">The Psychology Behind Spending Habits</Link>
-              </Button>
+              {/* Row 1 — centered primary CTA */}
+              <div className="col-span-full flex justify-center">
+                <Button asChild className="bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-lg">
+                  <Link href="/bookings" className="no-underline">Book a Session</Link>
+                </Button>
+              </div>
+
+              {/* Row 2 — two beige buttons */}
+              <div className="col-span-full grid gap-4 sm:grid-cols-2 place-items-stretch">
+                <Button
+                  asChild
+                  className="h-12 font-medium bg-[var(--section-bg-2)] text-[var(--foreground)] border-transparent hover:opacity-90 shadow-sm rounded-lg"
+                >
+                  <Link href="/privacy" className="no-underline">Privacy Policy</Link>
+                </Button>
+                <Button
+                  asChild
+                  className="h-12 font-medium bg-[var(--section-bg-2)] text-[var(--foreground)] border-transparent hover:opacity-90 shadow-sm rounded-lg"
+                >
+                  <Link href="/terms" className="no-underline">Terms of Service</Link>
+                </Button>
+              </div>
+
+              {/* Row 3 — three navy buttons */}
+              <div className="col-span-full grid gap-4 md:grid-cols-3">
+                <Button
+                  asChild
+                  className="h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
+                >
+                  <Link href="/why-money-triggers-anxiety-dan-lobel.html" className="no-underline">Why Money Triggers Anxiety</Link>
+                </Button>
+                <Button
+                  asChild
+                  className="h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
+                >
+                  <Link href="/financial-abuse-emotional-healing-dan-lobel.html" className="no-underline">Financial Abuse and Emotional Healing</Link>
+                </Button>
+                <Button
+                  asChild
+                  className="h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
+                >
+                  <Link href="/the-psychology-behind-spending-habits-dan-lobel.html" className="no-underline">The Psychology Behind Spending Habits</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -250,22 +280,26 @@ export default async function HomePage() {
         <div className="container mx-auto px-6 md:px-8">
           <div className="max-w-5xl mx-auto space-y-12">
             <div className="text-center space-y-5">
-              <h2 className="font-serif text-5xl md:text-6xl text-[var(--foreground)] font-light">Other Areas of Specialisation</h2>
+              <h2 className="font-serif text-6xl md:text-7xl text-[var(--foreground)] font-bold">Other Areas of Specialisation</h2>
               <p className="text-xl text-[var(--primary)] max-w-2xl mx-auto leading-relaxed">
                 Short, digestible overviews with the option to read more
               </p>
             </div>
             <Accordion type="single" collapsible className="bg-[var(--section-bg-1)] rounded-lg border-2 border-[var(--secondary)] divide-y">
               {otherAreas.map((a, idx) => (
-                <AccordionItem key={idx} value={`area-${idx}`} className="px-6">
-                  <AccordionTrigger className="py-5 text-[var(--foreground)] font-medium text-base">
-                    {a.title}
+                <AccordionItem key={idx} value={`area-${idx}`} className="px-4 sm:px-6">
+                  <AccordionTrigger className="py-4 sm:py-5 text-[var(--foreground)] items-center">
+                    <span className="flex-1 text-center font-serif font-semibold text-lg sm:text-xl leading-snug">
+                      {a.title}
+                    </span>
                   </AccordionTrigger>
-                  <AccordionContent className="pb-6 text-[var(--primary)]">
-                    <p className="mb-2">{a.summary}</p>
+                  <AccordionContent className="pb-6 text-[var(--primary)] text-center max-w-3xl mx-auto leading-relaxed space-y-2">
+                    <p>
+                      {a.summary}
+                    </p>
                     <p className="text-[var(--primary)]/90">{a.more}</p>
-                    <div className="pt-4">
-                      <Button asChild variant="outline" className="h-10 px-6">
+                    <div className="pt-4 flex justify-center">
+                      <Button asChild variant="outline" className="h-11 px-6">
                         <Link href="/bookings">Schedule a session to begin healing</Link>
                       </Button>
                     </div>
@@ -357,9 +391,10 @@ export default async function HomePage() {
                   </div>
                 )
               })}
-              <div className="bg-white rounded-xl p-8 space-y-3 md:col-span-2 lg:col-span-3 text-center border border-[var(--foreground)]/10">
-                <p className="text-[var(--foreground)] text-lg leading-relaxed">Medicare rebates are not available.</p>
-                <p className="text-[var(--primary)] leading-relaxed">Receipts provided for private health or personal records.</p>
+            </div>
+            <div className="pt-2 flex justify-center">
+              <div className="inline-flex items-center px-4 py-2 border-2 border-red-300 bg-red-50 text-red-700 font-bold rounded-md shadow-sm w-fit sm:whitespace-nowrap text-center">
+                Medicare rebates are not available. Receipts provided for private health or personal records.
               </div>
             </div>
 
@@ -395,7 +430,7 @@ export default async function HomePage() {
               <Button
                 asChild
                 size="lg"
-                className="bg-white text-[var(--accent)] hover:opacity-90 h-14 px-10 text-base font-medium"
+                className="bg-[var(--accent)] hover:opacity-90 text-white border-0 text-base h-14 px-10 font-medium shadow-lg"
               >
                 <Link href="/bookings">
                   Schedule Your Session
@@ -445,7 +480,7 @@ export default async function HomePage() {
                     </div>
                     <div>
                       <p className="text-xs text-[var(--primary)] uppercase tracking-wider font-semibold">Email</p>
-                      <p className="text-xl text-[var(--foreground)] font-medium whitespace-nowrap">dan@themelbournecounsellor.com.au</p>
+                      <p className="text-xl text-[var(--foreground)] font-medium break-all">dan@themelbournecounsellor.com.au</p>
                     </div>
                   </a>
                 </div>

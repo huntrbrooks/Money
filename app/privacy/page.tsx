@@ -1,21 +1,40 @@
+import { headers } from "next/headers"
+
 export const metadata = {
   title: "Privacy Policy | The Melbourne Counsellor",
 }
 
 export default function PrivacyPage() {
+  const headersList = headers()
+  const host = headersList.get("host") ?? "localhost:3000"
+  const proto = headersList.get("x-forwarded-proto") ?? "http"
+  const baseUrl = `${proto}://${host}`
+  const fileUrl = `${baseUrl}${encodeURI("/Privacy Policy.docx")}`
+  const viewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fileUrl)}`
+
   return (
     <div className="container mx-auto px-4 py-16">
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6">
         <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">Privacy Policy</h1>
         <p className="text-[var(--primary)] leading-relaxed">
-          Your privacy matters. This practice maintains strict confidentiality and securely stores client information in
-          accordance with Australian privacy principles. Information is never shared without your consent, except where
-          required by law or to prevent serious harm.
+          You can view the latest Privacy Policy below. You may also{" "}
+          <a href="/Privacy%20Policy.docx" className="underline" download>
+            download the Word document
+          </a>
+          .
         </p>
-        <p className="text-[var(--primary)] leading-relaxed">
-          If you have any questions about how your information is collected, used, or stored, please contact
-          <a href="mailto:dan@themelbournecounsellor.com.au" className="ml-1 underline">
-            dan@themelbournecounsellor.com.au
+        <div className="w-full overflow-hidden rounded-md border border-[var(--secondary)] bg-white">
+          <iframe
+            title="Privacy Policy"
+            src={viewerUrl}
+            className="w-full"
+            style={{ minHeight: "900px" }}
+          />
+        </div>
+        <p className="text-[var(--primary)] text-sm">
+          If the embedded viewer does not load,{" "}
+          <a href={viewerUrl} className="underline" target="_blank" rel="noopener noreferrer">
+            open the Privacy Policy in a new tab
           </a>
           .
         </p>

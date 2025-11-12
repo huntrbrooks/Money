@@ -129,7 +129,7 @@ type Config = {
     <footer className="text-[var(--foreground)] bg-[var(--section-bg-1)]">
        {/* Main Footer */}
      <div className="container mx-auto px-6 md:px-8 py-16">
-        <div className="grid gap-12 md:grid-cols-4 max-w-6xl mx-auto">
+        <div className="grid gap-12 md:grid-cols-3 max-w-6xl mx-auto">
            {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -203,13 +203,13 @@ type Config = {
           <div className="space-y-4">
            <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Follow Dan</h4>
             <div className="flex items-center gap-4">
-              <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
+              <a href="https://www.facebook.com/the.melbourne.counsellor/" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
                 <Facebook className="w-5 h-5 text-[var(--primary)]" />
               </a>
-              <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
+              <a href="https://www.instagram.com/the.melbourne.counsellor/#" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
                 <Instagram className="w-5 h-5 text-[var(--primary)]" />
               </a>
-              <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
+              <a href="https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
                 <Linkedin className="w-5 h-5 text-[var(--primary)]" />
               </a>
             </div>
