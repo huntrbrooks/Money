@@ -1,7 +1,7 @@
 import { headers } from "next/headers"
 
 export const metadata = {
-  title: "Privacy Policy | The Melbourne Counsellor",
+  title: "Privacy Policy | The Financial Therapist",
 }
 
 export default function PrivacyPage() {

@@ -92,12 +92,12 @@ export const defaultConfig: SiteConfig = {
     fontSerif: "\"Cormorant Garamond\", Georgia, serif",
   },
   seo: {
-    title: "The Melbourne Counsellor | Dan Lobel",
+    title: "The Financial Therapist | Dan Lobel",
     description: "Professional counselling services in Melbourne. Specialising in grief, trauma, anxiety, depression, and relationship therapy.",
     ogImage: "/placeholder.jpg",
   },
   brand: {
-    name: "The Melbourne Counsellor",
+    name: "The Financial Therapist",
     subtitle: "Dan Lobel",
     tagline: "Trauma‑informed care with safety, dignity and choice.",
     logoUrl: "/placeholder-logo.svg",

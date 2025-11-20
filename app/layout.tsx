@@ -13,7 +13,7 @@ const _cormorant = Cormorant_Garamond({
 })
 
 export const metadata: Metadata = {
-  title: "Financial Trauma & Monetary Psychotherapy | The Melbourne Counsellor — Dan Lobel",
+  title: "Financial Trauma & Monetary Psychotherapy | The Financial Therapist — Dan Lobel",
   description:
     "Trauma‑informed counselling in Melbourne focused on financial trauma, economic abuse recovery, money anxiety and monetary psychotherapy. Safe, gender‑aware and inclusive care.",
   keywords: [

@@ -102,7 +102,7 @@ export default async function HomePage() {
                 <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[var(--foreground)] leading-[1.1] font-light">
                   Dan Lobel, D.Couns., B.Couns., MCouns&Psych
                 </h2>
-                <p className="text-[var(--primary)]/90">The Melbourne Counsellor</p>
+                <p className="text-[var(--primary)]/90">The Financial Therapist</p>
               </div>
               {/* Right - Content */}
               <div className="lg:col-span-3 space-y-6 text-lg leading-relaxed text-[var(--primary)]">
@@ -421,9 +421,6 @@ export default async function HomePage() {
                   </Link>
                 </Button>
               </div>
-              <p className="text-center text-sm text-[var(--primary)]/80 mt-3">
-                Consent form is password protected — password: <span className="font-medium text-[var(--foreground)]">healing</span>
-              </p>
             </div>
 
             <div className="text-center pt-8">

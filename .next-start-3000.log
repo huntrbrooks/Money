@@ -1,0 +1,10 @@
+
+> my-v0-project@0.1.0 start /Users/gerardgrenville/Documents/DAN WEBSITE
+> next start -p 3000
+
+   ▲ Next.js 16.0.0
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.4.65:3000
+
+ ✓ Starting...
+ ✓ Ready in 296ms

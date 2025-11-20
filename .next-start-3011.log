@@ -1,0 +1,10 @@
+
+> my-v0-project@0.1.0 start
+> next start --hostname 0.0.0.0 --port 3011
+
+   ▲ Next.js 16.0.0
+   - Local:        http://localhost:3011
+   - Network:      http://0.0.0.0:3011
+
+ ✓ Starting...
+ ✓ Ready in 526ms

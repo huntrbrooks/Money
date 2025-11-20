@@ -1,7 +1,7 @@
 import { headers } from "next/headers"
 
 export const metadata = {
-  title: "Terms of Service | The Melbourne Counsellor",
+  title: "Terms of Service | The Financial Therapist",
 }
 
 export default function TermsPage() {

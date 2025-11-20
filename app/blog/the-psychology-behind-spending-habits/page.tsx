@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "The Psychology Behind Spending Habits | The Melbourne Counsellor",
+  title: "The Psychology Behind Spending Habits | The Financial Therapist",
 }
 
 export default function BlogSpendingHabits() {

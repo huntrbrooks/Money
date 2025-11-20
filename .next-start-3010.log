@@ -1,0 +1,20 @@
+
+> my-v0-project@0.1.0 start
+> next start --hostname 0.0.0.0 --port 3010
+
+   ▲ Next.js 16.0.0
+   - Local:        http://localhost:3010
+   - Network:      http://0.0.0.0:3010
+
+ ✓ Starting...
+ ✓ Ready in 663ms
+ ⨯ TypeError: a.get is not a function
+    at d (.next/server/chunks/ssr/[root-of-the-server]__cb412b61._.js:1:448)
+    at stringify (<anonymous>) {
+  digest: '568480544'
+}
+ ⨯ TypeError: a.get is not a function
+    at d (.next/server/chunks/ssr/[root-of-the-server]__255f6b94._.js:1:448)
+    at stringify (<anonymous>) {
+  digest: '2672298270'
+}

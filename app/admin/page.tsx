@@ -160,7 +160,7 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
            <div className="flex items-center justify-between">
              <div>
                <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
-               <p className="text-sm opacity-80">The Melbourne Counsellor</p>
+              <p className="text-sm opacity-80">The Financial Therapist</p>
              </div>
              <div className="flex items-center gap-4">
                <Button

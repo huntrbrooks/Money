@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 export const metadata = {
-  title: "Why Money Triggers Anxiety | The Melbourne Counsellor",
+  title: "Why Money Triggers Anxiety | The Financial Therapist",
   description:
     "Money anxiety isn’t about being bad with numbers — it’s about how the brain links money to safety, control, and self‑worth. Learn why it happens and how to heal your relationship with money.",
   robots: { index: true, follow: true },
@@ -15,7 +15,7 @@ export const metadata = {
       "A trauma‑informed deep dive into why money triggers anxiety, with practical steps to heal your relationship with money.",
     type: "article",
     url: "https://themelbournecounsellor.com.au/articles/why-money-triggers-anxiety",
-    siteName: "The Melbourne Counsellor",
+    siteName: "The Financial Therapist",
     locale: "en_AU",
   },
   twitter: {
@@ -34,7 +34,7 @@ export default function BlogWhyMoneyTriggersAnxiety() {
     description:
       "Trauma‑informed explanation of why money triggers anxiety and how to heal your relationship with it.",
     author: { "@type": "Person", name: "Dan Lobel" },
-    publisher: { "@type": "Organization", name: "The Melbourne Counsellor" },
+    publisher: { "@type": "Organization", name: "The Financial Therapist" },
     datePublished: "2025-11-13",
     dateModified: "2025-11-13",
     mainEntityOfPage:

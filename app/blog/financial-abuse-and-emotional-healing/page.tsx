@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Financial Abuse and Emotional Healing | The Melbourne Counsellor",
+  title: "Financial Abuse and Emotional Healing | The Financial Therapist",
 }
 
 export default function BlogFinancialAbuseHealing() {

@@ -48,7 +48,7 @@ type Config = {
             )}
             <div className="flex flex-col">
               <span className="font-serif text-xl md:text-2xl text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors font-medium">
-                {cfg.brand?.name ?? "The Melbourne Counsellor"}
+                {cfg.brand?.name ?? "The Financial Therapist"}
               </span>
               {cfg.brand?.subtitle && (
                 <span className="text-xs md:text-sm text-[var(--primary)]/80">{cfg.brand.subtitle}</span>
@@ -142,7 +142,7 @@ type Config = {
               ) : (
                 <LogoMark className="h-10 w-10 text-[var(--primary)]" title={`${cfg.brand?.name ?? "Site"} logo`} />
               )}
-              <h3 className="font-serif text-3xl font-light">{cfg.brand?.name ?? "The Melbourne Counsellor"}</h3>
+              <h3 className="font-serif text-3xl font-light">{cfg.brand?.name ?? "The Financial Therapist"}</h3>
             </div>
             <p className="text-[var(--primary)]/80 leading-relaxed">
               {cfg.brand?.tagline ??
@@ -222,10 +222,10 @@ type Config = {
      <div className="border-t border-[var(--secondary)] bg-[var(--section-bg-3)]">
         <div className="container mx-auto px-6 md:px-8 py-8">
            <div className="text-center space-y-3 text-sm text-[var(--primary)]/70 max-w-4xl mx-auto">
-             <p>© 2025 The Melbourne Counsellor. All rights reserved.</p>
-             <p>The Melbourne Counsellor Pty. Ltd. atf The Melbourne Counsellor Trust.</p>
+            <p>© 2025 The Financial Therapist. All rights reserved.</p>
+            <p>The Financial Therapist Pty. Ltd. atf The Financial Therapist Trust.</p>
              <p className="leading-relaxed">
-               The Melbourne Counsellor acknowledges the Wurundjeri people who are the Traditional Custodians of the land
+              The Financial Therapist acknowledges the Wurundjeri people who are the Traditional Custodians of the land
                on which we work. We pay our respects to Elders past, present and emerging.
              </p>
             <p className="space-x-4">
