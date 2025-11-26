@@ -60,7 +60,8 @@ export function Navigation() {
     <nav
       className="sticky top-0 z-50 shadow-sm border-b border-[var(--secondary)]"
       style={{
-        background: "transparent",
+        background:
+          "linear-gradient(180deg, var(--primary, #6CA4AC) 0%, var(--accent, #929D5B) 100%)",
       }}
     >
       <div className="container mx-auto px-6 md:px-8">
