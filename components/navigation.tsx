@@ -29,6 +29,7 @@ export function Navigation() {
     { label: "Services", href: "/#services" },
     { label: "Contact", href: "/#contact" },
   ]
+  const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
 
   return (
     <nav
@@ -41,28 +42,17 @@ export function Navigation() {
       <div className="container mx-auto px-6 md:px-8">
         <div className="grid grid-cols-3 items-center h-20 md:h-28 relative">
           {/* Left spacer / optional logo (kept minimal to allow perfect centering) */}
-          <div className="justify-self-start">
-            {/* Optional: show small mark if available to subtly brand the header */}
-            {!cfg.brand?.logoUrl ? null : (
-              <Link href="/" className="inline-flex items-center gap-2">
-                <img
-                  src={cfg.brand.logoUrl}
-                  alt={`${cfg.brand?.name ?? "Site"} logo`}
-                  className="h-8 w-8 object-contain"
-                />
-              </Link>
-            )}
-          </div>
+          <div className="justify-self-start" />
 
         {/* Centered Title (absolute overlay so it can use full width) */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <Link href="/" className="group pointer-events-auto inline-flex items-center gap-3 md:gap-4 px-6 md:px-10">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 px-20 md:px-32">
+          <Link href="/" className="group pointer-events-auto inline-flex items-center gap-3 md:gap-4">
             <span
               aria-hidden="true"
               className="hidden sm:block h-[2px] w-10 md:w-16 rounded-full bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]"
             />
             <span className="font-serif whitespace-nowrap text-[clamp(1.25rem,6.5vw,3.5rem)] md:text-[clamp(1.75rem,4.5vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
-              {cfg.brand?.name ?? "Financial Abuse Therapist"}
+              {brandName}
             </span>
             <span
               aria-hidden="true"
@@ -72,7 +62,7 @@ export function Navigation() {
           </div>
 
           {/* Right-aligned Menu dropdown */}
-          <div className="justify-self-end relative">
+        <div className="justify-self-end relative z-10 pr-2">
             <button
               onClick={() => setIsMenuOpen((o) => !o)}
               className="px-4 py-2 text-[var(--foreground)]/90 hover:text-[var(--foreground)] rounded-md transition-colors text-sm md:text-base underline decoration-[color-mix(in_oklch,_var(--foreground)_30%,_transparent)] underline-offset-4"
