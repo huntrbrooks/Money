@@ -6,6 +6,7 @@ import { readSiteConfig } from "@/lib/config"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { CrisisBanner } from "@/components/crisis-banner"
 import { ResourcesCarousel } from "@/components/resources-carousel"
+import { BookingForm } from "@/components/booking-form"
 
 export default async function HomePage() {
   const config = await readSiteConfig()
@@ -55,7 +56,7 @@ export default async function HomePage() {
                   size="lg"
                   className="bg-[var(--accent)] hover:opacity-90 text-white border-0 text-base h-14 px-10 font-medium shadow-lg"
                 >
-                  <Link href="/bookings">
+                  <Link href="/#book">
                     Book a Session
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
@@ -204,7 +205,7 @@ export default async function HomePage() {
                     variant="outline"
                     className="border-2 border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white bg-transparent h-12 px-8"
                   >
-                    <Link href="/bookings">Book a Consultation</Link>
+                    <Link href="/#book">Book a Consultation</Link>
                   </Button>
                 </div>
                 <div className="pt-2 text-sm">
@@ -219,7 +220,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="important-links" className="py-16 md:py-24 bg-white">
+      <section id="important-links" className="py-16 md:py-24">
         <div className="container mx-auto px-6 md:px-8">
           <div className="max-w-5xl mx-auto space-y-8">
             <div className="text-center space-y-3">
@@ -230,7 +231,7 @@ export default async function HomePage() {
               {/* Row 1 — centered primary CTA */}
               <div className="col-span-full flex justify-center">
                 <Button asChild className="bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-lg">
-                  <Link href="/bookings" className="no-underline">Book a Session</Link>
+                  <Link href="/#book" className="no-underline">Book a Session</Link>
                 </Button>
               </div>
 
@@ -300,7 +301,7 @@ export default async function HomePage() {
                     <p className="text-[var(--primary)]/90">{a.more}</p>
                     <div className="pt-4 flex justify-center">
                       <Button asChild variant="outline" className="h-11 px-6">
-                        <Link href="/bookings">Schedule a session to begin healing</Link>
+                        <Link href="/#book">Schedule a session to begin healing</Link>
                       </Button>
                     </div>
                   </AccordionContent>
@@ -429,12 +430,24 @@ export default async function HomePage() {
                 size="lg"
                 className="bg-[var(--accent)] hover:opacity-90 text-white border-0 text-base h-14 px-10 font-medium shadow-lg"
               >
-                <Link href="/bookings">
+                <Link href="/#book">
                   Schedule Your Session
                   <Calendar className="ml-2 w-5 h-5" />
                 </Link>
               </Button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="book" className="py-24 md:py-32 scroll-mt-20">
+        <div className="container mx-auto px-6 md:px-8">
+          <div className="max-w-5xl mx-auto">
+            <div className="mb-10 text-center">
+              <h2 className="font-serif text-5xl md:text-6xl text-[var(--foreground)] font-light">Book a Confidential Consultation</h2>
+              <p className="text-xl text-[var(--primary)]/80 mt-2">You choose the format and pace that feel safest for you.</p>
+            </div>
+            <BookingForm consultations={consultationOptions} />
           </div>
         </div>
       </section>
@@ -487,7 +500,7 @@ export default async function HomePage() {
                     asChild
                     className="w-full bg-[var(--accent)] hover:opacity-90 text-white h-14 font-medium text-base shadow-lg"
                   >
-                    <Link href="/bookings">Book Appointment Online</Link>
+                    <Link href="/#book">Book Appointment Online</Link>
                   </Button>
                 </div>
               </div>
@@ -496,7 +509,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="py-20 bg-[var(--section-bg-1)]">
+      <section className="py-20">
         <div className="container mx-auto px-6 md:px-8">
           <div className="max-w-6xl mx-auto space-y-10">
             <div className="text-center space-y-3">
@@ -511,7 +524,7 @@ export default async function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-24 md:py-32 bg-[var(--section-bg-3)]">
+      <section id="testimonials" className="hidden">
         <div className="container mx-auto px-6 md:px-8">
           <div className="max-w-6xl mx-auto space-y-10">
             <div className="text-center space-y-3">

@@ -4,56 +4,68 @@
 @custom-variant dark (&:is(.dark *));
 
  :root {
-  --background: oklch(0.985 0.015 15);
-  --foreground: oklch(0.25 0.03 240);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.25 0.03 240);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.25 0.03 240);
-  --primary: oklch(0.62 0.08 200);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.96 0.015 190);
-  --secondary-foreground: oklch(0.25 0.03 240);
-  --muted: oklch(0.975 0.012 20);
-  --muted-foreground: oklch(0.48 0.02 200);
-  --accent: oklch(0.78 0.12 95);
-  --accent-light: oklch(0.92 0.08 95);
-  --accent-foreground: oklch(0.25 0.03 240);
+  /* Core palette (from brand image) */
+  --brand-navy: #20385B;
+  --brand-teal: #6CA4AC;
+  --brand-asparagus: #929D5B;
+  --brand-pale-green: #E5EED2;
+  --brand-pale-blue: #D7E9EC;
+  --brand-citrus: #DEEC4F;
+
+  /* Base tokens driven by the palette */
+  --background: #FFFFFF;
+  --foreground: var(--brand-navy);
+  --card: #FFFFFF;
+  --card-foreground: var(--brand-navy);
+  --popover: #FFFFFF;
+  --popover-foreground: var(--brand-navy);
+  /* Keep primary as teal for non-CTA buttons and links */
+  --primary: var(--brand-teal);
+  --primary-foreground: #FFFFFF;
+  /* Use teal for non‑CTA filled buttons */
+  --secondary: var(--brand-teal);
+  --secondary-foreground: var(--brand-navy);
+  --muted: color-mix(in oklch, var(--brand-pale-blue) 50%, white);
+  --muted-foreground: color-mix(in oklch, var(--brand-navy) 55%, black);
+  /* Accent doubles as primary CTA color across the site */
+  --accent: var(--brand-citrus);
+  --accent-light: var(--brand-pale-blue);
+  --accent-foreground: var(--brand-navy);
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.93 0.008 85);
-  --input: oklch(0.95 0.01 85);
-  --ring: oklch(0.62 0.08 200);
-  --chart-1: oklch(0.62 0.08 200);
-  --chart-2: oklch(0.78 0.12 95);
-  --chart-3: oklch(0.68 0.15 130);
-  --chart-4: oklch(0.45 0.06 195);
-  --chart-5: oklch(0.25 0.03 240);
+  --destructive-foreground: #FFFFFF;
+  --border: color-mix(in oklch, var(--brand-navy) 12%, transparent);
+  --input: color-mix(in oklch, var(--brand-navy) 8%, transparent);
+  --ring: var(--brand-teal);
+  --chart-1: var(--brand-teal);
+  --chart-2: var(--brand-asparagus);
+  --chart-3: var(--brand-citrus);
+  --chart-4: var(--brand-pale-blue);
+  --chart-5: var(--brand-navy);
   --radius: 0.5rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.25 0.03 240);
-  --sidebar-primary: oklch(0.62 0.08 200);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.94 0.01 85);
-  --sidebar-accent-foreground: oklch(0.25 0.03 240);
-  --sidebar-border: oklch(0.9 0.01 85);
-  --sidebar-ring: oklch(0.62 0.08 200);
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: var(--brand-navy);
+  --sidebar-primary: var(--brand-teal);
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: color-mix(in oklch, var(--brand-pale-blue) 60%, white);
+  --sidebar-accent-foreground: var(--brand-navy);
+  --sidebar-border: color-mix(in oklch, var(--brand-navy) 10%, transparent);
+  --sidebar-ring: var(--brand-teal);
   /* Elegant depth + focus tokens */
-  --shadow-soft: 0 1px 2px 0 oklch(0.25 0.03 240 / 0.04),
-    0 6px 12px -6px oklch(0.25 0.03 240 / 0.08);
-  --shadow-elevated: 0 10px 30px -12px oklch(0.25 0.03 240 / 0.18);
-  --focus-ring-shadow: 0 0 0 4px oklch(0.62 0.08 200 / 0.15);
+  --shadow-soft: 0 1px 2px 0 color-mix(in oklch, var(--brand-navy) 4%, transparent),
+    0 6px 12px -6px color-mix(in oklch, var(--brand-navy) 8%, transparent);
+  --shadow-elevated: 0 10px 30px -12px color-mix(in oklch, var(--brand-navy) 18%, transparent);
+  --focus-ring-shadow: 0 0 0 4px color-mix(in oklch, var(--brand-teal) 15%, transparent);
   /* Subtle ambient background accents (light) */
-  --bg-radial-1: radial-gradient(1200px 600px at -10% -10%, oklch(0.96 0.015 190 / 0.35), transparent 60%);
-  --bg-radial-2: radial-gradient(900px 400px at 110% 0%, oklch(0.78 0.12 95 / 0.20), transparent 60%);
-  /* Section divider palette (requested) */
-  --section-bg-1: #fdf3eb;  /* warm peach */
-  --section-bg-2: #f7efc8;  /* softer butter */
-  --section-bg-3: #f0fafb;  /* airy aqua */
+  --bg-radial-1: radial-gradient(1200px 600px at -10% -10%, color-mix(in oklch, var(--brand-pale-green) 45%, transparent), transparent 60%);
+  --bg-radial-2: radial-gradient(900px 400px at 110% 0%, color-mix(in oklch, var(--brand-teal) 30%, transparent), transparent 60%);
+  /* Section divider palette (aligned to brand) */
+  --section-bg-1: var(--brand-pale-green);
+  --section-bg-2: var(--brand-pale-blue);
+  --section-bg-3: #FFFFFF;
   /* Section foregrounds chosen for strong juxtaposition */
-  --section-fg-1: #2E4369;
-  --section-fg-2: #2E4369;
-  --section-fg-3: #2E4369;
+  --section-fg-1: var(--brand-navy);
+  --section-fg-2: var(--brand-navy);
+  --section-fg-3: var(--brand-navy);
 }
 
 .dark {
@@ -220,21 +232,13 @@
 }
 
 @layer base {
-  /* Section dividers: rotate through three requested backgrounds */
-  main > section:nth-of-type(3n + 1) {
-    background-color: var(--section-bg-1);
-    --foreground: var(--section-fg-1);
+  /* Alternate section backgrounds: pale green, pale blue, repeat */
+  main > section:nth-of-type(odd) {
+    background-color: var(--brand-pale-green);
   }
-  main > section:nth-of-type(3n + 2) {
-    background-color: var(--section-bg-2);
-    --foreground: var(--section-fg-2);
+  main > section:nth-of-type(even) {
+    background-color: var(--brand-pale-blue);
   }
-  main > section:nth-of-type(3n) {
-    background-color: var(--section-bg-3);
-    --foreground: var(--section-fg-3);
-  }
-  /* Footer: calm aqua to close */
-  footer { background-color: var(--section-bg-3); }
 }
 
 @layer base {

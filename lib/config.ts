@@ -82,22 +82,22 @@ const CONFIG_FILE_PATH = path.join(process.cwd(), "data", "site.json")
 export const defaultConfig: SiteConfig = {
   theme: {
     mode: "light",
-    primary: "#30A3B0",
-    secondary: "#E8F4F5",
-    accent: "#7CAE0A",
+    primary: "#6CA4AC",
+    secondary: "#E5EED2",
+    accent: "#929D5B",
     background: "#FFFFFF",
-    foreground: "#28436C",
+    foreground: "#20385B",
     radius: "0.5rem",
     fontSans: "\"Geist\", system-ui, -apple-system, Segoe UI, Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", \"Liberation Sans\", sans-serif",
     fontSerif: "\"Cormorant Garamond\", Georgia, serif",
   },
   seo: {
-    title: "The Financial Therapist | Dan Lobel",
+    title: "Finacial Abuse Therapist | Dan Lobel",
     description: "Professional counselling services in Melbourne. Specialising in grief, trauma, anxiety, depression, and relationship therapy.",
     ogImage: "/placeholder.jpg",
   },
   brand: {
-    name: "The Financial Therapist",
+    name: "Finacial Abuse Therapist",
     subtitle: "Dan Lobel",
     tagline: "Trauma‑informed care with safety, dignity and choice.",
     logoUrl: "/placeholder-logo.svg",

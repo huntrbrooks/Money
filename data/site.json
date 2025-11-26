@@ -1,22 +1,22 @@
 {
   "theme": {
-    "mode": "dark",
-    "primary": "#2E4369",
-    "secondary": "#F3F1EA",
-    "accent": "#7b9f31",
+    "mode": "light",
+    "primary": "#6CA4AC",
+    "secondary": "#E5EED2",
+    "accent": "#929D5B",
     "background": "#FFFFFF",
-    "foreground": "#2E4369",
+    "foreground": "#20385B",
     "radius": "0.5rem",
     "fontSans": "\"Geist\", system-ui, -apple-system, Segoe UI, Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", \"Liberation Sans\", sans-serif",
     "fontSerif": "\"Cormorant Garamond\", Georgia, serif"
   },
   "seo": {
-    "title": "Financial Trauma & Monetary Psychotherapy | The Financial Therapist — Dan Lobel",
+    "title": "Financial Trauma & Monetary Psychotherapy | Financial Abuse Therapist — Dan Lobel",
     "description": "Financial trauma therapy in Melbourne for women. Heal money shame and anxiety with compassionate, trauma‑informed counselling and monetary psychotherapy. Safe, inclusive, gender‑aware care.",
     "ogImage": "/placeholder.jpg"
   },
   "brand": {
-    "name": "The Financial Therapist",
+    "name": "Financial Abuse Therapist",
     "subtitle": "Dan Lobel",
     "tagline": "Trauma‑informed care with safety, dignity and choice.",
     "logoUrl": "/logo.svg"
@@ -33,6 +33,10 @@
     {
       "label": "Services",
       "href": "/#services"
+    },
+    {
+      "label": "Book",
+      "href": "/#book"
     },
     {
       "label": "Contact",

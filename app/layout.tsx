@@ -58,7 +58,7 @@ export default async function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="theme-color" content={config.theme.background} />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2E4369" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#20385B" />
         <link rel="manifest" href="/site.webmanifest" />
         <style dangerouslySetInnerHTML={{ __html: themeCss }} />
       </head>

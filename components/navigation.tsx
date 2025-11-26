@@ -1,136 +1,125 @@
- "use client"
- 
- import { useEffect, useState } from "react"
- import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Menu, X, Phone, Mail, Facebook, Instagram, Linkedin } from "lucide-react"
+"use client"
+
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { Phone, Mail, Facebook, Instagram, Linkedin } from "lucide-react"
 import { LogoMark } from "@/components/logo"
- 
- type NavLink = { label: string; href: string }
+
+type NavLink = { label: string; href: string }
 type Config = {
   brand?: { name?: string; subtitle?: string; tagline?: string; logoUrl?: string }
-   navigation?: NavLink[]
-   contact?: { phone?: string; email?: string }
- }
- 
- export function Navigation() {
-   const [isMenuOpen, setIsMenuOpen] = useState(false)
-   const [cfg, setCfg] = useState<Config>({})
- 
-   useEffect(() => {
-     fetch("/api/site-config")
-       .then((r) => r.json())
-       .then((d) => setCfg(d))
-       .catch(() => {})
-   }, [])
- 
-   const links = cfg.navigation ?? [
-     { label: "Home", href: "/" },
-     { label: "About", href: "/#about" },
-     { label: "Services", href: "/#services" },
-     { label: "Contact", href: "/#contact" },
-   ]
- 
-   return (
-     <nav className="bg-white/98 backdrop-blur-sm border-b border-[var(--secondary)] sticky top-0 z-50 shadow-sm">
+  navigation?: NavLink[]
+  contact?: { phone?: string; email?: string }
+}
+
+export function Navigation() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [cfg, setCfg] = useState<Config>({})
+
+  useEffect(() => {
+    fetch("/api/site-config")
+      .then((r) => r.json())
+      .then((d) => setCfg(d))
+      .catch(() => {})
+  }, [])
+
+  const links = cfg.navigation ?? [
+    { label: "Home", href: "/" },
+    { label: "About", href: "/#about" },
+    { label: "Services", href: "/#services" },
+    { label: "Contact", href: "/#contact" },
+  ]
+
+  return (
+    <nav
+      className="sticky top-0 z-50 shadow-sm border-b border-[var(--secondary)]"
+      style={{
+        background:
+          "linear-gradient(180deg, var(--brand-pale-blue, #D7E9EC) 0%, var(--brand-pale-green, #E5EED2) 100%)",
+      }}
+    >
       <div className="container mx-auto px-6 md:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
-           {/* Logo/Brand */}
-          <Link href="/" className="flex items-center gap-3 group">
-            {cfg.brand?.logoUrl ? (
-              <img
-                src={cfg.brand.logoUrl}
-                alt={`${cfg.brand?.name ?? "Site"} logo`}
-                className="h-8 w-8 object-contain"
-              />
-            ) : (
-              <LogoMark className="h-8 w-8 text-[var(--primary)]" title={`${cfg.brand?.name ?? "Site"} logo`} />
+        <div className="grid grid-cols-3 items-center h-16 md:h-24">
+          {/* Left spacer / optional logo (kept minimal to allow perfect centering) */}
+          <div className="justify-self-start">
+            {/* Optional: show small mark if available to subtly brand the header */}
+            {!cfg.brand?.logoUrl ? null : (
+              <Link href="/" className="inline-flex items-center gap-2">
+                <img
+                  src={cfg.brand.logoUrl}
+                  alt={`${cfg.brand?.name ?? "Site"} logo`}
+                  className="h-8 w-8 object-contain"
+                />
+              </Link>
             )}
-            <div className="flex flex-col">
-              <span className="font-serif text-xl md:text-2xl text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors font-medium">
-                {cfg.brand?.name ?? "The Financial Therapist"}
+          </div>
+
+          {/* Centered Title */}
+          <div className="justify-self-center text-center">
+            <Link href="/" className="group inline-flex flex-col items-center">
+              <span className="font-serif text-2xl md:text-4xl text-[var(--foreground)] font-medium leading-none">
+                {cfg.brand?.name ?? "Financial Abuse Therapist"}
               </span>
               {cfg.brand?.subtitle && (
-                <span className="text-xs md:text-sm text-[var(--primary)]/80">{cfg.brand.subtitle}</span>
+                <span className="mt-1 text-xs md:text-sm text-[var(--foreground)]/75">
+                  {cfg.brand.subtitle}
+                </span>
               )}
-            </div>
-          </Link>
- 
-           {/* Desktop Navigation */}
-           <div className="hidden lg:flex items-center gap-8">
-             {links.map((l) => (
-               <Link
-                 key={l.href}
-                 href={l.href}
-                 className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors text-sm font-medium tracking-wide"
-               >
-                 {l.label}
-               </Link>
-             ))}
-             <Button
-               asChild
-               className="bg-[var(--accent)] hover:opacity-90 text-white border-0 h-10 px-6 font-medium shadow-md"
-             >
-               <Link href="/bookings">Book Appointment</Link>
-             </Button>
-           </div>
- 
-           {/* Mobile Menu Button */}
-           <button
-             onClick={() => setIsMenuOpen(!isMenuOpen)}
-             className="lg:hidden p-2 text-[var(--foreground)] hover:bg-[var(--secondary)] rounded-lg transition-colors"
-             aria-label="Toggle menu"
-           >
-             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-           </button>
-         </div>
- 
-         {/* Mobile Navigation */}
-         {isMenuOpen && (
-           <div className="lg:hidden py-6 border-t border-[var(--secondary)]">
-             <div className="flex flex-col gap-4">
-               {links.map((l) => (
-                 <Link
-                   key={l.href}
-                   href={l.href}
-                   onClick={() => setIsMenuOpen(false)}
-                   className="text-[var(--foreground)] hover:text-[var(--primary)] transition-colors font-medium py-2 text-lg"
-                 >
-                   {l.label}
-                 </Link>
-               ))}
-               <Button
-                 asChild
-                 className="bg-[var(--accent)] hover:opacity-90 text-white w-full mt-2 h-12 font-medium shadow-md"
-               >
-                 <Link href="/bookings" onClick={() => setIsMenuOpen(false)}>
-                   Book Appointment
-                 </Link>
-               </Button>
-             </div>
-           </div>
-         )}
-       </div>
-     </nav>
-   )
- }
- 
- export function Footer() {
-   const [cfg, setCfg] = useState<Config>({})
-   useEffect(() => {
-     fetch("/api/site-config")
-       .then((r) => r.json())
-       .then((d) => setCfg(d))
-       .catch(() => {})
-   }, [])
-   const links = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings")
- 
-   return (
-    <footer className="text-[var(--foreground)] bg-[var(--section-bg-1)]">
-       {/* Main Footer */}
-     <div className="container mx-auto px-6 md:px-8 py-16">
+            </Link>
+          </div>
+
+          {/* Right-aligned Menu dropdown */}
+          <div className="justify-self-end relative">
+            <button
+              onClick={() => setIsMenuOpen((o) => !o)}
+              className="px-4 py-2 text-[var(--foreground)]/90 hover:text-[var(--foreground)] rounded-md transition-colors text-sm md:text-base underline decoration-[color-mix(in_oklch,_var(--foreground)_30%,_transparent)] underline-offset-4"
+              aria-expanded={isMenuOpen}
+              aria-haspopup="menu"
+            >
+              Menu
+            </button>
+            {isMenuOpen && (
+              <div
+                role="menu"
+                className="absolute right-0 mt-2 w-56 rounded-md bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black/5 overflow-hidden"
+              >
+                <div className="py-1">
+                  {links.map((l) => (
+                    <Link
+                      key={l.href}
+                      href={l.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block px-4 py-2 text-[var(--foreground)]/90 hover:bg-[var(--secondary)]/20 transition-colors"
+                    >
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  )
+}
+
+export function Footer() {
+  const [cfg, setCfg] = useState<Config>({})
+  useEffect(() => {
+    fetch("/api/site-config")
+      .then((r) => r.json())
+      .then((d) => setCfg(d))
+      .catch(() => {})
+  }, [])
+  const links = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
+
+  return (
+    <footer className="text-[var(--foreground)]">
+      {/* Main Footer */}
+      <div className="container mx-auto px-6 md:px-8 py-16">
         <div className="grid gap-12 md:grid-cols-3 max-w-6xl mx-auto">
-           {/* Brand */}
+          {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               {cfg.brand?.logoUrl ? (
@@ -149,92 +138,92 @@ type Config = {
                 "Trauma‑informed counselling specialising in financial trauma and monetary psychotherapy. A safe, gender‑aware and inclusive space."}
             </p>
           </div>
- 
-           {/* Quick Links */}
-           <div className="space-y-4">
-             <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Quick Links</h4>
-             <div className="flex flex-col gap-3">
-               {links.map((l) => (
-                 <Link key={l.href} href={l.href} className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
-                   {l.label}
-                 </Link>
-               ))}
-               <Link href="/bookings" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
-                 Book Appointment
-               </Link>
+
+          {/* Quick Links */}
+          <div className="space-y-4">
+            <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Quick Links</h4>
+            <div className="flex flex-col gap-3">
+              {links.map((l) => (
+                <Link key={l.href} href={l.href} className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
+                  {l.label}
+                </Link>
+              ))}
+              <Link href="/#book" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
+                Book Appointment
+              </Link>
               <Link href="/privacy" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
                 Privacy Policy
               </Link>
               <Link href="/terms" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
                 Terms of Service
               </Link>
-             </div>
-           </div>
- 
-           {/* Contact */}
-           <div className="space-y-4">
-             <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Contact</h4>
-             <div className="space-y-3">
-               {cfg.contact?.phone && (
-                 <a
-                  href={`tel:${cfg.contact.phone.replace(/\s+/g, "")}`}
-                   className="flex items-center gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
-                 >
-                   <div className="w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                     <Phone className="w-4 h-4 text-white" />
-                   </div>
-                   <span>{cfg.contact.phone}</span>
-                 </a>
-               )}
-               {cfg.contact?.email && (
-                 <a
-                   href={`mailto:${cfg.contact.email}`}
-                   className="flex items-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
-                 >
-                   <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                     <Mail className="w-4 h-4 text-white" />
-                   </div>
-                   <span className="break-all pt-2">{cfg.contact.email}</span>
-                 </a>
-               )}
-             </div>
-
-          {/* Social */}
-          <div className="space-y-4">
-           <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Follow Dan</h4>
-            <div className="flex items-center gap-4">
-              <a href="https://www.facebook.com/the.melbourne.counsellor/" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
-                <Facebook className="w-5 h-5 text-[var(--primary)]" />
-              </a>
-              <a href="https://www.instagram.com/the.melbourne.counsellor/#" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
-                <Instagram className="w-5 h-5 text-[var(--primary)]" />
-              </a>
-              <a href="https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
-                <Linkedin className="w-5 h-5 text-[var(--primary)]" />
-              </a>
             </div>
           </div>
-           </div>
-         </div>
-       </div>
- 
-       {/* Bottom Bar */}
-     <div className="border-t border-[var(--secondary)] bg-[var(--section-bg-3)]">
+
+          {/* Contact */}
+          <div className="space-y-4">
+            <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Contact</h4>
+            <div className="space-y-3">
+              {cfg.contact?.phone && (
+                <a
+                  href={`tel:${cfg.contact.phone.replace(/\s+/g, "")}`}
+                  className="flex items-center gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                >
+                  <div className="w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Phone className="w-4 h-4 text-white" />
+                  </div>
+                  <span>{cfg.contact.phone}</span>
+                </a>
+              )}
+              {cfg.contact?.email && (
+                <a
+                  href={`mailto:${cfg.contact.email}`}
+                  className="flex items-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                >
+                  <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <Mail className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="break-all pt-2">{cfg.contact.email}</span>
+                </a>
+              )}
+            </div>
+
+            {/* Social */}
+            <div className="space-y-4">
+              <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Follow Dan</h4>
+              <div className="flex items-center gap-4">
+                <a href="https://www.facebook.com/the.melbourne.counsellor/" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
+                  <Facebook className="w-5 h-5 text-[var(--primary)]" />
+                </a>
+                <a href="https://www.instagram.com/the.melbourne.counsellor/#" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
+                  <Instagram className="w-5 h-5 text-[var(--primary)]" />
+                </a>
+                <a href="https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
+                  <Linkedin className="w-5 h-5 text-[var(--primary)]" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="border-t border-[var(--secondary)]">
         <div className="container mx-auto px-6 md:px-8 py-8">
-           <div className="text-center space-y-3 text-sm text-[var(--primary)]/70 max-w-4xl mx-auto">
+          <div className="text-center space-y-3 text-sm text-[var(--primary)]/70 max-w-4xl mx-auto">
             <p>© 2025 The Financial Therapist. All rights reserved.</p>
             <p>The Financial Therapist Pty. Ltd. atf The Financial Therapist Trust.</p>
-             <p className="leading-relaxed">
+            <p className="leading-relaxed">
               The Financial Therapist acknowledges the Wurundjeri people who are the Traditional Custodians of the land
-               on which we work. We pay our respects to Elders past, present and emerging.
-             </p>
+              on which we work. We pay our respects to Elders past, present and emerging.
+            </p>
             <p className="space-x-4">
               <Link href="/privacy" className="hover:text-[var(--foreground)]">Privacy Policy</Link>
               <Link href="/terms" className="hover:text-[var(--foreground)]">Terms of Service</Link>
             </p>
-           </div>
-         </div>
-       </div>
-     </footer>
-   )
- }
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
+}

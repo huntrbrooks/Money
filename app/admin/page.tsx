@@ -21,13 +21,13 @@ import type React from "react"
  
    // Theme state
    const [theme, setTheme] = useState({
-     mode: "light",
-     primary: "#30A3B0",
-     secondary: "#E8F4F5",
-     accent: "#7CAE0A",
-     background: "#FFFFFF",
-     foreground: "#28436C",
-     radius: "0.5rem",
+    mode: "light",
+    primary: "#6CA4AC",
+    secondary: "#E5EED2",
+    accent: "#929D5B",
+    background: "#FFFFFF",
+    foreground: "#20385B",
+    radius: "0.5rem",
    })
  
   // Content state
