@@ -118,7 +118,7 @@ export function Footer() {
   const links = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
 
   return (
-    <footer className="bg-[var(--background)] text-[var(--foreground)]">
+    <footer className="bg-[var(--section-bg-1)] text-[var(--foreground)]">
       {/* Main Footer */}
       <div className="container mx-auto px-6 md:px-8 py-16">
         <div className="grid gap-12 md:grid-cols-3 max-w-6xl mx-auto">
