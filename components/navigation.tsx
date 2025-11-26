@@ -1,13 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { Phone, Mail, Facebook, Instagram, Linkedin } from "lucide-react"
 import { LogoMark } from "@/components/logo"
 
 type NavLink = { label: string; href: string }
 type Config = {
-  brand?: { name?: string; subtitle?: string; tagline?: string; logoUrl?: string }
+  brand?: { name?: string; subtitle?: string; tagline?: string; logoUrl?: string; headerBannerUrl?: string }
   navigation?: NavLink[]
   contact?: { phone?: string; email?: string }
 }
@@ -15,6 +15,8 @@ type Config = {
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cfg, setCfg] = useState<Config>({})
+  const menuRef = useRef<HTMLDivElement | null>(null)
+  const [rightGapPx, setRightGapPx] = useState<number>(0)
 
   useEffect(() => {
     fetch("/api/site-config")
@@ -30,13 +32,35 @@ export function Navigation() {
     { label: "Contact", href: "/#contact" },
   ]
   const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
+  const headerBannerUrl = cfg.brand?.headerBannerUrl
+
+  // Measure the Menu container and reserve enough right padding so the title never overlaps it
+  useEffect(() => {
+    const update = () => {
+      const el = menuRef.current
+      const width = el ? el.getBoundingClientRect().width : 0
+      // Add an extra safety buffer so text never collides visually
+      setRightGapPx(Math.ceil(width + 24))
+    }
+    update()
+    window.addEventListener("resize", update)
+    const el = menuRef.current
+    let ro: ResizeObserver | null = null
+    if (el && typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(update)
+      ro.observe(el)
+    }
+    return () => {
+      window.removeEventListener("resize", update)
+      if (ro && el) ro.unobserve(el)
+    }
+  }, [])
 
   return (
     <nav
       className="sticky top-0 z-50 shadow-sm border-b border-[var(--secondary)]"
       style={{
-        background:
-          "linear-gradient(180deg, var(--primary, #6CA4AC) 0%, var(--accent, #929D5B) 100%)",
+        background: "transparent",
       }}
     >
       <div className="container mx-auto px-6 md:px-8">
@@ -45,24 +69,27 @@ export function Navigation() {
           <div className="justify-self-start" />
 
         {/* Centered Title (absolute overlay so it can use full width) */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 px-20 md:px-32">
-          <Link href="/" className="group pointer-events-auto inline-flex items-center gap-3 md:gap-4">
-            <span
-              aria-hidden="true"
-              className="hidden sm:block h-[2px] w-10 md:w-16 rounded-full bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]"
-            />
-            <span className="font-serif whitespace-nowrap text-[clamp(1.25rem,6.5vw,3.5rem)] md:text-[clamp(1.75rem,4.5vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
-              {brandName}
-            </span>
-            <span
-              aria-hidden="true"
-              className="hidden sm:block h-[2px] w-10 md:w-16 rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--primary)]"
-            />
+        <div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
+          style={{ paddingLeft: 16, paddingRight: rightGapPx || 96 }}
+        >
+          <Link href="/" aria-label="Home" className="pointer-events-auto inline-flex items-center">
+            {headerBannerUrl ? (
+              <img
+                src={headerBannerUrl}
+                alt={brandName}
+                className="h-12 md:h-16 lg:h-20 w-auto object-contain"
+              />
+            ) : (
+              <span className="font-serif whitespace-nowrap text-[clamp(1.25rem,6.5vw,3.5rem)] md:text-[clamp(1.75rem,4.5vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
+                {brandName}
+              </span>
+            )}
           </Link>
-          </div>
+        </div>
 
           {/* Right-aligned Menu dropdown */}
-        <div className="justify-self-end relative z-10 pr-2">
+        <div className="justify-self-end relative z-10 pr-2" ref={menuRef}>
             <button
               onClick={() => setIsMenuOpen((o) => !o)}
               className="px-4 py-2 text-[var(--foreground)]/90 hover:text-[var(--foreground)] rounded-md transition-colors text-sm md:text-base underline decoration-[color-mix(in_oklch,_var(--foreground)_30%,_transparent)] underline-offset-4"

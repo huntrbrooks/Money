@@ -55,6 +55,7 @@ export type SiteConfig = {
     subtitle?: string
     tagline?: string
     logoUrl?: string
+    headerBannerUrl?: string
   }
   navigation?: NavLink[]
   contact?: {
@@ -101,6 +102,7 @@ export const defaultConfig: SiteConfig = {
     subtitle: "Dan Lobel",
     tagline: "Trauma‑informed care with safety, dignity and choice.",
     logoUrl: "/placeholder-logo.svg",
+    headerBannerUrl: undefined,
   },
   navigation: [
     { label: "Home", href: "/" },
@@ -235,6 +237,7 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
     subtitle: newConfig.brand?.subtitle ?? defaultConfig.brand!.subtitle,
     tagline: newConfig.brand?.tagline ?? defaultConfig.brand!.tagline,
     logoUrl: newConfig.brand?.logoUrl ?? defaultConfig.brand!.logoUrl,
+    headerBannerUrl: newConfig.brand?.headerBannerUrl ?? defaultConfig.brand!.headerBannerUrl,
   }
   const merged: SiteConfig = {
     ...defaultConfig,

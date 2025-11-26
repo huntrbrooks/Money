@@ -16,10 +16,11 @@
     "ogImage": "/og.jpg"
   },
   "brand": {
-    "name": "The Financial Abuse Therapist",
+    "name": "Financial Abuse Therapist",
     "subtitle": "Dan Lobel",
     "tagline": "Trauma‑informed care with safety, dignity and choice.",
-    "logoUrl": "/logo.svg"
+    "logoUrl": "/logo.svg",
+    "headerBannerUrl": "/header-banner-01.png"
   },
   "navigation": [
     {
