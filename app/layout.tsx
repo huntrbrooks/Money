@@ -13,18 +13,49 @@ const _cormorant = Cormorant_Garamond({
 })
 
 export const metadata: Metadata = {
-  title: "Financial Trauma & Monetary Psychotherapy | The Financial Therapist — Dan Lobel",
+  metadataBase: new URL("https://financialabusetherapist.com"),
+  title: "Financial Abuse Therapist | Financial Trauma & Monetary Psychotherapy — Dan Lobel",
   description:
-    "Trauma‑informed counselling in Melbourne focused on financial trauma, economic abuse recovery, money anxiety and monetary psychotherapy. Safe, gender‑aware and inclusive care.",
+    "Trauma‑informed counselling in Melbourne focused on financial abuse recovery, financial trauma, money anxiety and monetary psychotherapy. Safe, gender‑aware and inclusive care.",
   keywords: [
+    "financial abuse",
+    "financial abuse therapy",
+    "financial abuse therapist",
     "financial trauma therapy Melbourne",
-    "money and mental health counselling",
     "monetary psychotherapy",
     "economic abuse counselling",
     "women's counselling Melbourne",
     "money anxiety therapy",
   ],
-  generator: "v0.app",
+  generator: "nextjs",
+  openGraph: {
+    type: "website",
+    url: "https://financialabusetherapist.com/",
+    title: "Financial Abuse Therapist | Financial Trauma & Monetary Psychotherapy — Dan Lobel",
+    description:
+      "Trauma‑informed counselling in Melbourne focused on financial abuse recovery, financial trauma, money anxiety and monetary psychotherapy.",
+    siteName: "The Financial Therapist",
+    locale: "en_AU",
+    images: [{ url: "/og.jpg" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Financial Abuse Therapist | Financial Trauma & Monetary Psychotherapy",
+    description:
+      "Trauma‑informed counselling for financial abuse, economic abuse recovery, and money anxiety.",
+    images: ["/og.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      maxSnippet: -1,
+      maxImagePreview: "large",
+      maxVideoPreview: -1,
+    },
+  },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
     shortcut: [{ url: "/icon.svg", type: "image/svg+xml" }],
@@ -57,6 +88,15 @@ export default async function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="theme-color" content={config.theme.background} />
+        <meta name="description" content={config.seo?.description || ""} />
+        <meta property="og:title" content={config.seo?.title || "Financial Abuse Therapist — Dan Lobel"} />
+        <meta property="og:description" content={config.seo?.description || ""} />
+        <meta property="og:image" content={config.seo?.ogImage || "/placeholder.jpg"} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={config.seo?.title || "Financial Abuse Therapist — Dan Lobel"} />
+        <meta name="twitter:description" content={config.seo?.description || ""} />
+        <meta name="twitter:image" content={config.seo?.ogImage || "/placeholder.jpg"} />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#20385B" />
         <link rel="manifest" href="/site.webmanifest" />

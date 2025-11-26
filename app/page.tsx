@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Script from "next/script"
 import { Button } from "@/components/ui/button"
 import { Phone, Mail, Calendar, ArrowRight, CheckCircle2, Video, Home, Building, Footprints, Clock } from "lucide-react"
 import { Navigation, Footer } from "@/components/navigation"
@@ -6,7 +7,6 @@ import { readSiteConfig } from "@/lib/config"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { CrisisBanner } from "@/components/crisis-banner"
 import { ResourcesCarousel } from "@/components/resources-carousel"
-import { BookingForm } from "@/components/booking-form"
 
 export default async function HomePage() {
   const config = await readSiteConfig()
@@ -74,18 +74,14 @@ export default async function HomePage() {
 
             {/* Right Column - Image */}
             <div className="relative lg:pl-8">
-              <div className="relative aspect-[3/4] max-w-[39.2rem] mx-auto">
-                {/* Navy offset panel behind the photo */}
-                <div className="absolute inset-0 translate-x-8 translate-y-10 rounded-xl bg-[var(--foreground)] shadow-xl" />
+              <div className="relative aspect-[3/4] max-w-[39.2rem] mx-auto isolate">
                 {/* Main white framed photo card */}
-                <div className="relative bg-white p-4 rounded-xl shadow-2xl ring-1 ring-black/5">
+                <div className="relative z-10 bg-white p-4 rounded-xl shadow-xl">
                   <img
                     src={config.hero.imageUrl}
                     alt="Portrait of Dan Lobel, counsellor in Melbourne"
                     className="w-full h-full object-cover rounded-lg"
                   />
-                  {/* Slim green accent bar near the bottom edge of the white frame */}
-                  <div className="absolute -bottom-3 left-6 right-6 h-2 bg-[var(--accent)] rounded-sm shadow-md" />
                 </div>
               </div>
             </div>
@@ -213,6 +209,10 @@ export default async function HomePage() {
                   <Link href="/why-money-triggers-anxiety-dan-lobel.html" className="mr-3">Why Money Triggers Anxiety</Link>
                   <Link href="/financial-abuse-emotional-healing-dan-lobel.html" className="mr-3">Financial Abuse and Emotional Healing</Link>
                   <Link href="/the-psychology-behind-spending-habits-dan-lobel.html">The Psychology Behind Spending Habits</Link>
+                  <span className="mx-2 text-[var(--primary)]/40">|</span>
+                  <Link href="/financial-abuse" className="mr-3">Financial Abuse</Link>
+                  <Link href="/financial-abuse-therapy" className="mr-3">Financial Abuse Therapy</Link>
+                  <Link href="/financial-abuse-therapist">Financial Abuse Therapist</Link>
                 </div>
               </div>
             </div>
@@ -270,6 +270,27 @@ export default async function HomePage() {
                   className="h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
                 >
                   <Link href="/the-psychology-behind-spending-habits-dan-lobel.html" className="no-underline">The Psychology Behind Spending Habits</Link>
+                </Button>
+              </div>
+              {/* Row 4 — new landing pages */}
+              <div className="col-span-full grid gap-4 md:grid-cols-3">
+                <Button
+                  asChild
+                  className="h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
+                >
+                  <Link href="/financial-abuse" className="no-underline">Financial Abuse</Link>
+                </Button>
+                <Button
+                  asChild
+                  className="h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
+                >
+                  <Link href="/financial-abuse-therapy" className="no-underline">Financial Abuse Therapy</Link>
+                </Button>
+                <Button
+                  asChild
+                  className="h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
+                >
+                  <Link href="/financial-abuse-therapist" className="no-underline">Financial Abuse Therapist</Link>
                 </Button>
               </div>
             </div>
@@ -393,11 +414,6 @@ export default async function HomePage() {
                 )
               })}
             </div>
-            <div className="pt-2 flex justify-center">
-              <div className="inline-flex items-center px-4 py-2 border-2 border-red-300 bg-red-50 text-red-700 font-bold rounded-md shadow-sm w-fit sm:whitespace-nowrap text-center">
-                Medicare rebates are not available. Receipts provided for private health or personal records.
-              </div>
-            </div>
 
             {/* Forms links */}
             <div className="pt-2">
@@ -447,7 +463,17 @@ export default async function HomePage() {
               <h2 className="font-serif text-5xl md:text-6xl text-[var(--foreground)] font-light">Book a Confidential Consultation</h2>
               <p className="text-xl text-[var(--primary)]/80 mt-2">You choose the format and pace that feel safest for you.</p>
             </div>
-            <BookingForm consultations={consultationOptions} />
+            <div className="rounded-lg overflow-hidden border border-[var(--secondary)] bg-white">
+              <iframe
+                src="https://app.acuityscheduling.com/schedule.php?owner=32223024&ref=embedded_csp"
+                title="Schedule Appointment"
+                width="100%"
+                height="800"
+                frameBorder="0"
+                allow="payment"
+              />
+            </div>
+            <Script src="https://embed.acuityscheduling.com/js/embed.js" strategy="afterInteractive" />
           </div>
         </div>
       </section>
@@ -653,6 +679,109 @@ export default async function HomePage() {
 
       <Footer />
       </main>
+      {/* Organization & Service JSON-LD */}
+      {(() => {
+        const organizationJsonLd = {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: config.brand?.name || "The Financial Therapist",
+          url: "https://financialabusetherapist.com",
+          logo: config.brand?.logoUrl || "/logo.svg",
+          sameAs: [
+            "https://www.facebook.com/the.melbourne.counsellor/",
+            "https://www.instagram.com/the.melbourne.counsellor/#",
+            "https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/",
+          ],
+          contactPoint: config.contact?.phone
+            ? [
+                {
+                  "@type": "ContactPoint",
+                  telephone: config.contact.phone,
+                  contactType: "customer service",
+                  areaServed: "AU",
+                  availableLanguage: ["en"],
+                },
+              ]
+            : undefined,
+        }
+        const serviceJsonLd = {
+          "@context": "https://schema.org",
+          "@type": "Service",
+          serviceType: "Financial abuse therapy",
+          provider: {
+            "@type": "Organization",
+            name: config.brand?.name || "The Financial Therapist",
+            url: "https://financialabusetherapist.com",
+          },
+          areaServed: ["Melbourne", "Victoria", "Australia"],
+          availableChannel: {
+            "@type": "ServiceChannel",
+            serviceUrl: "https://financialabusetherapist.com/#book",
+            availableLanguage: ["en"],
+          },
+        }
+        const localBusinessJsonLd = {
+          "@context": "https://schema.org",
+          "@type": ["LocalBusiness", "ProfessionalService"],
+          name: config.brand?.name || "The Financial Abuse Therapist",
+          url: "https://financialabusetherapist.com",
+          image: config.seo?.ogImage || "/og.jpg",
+          telephone: (config.contact?.phone || "+61 488 222 137").replace(/\s+/g, " "),
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Unit 503, 666 Chapel Street",
+            addressLocality: "South Yarra",
+            addressRegion: "VIC",
+            postalCode: "3141",
+            addressCountry: "AU",
+          },
+          areaServed: ["Melbourne", "Victoria", "Australia"],
+          openingHoursSpecification: [
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+              opens: "10:00",
+              closes: "19:00",
+            },
+          ],
+          knowsAbout: [
+            "financial abuse",
+            "economic abuse",
+            "mental health",
+            "therapy",
+            "psychology",
+            "counselling",
+            "monetary psychotherapy",
+          ],
+          sameAs: [
+            "https://www.facebook.com/the.melbourne.counsellor/",
+            "https://www.instagram.com/the.melbourne.counsellor/#",
+            "https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/",
+          ],
+        }
+        return (
+          <>
+            <Script
+              id="org-jsonld"
+              type="application/ld+json"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+            />
+            <Script
+              id="service-jsonld"
+              type="application/ld+json"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+            />
+            <Script
+              id="localbusiness-jsonld"
+              type="application/ld+json"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+            />
+          </>
+        )
+      })()}
     </div>
   )
 }

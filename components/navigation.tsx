@@ -35,11 +35,11 @@ export function Navigation() {
       className="sticky top-0 z-50 shadow-sm border-b border-[var(--secondary)]"
       style={{
         background:
-          "linear-gradient(180deg, var(--brand-pale-blue, #D7E9EC) 0%, var(--brand-pale-green, #E5EED2) 100%)",
+          "linear-gradient(90deg, var(--primary, #6CA4AC) 0%, var(--accent, #929D5B) 100%)",
       }}
     >
       <div className="container mx-auto px-6 md:px-8">
-        <div className="grid grid-cols-3 items-center h-16 md:h-24">
+        <div className="grid grid-cols-3 items-center h-20 md:h-28">
           {/* Left spacer / optional logo (kept minimal to allow perfect centering) */}
           <div className="justify-self-start">
             {/* Optional: show small mark if available to subtly brand the header */}
@@ -56,16 +56,19 @@ export function Navigation() {
 
           {/* Centered Title */}
           <div className="justify-self-center text-center">
-            <Link href="/" className="group inline-flex flex-col items-center">
-              <span className="font-serif text-2xl md:text-4xl text-[var(--foreground)] font-medium leading-none">
-                {cfg.brand?.name ?? "Financial Abuse Therapist"}
-              </span>
-              {cfg.brand?.subtitle && (
-                <span className="mt-1 text-xs md:text-sm text-[var(--foreground)]/75">
-                  {cfg.brand.subtitle}
-                </span>
-              )}
-            </Link>
+          <Link href="/" className="group inline-flex items-center gap-3 md:gap-4">
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-[2px] w-10 md:w-16 rounded-full bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]"
+            />
+            <span className="font-serif text-4xl md:text-6xl text-[var(--foreground)] font-medium leading-none">
+              {cfg.brand?.name ?? "Financial Abuse Therapist"}
+            </span>
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-[2px] w-10 md:w-16 rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--primary)]"
+            />
+          </Link>
           </div>
 
           {/* Right-aligned Menu dropdown */}
@@ -115,7 +118,7 @@ export function Footer() {
   const links = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
 
   return (
-    <footer className="text-[var(--foreground)]">
+    <footer className="bg-[var(--background)] text-[var(--foreground)]">
       {/* Main Footer */}
       <div className="container mx-auto px-6 md:px-8 py-16">
         <div className="grid gap-12 md:grid-cols-3 max-w-6xl mx-auto">
