@@ -61,7 +61,7 @@ export function Navigation() {
       className="sticky top-0 z-50 shadow-sm border-b border-[var(--secondary)]"
       style={{
         background:
-          "linear-gradient(180deg, var(--primary, #6CA4AC) 0%, var(--accent, #929D5B) 100%)",
+          "linear-gradient(180deg, color-mix(in srgb, var(--primary, #6CA4AC) 100%, transparent) 0%, color-mix(in srgb, var(--accent, #929D5B) 70%, transparent) 60%, transparent 100%)",
       }}
     >
       <div className="container mx-auto px-6 md:px-8">
@@ -72,14 +72,14 @@ export function Navigation() {
         {/* Centered Title (absolute overlay so it can use full width) */}
         <div
           className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
-          style={{ paddingLeft: 16, paddingRight: rightGapPx || 96 }}
+          style={{ paddingLeft: 16, paddingRight: Math.max(rightGapPx || 96, 96) }}
         >
           <Link href="/" aria-label="Home" className="pointer-events-auto inline-flex items-center">
             {headerBannerUrl ? (
               <img
                 src={headerBannerUrl}
                 alt={brandName}
-                className="h-12 md:h-16 lg:h-20 w-auto object-contain"
+                className="h-16 md:h-24 lg:h-28 w-auto object-contain"
               />
             ) : (
               <span className="font-serif whitespace-nowrap text-[clamp(1.25rem,6.5vw,3.5rem)] md:text-[clamp(1.75rem,4.5vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
@@ -90,7 +90,7 @@ export function Navigation() {
         </div>
 
           {/* Right-aligned Menu dropdown */}
-        <div className="justify-self-end relative z-10 pr-2" ref={menuRef}>
+        <div className="justify-self-end relative z-10 flex justify-end pr-0" ref={menuRef}>
             <button
               onClick={() => setIsMenuOpen((o) => !o)}
               className="px-4 py-2 text-[var(--foreground)]/90 hover:text-[var(--foreground)] rounded-md transition-colors text-sm md:text-base underline decoration-[color-mix(in_oklch,_var(--foreground)_30%,_transparent)] underline-offset-4"
