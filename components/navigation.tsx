@@ -35,11 +35,11 @@ export function Navigation() {
       className="sticky top-0 z-50 shadow-sm border-b border-[var(--secondary)]"
       style={{
         background:
-          "linear-gradient(90deg, var(--primary, #6CA4AC) 0%, var(--accent, #929D5B) 100%)",
+          "linear-gradient(180deg, var(--primary, #6CA4AC) 0%, var(--accent, #929D5B) 100%)",
       }}
     >
       <div className="container mx-auto px-6 md:px-8">
-        <div className="grid grid-cols-3 items-center h-20 md:h-28">
+        <div className="grid grid-cols-3 items-center h-20 md:h-28 relative">
           {/* Left spacer / optional logo (kept minimal to allow perfect centering) */}
           <div className="justify-self-start">
             {/* Optional: show small mark if available to subtly brand the header */}
@@ -54,14 +54,14 @@ export function Navigation() {
             )}
           </div>
 
-          {/* Centered Title */}
-          <div className="justify-self-center text-center">
-          <Link href="/" className="group inline-flex items-center gap-3 md:gap-4">
+        {/* Centered Title (absolute overlay so it can use full width) */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <Link href="/" className="group pointer-events-auto inline-flex items-center gap-3 md:gap-4 px-6 md:px-10">
             <span
               aria-hidden="true"
               className="hidden sm:block h-[2px] w-10 md:w-16 rounded-full bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]"
             />
-            <span className="font-serif text-4xl md:text-6xl text-[var(--foreground)] font-medium leading-none">
+            <span className="font-serif whitespace-nowrap text-[clamp(1.25rem,6.5vw,3.5rem)] md:text-[clamp(1.75rem,4.5vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
               {cfg.brand?.name ?? "Financial Abuse Therapist"}
             </span>
             <span
