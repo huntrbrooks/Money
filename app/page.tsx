@@ -43,6 +43,7 @@ export default async function HomePage() {
   const config = await readSiteConfig()
   const hero = config.hero
   const homepageContent = config.homepage ?? {}
+  const experiments = config.experiments ?? { showNewsletterSection: true, showLeadMagnet: true }
   const valueProps = homepageContent.valueProps ?? []
   const testimonials = homepageContent.testimonials ?? []
   const homepageFaqs = homepageContent.faqs ?? []

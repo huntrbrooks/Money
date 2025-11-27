@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og"
 import { getPostBySlug, getVideoBySlug } from "@/lib/mdx"
 import { SITE_URL } from "@/lib/seo"
 
-export const runtime = "edge"
+export const runtime = "nodejs"
 
 type Params = {
   params: { slug: string }

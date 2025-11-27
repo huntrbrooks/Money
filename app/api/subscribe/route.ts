@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { sendLeadToCrm } from "@/lib/crm"
 
+export const runtime = "nodejs"
+
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as {
     email?: string

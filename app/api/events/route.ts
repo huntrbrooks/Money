@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server"
 
+export const runtime = "nodejs"
+
 type EventPayload = {
   event?: string
   detail?: Record<string, unknown>
