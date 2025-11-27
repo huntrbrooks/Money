@@ -65,34 +65,97 @@
   "services": [],
   "consultations": [
     {
-      "format": "Telehealth (Zoom)",
-      "price": "$160",
-      "duration": "50 mins"
+      "format": "Online Zoom Consultation",
+      "price": "A$160",
+      "duration": "50 minutes",
+      "mode": "Telehealth",
+      "location": "Secure Zoom link",
+      "description": "Private telehealth session when you need the safety of home.",
+      "typeId": 62493740,
+      "highlight": "Most booked"
     },
     {
-      "format": "In-Home Consultations",
-      "price": "$170",
-      "duration": "50 mins"
+      "format": "Walking and Talking Therapy",
+      "price": "A$170",
+      "duration": "50 minutes",
+      "mode": "Walk & Talk",
+      "location": "Coastal or park routes",
+      "description": "Gentle movement-based therapy for nervous system regulation.",
+      "typeId": 78385138
     },
     {
-      "format": "In-Room Consultations (St Kilda Rd)",
-      "price": "$180",
-      "duration": "50 mins"
+      "format": "At your Home Consultation",
+      "price": "A$170",
+      "duration": "50 minutes",
+      "mode": "In-home",
+      "location": "Melbourne metro",
+      "description": "Dan travels to you for grounded support in your own environment.",
+      "typeId": 62493784
     },
     {
-      "format": "Walk & Discuss Therapy",
-      "price": "$170",
-      "duration": "50 mins"
+      "format": "At my Rooms Consultation",
+      "price": "A$180",
+      "duration": "50 minutes",
+      "mode": "In-rooms",
+      "location": "St Kilda Rd practice",
+      "description": "Face-to-face sessions in Dan’s calm St Kilda Road rooms.",
+      "typeId": 62493756
     },
     {
-      "format": "Extended Consultations",
-      "price": "From $220",
-      "duration": "Various"
+      "format": "Extended Online Zoom Consultation",
+      "price": "A$220",
+      "duration": "90 minutes",
+      "mode": "Telehealth",
+      "location": "Secure Zoom link",
+      "description": "Extra spacious telehealth session for complex processing.",
+      "typeId": 62493763,
+      "highlight": "Deeper work"
     },
     {
-      "format": "Phone Consultations",
-      "price": "$160",
-      "duration": "50 mins"
+      "format": "Extended Walking & Talking Therapy",
+      "price": "A$230",
+      "duration": "90 minutes",
+      "mode": "Walk & Talk",
+      "location": "Coastal or park routes",
+      "description": "More time outdoors to settle the body and integrate insights.",
+      "typeId": 78385165
+    },
+    {
+      "format": "Extended Consultation at your Home",
+      "price": "A$250",
+      "duration": "90 minutes",
+      "mode": "In-home",
+      "location": "Melbourne metro",
+      "description": "Longer in-home visit for systemic or whole-family work.",
+      "typeId": 63864464
+    },
+    {
+      "format": "Extended Consultation at my Rooms",
+      "price": "A$270",
+      "duration": "90 minutes",
+      "mode": "In-rooms",
+      "location": "St Kilda Rd practice",
+      "description": "A deeper dive with plenty of space to regulate and plan.",
+      "typeId": 63864585
+    },
+    {
+      "format": "Couple Consultation at your Home",
+      "price": "A$300",
+      "duration": "90 minutes",
+      "mode": "Couples in-home",
+      "location": "Melbourne metro",
+      "description": "For couples needing grounded guidance without leaving home.",
+      "typeId": 65749401
+    },
+    {
+      "format": "Comprehensive Initial Assessment",
+      "price": "A$300",
+      "duration": "100 minutes",
+      "mode": "Intake",
+      "location": "Zoom or rooms",
+      "description": "A full intake for new clients to map history, safety, and goals.",
+      "typeId": 78917361,
+      "highlight": "Recommended first step"
     }
   ],
   "resources": [

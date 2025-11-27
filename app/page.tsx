@@ -3,6 +3,7 @@ import Script from "next/script"
 import { Button } from "@/components/ui/button"
 import { Phone, Mail, Calendar, ArrowRight, CheckCircle2, Video, Home, Building, Footprints, Clock } from "lucide-react"
 import { Navigation, Footer } from "@/components/navigation"
+import { BookingOptions } from "@/components/booking-options"
 import { readSiteConfig } from "@/lib/config"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { CrisisBanner } from "@/components/crisis-banner"
@@ -310,8 +311,8 @@ export default async function HomePage() {
             <Accordion type="single" collapsible className="bg-[var(--section-bg-1)] rounded-lg border-2 border-[var(--secondary)] divide-y">
               {otherAreas.map((a, idx) => (
                 <AccordionItem key={idx} value={`area-${idx}`} className="px-4 sm:px-6">
-                  <AccordionTrigger className="py-4 sm:py-5 text-[var(--foreground)] items-center">
-                    <span className="flex-1 text-center font-serif font-semibold text-lg sm:text-xl leading-snug">
+                  <AccordionTrigger className="py-4 sm:py-5 text-[var(--foreground)] items-center relative isolate overflow-hidden before:content-[''] before:absolute before:inset-0 before:-z-10 before:rounded-2xl before:bg-gradient-to-r before:from-[var(--brand-pale-blue)] before:via-white/70 before:to-[var(--brand-pale-green)] before:opacity-0 before:transition-opacity before:duration-500 before:pointer-events-none hover:before:opacity-100 data-[state=open]:before:opacity-100">
+                    <span className="relative z-10 flex-1 text-center font-serif font-semibold text-lg sm:text-xl leading-snug">
                       {a.title}
                     </span>
                   </AccordionTrigger>
@@ -458,20 +459,47 @@ export default async function HomePage() {
 
       <section id="book" className="py-24 md:py-32 scroll-mt-20">
         <div className="container mx-auto px-6 md:px-8">
-          <div className="max-w-5xl mx-auto">
-            <div className="mb-10 text-center">
+          <div className="mx-auto flex max-w-6xl flex-col gap-10">
+            <div className="text-center">
               <h2 className="font-serif text-5xl md:text-6xl text-[var(--foreground)] font-light">Book a Confidential Consultation</h2>
-              <p className="text-xl text-[var(--primary)]/80 mt-2">You choose the format and pace that feel safest for you.</p>
+              <p className="text-xl text-[var(--primary)]/80 mt-3">Choose the format, length, and location that meets you where you are.</p>
             </div>
-            <div className="rounded-lg overflow-hidden border border-[var(--secondary)] bg-white">
-              <iframe
-                src="https://app.acuityscheduling.com/schedule.php?owner=32223024&ref=embedded_csp"
-                title="Schedule Appointment"
-                width="100%"
-                height="800"
-                frameBorder="0"
-                allow="payment"
-              />
+
+            <BookingOptions options={consultationOptions} />
+
+            <div className="rounded-[32px] border border-[var(--primary)]/15 bg-white/90 shadow-xl">
+              <div className="flex flex-col gap-4 border-b border-[var(--primary)]/10 px-6 py-6 md:flex-row md:items-center md:justify-between">
+                <div className="text-left">
+                  <p className="text-xs uppercase tracking-[0.25em] text-[var(--primary)]/70">Instant scheduling</p>
+                  <h3 className="font-serif text-3xl text-[var(--foreground)]">Secure Acuity Portal</h3>
+                  <p className="text-sm text-[var(--primary)]/80">Payments are processed via Square. Fees shown below match the cards above.</p>
+                </div>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="border-[var(--primary)]/40 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white"
+                >
+                  <a href="https://app.acuityscheduling.com/schedule.php?owner=32223024" target="_blank" rel="noopener noreferrer">
+                    Open full scheduler
+                  </a>
+                </Button>
+              </div>
+              <div className="relative rounded-[28px] border border-[var(--primary)]/10 bg-[color-mix(in_oklch,_var(--brand-pale-blue)_60%,_white)]/80 p-3">
+                <div className="rounded-[24px] bg-white shadow-inner">
+                  <iframe
+                    src="https://app.acuityscheduling.com/schedule.php?owner=32223024&ref=embedded_csp"
+                    title="Schedule Appointment"
+                    width="100%"
+                    height="820"
+                    frameBorder="0"
+                    allow="payment"
+                    className="rounded-[24px]"
+                  />
+                </div>
+              </div>
+              <p className="px-6 pb-6 pt-3 text-center text-xs text-[var(--primary)]/70">
+                Prefer email or phone? Reach Dan on <a href="mailto:dan@themelbournecounsellor.com.au" className="underline">dan@themelbournecounsellor.com.au</a> or 0467 477 786.
+              </p>
             </div>
             <Script src="https://embed.acuityscheduling.com/js/embed.js" strategy="afterInteractive" />
           </div>

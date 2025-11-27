@@ -11,6 +11,12 @@ export type ConsultationOption = {
   format: string
   price: string
   duration: string
+  mode?: string
+  location?: string
+  description?: string
+  typeId?: number
+  highlight?: string
+  paymentNote?: string
 }
 
 export type NavLink = {
