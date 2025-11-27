@@ -29,14 +29,13 @@ export function Navigation() {
     { label: "Contact", href: "/#contact" },
   ]
   const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
-  const logoSrc = "/LOGO.png"
+  const logoSrc = "/Logo.webp"
 
   return (
     <nav
       className="z-50 shadow-sm border-b border-[var(--secondary)]"
       style={{
-        background:
-          "linear-gradient(180deg, color-mix(in srgb, var(--primary, #6CA4AC) 100%, transparent) 0%, color-mix(in srgb, var(--primary, #6CA4AC) 70%, transparent) 100%)",
+        background: "linear-gradient(180deg, #929d5b 0%, #6ca4ac 100%)",
       }}
     >
       <div className="container mx-auto px-6 md:px-8">
@@ -95,7 +94,7 @@ export function Footer() {
   }, [])
   const links = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
   const brandName = cfg.brand?.name ?? "The Financial Therapist"
-  const footerLogoSrc = "/LOGO.png"
+  const footerLogoSrc = "/Logo.webp"
 
   return (
     <footer className="bg-[var(--section-bg-1)] text-[var(--foreground)]">
