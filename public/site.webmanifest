@@ -1,20 +1,18 @@
 {
-  "name": "Financial Abuse Therapist",
-  "short_name": "Financial Abuse Therapist",
+  "name": "Finacial Abuse Therapist",
+  "short_name": "Finacial Abuse Therapist",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#FFFFFF",
   "icons": [
     {
-      "src": "/favicon_io/android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/favicon_io/android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }
+
+

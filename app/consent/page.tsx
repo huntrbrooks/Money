@@ -64,9 +64,10 @@ export default function ConsentPage() {
       }
       setSubmitted('ok')
       setForm({ firstName: '', lastName: '', date: '', fullName: '', statement: '' })
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : null
       setSubmitted('error')
-      setErrorMessage(err?.message ?? 'Something went wrong sending your consent form.')
+      setErrorMessage(message ?? 'Something went wrong sending your consent form.')
     } finally {
       setSubmitting(false)
     }

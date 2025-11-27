@@ -1,5 +1,17 @@
-export const metadata = {
-  title: "Financial Abuse and Emotional Healing | The Financial Therapist",
+import type { Metadata } from "next"
+import { buildPageMetadata } from "@/lib/seo"
+
+const PAGE_DESCRIPTION =
+  "Financial abuse can fracture trust, autonomy, and identity. This teaser previews a longer guide on safety, healing, and regaining self-worth."
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({
+    title: "Financial Abuse and Emotional Healing | The Financial Therapist",
+    description: PAGE_DESCRIPTION,
+    path: "/blog/financial-abuse-and-emotional-healing",
+    keywords: ["financial abuse healing", "economic abuse recovery"],
+    type: "article",
+  })
 }
 
 export default function BlogFinancialAbuseHealing() {

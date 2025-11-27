@@ -167,10 +167,9 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-feature-settings: "rlig" 1, "calt" 1;
-    background-color: #dfe7ef;
-    background-image: linear-gradient(180deg, #cfdde9 0%, #f5f7ed 65%, #fdfbf7 100%);
-    background-attachment: fixed;
-    background-size: cover;
+    background-image: var(--bg-radial-1), var(--bg-radial-2);
+    background-attachment: fixed, fixed;
+    background-size: auto, auto;
   }
   html {
     color-scheme: light dark;
@@ -200,6 +199,30 @@
   }
   a:hover {
     text-decoration-color: color-mix(in oklch, var(--primary) 70%, transparent);
+  }
+  .mdx-content {
+    @apply space-y-6;
+  }
+  .mdx-content h2 {
+    @apply font-serif text-3xl text-[var(--foreground)] font-light mt-10;
+  }
+  .mdx-content h3 {
+    @apply font-serif text-2xl text-[var(--foreground)] font-light mt-6;
+  }
+  .mdx-content p {
+    @apply text-[var(--primary)] leading-relaxed;
+  }
+  .mdx-content ul {
+    @apply list-disc pl-6 text-[var(--primary)] space-y-2;
+  }
+  .mdx-content ol {
+    @apply list-decimal pl-6 text-[var(--primary)] space-y-2;
+  }
+  .mdx-content details {
+    @apply border border-[var(--secondary)] rounded-xl p-4 bg-white/80;
+  }
+  .mdx-content summary {
+    @apply cursor-pointer font-semibold text-[var(--foreground)];
   }
   /* Accessible, elegant focus states */
   :where(a, button, [role="button"], input, textarea, select):focus-visible {
@@ -235,8 +258,92 @@
 }
 
 @layer base {
+  /* Alternate section backgrounds with a gentle fade between them */
+  main > section {
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+  main > section:nth-of-type(odd) {
+    background-image: linear-gradient(
+      to bottom,
+      var(--section-bg-1) 0%,
+      var(--section-bg-1) calc(100% - var(--section-fade-height)),
+      var(--section-bg-2) 100%
+    );
+  }
+  main > section:nth-of-type(even) {
+    background-image: linear-gradient(
+      to bottom,
+      var(--section-bg-2) 0%,
+      var(--section-bg-2) calc(100% - var(--section-fade-height)),
+      var(--section-bg-1) 100%
+    );
+  }
+}
+
+@layer base {
   /* Consistent container padding and max width */
   .container {
-    @apply max-w-7xl px-6 md:px-8;
+    @apply mx-auto max-w-7xl px-4 sm:px-6 md:px-8;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --section-fade-height: 48px;
+  }
+}
+
+@layer components {
+  .accordion-hover-card {
+    position: relative;
+    isolation: isolate;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: transform 300ms ease, box-shadow 350ms ease;
+  }
+  .accordion-hover-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: linear-gradient(
+      120deg,
+      color-mix(in oklch, var(--accent) 55%, white),
+      color-mix(in oklch, var(--primary) 40%, white),
+      color-mix(in oklch, var(--brand-asparagus) 45%, white)
+    );
+    background-size: 240% 240%;
+    opacity: 0;
+    transform: scale(1.05);
+    transition: opacity 350ms ease, transform 450ms ease;
+    animation: accordionGradientPan 12s ease infinite;
+    animation-play-state: paused;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .accordion-hover-card:hover,
+  .accordion-hover-card:focus-within {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+  }
+  .accordion-hover-card:hover::before,
+  .accordion-hover-card:focus-within::before {
+    opacity: 0.85;
+    transform: scale(1);
+    animation-play-state: running;
+  }
+}
+
+@keyframes accordionGradientPan {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }

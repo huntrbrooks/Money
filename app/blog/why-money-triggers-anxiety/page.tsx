@@ -1,76 +1,52 @@
+import type { Metadata } from "next"
 import Link from "next/link"
+import Script from "next/script"
+import { buildArticleSchema, buildFaqSchema, buildPageMetadata } from "@/lib/seo"
 
-export const metadata = {
-  title: "Why Money Triggers Anxiety | The Financial Therapist",
-  description:
-    "Money anxiety isn’t about being bad with numbers — it’s about how the brain links money to safety, control, and self‑worth. Learn why it happens and how to heal your relationship with money.",
-  robots: { index: true, follow: true },
-  authors: [{ name: "Dan Lobel, D.Couns., B.Couns., MCouns&Psych" }],
-  alternates: {
-    canonical: "https://themelbournecounsellor.com.au/articles/why-money-triggers-anxiety",
-  },
-  openGraph: {
-    title: "Why Money Triggers Anxiety | Financial Trauma Therapy Melbourne",
-    description:
-      "A trauma‑informed deep dive into why money triggers anxiety, with practical steps to heal your relationship with money.",
+const PAGE_TITLE = "Why Money Triggers Anxiety | The Financial Therapist"
+const PAGE_DESCRIPTION =
+  "Money anxiety isn’t about being bad with numbers — it’s about how the brain links money to safety, control, and self-worth. Learn why it happens and how to heal your relationship with money."
+const PAGE_PUBLISHED = "2025-11-13"
+const PAGE_SLUG = "/blog/why-money-triggers-anxiety"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+    path: PAGE_SLUG,
+    keywords: ["money anxiety", "financial trauma", "monetary psychotherapy"],
     type: "article",
-    url: "https://themelbournecounsellor.com.au/articles/why-money-triggers-anxiety",
-    siteName: "The Financial Therapist",
-    locale: "en_AU",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Why Money Triggers Anxiety | Financial Trauma Therapy Melbourne",
-    description:
-      "A trauma‑informed deep dive into why money triggers anxiety, with practical steps to heal your relationship with money.",
-  },
+    publishedTime: PAGE_PUBLISHED,
+    modifiedTime: PAGE_PUBLISHED,
+  })
 }
 
 export default function BlogWhyMoneyTriggersAnxiety() {
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: "Why Money Triggers Anxiety",
-    description:
-      "Trauma‑informed explanation of why money triggers anxiety and how to heal your relationship with it.",
-    author: { "@type": "Person", name: "Dan Lobel" },
-    publisher: { "@type": "Organization", name: "The Financial Therapist" },
-    datePublished: "2025-11-13",
-    dateModified: "2025-11-13",
-    mainEntityOfPage:
-      "https://themelbournecounsellor.com.au/articles/why-money-triggers-anxiety",
-  }
+  const articleJsonLd = buildArticleSchema({
+    title: "Why Money Triggers Anxiety",
+    description: "Trauma-informed explanation of why money triggers anxiety and how to heal your relationship with it.",
+    slug: PAGE_SLUG,
+    publishedTime: PAGE_PUBLISHED,
+    modifiedTime: PAGE_PUBLISHED,
+  })
 
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Why does money trigger anxiety even when I’m earning well?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Because the nervous system links money with safety and identity. Old experiences can keep the body in protection mode despite present stability.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Is money anxiety a sign I’m bad with finances?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "No. It’s usually a sign your nervous system is over‑protecting you due to past stress. Skills help, but regulation and safety come first.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "What actually helps reduce money anxiety?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Regulate first, then plan: brief breathing, tiny daily actions, visible safety buffers, and a weekly money check‑in. Consistency rewires the stress response.",
-        },
-      },
-    ],
-  }
+  const faqJsonLd = buildFaqSchema([
+    {
+      question: "Why does money trigger anxiety even when I’m earning well?",
+      answer:
+        "Because the nervous system links money with safety and identity. Old experiences can keep the body in protection mode despite present stability.",
+    },
+    {
+      question: "Is money anxiety a sign I’m bad with finances?",
+      answer:
+        "No. It’s usually a sign your nervous system is over-protecting you due to past stress. Skills help, but regulation and safety come first.",
+    },
+    {
+      question: "What actually helps reduce money anxiety?",
+      answer:
+        "Regulate first, then plan: brief breathing, tiny daily actions, visible safety buffers, and a weekly money check-in. Consistency rewires the stress response.",
+    },
+  ])
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -308,12 +284,16 @@ export default function BlogWhyMoneyTriggersAnxiety() {
           </details>
         </section>
       </article>
-      <script
+      <Script
+        id="why-money-triggers-anxiety-article"
         type="application/ld+json"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <script
+      <Script
+        id="why-money-triggers-anxiety-faq"
         type="application/ld+json"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
     </div>

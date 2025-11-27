@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { readSiteConfig } from "@/lib/config"
+import { sendLeadToCrm } from "@/lib/crm"
 
 type EnquiryPayload = {
   firstName?: string
@@ -7,6 +8,9 @@ type EnquiryPayload = {
   email?: string
   phone?: string
   message?: string
+  supportFocus?: string
+  preferredFormat?: string
+  updatesOptIn?: boolean
 }
 
 function sanitize(input: string): string {
@@ -25,9 +29,14 @@ function compileText(data: EnquiryPayload) {
     `Name: ${[data.firstName, data.lastName].filter(Boolean).join(" ") || "-"}`,
     `Email: ${data.email || "-"}`,
     `Phone: ${data.phone || "-"}`,
+    `Preferred format: ${data.preferredFormat || "-"}`,
+    ``,
+    `Focus: ${data.supportFocus || "-"}`,
     ``,
     `Message:`,
     `${data.message || "-"}`,
+    ``,
+    `Updates opt-in: ${data.updatesOptIn ? "yes" : "no"}`,
   ].join("\n")
 }
 
@@ -38,10 +47,13 @@ function compileHtml(data: EnquiryPayload) {
       <p><strong>Name:</strong> ${sanitize([data.firstName, data.lastName].filter(Boolean).join(" ") || "-")}</p>
       <p><strong>Email:</strong> ${sanitize(data.email || "-")}</p>
       <p><strong>Phone:</strong> ${sanitize(data.phone || "-")}</p>
+      <p><strong>Preferred Format:</strong> ${sanitize(data.preferredFormat || "-")}</p>
+      <p><strong>Focus:</strong> ${sanitize(data.supportFocus || "-")}</p>
       <p><strong>Message:</strong></p>
       <pre style="white-space:pre-wrap;background:#f6f8fa;padding:12px;border-radius:8px;border:1px solid #e5e7eb">${sanitize(
         data.message || "-",
       )}</pre>
+      <p><strong>Updates opt-in:</strong> ${data.updatesOptIn ? "Yes" : "No"}</p>
     </div>
   `
 }
@@ -99,6 +111,13 @@ async function sendViaSmtp(to: string, replyTo: string | undefined, data: Enquir
   return { ok: true as const }
 }
 
+function resolveErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error && error.message) {
+    return error.message
+  }
+  return fallback
+}
+
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as EnquiryPayload | null
   if (!body) return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
@@ -108,6 +127,9 @@ export async function POST(req: Request) {
   const email = sanitize(String(body.email ?? "")).slice(0, 300)
   const phone = sanitize(String(body.phone ?? "")).slice(0, 60)
   const message = sanitize(String(body.message ?? "")).slice(0, 8000)
+  const supportFocus = sanitize(String(body.supportFocus ?? "")).slice(0, 800)
+  const preferredFormat = sanitize(String(body.preferredFormat ?? "")).slice(0, 120)
+  const updatesOptIn = Boolean(body.updatesOptIn)
 
   if (!firstName || !email || !phone || !message) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
@@ -119,16 +141,33 @@ export async function POST(req: Request) {
   const cfg = await readSiteConfig()
   const toAddress = cfg.contact?.email || process.env.FALLBACK_TO_EMAIL
 
-  const data: EnquiryPayload = { firstName, lastName, email, phone, message }
+  const data: EnquiryPayload = {
+    firstName,
+    lastName,
+    email,
+    phone,
+    message,
+    supportFocus,
+    preferredFormat,
+    updatesOptIn,
+  }
 
   // Try SMTP first if configured, otherwise fall back to Resend
   let result:
     | { ok: true }
     | { ok: false; error: string } = { ok: false, error: "No email provider configured" }
   if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && toAddress) {
-    result = await sendViaSmtp(toAddress, email, data).catch((e: any) => ({ ok: false as const, error: e?.message || "SMTP error" }))
+    try {
+      result = await sendViaSmtp(toAddress, email, data)
+    } catch (error) {
+      result = { ok: false as const, error: resolveErrorMessage(error, "SMTP error") }
+    }
   } else if (process.env.RESEND_API_KEY && toAddress) {
-    result = await sendViaResend(toAddress, email, data).catch((e: any) => ({ ok: false as const, error: e?.message || "Resend error" }))
+    try {
+      result = await sendViaResend(toAddress, email, data)
+    } catch (error) {
+      result = { ok: false as const, error: resolveErrorMessage(error, "Resend error") }
+    }
   } else {
     // Dev fallback: no provider configured, just log and succeed
     console.log("[enquiry] Dev mode - email not sent. Payload:", data)
@@ -138,6 +177,14 @@ export async function POST(req: Request) {
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 500 })
   }
+  void sendLeadToCrm({
+    type: "enquiry",
+    email,
+    name: [firstName, lastName].filter(Boolean).join(" "),
+    phone,
+    tags: ["website-enquiry"],
+    payload: { supportFocus, preferredFormat, updatesOptIn },
+  })
   return NextResponse.json({ ok: true })
 }
 

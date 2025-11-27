@@ -2,17 +2,65 @@
  
 import type React from "react"
  
- import { useEffect, useState } from "react"
- import { Button } from "@/components/ui/button"
- import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
- import { Input } from "@/components/ui/input"
- import { Label } from "@/components/ui/label"
- import { Textarea } from "@/components/ui/textarea"
- import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
- import { Upload, Save, Eye, LogOut, ImageIcon, FileText, DollarSign, Palette } from "lucide-react"
- import { useToast } from "@/hooks/use-toast"
- import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Upload, Save, Eye, LogOut, ImageIcon, FileText, DollarSign, Palette } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { useRouter } from "next/navigation"
+import type { SiteConfig } from "@/lib/config"
+import type { PostMeta, VideoMeta } from "@/lib/mdx"
+import { Switch } from "@/components/ui/switch"
  
+type ThemeState = {
+  mode: "light" | "dark"
+  primary: string
+  secondary: string
+  accent: string
+  background: string
+  foreground: string
+  radius: string
+  fontSans?: string
+  fontSerif?: string
+}
+
+const themeColorKeys: Array<keyof Pick<ThemeState, "primary" | "secondary" | "accent" | "background" | "foreground">> = [
+  "primary",
+  "secondary",
+  "accent",
+  "background",
+  "foreground",
+]
+
+const createEmptyHero = (): SiteConfig["hero"] => ({
+  eyebrow: "",
+  title: "",
+  subtitle: "",
+  description: "",
+  imageUrl: "",
+  primaryCta: { label: "", href: "" },
+  secondaryCta: { label: "", href: "" },
+  stats: [],
+})
+
+const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
+  valueProps: [],
+  testimonials: [],
+  faqs: [],
+  leadMagnet: {
+    heading: "",
+    body: "",
+    ctaLabel: "",
+    ctaHref: "",
+    helper: "",
+  },
+})
+
  export default function AdminPage() {
    const { toast } = useToast()
    const router = useRouter()
@@ -20,7 +68,7 @@ import type React from "react"
    const [saving, setSaving] = useState<null | string>(null)
  
    // Theme state
-   const [theme, setTheme] = useState({
+  const [theme, setTheme] = useState<ThemeState>({
     mode: "light",
     primary: "#6CA4AC",
     secondary: "#E5EED2",
@@ -28,15 +76,12 @@ import type React from "react"
     background: "#FFFFFF",
     foreground: "#20385B",
     radius: "0.5rem",
-   })
+    fontSans: "",
+    fontSerif: "",
+  })
  
   // Content state
-   const [heroContent, setHeroContent] = useState({
-     title: "",
-     subtitle: "",
-     description: "",
-     imageUrl: "",
-   })
+  const [heroContent, setHeroContent] = useState<SiteConfig["hero"]>(createEmptyHero())
  
    const [aboutContent, setAboutContent] = useState({
      title: "",
@@ -50,22 +95,54 @@ import type React from "react"
   const [contact, setContact] = useState<{ phone?: string; email?: string }>({})
   const [consultations, setConsultations] = useState<{ format: string; price: string; duration: string }[]>([])
   const [resources, setResources] = useState<{ name: string; number: string }[]>([])
+  const [homepage, setHomepage] = useState<NonNullable<SiteConfig["homepage"]>>(createEmptyHomepage())
+  const [postsMeta, setPostsMeta] = useState<PostMeta[]>([])
+  const [videosMeta, setVideosMeta] = useState<VideoMeta[]>([])
+  const [newPostDraft, setNewPostDraft] = useState({ title: "", description: "" })
+  const [newVideoDraft, setNewVideoDraft] = useState({ title: "", description: "", videoUrl: "" })
+const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
+  showNewsletterSection: true,
+  showLeadMagnet: true,
+})
  
    useEffect(() => {
      async function load() {
        try {
          const res = await fetch("/api/site-config", { cache: "no-store" })
-         const data = await res.json()
-         setTheme(data.theme)
-         setHeroContent(data.hero)
-         setAboutContent(data.about)
-         setServices(data.services)
-        setBrand(data.brand ?? {})
-        setSeo(data.seo ?? {})
-        setNavigation(data.navigation ?? [])
-        setContact(data.contact ?? {})
-        setConsultations(data.consultations ?? [])
-        setResources(data.resources ?? [])
+        const data = await res.json()
+        setTheme(data.theme)
+        const heroDefaults = createEmptyHero()
+        setHeroContent({
+          ...heroDefaults,
+          ...(data.hero ?? {}),
+          primaryCta: { ...heroDefaults.primaryCta, ...(data.hero?.primaryCta ?? {}) },
+          secondaryCta: { ...heroDefaults.secondaryCta, ...(data.hero?.secondaryCta ?? {}) },
+          stats: data.hero?.stats ?? [],
+        })
+        setAboutContent(data.about)
+        setServices(data.services)
+       setBrand(data.brand ?? {})
+       setSeo(data.seo ?? {})
+       setNavigation(data.navigation ?? [])
+       setContact(data.contact ?? {})
+       setConsultations(data.consultations ?? [])
+       setResources(data.resources ?? [])
+       const homepageDefaults = createEmptyHomepage()
+       setHomepage({
+         ...homepageDefaults,
+         ...(data.homepage ?? {}),
+         valueProps: data.homepage?.valueProps ?? [],
+         testimonials: data.homepage?.testimonials ?? [],
+         faqs: data.homepage?.faqs ?? [],
+         leadMagnet: {
+           ...homepageDefaults.leadMagnet,
+           ...(data.homepage?.leadMagnet ?? {}),
+         },
+       })
+       setExperiments({
+         showNewsletterSection: data.experiments?.showNewsletterSection ?? true,
+         showLeadMagnet: data.experiments?.showLeadMagnet ?? true,
+       })
        } catch {
          toast({ title: "Failed to load config", variant: "destructive" })
        } finally {
@@ -73,6 +150,7 @@ import type React from "react"
        }
      }
      load()
+    loadContent()
    }, [toast])
  
    async function saveAll(section?: string) {
@@ -92,16 +170,96 @@ import type React from "react"
            contact,
            consultations,
            resources,
+          experiments,
+           homepage,
          }),
        })
        if (!res.ok) throw new Error("Save failed")
        toast({ title: "Saved", description: section ? `${section} updated` : "All changes saved" })
-     } catch (e: any) {
-       toast({ title: "Save failed", description: e.message ?? "Unable to save", variant: "destructive" })
+     } catch (error: unknown) {
+       const description = error instanceof Error ? error.message : "Unable to save"
+       toast({ title: "Save failed", description, variant: "destructive" })
      } finally {
        setSaving(null)
      }
    }
+
+  async function loadContent() {
+    try {
+      const [postsRes, videosRes] = await Promise.all([fetch("/api/posts"), fetch("/api/videos")])
+      const postsData = await postsRes.json()
+      const videosData = await videosRes.json()
+      setPostsMeta(postsData)
+      setVideosMeta(videosData)
+    } catch {
+      toast({ title: "Failed to load content", variant: "destructive" })
+    }
+  }
+
+  async function createPostDraft() {
+    if (!newPostDraft.title.trim()) {
+      toast({ title: "Title is required", variant: "destructive" })
+      return
+    }
+    setSaving("content-post")
+    try {
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: newPostDraft.title.trim(),
+          description: newPostDraft.description.trim(),
+        }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error ?? "Unable to create post")
+      }
+      toast({ title: "Post draft created" })
+      setNewPostDraft({ title: "", description: "" })
+      await loadContent()
+    } catch (error: unknown) {
+      const description = error instanceof Error ? error.message : "Unable to create post"
+      toast({ title: "Error", description, variant: "destructive" })
+    } finally {
+      setSaving(null)
+    }
+  }
+
+  async function createVideoDraft() {
+    if (!newVideoDraft.title.trim() || !newVideoDraft.videoUrl.trim()) {
+      toast({ title: "Title and video URL are required", variant: "destructive" })
+      return
+    }
+    setSaving("content-video")
+    try {
+      const res = await fetch("/api/videos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: newVideoDraft.title.trim(),
+          description: newVideoDraft.description.trim(),
+          videoUrl: newVideoDraft.videoUrl.trim(),
+        }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error ?? "Unable to create video")
+      }
+      toast({ title: "Video draft created" })
+      setNewVideoDraft({ title: "", description: "", videoUrl: "" })
+      await loadContent()
+    } catch (error: unknown) {
+      const description = error instanceof Error ? error.message : "Unable to create video"
+      toast({ title: "Error", description, variant: "destructive" })
+    } finally {
+      setSaving(null)
+    }
+  }
+
+  const updateTheme = <K extends keyof ThemeState>(key: K, value: ThemeState[K]) => {
+    setTheme((prev) => ({ ...prev, [key]: value }))
+  }
  
 function AssistantBox({ onSaved }: { onSaved: () => void }) {
   const [input, setInput] = useState("")
@@ -188,20 +346,23 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
  
        <div className="container mx-auto px-4 py-8">
          <Tabs defaultValue="hero" className="space-y-6">
-         <TabsList className="grid w-full grid-cols-12 gap-2 max-w-full">
-             <TabsTrigger value="hero">Hero Section</TabsTrigger>
-             <TabsTrigger value="about">About</TabsTrigger>
-             <TabsTrigger value="services">Services</TabsTrigger>
-             <TabsTrigger value="images">Images</TabsTrigger>
-             <TabsTrigger value="theme">Theme</TabsTrigger>
-            <TabsTrigger value="brand">Brand</TabsTrigger>
-            <TabsTrigger value="nav">Navigation</TabsTrigger>
-            <TabsTrigger value="contact">Contact</TabsTrigger>
-            <TabsTrigger value="seo">SEO</TabsTrigger>
-            <TabsTrigger value="consultations">Consultations</TabsTrigger>
-            <TabsTrigger value="resources">Resources</TabsTrigger>
-             <TabsTrigger value="assistant">Assistant</TabsTrigger>
-           </TabsList>
+        <TabsList className="grid w-full grid-cols-15 gap-2 max-w-full">
+            <TabsTrigger value="hero">Hero Section</TabsTrigger>
+            <TabsTrigger value="about">About</TabsTrigger>
+            <TabsTrigger value="services">Services</TabsTrigger>
+            <TabsTrigger value="homepage">Homepage</TabsTrigger>
+            <TabsTrigger value="content">Content</TabsTrigger>
+            <TabsTrigger value="experiments">Experiments</TabsTrigger>
+            <TabsTrigger value="images">Images</TabsTrigger>
+            <TabsTrigger value="theme">Theme</TabsTrigger>
+           <TabsTrigger value="brand">Brand</TabsTrigger>
+           <TabsTrigger value="nav">Navigation</TabsTrigger>
+           <TabsTrigger value="contact">Contact</TabsTrigger>
+           <TabsTrigger value="seo">SEO</TabsTrigger>
+           <TabsTrigger value="consultations">Consultations</TabsTrigger>
+           <TabsTrigger value="resources">Resources</TabsTrigger>
+            <TabsTrigger value="assistant">Assistant</TabsTrigger>
+          </TabsList>
  
            {/* Hero Section Tab */}
            <TabsContent value="hero" className="space-y-6">
@@ -214,6 +375,14 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
                  <CardDescription>Update the main headline and description on your homepage</CardDescription>
                </CardHeader>
                <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="hero-eyebrow">Eyebrow / Tagline</Label>
+                  <Input
+                    id="hero-eyebrow"
+                    value={heroContent.eyebrow ?? ""}
+                    onChange={(e) => setHeroContent((prev) => ({ ...prev, eyebrow: e.target.value }))}
+                  />
+                </div>
                  <div className="space-y-2">
                    <Label htmlFor="hero-title">Main Title</Label>
                    <Input
@@ -248,6 +417,133 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
                      onChange={(e) => setHeroContent({ ...heroContent, imageUrl: e.target.value })}
                    />
                  </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="hero-primary-label">Primary CTA Label</Label>
+                    <Input
+                      id="hero-primary-label"
+                      value={heroContent.primaryCta?.label ?? ""}
+                      onChange={(e) =>
+                        setHeroContent((prev) => ({
+                          ...prev,
+                          primaryCta: { ...(prev.primaryCta ?? { label: "", href: "" }), label: e.target.value },
+                        }))
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="hero-primary-href">Primary CTA URL</Label>
+                    <Input
+                      id="hero-primary-href"
+                      value={heroContent.primaryCta?.href ?? ""}
+                      onChange={(e) =>
+                        setHeroContent((prev) => ({
+                          ...prev,
+                          primaryCta: { ...(prev.primaryCta ?? { label: "", href: "" }), href: e.target.value },
+                        }))
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="hero-secondary-label">Secondary CTA Label</Label>
+                    <Input
+                      id="hero-secondary-label"
+                      value={heroContent.secondaryCta?.label ?? ""}
+                      onChange={(e) =>
+                        setHeroContent((prev) => ({
+                          ...prev,
+                          secondaryCta: { ...(prev.secondaryCta ?? { label: "", href: "" }), label: e.target.value },
+                        }))
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="hero-secondary-href">Secondary CTA URL</Label>
+                    <Input
+                      id="hero-secondary-href"
+                      value={heroContent.secondaryCta?.href ?? ""}
+                      onChange={(e) =>
+                        setHeroContent((prev) => ({
+                          ...prev,
+                          secondaryCta: { ...(prev.secondaryCta ?? { label: "", href: "" }), href: e.target.value },
+                        }))
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <Label>Hero Stats</Label>
+                  {(heroContent.stats ?? []).map((stat, idx) => (
+                    <div key={`${stat.label}-${idx}`} className="grid gap-3 md:grid-cols-[1fr_1fr_1fr_auto] items-end rounded-lg border border-border/50 p-3">
+                      <div className="space-y-1">
+                        <Label>Value</Label>
+                        <Input
+                          value={stat.value}
+                          onChange={(e) =>
+                            setHeroContent((prev) => {
+                              const nextStats = [...(prev.stats ?? [])]
+                              nextStats[idx] = { ...nextStats[idx], value: e.target.value }
+                              return { ...prev, stats: nextStats }
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label>Label</Label>
+                        <Input
+                          value={stat.label}
+                          onChange={(e) =>
+                            setHeroContent((prev) => {
+                              const nextStats = [...(prev.stats ?? [])]
+                              nextStats[idx] = { ...nextStats[idx], label: e.target.value }
+                              return { ...prev, stats: nextStats }
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label>Description</Label>
+                        <Input
+                          value={stat.description ?? ""}
+                          onChange={(e) =>
+                            setHeroContent((prev) => {
+                              const nextStats = [...(prev.stats ?? [])]
+                              nextStats[idx] = { ...nextStats[idx], description: e.target.value }
+                              return { ...prev, stats: nextStats }
+                            })
+                          }
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() =>
+                          setHeroContent((prev) => {
+                            const nextStats = [...(prev.stats ?? [])]
+                            nextStats.splice(idx, 1)
+                            return { ...prev, stats: nextStats }
+                          })
+                        }
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() =>
+                      setHeroContent((prev) => ({
+                        ...prev,
+                        stats: [...(prev.stats ?? []), { label: "", value: "", description: "" }],
+                      }))
+                    }
+                  >
+                    + Add Stat
+                  </Button>
+                </div>
                  <Button onClick={() => saveAll("Hero Section")} disabled={saving !== null}>
                    <Save className="w-4 h-4 mr-2" />
                    Save Changes
@@ -369,6 +665,428 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
                </CardContent>
              </Card>
            </TabsContent>
+
+          {/* Homepage Tab */}
+          <TabsContent value="homepage" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Value Props</CardTitle>
+                <CardDescription>Update the quick-hit reasons clients feel safe booking</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {(homepage.valueProps ?? []).map((item, idx) => (
+                  <div key={`value-prop-${idx}`} className="rounded-lg border border-border/40 p-4 space-y-3">
+                    <div className="space-y-2">
+                      <Label>Title</Label>
+                      <Input
+                        value={item.title}
+                        onChange={(e) => {
+                          const next = [...(homepage.valueProps ?? [])]
+                          next[idx] = { ...next[idx], title: e.target.value }
+                          setHomepage((prev) => ({ ...prev, valueProps: next }))
+                        }}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Description</Label>
+                      <Textarea
+                        rows={3}
+                        value={item.description}
+                        onChange={(e) => {
+                          const next = [...(homepage.valueProps ?? [])]
+                          next[idx] = { ...next[idx], description: e.target.value }
+                          setHomepage((prev) => ({ ...prev, valueProps: next }))
+                        }}
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => {
+                        const next = [...(homepage.valueProps ?? [])]
+                        next.splice(idx, 1)
+                        setHomepage((prev) => ({ ...prev, valueProps: next }))
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    setHomepage((prev) => ({
+                      ...prev,
+                      valueProps: [...(prev.valueProps ?? []), { title: "New value prop", description: "" }],
+                    }))
+                  }
+                >
+                  + Add Value Prop
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Testimonials</CardTitle>
+                <CardDescription>Short quotes for social proof</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {(homepage.testimonials ?? []).map((item, idx) => (
+                  <div key={`testimonial-${idx}`} className="rounded-lg border border-border/40 p-4 space-y-3">
+                    <div className="space-y-2">
+                      <Label>Quote</Label>
+                      <Textarea
+                        rows={3}
+                        value={item.quote}
+                        onChange={(e) => {
+                          const next = [...(homepage.testimonials ?? [])]
+                          next[idx] = { ...next[idx], quote: e.target.value }
+                          setHomepage((prev) => ({ ...prev, testimonials: next }))
+                        }}
+                      />
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label>Name</Label>
+                        <Input
+                          value={item.author}
+                          onChange={(e) => {
+                            const next = [...(homepage.testimonials ?? [])]
+                            next[idx] = { ...next[idx], author: e.target.value }
+                            setHomepage((prev) => ({ ...prev, testimonials: next }))
+                          }}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Context</Label>
+                        <Input
+                          value={item.context ?? ""}
+                          onChange={(e) => {
+                            const next = [...(homepage.testimonials ?? [])]
+                            next[idx] = { ...next[idx], context: e.target.value }
+                            setHomepage((prev) => ({ ...prev, testimonials: next }))
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => {
+                        const next = [...(homepage.testimonials ?? [])]
+                        next.splice(idx, 1)
+                        setHomepage((prev) => ({ ...prev, testimonials: next }))
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    setHomepage((prev) => ({
+                      ...prev,
+                      testimonials: [
+                        ...(prev.testimonials ?? []),
+                        { quote: "New testimonial", author: "Client", context: "" },
+                      ],
+                    }))
+                  }
+                >
+                  + Add Testimonial
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>FAQs</CardTitle>
+                <CardDescription>Address common doubts directly on the landing page</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {(homepage.faqs ?? []).map((item, idx) => (
+                  <div key={`faq-${idx}`} className="rounded-lg border border-border/40 p-4 space-y-3">
+                    <div className="space-y-2">
+                      <Label>Question</Label>
+                      <Input
+                        value={item.question}
+                        onChange={(e) => {
+                          const next = [...(homepage.faqs ?? [])]
+                          next[idx] = { ...next[idx], question: e.target.value }
+                          setHomepage((prev) => ({ ...prev, faqs: next }))
+                        }}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Answer</Label>
+                      <Textarea
+                        rows={3}
+                        value={item.answer}
+                        onChange={(e) => {
+                          const next = [...(homepage.faqs ?? [])]
+                          next[idx] = { ...next[idx], answer: e.target.value }
+                          setHomepage((prev) => ({ ...prev, faqs: next }))
+                        }}
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => {
+                        const next = [...(homepage.faqs ?? [])]
+                        next.splice(idx, 1)
+                        setHomepage((prev) => ({ ...prev, faqs: next }))
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    setHomepage((prev) => ({
+                      ...prev,
+                      faqs: [...(prev.faqs ?? []), { question: "New FAQ", answer: "" }],
+                    }))
+                  }
+                >
+                  + Add FAQ
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Lead Magnet</CardTitle>
+                <CardDescription>Controls the sticky CTA / exit intent copy</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Heading</Label>
+                  <Input
+                    value={homepage.leadMagnet?.heading ?? ""}
+                    onChange={(e) =>
+                      setHomepage((prev) => ({
+                        ...prev,
+                        leadMagnet: { ...(prev.leadMagnet ?? createEmptyHomepage().leadMagnet), heading: e.target.value },
+                      }))
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Body</Label>
+                  <Textarea
+                    rows={3}
+                    value={homepage.leadMagnet?.body ?? ""}
+                    onChange={(e) =>
+                      setHomepage((prev) => ({
+                        ...prev,
+                        leadMagnet: { ...(prev.leadMagnet ?? createEmptyHomepage().leadMagnet), body: e.target.value },
+                      }))
+                    }
+                  />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>CTA Label</Label>
+                    <Input
+                      value={homepage.leadMagnet?.ctaLabel ?? ""}
+                      onChange={(e) =>
+                        setHomepage((prev) => ({
+                          ...prev,
+                          leadMagnet: { ...(prev.leadMagnet ?? createEmptyHomepage().leadMagnet), ctaLabel: e.target.value },
+                        }))
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>CTA URL</Label>
+                    <Input
+                      value={homepage.leadMagnet?.ctaHref ?? ""}
+                      onChange={(e) =>
+                        setHomepage((prev) => ({
+                          ...prev,
+                          leadMagnet: { ...(prev.leadMagnet ?? createEmptyHomepage().leadMagnet), ctaHref: e.target.value },
+                        }))
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Helper / Consent copy</Label>
+                  <Textarea
+                    rows={2}
+                    value={homepage.leadMagnet?.helper ?? ""}
+                    onChange={(e) =>
+                      setHomepage((prev) => ({
+                        ...prev,
+                        leadMagnet: { ...(prev.leadMagnet ?? createEmptyHomepage().leadMagnet), helper: e.target.value },
+                      }))
+                    }
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="flex gap-3">
+              <Button onClick={() => saveAll("Homepage")} disabled={saving !== null}>
+                <Save className="w-4 h-4 mr-2" />
+                Save Homepage
+              </Button>
+            </div>
+          </TabsContent>
+
+          {/* Content Tab */}
+          <TabsContent value="content" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Articles</CardTitle>
+                <CardDescription>Manage MDX blog posts</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  {postsMeta.length === 0 && <p className="text-sm text-muted-foreground">No articles yet.</p>}
+                  {postsMeta.map((post) => (
+                    <div key={post.slug} className="flex flex-col gap-2 rounded-lg border border-border/40 p-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="font-semibold text-[var(--foreground)]">{post.title}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(post.date).toLocaleDateString("en-AU", { dateStyle: "medium" })} · /blog/{post.slug}
+                        </p>
+                      </div>
+                      <Link
+                        href={`/blog/${post.slug}`}
+                        target="_blank"
+                        className="text-sm font-semibold text-[var(--accent)] underline"
+                      >
+                        View
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+                <div className="grid gap-3">
+                  <Input
+                    placeholder="New article title"
+                    value={newPostDraft.title}
+                    onChange={(e) => setNewPostDraft((prev) => ({ ...prev, title: e.target.value }))}
+                  />
+                  <Textarea
+                    rows={3}
+                    placeholder="Short description"
+                    value={newPostDraft.description}
+                    onChange={(e) => setNewPostDraft((prev) => ({ ...prev, description: e.target.value }))}
+                  />
+                  <Button onClick={createPostDraft} disabled={saving !== null}>
+                    <Save className="w-4 h-4 mr-2" />
+                    Create Draft
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Vlog Entries</CardTitle>
+                <CardDescription>Manage video-based resources</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  {videosMeta.length === 0 && <p className="text-sm text-muted-foreground">No videos yet.</p>}
+                  {videosMeta.map((video) => (
+                    <div key={video.slug} className="flex flex-col gap-2 rounded-lg border border-border/40 p-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="font-semibold text-[var(--foreground)]">{video.title}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(video.date).toLocaleDateString("en-AU", { dateStyle: "medium" })} · /vlog/{video.slug}
+                        </p>
+                      </div>
+                      <Link
+                        href={`/vlog/${video.slug}`}
+                        target="_blank"
+                        className="text-sm font-semibold text-[var(--accent)] underline"
+                      >
+                        View
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+                <div className="grid gap-3">
+                  <Input
+                    placeholder="Video title"
+                    value={newVideoDraft.title}
+                    onChange={(e) => setNewVideoDraft((prev) => ({ ...prev, title: e.target.value }))}
+                  />
+                  <Input
+                    placeholder="Embed URL (YouTube, Vimeo, etc.)"
+                    value={newVideoDraft.videoUrl}
+                    onChange={(e) => setNewVideoDraft((prev) => ({ ...prev, videoUrl: e.target.value }))}
+                  />
+                  <Textarea
+                    rows={3}
+                    placeholder="Short description"
+                    value={newVideoDraft.description}
+                    onChange={(e) => setNewVideoDraft((prev) => ({ ...prev, description: e.target.value }))}
+                  />
+                  <Button onClick={createVideoDraft} disabled={saving !== null}>
+                    <Save className="w-4 h-4 mr-2" />
+                    Create Draft
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Experiments Tab */}
+          <TabsContent value="experiments" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Feature toggles</CardTitle>
+                <CardDescription>Quickly enable or pause experimental sections</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between border border-border/40 rounded-2xl p-4">
+                  <div>
+                    <p className="font-semibold text-[var(--foreground)]">Show newsletter section</p>
+                    <p className="text-sm text-muted-foreground">
+                      Controls the “Download the 5-step Financial Safety Check-in” band on the homepage.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={experiments?.showNewsletterSection ?? true}
+                    onCheckedChange={(checked) =>
+                      setExperiments((prev) => ({ ...prev, showNewsletterSection: Boolean(checked) }))
+                    }
+                  />
+                </div>
+                <div className="flex items-center justify-between border border-border/40 rounded-2xl p-4">
+                  <div>
+                    <p className="font-semibold text-[var(--foreground)]">Show lead magnet</p>
+                    <p className="text-sm text-muted-foreground">
+                      Enables the sticky mobile CTA and desktop exit intent panel.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={experiments?.showLeadMagnet ?? true}
+                    onCheckedChange={(checked) =>
+                      setExperiments((prev) => ({ ...prev, showLeadMagnet: Boolean(checked) }))
+                    }
+                  />
+                </div>
+              </CardContent>
+              <CardContent>
+                <Button onClick={() => saveAll("Experiments")} disabled={saving !== null}>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Toggles
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
  
            {/* Images Tab */}
            <TabsContent value="images" className="space-y-6">
@@ -452,40 +1170,34 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
                      />
                    </div>
                    <div className="space-y-2 sm:col-span-2">
-                     <Label>Sans Font Family</Label>
-                     <Input
-                       value={(theme as any).fontSans ?? ""}
-                       onChange={(e) => setTheme({ ...theme, fontSans: e.target.value } as any)}
-                       placeholder="e.g. Geist, system-ui, sans-serif"
-                     />
+                    <Label>Sans Font Family</Label>
+                    <Input
+                      value={theme.fontSans ?? ""}
+                      onChange={(e) => updateTheme("fontSans", e.target.value)}
+                      placeholder="e.g. Geist, system-ui, sans-serif"
+                    />
                    </div>
                    <div className="space-y-2 sm:col-span-2">
                      <Label>Serif Font Family</Label>
                      <Input
-                       value={(theme as any).fontSerif ?? ""}
-                       onChange={(e) => setTheme({ ...theme, fontSerif: e.target.value } as any)}
+                      value={theme.fontSerif ?? ""}
+                      onChange={(e) => updateTheme("fontSerif", e.target.value)}
                        placeholder="e.g. Cormorant Garamond, Georgia, serif"
                      />
                    </div>
-                   {[
-                     ["Primary", "primary"],
-                     ["Secondary", "secondary"],
-                     ["Accent", "accent"],
-                     ["Background", "background"],
-                     ["Foreground", "foreground"],
-                   ].map(([label, key]) => (
-                     <div key={key} className="space-y-2">
-                       <Label>{label}</Label>
+                  {themeColorKeys.map((key) => (
+                    <div key={key} className="space-y-2">
+                      <Label>{key.charAt(0).toUpperCase() + key.slice(1)}</Label>
                        <div className="flex items-center gap-3">
                          <input
                            type="color"
-                           value={(theme as any)[key]}
-                           onChange={(e) => setTheme({ ...theme, [key]: e.target.value } as any)}
+                          value={theme[key]}
+                          onChange={(e) => updateTheme(key, e.target.value)}
                            className="h-10 w-14 rounded-md border border-border"
                          />
                          <Input
-                           value={(theme as any)[key]}
-                           onChange={(e) => setTheme({ ...theme, [key]: e.target.value } as any)}
+                          value={theme[key]}
+                          onChange={(e) => updateTheme(key, e.target.value)}
                          />
                        </div>
                      </div>

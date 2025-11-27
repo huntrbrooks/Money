@@ -46,8 +46,8 @@ const paymentSupport = [
 ]
 
 function buildBookingUrl(typeId?: number) {
-  if (!typeId) return `${OWNER_BOOKING_URL}&ref=embedded_csp`
-  return `${OWNER_BOOKING_URL}&appointmentType=${typeId}&ref=embedded_csp`
+  if (!typeId) return OWNER_BOOKING_URL
+  return `${OWNER_BOOKING_URL}&appointmentType=${typeId}`
 }
 
 function getModeIcon(mode?: string) {
@@ -70,14 +70,14 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
 
   return (
     <div className="space-y-12">
-      <div className="rounded-[40px] border border-[#d3dcd9] bg-white/85 p-6 sm:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="rounded-[40px] border border-[#d3dcd9] bg-white/85 p-5 sm:p-8 lg:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
+        <div className="grid gap-5 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {options.map((option) => {
             const Icon = getModeIcon(option.mode)
             return (
               <article
                 key={option.format}
-                className="group h-full rounded-[28px] border border-[#d4ddd8] bg-[#f8faf6] p-6 shadow-[0_25px_55px_rgba(42,63,70,0.12)] transition hover:-translate-y-1 hover:shadow-[0_35px_80px_rgba(42,63,70,0.16)]"
+                className="group flex h-full flex-col rounded-[28px] border border-[#d4ddd8] bg-[#f8faf6] p-6 shadow-[0_25px_55px_rgba(42,63,70,0.12)] transition hover:-translate-y-1 hover:shadow-[0_35px_80px_rgba(42,63,70,0.16)]"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -93,13 +93,13 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
                   )}
                 </div>
                 {option.description && (
-                  <p className="mt-4 text-sm leading-relaxed text-[#4a5a61]">{option.description}</p>
+                  <p className="mt-4 flex-1 text-sm leading-relaxed text-[#4a5a61]">{option.description}</p>
                 )}
-                <div className="mt-6 flex items-baseline gap-3">
+                <div className="mt-6 flex flex-wrap items-baseline gap-2">
                   <span className="font-serif text-4xl text-[#1f2d38]">{option.price}</span>
                   <span className="text-sm text-[#4a5c63]">{option.duration}</span>
                 </div>
-                <div className="mt-3 flex items-center gap-3 text-sm text-[#4a5c63]">
+                <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-[#4a5c63]">
                   <Icon className="h-4 w-4 text-[#7b8c45]" aria-hidden="true" />
                   <span>{option.location ?? "Flexible delivery"}</span>
                 </div>
@@ -116,7 +116,7 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
             )
           })}
         </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           {billingHighlights.map(({ title, detail, icon: Icon }) => (
             <div
               key={title}
@@ -134,8 +134,8 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
         </div>
       </div>
 
-      <div className="rounded-[32px] border border-dashed border-[#c8d4cf] bg-white/80 p-6 shadow-sm">
-        <div className="grid gap-5 md:grid-cols-2">
+      <div className="rounded-[32px] border border-dashed border-[#c8d4cf] bg-white/80 p-5 sm:p-6 shadow-sm">
+        <div className="grid gap-4 sm:grid-cols-2">
           {paymentSupport.map(({ title, detail, icon: Icon }) => (
             <div key={title} className="flex gap-3">
               <div className="h-10 w-10 rounded-2xl bg-[#7b8c45]/15 text-[#7b8c45]">
@@ -148,7 +148,7 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
             </div>
           ))}
         </div>
-        <p className="mt-4 text-xs uppercase tracking-[0.2em] text-[#4a5c63]">
+        <p className="mt-4 text-center text-xs uppercase tracking-[0.2em] text-[#4a5c63] sm:text-left">
           Billing enquiries: dan@themelbournecounsellor.com.au · 0467 477 786
         </p>
       </div>

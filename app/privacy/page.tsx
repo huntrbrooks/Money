@@ -1,7 +1,15 @@
+import type { Metadata } from "next"
 import { headers } from "next/headers"
+import { buildPageMetadata } from "@/lib/seo"
 
-export const metadata = {
-  title: "Privacy Policy | The Financial Therapist",
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({
+    title: "Privacy Policy | The Financial Therapist",
+    description: "Review The Financial Therapist privacy policy, download the latest document, or open it in a new tab.",
+    path: "/privacy",
+    keywords: ["privacy policy", "counselling privacy", "confidentiality Melbourne"],
+    noIndex: false,
+  })
 }
 
 export default function PrivacyPage() {

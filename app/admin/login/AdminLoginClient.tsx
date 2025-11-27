@@ -31,8 +31,9 @@ export default function AdminLoginClient() {
       toast({ title: "Welcome", description: "Login successful" })
       const next = searchParams.get("next") || "/admin"
       router.replace(next)
-    } catch (e: any) {
-      toast({ title: "Login failed", description: e.message ?? "Invalid credentials", variant: "destructive" })
+    } catch (error: unknown) {
+      const description = error instanceof Error ? error.message : "Invalid credentials"
+      toast({ title: "Login failed", description, variant: "destructive" })
     } finally {
       setLoading(false)
     }

@@ -19,8 +19,8 @@
     "name": "Financial Abuse Therapist",
     "subtitle": "Dan Lobel",
     "tagline": "Trauma‑informed care with safety, dignity and choice.",
-    "logoUrl": "/LOGO.png",
-    "headerBannerUrl": "/Homepage-01.png"
+    "logoUrl": "/Logo.png",
+    "headerBannerUrl": "/Logo.png"
   },
   "navigation": [
     {
@@ -29,11 +29,7 @@
     },
     {
       "label": "About",
-      "href": "/about-dan"
-    },
-    {
-      "label": "Monetary Psychotherapy",
-      "href": "/monetary-psychotherapy"
+      "href": "/#about"
     },
     {
       "label": "Services",
@@ -42,6 +38,10 @@
     {
       "label": "Book",
       "href": "/#book"
+    },
+    {
+      "label": "Client Care",
+      "href": "/client-care"
     },
     {
       "label": "Contact",
@@ -53,10 +53,33 @@
     "email": "dan@themelbournecounsellor.com.au"
   },
   "hero": {
-    "title": "Financial Trauma & Monetary Psychotherapy",
-    "subtitle": "Dan Lobel",
-    "description": "D.Couns., B.Couns., MCouns&Psych",
-    "imageUrl": "/og.jpeg"
+    "eyebrow": "Financial Trauma & Monetary Psychotherapy",
+    "title": "Reclaim Your Power. Heal Your Relationship With Money.",
+    "subtitle": "with Dan Lobel, D.Couns., B.Couns., MCouns&Psych",
+    "description": "Trauma-informed counselling for financial abuse recovery, economic stress, and nervous-system-aware money work.",
+    "imageUrl": "/og.png",
+    "primaryCta": {
+      "label": "Book a Session",
+      "href": "/#book"
+    },
+    "secondaryCta": {
+      "label": "Learn about the approach",
+      "href": "/monetary-psychotherapy"
+    },
+    "stats": [
+      {
+        "label": "Clients supported",
+        "value": "400+"
+      },
+      {
+        "label": "Response time",
+        "value": "< 24 hrs"
+      },
+      {
+        "label": "Session formats",
+        "value": "Telehealth · In-person · Walk & Discuss"
+      }
+    ]
   },
   "about": {
     "title": "Trauma‑Informed Financial Therapy",
@@ -69,97 +92,34 @@
   "services": [],
   "consultations": [
     {
-      "format": "Online Zoom Consultation",
-      "price": "A$160",
-      "duration": "50 minutes",
-      "mode": "Telehealth",
-      "location": "Secure Zoom link",
-      "description": "Private telehealth session when you need the safety of home.",
-      "typeId": 62493740,
-      "highlight": "Most booked"
+      "format": "Telehealth (Zoom)",
+      "price": "$160",
+      "duration": "50 mins"
     },
     {
-      "format": "Walking and Talking Therapy",
-      "price": "A$170",
-      "duration": "50 minutes",
-      "mode": "Walk & Talk",
-      "location": "Coastal or park routes",
-      "description": "Gentle movement-based therapy for nervous system regulation.",
-      "typeId": 78385138
+      "format": "In-Home Consultations",
+      "price": "$170",
+      "duration": "50 mins"
     },
     {
-      "format": "At your Home Consultation",
-      "price": "A$170",
-      "duration": "50 minutes",
-      "mode": "In-home",
-      "location": "Melbourne metro",
-      "description": "Dan travels to you for grounded support in your own environment.",
-      "typeId": 62493784
+      "format": "In-Room Consultations (St Kilda Rd)",
+      "price": "$180",
+      "duration": "50 mins"
     },
     {
-      "format": "At my Rooms Consultation",
-      "price": "A$180",
-      "duration": "50 minutes",
-      "mode": "In-rooms",
-      "location": "St Kilda Rd practice",
-      "description": "Face-to-face sessions in Dan’s calm St Kilda Road rooms.",
-      "typeId": 62493756
+      "format": "Walk & Discuss Therapy",
+      "price": "$170",
+      "duration": "50 mins"
     },
     {
-      "format": "Extended Online Zoom Consultation",
-      "price": "A$220",
-      "duration": "90 minutes",
-      "mode": "Telehealth",
-      "location": "Secure Zoom link",
-      "description": "Extra spacious telehealth session for complex processing.",
-      "typeId": 62493763,
-      "highlight": "Deeper work"
+      "format": "Extended Consultations",
+      "price": "From $220",
+      "duration": "Various"
     },
     {
-      "format": "Extended Walking & Talking Therapy",
-      "price": "A$230",
-      "duration": "90 minutes",
-      "mode": "Walk & Talk",
-      "location": "Coastal or park routes",
-      "description": "More time outdoors to settle the body and integrate insights.",
-      "typeId": 78385165
-    },
-    {
-      "format": "Extended Consultation at your Home",
-      "price": "A$250",
-      "duration": "90 minutes",
-      "mode": "In-home",
-      "location": "Melbourne metro",
-      "description": "Longer in-home visit for systemic or whole-family work.",
-      "typeId": 63864464
-    },
-    {
-      "format": "Extended Consultation at my Rooms",
-      "price": "A$270",
-      "duration": "90 minutes",
-      "mode": "In-rooms",
-      "location": "St Kilda Rd practice",
-      "description": "A deeper dive with plenty of space to regulate and plan.",
-      "typeId": 63864585
-    },
-    {
-      "format": "Couple Consultation at your Home",
-      "price": "A$300",
-      "duration": "90 minutes",
-      "mode": "Couples in-home",
-      "location": "Melbourne metro",
-      "description": "For couples needing grounded guidance without leaving home.",
-      "typeId": 65749401
-    },
-    {
-      "format": "Comprehensive Initial Assessment",
-      "price": "A$300",
-      "duration": "100 minutes",
-      "mode": "Intake",
-      "location": "Zoom or rooms",
-      "description": "A full intake for new clients to map history, safety, and goals.",
-      "typeId": 78917361,
-      "highlight": "Recommended first step"
+      "format": "Phone Consultations",
+      "price": "$160",
+      "duration": "50 mins"
     }
   ],
   "resources": [
@@ -211,5 +171,63 @@
     "enquiry": "/enquiry",
     "consent": "/consent",
     "intake": "/intake"
+  },
+  "homepage": {
+    "valueProps": [
+      {
+        "title": "Consent-led therapy",
+        "description": "Every conversation is paced by your nervous system. Disclosure is always optional and collaborative."
+      },
+      {
+        "title": "Money + emotions together",
+        "description": "We pair nervous-system safety with practical money rituals so the numbers feel less overwhelming."
+      },
+      {
+        "title": "Support between sessions",
+        "description": "Access guided check-ins, worksheets, and email reflections to keep momentum when sessions pause."
+      }
+    ],
+    "testimonials": [
+      {
+        "quote": "Dan’s presence is calm and respectful. I felt safe naming money shame for the first time.",
+        "author": "Amelia",
+        "context": "Telehealth Client"
+      },
+      {
+        "quote": "Sessions helped me rebuild self-trust and make decisions from care, not fear.",
+        "author": "Priya",
+        "context": "Melbourne"
+      },
+      {
+        "quote": "We moved at a pace my body could handle. The mix of practicality and kindness was exactly what I needed.",
+        "author": "Grace",
+        "context": "In-person Client"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Can I start with Telehealth?",
+        "answer": "Yes. Most clients begin online. You can shift to in-person or hybrid when it feels right."
+      },
+      {
+        "question": "Do I need to bring financial documents?",
+        "answer": "No. We focus on how money feels emotionally. Bring numbers only if it helps you feel grounded."
+      },
+      {
+        "question": "Is this therapy appropriate if I’m still experiencing coercion?",
+        "answer": "Absolutely. We prioritise safety planning and can liaise with other supports, with your consent."
+      }
+    ],
+    "leadMagnet": {
+      "heading": "Need a gentle starting point?",
+      "body": "Download the 5-step Financial Safety Check-in used in session to calm your system before money admin.",
+      "ctaLabel": "Get the check-in",
+      "ctaHref": "/enquiry",
+      "helper": "Requesting the guide acknowledges the consent statement in our client agreement."
+    }
+  },
+  "experiments": {
+    "showNewsletterSection": false,
+    "showLeadMagnet": false
   }
 }

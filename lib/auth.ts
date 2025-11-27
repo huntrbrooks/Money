@@ -25,7 +25,6 @@ function toBase64Url(input: ArrayBuffer | Uint8Array | string): string {
     base64 = btoa(str)
   } else {
     // Node.js fallback
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     base64 = Buffer.from(bytes).toString("base64")
   }
   return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "")
@@ -45,7 +44,6 @@ function fromBase64Url(input: string): Uint8Array {
     return view
   } else {
     // Node.js fallback returns a Uint8Array backed by ArrayBuffer (not SharedArrayBuffer)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     const nodeBuf = Buffer.from(base64, "base64")
     const buffer = new ArrayBuffer(nodeBuf.length)
     const view = new Uint8Array(buffer)

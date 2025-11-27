@@ -10,16 +10,6 @@ function parseColor(input: string): string | null {
   return named ?? null
 }
 
-function setPath<T extends object>(obj: T, path: string[], value: any) {
-  let cur: any = obj
-  for (let i = 0; i < path.length - 1; i++) {
-    const key = path[i]
-    if (!(key in cur) || typeof cur[key] !== "object" || cur[key] === null) cur[key] = {}
-    cur = cur[key]
-  }
-  cur[path[path.length - 1]] = value
-}
-
 function applyCommands(input: string, cfg: SiteConfig): SiteConfig {
   const text = input.toLowerCase()
   // theme primary color
@@ -54,28 +44,28 @@ function applyCommands(input: string, cfg: SiteConfig): SiteConfig {
     const val = `${radiusMatch[2]}${radiusMatch[3] ?? "px"}`
     cfg.theme.radius = val
   }
-  const fontSans = input.match(/sans(?:[\s-]?font)?\s*(to|=)?\s*\"?([^\"]+)\"?/i)
+  const fontSans = input.match(/sans(?:[\s-]?font)?\s*(to|=)?\s*"?([^"]+)"?/i)
   if (fontSans) {
     cfg.theme.fontSans = fontSans[2]
   }
-  const fontSerif = input.match(/serif(?:[\s-]?font)?\s*(to|=)?\s*\"?([^\"]+)\"?/i)
+  const fontSerif = input.match(/serif(?:[\s-]?font)?\s*(to|=)?\s*"?([^"]+)"?/i)
   if (fontSerif) {
     cfg.theme.fontSerif = fontSerif[2]
   }
   // hero
-  const heroTitle = input.match(/hero title\s*(to|=)\s*\"?([^\"]+)\"?/i)
+  const heroTitle = input.match(/hero title\s*(to|=)\s*"?([^"]+)"?/i)
   if (heroTitle) cfg.hero.title = heroTitle[2]
-  const heroSubtitle = input.match(/hero subtitle\s*(to|=)\s*\"?([^\"]+)\"?/i)
+  const heroSubtitle = input.match(/hero subtitle\s*(to|=)\s*"?([^"]+)"?/i)
   if (heroSubtitle) cfg.hero.subtitle = heroSubtitle[2]
-  const heroDesc = input.match(/hero (desc|description)\s*(to|=)\s*\"?([^\"]+)\"?/i)
+  const heroDesc = input.match(/hero (desc|description)\s*(to|=)\s*"?([^"]+)"?/i)
   if (heroDesc) cfg.hero.description = heroDesc[3]
-  const heroImg = input.match(/hero image\s*(to|=)\s*(https?:[^\s\"']+)/i)
+  const heroImg = input.match(/hero image\s*(to|=)\s*(https?:[^\s"']+)/i)
   if (heroImg) cfg.hero.imageUrl = heroImg[2]
   // about
-  const aboutTitle = input.match(/about title\s*(to|=)\s*\"?([^\"]+)\"?/i)
+  const aboutTitle = input.match(/about title\s*(to|=)\s*"?([^"]+)"?/i)
   if (aboutTitle) cfg.about.title = aboutTitle[2]
   // add service
-  const addService = input.match(/add service\s*\"?([^\"|]+)\"?\s*(?:price\s*([\\$A-Za-z0-9 .:/-]+))?/i)
+  const addService = input.match(/add service\s*"?([^"|]+)"?\s*(?:price\s*([$A-Za-z0-9 .:/-]+))?/i)
   if (addService) {
     cfg.services = cfg.services ?? []
     cfg.services.push({ id: Math.random().toString(36).slice(2), name: addService[1].trim(), price: (addService[2] ?? "$0").trim() })
@@ -83,24 +73,24 @@ function applyCommands(input: string, cfg: SiteConfig): SiteConfig {
   // contact
   const phone = input.match(/phone\s*(to|=)\s*([0-9 +()-]{6,})/i)
   if (phone) cfg.contact = { ...(cfg.contact ?? {}), phone: phone[2].trim() }
-  const email = input.match(/email\s*(to|=)\s*([a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,})/i)
+  const email = input.match(/email\s*(to|=)\s*([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,})/i)
   if (email) cfg.contact = { ...(cfg.contact ?? {}), email: email[2] }
   // navigation add/remove
-  const addNav = input.match(/add nav link\s*\"?([^\"|]+)\"?\s*(?:to|=)?\s*(\/[\w#\-\/]+)/i)
+  const addNav = input.match(/add nav link\s*"?([^"|]+)"?\s*(?:to|=)?\s*(\/[\w#-/]+)/i)
   if (addNav) {
     cfg.navigation = cfg.navigation ?? []
     cfg.navigation.push({ label: addNav[1].trim(), href: addNav[2] })
   }
-  const removeNav = input.match(/remove nav link\s*\"?([^\"|]+)\"?/i)
+  const removeNav = input.match(/remove nav link\s*"?([^"|]+)"?/i)
   if (removeNav && cfg.navigation) {
     cfg.navigation = cfg.navigation.filter((l) => l.label.toLowerCase() !== removeNav[1].trim().toLowerCase())
   }
   // seo
-  const seoTitle = input.match(/seo title\s*(to|=)\s*\"?([^\"]+)\"?/i)
+  const seoTitle = input.match(/seo title\s*(to|=)\s*"?([^"]+)"?/i)
   if (seoTitle) cfg.seo = { ...(cfg.seo ?? {}), title: seoTitle[2] }
-  const seoDesc = input.match(/seo desc(?:ription)?\s*(to|=)\s*\"?([^\"]+)\"?/i)
+  const seoDesc = input.match(/seo desc(?:ription)?\s*(to|=)\s*"?([^"]+)"?/i)
   if (seoDesc) cfg.seo = { ...(cfg.seo ?? {}), description: seoDesc[2] }
-  const og = input.match(/og image\s*(to|=)\s*(https?:[^\s\"']+)/i)
+  const og = input.match(/og image\s*(to|=)\s*(https?:[^\s"']+)/i)
   if (og) cfg.seo = { ...(cfg.seo ?? {}), ogImage: og[2] }
   return cfg
 }

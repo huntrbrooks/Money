@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { readSiteConfig } from "@/lib/config"
+import { sendLeadToCrm } from "@/lib/crm"
 
 type IntakePayload = {
   firstName?: string
@@ -229,6 +230,13 @@ async function sendViaSmtp(to: string, replyTo: string | undefined, data: Intake
   return { ok: true as const }
 }
 
+function resolveErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error && error.message) {
+    return error.message
+  }
+  return fallback
+}
+
 export async function POST(req: Request) {
   const raw = (await req.json().catch(() => null)) as IntakePayload | null
   if (!raw) return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
@@ -289,15 +297,17 @@ export async function POST(req: Request) {
   // Try SMTP first if configured, otherwise fall back to Resend, otherwise log in dev
   let result: { ok: true } | { ok: false; error: string } = { ok: false, error: "No email provider configured" }
   if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && toAddress) {
-    result = await sendViaSmtp(toAddress, data.email, data).catch((e: any) => ({
-      ok: false as const,
-      error: e?.message || "SMTP error",
-    }))
+    try {
+      result = await sendViaSmtp(toAddress, data.email, data)
+    } catch (error) {
+      result = { ok: false as const, error: resolveErrorMessage(error, "SMTP error") }
+    }
   } else if (process.env.RESEND_API_KEY && toAddress) {
-    result = await sendViaResend(toAddress, data.email, data).catch((e: any) => ({
-      ok: false as const,
-      error: e?.message || "Resend error",
-    }))
+    try {
+      result = await sendViaResend(toAddress, data.email, data)
+    } catch (error) {
+      result = { ok: false as const, error: resolveErrorMessage(error, "Resend error") }
+    }
   } else {
     console.log("[intake] Dev mode - email not sent. Payload:", data)
     return NextResponse.json({ ok: true, dev: true })
@@ -306,6 +316,14 @@ export async function POST(req: Request) {
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 500 })
   }
+  void sendLeadToCrm({
+    type: "intake",
+    email: data.email!,
+    name: [data.firstName, data.lastName].filter(Boolean).join(" "),
+    phone: data.phone,
+    tags: ["intake"],
+    payload: { mainReason: data.mainReason },
+  })
   return NextResponse.json({ ok: true })
 }
 

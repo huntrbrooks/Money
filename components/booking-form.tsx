@@ -86,9 +86,10 @@ export function BookingForm({ consultations = [] }: BookingFormProps) {
       setEmail('')
       setPhone('')
       setNotes('')
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : null
       setSubmitted('error')
-      setErrorMessage(err?.message ?? 'Something went wrong submitting your request.')
+      setErrorMessage(message ?? 'Something went wrong submitting your request.')
     } finally {
       setSubmitting(false)
     }
@@ -246,6 +247,5 @@ export function BookingForm({ consultations = [] }: BookingFormProps) {
     </form>
   )
 }
-
 
 

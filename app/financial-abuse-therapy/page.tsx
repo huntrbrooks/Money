@@ -1,76 +1,46 @@
+import type { Metadata } from "next"
 import Link from "next/link"
+import Script from "next/script"
+import { readSiteConfig } from "@/lib/config"
+import { buildFaqSchema, buildPageMetadata, buildServiceSchema } from "@/lib/seo"
 
-export const metadata = {
-  title: "Financial Abuse Therapy | Trauma‑Informed Counselling — Melbourne & Telehealth",
-  description:
-    "Gentle, trauma‑informed therapy for financial abuse and economic control. Restore safety, dignity, and practical confidence. Melbourne and Telehealth across Australia.",
-  robots: { index: true, follow: true },
-  alternates: {
-    canonical: "https://financialabusetherapist.com/financial-abuse-therapy",
-  },
-  openGraph: {
-    title: "Financial Abuse Therapy | Trauma‑Informed Counselling",
-    description:
-      "A consent‑led, nervous‑system‑aware approach to healing from financial abuse and control.",
-    type: "website",
-    url: "https://financialabusetherapist.com/financial-abuse-therapy",
-    siteName: "The Financial Therapist",
-    locale: "en_AU",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Financial Abuse Therapy | Trauma‑Informed Counselling",
-    description:
-      "A consent‑led, nervous‑system‑aware approach to healing from financial abuse and control.",
-  },
+const PAGE_TITLE = "Financial Abuse Therapy | Trauma-Informed Counselling — Melbourne & Telehealth"
+const PAGE_DESCRIPTION =
+  "Gentle, trauma-informed therapy for financial abuse and economic control. Restore safety, dignity, and practical confidence. Melbourne and Telehealth across Australia."
+const PAGE_KEYWORDS = ["financial abuse therapy", "economic abuse counselling", "telehealth trauma therapy"]
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+    path: "/financial-abuse-therapy",
+    keywords: PAGE_KEYWORDS,
+  })
 }
 
-export default function FinancialAbuseTherapyPage() {
-  const serviceJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Service",
+export default async function FinancialAbuseTherapyPage() {
+  const config = await readSiteConfig()
+  const serviceJsonLd = buildServiceSchema(config, {
     serviceType: "Financial abuse therapy",
-    provider: {
-      "@type": "Organization",
-      name: "The Financial Therapist",
-      url: "https://financialabusetherapist.com",
+    description: PAGE_DESCRIPTION,
+    url: "/bookings",
+  })
+  const faqJsonLd = buildFaqSchema([
+    {
+      question: "What happens in the first session?",
+      answer:
+        "We focus on safety, consent, and pacing. You set boundaries on what to share. We outline gentle, practical next steps that respect your situation.",
     },
-    areaServed: ["Melbourne", "Victoria", "Australia"],
-    availableChannel: {
-      "@type": "ServiceChannel",
-      serviceUrl: "https://financialabusetherapist.com/bookings",
+    {
+      question: "Is this confidential?",
+      answer:
+        "Yes. Confidentiality is respected within legal and ethical limits. If there is risk of harm, we discuss appropriate safety steps.",
     },
-  }
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "What happens in the first session?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "We focus on safety, consent, and pacing. You set boundaries on what to share. We outline gentle, practical next steps that respect your situation.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Is this confidential?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Yes. Confidentiality is respected within legal and ethical limits. If there is risk of harm, we discuss appropriate safety steps.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Do you offer Telehealth?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Yes — Telehealth across Australia, as well as in‑person sessions in Melbourne.",
-        },
-      },
-    ],
-  }
+    {
+      question: "Do you offer Telehealth?",
+      answer: "Yes — Telehealth across Australia, as well as in-person sessions in Melbourne.",
+    },
+  ])
   return (
     <div className="container mx-auto px-4 py-16">
       <article className="max-w-3xl mx-auto space-y-8">
@@ -129,12 +99,16 @@ export default function FinancialAbuseTherapyPage() {
           </ul>
         </nav>
       </article>
-      <script
+      <Script
+        id="financial-abuse-therapy-service"
         type="application/ld+json"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
       />
-      <script
+      <Script
+        id="financial-abuse-therapy-faq"
         type="application/ld+json"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
     </div>

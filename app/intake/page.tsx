@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 import { Navigation, Footer } from '@/components/navigation'
 import { Input } from '@/components/ui/input'
@@ -92,6 +93,20 @@ export default function IntakePage() {
     recentRecreationalDrugUse: '',
     mainReason: '',
   })
+  const steps = [
+    {
+      label: 'Contact & logistics',
+      complete: Boolean(form.firstName && form.email && form.phone && form.date),
+    },
+    {
+      label: 'Health snapshot',
+      complete: Boolean(form.seenCounsellor && form.onMedication && form.generalHealth),
+    },
+    {
+      label: 'Goals & focus',
+      complete: form.mainReason.length > 10,
+    },
+  ]
 
   const requiredOk =
     form.firstName.trim() &&
@@ -174,9 +189,10 @@ export default function IntakePage() {
         recentRecreationalDrugUse: '',
         mainReason: '',
       })
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : null
       setSubmitted('error')
-      setErrorMessage(err?.message ?? 'Something went wrong sending your intake form.')
+      setErrorMessage(message ?? 'Something went wrong sending your intake form.')
     } finally {
       setSubmitting(false)
     }
@@ -194,6 +210,26 @@ export default function IntakePage() {
                 <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">Intake Form</h1>
                 <p className="text-[var(--primary)] mt-2">Please complete this form before your first appointment.</p>
               </div>
+              <div className="mb-8 grid gap-4 sm:grid-cols-3">
+                {steps.map((step, idx) => (
+                  <div
+                    key={step.label}
+                    className={`rounded-2xl border p-4 text-left ${
+                      step.complete ? 'border-[var(--accent)] bg-[var(--accent)]/10' : 'border-[var(--secondary)] bg-white'
+                    }`}
+                  >
+                    <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary)]/80">Step {idx + 1}</p>
+                    <p className="font-semibold text-[var(--foreground)]">{step.label}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm text-[var(--primary)] pb-4">
+                Need a pause? Take a break and return when you feel ready. Grounding resources live in the{' '}
+                <Link href="/client-care" className="underline">
+                  Client Care Hub
+                </Link>
+                .
+              </p>
 
               <form onSubmit={handleSubmit} className="bg-white border border-[var(--secondary)] rounded-xl p-6 md:p-10 space-y-8">
                 <div className="space-y-1">

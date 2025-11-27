@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, type CSSProperties } from "react"
 import type { CrisisResource } from "@/lib/config"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -23,14 +23,13 @@ export function ResourcesCarousel({ resources, durationSeconds = 45 }: Resources
   function getFallbackLogo(resource: CrisisResource): string {
     try {
       if (resource.website) {
-        const url = new URL(resource.website)
-        const domain = url.hostname.replace(/^www\./, "")
-        return `/Logo.webp`
+        new URL(resource.website)
+        return `/logo.webp`
       }
     } catch {
       // ignore parse errors
     }
-    return "/Logo.webp"
+    return "/logo.webp"
   }
 
   return (
@@ -38,12 +37,7 @@ export function ResourcesCarousel({ resources, durationSeconds = 45 }: Resources
       <div className="relative overflow-hidden py-6">
         <div
           className="marquee"
-          style={
-            {
-              // @ts-ignore custom property consumed by styled-jsx
-              "--duration": `${durationSeconds}s`,
-            } as any
-          }
+          style={{ "--duration": `${durationSeconds}s` } as CSSProperties & { "--duration": string }}
         >
           {marqueeItems.map((r, idx) => (
             <button

@@ -1,71 +1,46 @@
+import type { Metadata } from "next"
 import Link from "next/link"
+import Script from "next/script"
+import { buildArticleSchema, buildFaqSchema, buildPageMetadata } from "@/lib/seo"
 
-export const metadata = {
-  title: "Financial Abuse | Signs, Safety, and Support — Financial Abuse Therapist",
-  description:
-    "Understand financial abuse: the signs, effects, and how trauma‑informed therapy supports safety, self‑trust, and recovery. Melbourne and Telehealth (Australia).",
-  robots: { index: true, follow: true },
-  alternates: {
-    canonical: "https://financialabusetherapist.com/financial-abuse",
-  },
-  openGraph: {
-    title: "Financial Abuse | Signs, Safety, and Support",
-    description:
-      "Recognise financial abuse and learn how trauma‑informed therapy supports safety, dignity and choice.",
+const PAGE_TITLE = "Financial Abuse | Signs, Safety, and Support — Financial Abuse Therapist"
+const PAGE_DESCRIPTION =
+  "Understand financial abuse: the signs, effects, and how trauma-informed therapy supports safety, self-trust, and recovery. Melbourne and Telehealth (Australia)."
+const PAGE_KEYWORDS = ["financial abuse signs", "economic abuse support", "family violence finances"]
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+    path: "/financial-abuse",
+    keywords: PAGE_KEYWORDS,
     type: "article",
-    url: "https://financialabusetherapist.com/financial-abuse",
-    siteName: "The Financial Therapist",
-    locale: "en_AU",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Financial Abuse | Signs, Safety, and Support",
-    description:
-      "Recognise financial abuse and learn how trauma‑informed therapy supports safety, dignity and choice.",
-  },
+  })
 }
 
 export default function FinancialAbusePage() {
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: "Financial Abuse — Signs, Safety, and Support",
-    description:
-      "A trauma‑informed guide to financial abuse: signs, impacts, and pathways to recovery.",
-    author: { "@type": "Person", name: "Dan Lobel" },
-    publisher: { "@type": "Organization", name: "The Financial Therapist" },
-    mainEntityOfPage: "https://financialabusetherapist.com/financial-abuse",
-  }
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "What is financial abuse?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Financial abuse is a pattern of control that restricts access to money, employment, information, or independence. It often co‑occurs with other forms of coercion.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Is financial abuse a form of family violence?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Yes. In Australia, financial abuse is recognised as a form of family and domestic violence. Your safety and consent are central in any support plan.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "How can therapy help with financial abuse?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Therapy focuses on safety, pacing, and self‑trust. We work with the nervous system, clarify boundaries, and develop practical next steps at a pace that respects your situation.",
-        },
-      },
-    ],
-  }
+  const articleJsonLd = buildArticleSchema({
+    title: "Financial Abuse — Signs, Safety, and Support",
+    description: PAGE_DESCRIPTION,
+    slug: "/financial-abuse",
+  })
+  const faqJsonLd = buildFaqSchema([
+    {
+      question: "What is financial abuse?",
+      answer:
+        "Financial abuse is a pattern of control that restricts access to money, employment, information, or independence. It often co-occurs with other forms of coercion.",
+    },
+    {
+      question: "Is financial abuse a form of family violence?",
+      answer:
+        "Yes. In Australia, financial abuse is recognised as a form of family and domestic violence. Your safety and consent are central in any support plan.",
+    },
+    {
+      question: "How can therapy help with financial abuse?",
+      answer:
+        "Therapy focuses on safety, pacing, and self-trust. We work with the nervous system, clarify boundaries, and develop practical next steps at a pace that respects your situation.",
+    },
+  ])
   return (
     <div className="container mx-auto px-4 py-16">
       <article className="max-w-3xl mx-auto space-y-8">
@@ -132,12 +107,16 @@ export default function FinancialAbusePage() {
           </ul>
         </nav>
       </article>
-      <script
+      <Script
+        id="financial-abuse-article"
         type="application/ld+json"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <script
+      <Script
+        id="financial-abuse-faq"
         type="application/ld+json"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
     </div>

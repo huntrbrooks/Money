@@ -1,51 +1,34 @@
+import type { Metadata } from "next"
 import Link from "next/link"
+import Script from "next/script"
+import { readSiteConfig } from "@/lib/config"
+import { buildPageMetadata, buildPersonSchema } from "@/lib/seo"
 
-export const metadata = {
-  title: "Financial Abuse Therapist | The Financial Therapist — Dan Lobel",
-  description:
-    "Work with a Financial Abuse Therapist. Trauma‑informed counselling focused on safety, dignity, and practical confidence. Melbourne & Telehealth.",
-  robots: { index: true, follow: true },
-  alternates: {
-    canonical: "https://financialabusetherapist.com/financial-abuse-therapist",
-  },
-  openGraph: {
-    title: "Financial Abuse Therapist | The Financial Therapist — Dan Lobel",
-    description:
-      "Trauma‑informed support for financial abuse recovery. Melbourne and Telehealth across Australia.",
+const PAGE_TITLE = "Financial Abuse Therapist | The Financial Therapist — Dan Lobel"
+const PAGE_DESCRIPTION =
+  "Work with a Financial Abuse Therapist. Trauma-informed counselling focused on safety, dignity, and practical confidence. Melbourne & Telehealth."
+const PAGE_KEYWORDS = ["financial abuse therapist", "financial trauma counsellor", "melbourne telehealth therapist"]
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+    path: "/financial-abuse-therapist",
+    keywords: PAGE_KEYWORDS,
     type: "profile",
-    url: "https://financialabusetherapist.com/financial-abuse-therapist",
-    siteName: "The Financial Therapist",
-    locale: "en_AU",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Financial Abuse Therapist | The Financial Therapist — Dan Lobel",
-    description:
-      "Trauma‑informed support for financial abuse recovery. Melbourne & Telehealth.",
-  },
+  })
 }
 
-export default function FinancialAbuseTherapistPage() {
-  const personJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: "Dan Lobel",
-    jobTitle: "Counsellor",
-    description: "Financial Abuse Therapist — trauma‑informed counselling and monetary psychotherapy.",
-    url: "https://financialabusetherapist.com/financial-abuse-therapist",
-    image: "/Dan.png",
-    telephone: "+61 488 222 137",
-    worksFor: {
-      "@type": "Organization",
-      name: "The Financial Therapist",
-      url: "https://financialabusetherapist.com",
-    },
-    sameAs: [
-      "https://www.facebook.com/the.melbourne.counsellor/",
-      "https://www.instagram.com/the.melbourne.counsellor/#",
-      "https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/",
-    ],
-  }
+export default async function FinancialAbuseTherapistPage() {
+  const config = await readSiteConfig()
+  const personJsonLd = buildPersonSchema(config, {
+    name: config.brand?.subtitle ?? "Dan Lobel",
+    description: "Financial Abuse Therapist — trauma-informed counselling and monetary psychotherapy.",
+    jobTitle: "Counsellor & Monetary Psychotherapist",
+    image: config.hero.imageUrl || "/Dan.png",
+    url: "/financial-abuse-therapist",
+    telephone: config.contact?.phone,
+  })
   return (
     <div className="container mx-auto px-4 py-16">
       <article className="max-w-3xl mx-auto space-y-8">
@@ -104,8 +87,10 @@ export default function FinancialAbuseTherapistPage() {
           </ul>
         </nav>
       </article>
-      <script
+      <Script
+        id="financial-abuse-therapist-person"
         type="application/ld+json"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
       />
     </div>

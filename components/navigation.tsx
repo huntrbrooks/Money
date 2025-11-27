@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Phone, Mail, Facebook, Instagram, Linkedin } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { LogoMark } from "@/components/logo"
 
 type NavLink = { label: string; href: string }
 type Config = {
@@ -15,6 +15,7 @@ type Config = {
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cfg, setCfg] = useState<Config>({})
+  const brandLogo = cfg.brand?.headerBannerUrl || cfg.brand?.logoUrl || "/Logo.png"
 
   useEffect(() => {
     fetch("/api/site-config")
@@ -23,93 +24,95 @@ export function Navigation() {
       .catch(() => {})
   }, [])
 
-  const links =
-    cfg.navigation ?? [
-      { label: "Home", href: "/" },
-      { label: "About", href: "/about-dan" },
-      { label: "Monetary Psychotherapy", href: "/monetary-psychotherapy" },
-      { label: "Services", href: "/#services" },
-      { label: "Contact", href: "/#contact" },
-    ]
+  const links = cfg.navigation ?? [
+    { label: "Home", href: "/" },
+    { label: "About", href: "/#about" },
+    { label: "Services", href: "/#services" },
+    { label: "Contact", href: "/#contact" },
+  ]
   const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
-  const logoSrc = "/LOGO.png"
-  const phone = cfg.contact?.phone ?? "0467 477 786"
-  const phoneHref = phone.replace(/\s+/g, "")
-  const email = cfg.contact?.email ?? "dan@themelbournecounsellor.com.au"
+  const headerBannerUrl = cfg.brand?.headerBannerUrl
 
   return (
-    <header className="relative z-50 border-b border-white/60 shadow-[0_18px_60px_rgba(36,68,82,0.18)]">
+    <nav className="relative z-50 overflow-visible">
       <div
-        className="relative"
+        className="relative overflow-visible"
         style={{
-          background: "linear-gradient(180deg, #cbd8c1 0%, #c5dce9 55%, #dce7df 100%)",
+          background:
+            "linear-gradient(180deg, #929d5b 0%, rgba(146,157,91,0.85) 18%, rgba(108,164,172,0.92) 58%, #6ca4ac 95%)",
         }}
       >
-        <div className="container mx-auto px-6 md:px-8 py-8 md:py-10">
-          <div className="hidden md:flex items-center justify-between text-sm tracking-[0.2em] uppercase text-white/85">
-            <span>Financial Trauma & Monetary Psychotherapy</span>
-            <div className="flex items-center gap-6 tracking-[0.1em] text-white/90">
-              <a href={`tel:${phoneHref}`} className="no-underline hover:text-white">
-                {phone}
-              </a>
-              <a href={`mailto:${email}`} className="no-underline hover:text-white">
-                {email}
-              </a>
+        <div className="relative z-10">
+          <div className="container mx-auto px-6 md:px-8 relative">
+            <div className="flex items-center justify-center min-h-[7.5rem] sm:min-h-[9rem] md:min-h-[11rem] py-4 md:py-6">
+              <Link href="/" aria-label="Home" className="inline-flex items-center justify-center">
+                {headerBannerUrl || brandLogo ? (
+                  <img
+                    src={headerBannerUrl || brandLogo}
+                    alt={brandName}
+                    className="h-20 sm:h-28 md:h-40 lg:h-44 w-auto object-contain drop-shadow-[0_18px_35px_rgba(32,56,91,0.28)]"
+                  />
+                ) : (
+                  <span className="font-serif whitespace-nowrap text-[clamp(1.75rem,7vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
+                    {brandName}
+                  </span>
+                )}
+              </Link>
             </div>
-          </div>
-          <div className="relative mt-6 flex items-center justify-center">
-            <Link href="/" aria-label="Home" className="inline-flex justify-center">
-              <span className="inline-flex items-center justify-center rounded-full border-[5px] border-[#1f3254] bg-white/90 px-6 py-4 shadow-[0_18px_35px_rgba(28,55,66,0.35)]">
-                <img src={logoSrc} alt={brandName} className="h-20 w-auto object-contain md:h-24 lg:h-28" />
-              </span>
-            </Link>
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 md:right-2">
+            <div className="absolute right-4 top-6 sm:right-6 md:right-4 md:top-1/2 md:-translate-y-1/2 flex items-center justify-end z-20">
               <div className="relative">
                 <button
                   onClick={() => setIsMenuOpen((o) => !o)}
-                  className="flex flex-col items-center gap-1 rounded-full border-2 border-white/70 bg-[#1f3254]/40 px-5 py-4 text-white transition hover:bg-[#1f3254]/70"
+                  className="flex flex-col items-center justify-center gap-1.5 w-14 h-14 rounded-full border border-white/40 text-white bg-[#6ca4ac]/90 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.2)] transition-colors"
                   aria-expanded={isMenuOpen}
                   aria-haspopup="menu"
-                  aria-label="Open navigation menu"
+                  aria-label="Toggle navigation menu"
                 >
-                  {[0, 1, 2].map((i) => (
-                    <span key={i} className="block h-0.5 w-7 rounded-full bg-current" aria-hidden="true" />
+                  <span className="sr-only">Toggle navigation menu</span>
+                  {[0, 1, 2].map((idx) => (
+                    <span key={idx} className="block w-7 h-0.5 bg-current rounded-full" />
                   ))}
                 </button>
                 {isMenuOpen && (
                   <div
                     role="menu"
-                    className="absolute right-0 mt-3 w-64 rounded-3xl border border-white/80 bg-white/95 p-3 shadow-2xl ring-1 ring-black/5 backdrop-blur"
+                    className="absolute right-0 mt-3 w-56 rounded-2xl bg-[#6ca4ac] text-white shadow-[0_20px_35px_rgba(32,56,91,0.15)] ring-1 ring-white/25 overflow-hidden"
                   >
-                    {links.map((l) => (
-                      <Link
-                        key={l.href}
-                        href={l.href}
-                        onClick={() => setIsMenuOpen(false)}
-                        className="block rounded-2xl px-4 py-2 text-[#2c4752] transition hover:bg-[#f1f5ef]"
-                      >
-                        {l.label}
-                      </Link>
-                    ))}
-                    <Link
-                      href="/#book"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="mt-1 block rounded-2xl bg-[#7b8c45] px-4 py-2 text-center font-semibold text-white transition hover:bg-[#6f7d3c]"
-                    >
-                      Book Appointment
-                    </Link>
+                    <div className="py-1">
+                      {links.map((l) => (
+                        <Link
+                          key={l.href}
+                          href={l.href}
+                          onClick={() => setIsMenuOpen(false)}
+                          className="block px-4 py-2 text-white/90 hover:bg-white/10 transition-colors"
+                        >
+                          {l.label}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
             </div>
           </div>
         </div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-[-1px] h-16"
+          style={{
+            background: "linear-gradient(180deg, rgba(108,164,172,0.65) 0%, rgba(108,164,172,0.9) 55%, #6ca4ac 100%)",
+          }}
+        />
       </div>
-    </header>
+    </nav>
   )
 }
 
-export function Footer() {
+type FooterProps = {
+  backgroundColor?: string
+}
+
+export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
   const [cfg, setCfg] = useState<Config>({})
   useEffect(() => {
     fetch("/api/site-config")
@@ -117,151 +120,118 @@ export function Footer() {
       .then((d) => setCfg(d))
       .catch(() => {})
   }, [])
-
   const links = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
-  const brandName = cfg.brand?.name ?? "Financial Abuse Therapist"
-  const footerLogoSrc = cfg.brand?.logoUrl || "/LOGO.png"
-  const defaultTagline =
-    "Trauma‑informed care with safety, dignity, and choice. Specialised support for financial trauma, monetary psychotherapy, and nervous system regulation."
-  const tagline = cfg.brand?.tagline ?? defaultTagline
-  const quickLinks = [
-    ...links,
-    { label: "Book Appointment", href: "/#book" },
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Terms of Service", href: "/terms" },
-  ]
-  const dedupedLinks = quickLinks.filter(
-    (link, index, self) => index === self.findIndex((l) => l.href === link.href && l.label === link.label),
-  )
-  const phone = cfg.contact?.phone ?? "+61 488 222 137"
-  const email = cfg.contact?.email ?? "dan@themelbournecounsellor.com.au"
-  const phoneHref = phone.replace(/\s+/g, "")
-  const sectionLabelClass = "text-[0.65rem] uppercase tracking-[0.4em] text-[#78886c] font-semibold"
-  const navLinkClass =
-    "block rounded-2xl border border-transparent bg-white/70 px-4 py-2 text-[#1f2d38]/90 no-underline transition hover:border-[#7b8c45] hover:bg-white"
-  const socialButtonClass =
-    "flex h-12 w-12 items-center justify-center rounded-2xl border border-white/70 bg-white/85 text-[#4c5f69] shadow-sm transition hover:-translate-y-0.5 hover:text-[#1d2f3a]"
-  const pillLinkClass =
-    "inline-flex items-center gap-3 rounded-full border border-[#c3d1ba] px-5 py-2 text-sm font-medium text-[#3a4c46] no-underline hover:border-[#7b8c45] hover:text-[#1f2d28] transition"
 
   return (
-    <footer className="mt-0 bg-[#dfe7f0] text-[#1d2f3a]">
-      <div className="container mx-auto px-6 md:px-8 py-20">
-        <div className="grid gap-12 lg:grid-cols-[1.35fr,0.75fr]">
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <img src={footerLogoSrc} alt={`${brandName} logo`} className="h-16 w-auto object-contain" />
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#6a7b63]">{brandName}</p>
-              <p className="font-serif text-3xl leading-tight text-[#1f2f3a]">
-                {cfg.brand?.subtitle ?? "Financial trauma therapy rooted in consent and pacing"}
-              </p>
-              <p className="text-lg text-[#4d5b54]">{tagline}</p>
+    <footer
+      className="text-[var(--foreground)]"
+      style={{ backgroundColor, backgroundImage: "none" }}
+    >
+      {/* Main Footer */}
+      <div className="container mx-auto px-6 md:px-8 py-16">
+        <div className="grid gap-12 md:grid-cols-3 max-w-6xl mx-auto">
+          {/* Brand */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              {cfg.brand?.logoUrl ? (
+                <img
+                  src={cfg.brand.logoUrl}
+                  alt={`${cfg.brand?.name ?? "Site"} logo`}
+                  className="h-10 w-10 object-contain"
+                />
+              ) : (
+                <LogoMark className="h-10 w-10 text-[var(--primary)]" title={`${cfg.brand?.name ?? "Site"} logo`} />
+              )}
+              <h3 className="font-serif text-3xl font-light">{cfg.brand?.name ?? "The Financial Therapist"}</h3>
             </div>
+            <p className="text-[var(--primary)]/80 leading-relaxed">
+              {cfg.brand?.tagline ??
+                "Trauma‑informed counselling specialising in financial trauma and monetary psychotherapy. A safe, gender‑aware and inclusive space."}
+            </p>
+          </div>
 
-            <div className="flex flex-wrap gap-4">
-              <Button
-                asChild
-                size="lg"
-                className="h-12 rounded-full bg-[#7b8c45] px-8 text-base font-medium text-white shadow-lg hover:bg-[#6c7c39]"
-              >
-                <Link href="/#book">Book a confidential consultation</Link>
-              </Button>
-              <a href={`tel:${phoneHref}`} className={pillLinkClass}>
-                <Phone className="h-4 w-4" />
-                {phone}
-              </a>
-              <a href={`mailto:${email}`} className={pillLinkClass}>
-                <Mail className="h-4 w-4" />
-                {email}
-              </a>
-            </div>
-
-            <div className="grid gap-8 md:grid-cols-2">
-              <div className="space-y-3">
-                <p className={sectionLabelClass}>Practice Details</p>
-                <div className="space-y-1.5 text-lg text-[#485650]">
-                  <p>Unit 503, 666 Chapel Street</p>
-                  <p>South Yarra VIC 3141</p>
-                  <p>In-person & telehealth across Australia</p>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <p className={sectionLabelClass}>Availability</p>
-                <div className="space-y-1.5 text-lg text-[#485650]">
-                  <p>Monday – Friday · 10:00am – 7:00pm</p>
-                  <p>Saturday appointments by request</p>
-                  <p>Consent-led, paced sessions</p>
-                </div>
-              </div>
+          {/* Quick Links */}
+          <div className="space-y-4">
+            <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Quick Links</h4>
+            <div className="flex flex-col gap-3">
+              {links.map((l) => (
+                <Link key={l.href} href={l.href} className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
+                  {l.label}
+                </Link>
+              ))}
+              <Link href="/#book" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
+                Book Appointment
+              </Link>
+              <Link href="/privacy" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
+                Terms of Service
+              </Link>
             </div>
           </div>
 
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <p className={sectionLabelClass}>Quick Links</p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {dedupedLinks.map((l) => (
-                  <Link key={`${l.href}-${l.label}`} href={l.href} className={navLinkClass}>
-                    {l.label}
-                  </Link>
-                ))}
-              </div>
+          {/* Contact */}
+          <div className="space-y-4">
+            <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Contact</h4>
+            <div className="space-y-3">
+              {cfg.contact?.phone && (
+                <a
+                  href={`tel:${cfg.contact.phone.replace(/\s+/g, "")}`}
+                  className="flex items-center gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                >
+                  <div className="w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Phone className="w-4 h-4 text-white" />
+                  </div>
+                  <span>{cfg.contact.phone}</span>
+                </a>
+              )}
+              {cfg.contact?.email && (
+                <a
+                  href={`mailto:${cfg.contact.email}`}
+                  className="flex items-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                >
+                  <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <Mail className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="break-all pt-2">{cfg.contact.email}</span>
+                </a>
+              )}
             </div>
 
+            {/* Social */}
             <div className="space-y-4">
-              <p className={sectionLabelClass}>Follow Dan</p>
-              <div className="flex flex-wrap items-center gap-3 text-[#5b7484]">
-                <a
-                  href="https://www.facebook.com/the.melbourne.counsellor/"
-                  aria-label="Visit Facebook"
-                  target="_blank"
-                  rel="noreferrer"
-                  className={socialButtonClass}
-                >
-                  <Facebook className="w-5 h-5" />
+              <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Follow Dan</h4>
+              <div className="flex items-center gap-4">
+                <a href="https://www.facebook.com/the.melbourne.counsellor/" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
+                  <Facebook className="w-5 h-5 text-[var(--primary)]" />
                 </a>
-                <a
-                  href="https://www.instagram.com/the.melbourne.counsellor/#"
-                  aria-label="Visit Instagram"
-                  target="_blank"
-                  rel="noreferrer"
-                  className={socialButtonClass}
-                >
-                  <Instagram className="w-5 h-5" />
+                <a href="https://www.instagram.com/the.melbourne.counsellor/#" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
+                  <Instagram className="w-5 h-5 text-[var(--primary)]" />
                 </a>
-                <a
-                  href="https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/"
-                  aria-label="Visit LinkedIn"
-                  target="_blank"
-                  rel="noreferrer"
-                  className={socialButtonClass}
-                >
-                  <Linkedin className="w-5 h-5" />
+                <a href="https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/" target="_blank" rel="noreferrer" className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition">
+                  <Linkedin className="w-5 h-5 text-[var(--primary)]" />
                 </a>
               </div>
-            </div>
-
-            <div className="rounded-2xl border border-white/60 bg-white/80 p-5 text-sm leading-relaxed text-[#56635c]">
-              <p>
-                We acknowledge the Wurundjeri people of the Kulin Nation as the Traditional Custodians of the land on
-                which we work, and we pay our respects to Elders past, present, and emerging.
-              </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-white/60 bg-[#cfd9e6]">
-        <div className="container mx-auto px-6 md:px-8 py-8 text-center text-sm text-[#4b5c66] space-y-3">
-          <p>© 2025 {brandName}. All rights reserved.</p>
-          <p>The Financial Therapist Pty. Ltd. atf The Financial Therapist Trust.</p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/privacy" className="no-underline text-[#4D6377] hover:text-[#1F385B]">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="no-underline text-[#4D6377] hover:text-[#1F385B]">
-              Terms of Service
-            </Link>
+      {/* Bottom Bar */}
+      <div className="border-t border-[var(--secondary)]" style={{ backgroundColor, backgroundImage: "none" }}>
+        <div className="container mx-auto px-6 md:px-8 py-8">
+          <div className="text-center space-y-3 text-sm text-[var(--primary)]/70 max-w-4xl mx-auto">
+            <p>© 2025 The Financial Therapist. All rights reserved.</p>
+            <p>The Financial Therapist Pty. Ltd. atf The Financial Therapist Trust.</p>
+            <p className="leading-relaxed">
+              The Financial Therapist acknowledges the Wurundjeri people who are the Traditional Custodians of the land
+              on which we work. We pay our respects to Elders past, present and emerging.
+            </p>
+            <p className="space-x-4">
+              <Link href="/privacy" className="hover:text-[var(--foreground)]">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-[var(--foreground)]">Terms of Service</Link>
+            </p>
           </div>
         </div>
       </div>

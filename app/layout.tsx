@@ -1,20 +1,17 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { readSiteConfig } from "@/lib/config"
-
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
-const _cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-})
+import { SITE_URL } from "@/lib/seo"
+import { AnalyticsScripts } from "@/components/analytics-scripts"
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://financialabusetherapist.com"),
-  title: "Financial Abuse Therapist | Financial Trauma & Monetary Psychotherapy — Dan Lobel",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Financial Abuse Therapist | Financial Trauma & Monetary Psychotherapy — Dan Lobel",
+    template: "%s | Financial Abuse Therapist",
+  },
   description:
     "Trauma‑informed counselling in Melbourne focused on financial abuse recovery, financial trauma, money anxiety and monetary psychotherapy. Safe, gender‑aware and inclusive care.",
   keywords: [
@@ -30,7 +27,7 @@ export const metadata: Metadata = {
   generator: "nextjs",
   openGraph: {
     type: "website",
-    url: "https://financialabusetherapist.com/",
+    url: SITE_URL,
     title: "Financial Abuse Therapist | Financial Trauma & Monetary Psychotherapy — Dan Lobel",
     description:
       "Trauma‑informed counselling in Melbourne focused on financial abuse recovery, financial trauma, money anxiety and monetary psychotherapy.",
@@ -51,24 +48,16 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      maxSnippet: -1,
-      maxImagePreview: "large",
-      maxVideoPreview: -1,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
     },
   },
   icons: {
-    icon: [
-      { url: "/favicon_io/favicon-32x32.png", type: "image/png", sizes: "32x32" },
-      { url: "/favicon_io/favicon-16x16.png", type: "image/png", sizes: "16x16" },
-      { url: "/favicon_io/favicon.ico" },
-    ],
-    shortcut: [{ url: "/favicon_io/favicon.ico" }],
-    apple: [{ url: "/favicon_io/apple-touch-icon.png", sizes: "180x180" }],
-    other: [
-      { rel: "android-chrome-192x192", url: "/favicon_io/android-chrome-192x192.png" },
-      { rel: "android-chrome-512x512", url: "/favicon_io/android-chrome-512x512.png" },
-      { rel: "mask-icon", url: "/safari-pinned-tab.svg" },
-    ],
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    other: [{ rel: "mask-icon", url: "/safari-pinned-tab.svg" }],
   },
 }
 
@@ -96,26 +85,16 @@ export default async function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="theme-color" content={config.theme.background} />
-        <meta name="description" content={config.seo?.description || ""} />
-        <meta property="og:title" content={config.seo?.title || "Financial Abuse Therapist — Dan Lobel"} />
-        <meta property="og:description" content={config.seo?.description || ""} />
-        <meta property="og:image" content={config.seo?.ogImage || "/placeholder.jpg"} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={config.seo?.title || "Financial Abuse Therapist — Dan Lobel"} />
-        <meta name="twitter:description" content={config.seo?.description || ""} />
-        <meta name="twitter:image" content={config.seo?.ogImage || "/placeholder.jpg"} />
-        <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png" />
-        <link rel="shortcut icon" href="/favicon_io/favicon.ico" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#20385B" />
-        <link rel="manifest" href="/favicon_io/site.webmanifest" />
+        <link rel="manifest" href="/site.webmanifest" />
         <style dangerouslySetInnerHTML={{ __html: themeCss }} />
       </head>
       <body className={`font-sans antialiased`}>
         {children}
         <Analytics />
+        <AnalyticsScripts />
       </body>
     </html>
   )

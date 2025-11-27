@@ -1,17 +1,11 @@
-import * as React from "react"
-
-type LogoMarkProps = Omit<React.ComponentPropsWithoutRef<"svg">, "title"> & {
-	title?: string | null
+type LogoMarkProps = {
+	className?: string
+	title?: string
 }
 
-export function LogoMark({ className, title, ...props }: LogoMarkProps) {
-	const resolvedTitle = title === undefined ? "Logo" : title
-	const normalizedTitle = typeof resolvedTitle === "string" ? resolvedTitle : ""
-	const hasAccessibleTitle = normalizedTitle.trim().length > 0
-
-	const graphic = (
+export function LogoMark({ className, title = "Logo" }: LogoMarkProps) {
+	const glyph = (
 		<>
-			{hasAccessibleTitle ? <title>{normalizedTitle}</title> : null}
 			<circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" strokeWidth="3" />
 			<circle cx="24" cy="15.5" r="4" fill="currentColor" />
 			<path
@@ -21,16 +15,11 @@ export function LogoMark({ className, title, ...props }: LogoMarkProps) {
 		</>
 	)
 
-	if (hasAccessibleTitle) {
+	if (title) {
 		return (
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 48 48"
-				className={className}
-				role="img"
-				{...props}
-			>
-				{graphic}
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" className={className}>
+				<title>{title}</title>
+				{glyph}
 			</svg>
 		)
 	}
@@ -39,12 +28,11 @@ export function LogoMark({ className, title, ...props }: LogoMarkProps) {
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 48 48"
-			className={className}
-			role="presentation"
 			aria-hidden="true"
-			{...props}
+			role="presentation"
+			className={className}
 		>
-			{graphic}
+			{glyph}
 		</svg>
 	)
 }

@@ -99,6 +99,13 @@ async function sendViaSmtp(to: string, data: ConsentPayload) {
   return { ok: true as const }
 }
 
+function resolveErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error && error.message) {
+    return error.message
+  }
+  return fallback
+}
+
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as ConsentPayload | null
   if (!body) return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
@@ -130,9 +137,17 @@ export async function POST(req: Request) {
 
   let result: { ok: true } | { ok: false; error: string } = { ok: false, error: "No email provider configured" }
   if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-    result = await sendViaSmtp(toAddress, data).catch((e: any) => ({ ok: false as const, error: e?.message || "SMTP error" }))
+    try {
+      result = await sendViaSmtp(toAddress, data)
+    } catch (error) {
+      result = { ok: false as const, error: resolveErrorMessage(error, "SMTP error") }
+    }
   } else if (process.env.RESEND_API_KEY) {
-    result = await sendViaResend(toAddress, data).catch((e: any) => ({ ok: false as const, error: e?.message || "Resend error" }))
+    try {
+      result = await sendViaResend(toAddress, data)
+    } catch (error) {
+      result = { ok: false as const, error: resolveErrorMessage(error, "Resend error") }
+    }
   } else {
     // Dev fallback: no provider configured, just log and succeed
     console.log("[consent] Dev mode - email not sent. Payload:", data)

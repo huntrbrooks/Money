@@ -1,5 +1,17 @@
-export const metadata = {
-  title: "The Psychology Behind Spending Habits | The Financial Therapist",
+import type { Metadata } from "next"
+import { buildPageMetadata } from "@/lib/seo"
+
+const PAGE_DESCRIPTION =
+  "Our spending patterns often reflect unmet needs, learned roles, and inherited stories. This article preview explores compassionate, values-aligned change."
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({
+    title: "The Psychology Behind Spending Habits | The Financial Therapist",
+    description: PAGE_DESCRIPTION,
+    path: "/blog/the-psychology-behind-spending-habits",
+    keywords: ["spending habits psychology", "money stories", "behavioural finance therapy"],
+    type: "article",
+  })
 }
 
 export default function BlogSpendingHabits() {

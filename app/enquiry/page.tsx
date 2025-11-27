@@ -1,11 +1,13 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 import { Navigation, Footer } from '@/components/navigation'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 
 type FormState = {
   firstName: string
@@ -13,6 +15,10 @@ type FormState = {
   email: string
   phone: string
   message: string
+  supportFocus: string
+  preferredFormat: string
+  updatesOptIn: boolean
+  consentAccepted: boolean
 }
 
 export default function EnquiryPage() {
@@ -25,7 +31,26 @@ export default function EnquiryPage() {
     email: '',
     phone: '',
     message: '',
+    supportFocus: '',
+    preferredFormat: '',
+    updatesOptIn: false,
+    consentAccepted: false,
   })
+
+  const steps = [
+    {
+      label: 'About you',
+      complete: Boolean(form.firstName && form.email && form.phone),
+    },
+    {
+      label: 'Support focus',
+      complete: Boolean(form.message && form.supportFocus),
+    },
+    {
+      label: 'Consent',
+      complete: form.consentAccepted,
+    },
+  ]
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -41,6 +66,11 @@ export default function EnquiryPage() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       setSubmitted('error')
       setErrorMessage('Please enter a valid email address.')
+      return
+    }
+    if (!form.consentAccepted) {
+      setSubmitted('error')
+      setErrorMessage('Please acknowledge the consent statement.')
       return
     }
 
@@ -63,9 +93,10 @@ export default function EnquiryPage() {
         phone: '',
         message: '',
       })
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : null
       setSubmitted('error')
-      setErrorMessage(err?.message ?? 'Something went wrong sending your enquiry.')
+      setErrorMessage(message ?? 'Something went wrong sending your enquiry.')
     } finally {
       setSubmitting(false)
     }
@@ -82,6 +113,19 @@ export default function EnquiryPage() {
               <div className="mb-10 text-center">
                 <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">Enquiry Form</h1>
                 <p className="text-[var(--primary)] mt-2">We’ll get back to you as soon as possible.</p>
+              </div>
+              <div className="mb-8 grid gap-4 sm:grid-cols-3">
+                {steps.map((step, idx) => (
+                  <div
+                    key={step.label}
+                    className={`rounded-2xl border p-4 text-left ${
+                      step.complete ? 'border-[var(--accent)] bg-[var(--accent)]/10' : 'border-[var(--secondary)] bg-white'
+                    }`}
+                  >
+                    <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary)]/80">Step {idx + 1}</p>
+                    <p className="font-semibold text-[var(--foreground)]">{step.label}</p>
+                  </div>
+                ))}
               </div>
 
               <form onSubmit={handleSubmit} className="bg-white border border-[var(--secondary)] rounded-xl p-6 md:p-10 space-y-6">
@@ -140,6 +184,68 @@ export default function EnquiryPage() {
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                     required
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="supportFocus">What feels most helpful to focus on?</Label>
+                  <Textarea
+                    id="supportFocus"
+                    rows={4}
+                    value={form.supportFocus}
+                    onChange={(e) => setForm({ ...form, supportFocus: e.target.value })}
+                    placeholder="e.g. financial control in my relationship, rebuilding trust after separation…"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="preferredFormat">Preferred session format</Label>
+                  <select
+                    id="preferredFormat"
+                    className="w-full rounded-md border border-input bg-white px-3 py-2 text-sm text-[var(--foreground)]"
+                    value={form.preferredFormat}
+                    onChange={(e) => setForm({ ...form, preferredFormat: e.target.value })}
+                  >
+                    <option value="">Select</option>
+                    <option value="Telehealth">Telehealth (Zoom)</option>
+                    <option value="In-person">In-person (St Kilda Rd)</option>
+                    <option value="In-home">In-home consultation</option>
+                    <option value="Walk & Discuss">Walk & Discuss therapy</option>
+                    <option value="Not sure">Not sure yet</option>
+                  </select>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <Checkbox
+                      id="updatesOptIn"
+                      checked={form.updatesOptIn}
+                      onCheckedChange={(checked) =>
+                        setForm((prev) => ({ ...prev, updatesOptIn: Boolean(checked) }))
+                      }
+                    />
+                    <Label htmlFor="updatesOptIn" className="text-sm text-[var(--primary)]">
+                      Send me the Financial Safety Check-in and occasional updates (you can unsubscribe anytime).
+                    </Label>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Checkbox
+                      id="consentAccepted"
+                      checked={form.consentAccepted}
+                      onCheckedChange={(checked) =>
+                        setForm((prev) => ({ ...prev, consentAccepted: Boolean(checked) }))
+                      }
+                      required
+                    />
+                    <Label htmlFor="consentAccepted" className="text-sm text-[var(--primary)]">
+                      I’ve read the{' '}
+                      <Link href="/consent" className="underline">
+                        consent & policies
+                      </Link>{' '}
+                      and understand urgent support is available in the{' '}
+                      <Link href="/client-care" className="underline">
+                        Client Care Hub
+                      </Link>
+                      .
+                    </Label>
+                  </div>
                 </div>
 
                 {submitted === 'ok' && (

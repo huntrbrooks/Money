@@ -1,7 +1,14 @@
+import type { Metadata } from "next"
 import { headers } from "next/headers"
+import { buildPageMetadata } from "@/lib/seo"
 
-export const metadata = {
-  title: "Terms of Service | The Financial Therapist",
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({
+    title: "Terms of Service | The Financial Therapist",
+    description: "Read or download The Financial Therapist terms of service document for counselling support.",
+    path: "/terms",
+    keywords: ["terms of service", "counselling agreement", "therapy policies"],
+  })
 }
 
 export default function TermsPage() {

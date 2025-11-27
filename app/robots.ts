@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next"
 
-const BASE_URL = "https://financialabusetherapist.com"
+import { SITE_URL } from "@/lib/seo"
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -8,11 +8,11 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/admin/login"],
+        disallow: ["/admin", "/admin/login", "/api/"],
       },
     ],
-    sitemap: `${BASE_URL}/sitemap.xml`,
-    host: "financialabusetherapist.com",
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: new URL(SITE_URL).host,
   }
 }
 

@@ -1,27 +1,36 @@
-import tseslint from "typescript-eslint"
+import js from "@eslint/js";
+import nextPlugin from "@next/eslint-plugin-next";
+import tseslint from "typescript-eslint";
 
-export default [
+export default tseslint.config(
   {
-    ignores: ["node_modules", ".next", "dist"],
+    ignores: [
+      "node_modules",
+      ".next",
+      "dist",
+      "out",
+      "_next",
+      "pnpm-lock.yaml",
+      "public/**/*",
+      "Money-*/**/*",
+    ],
   },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
     files: ["**/*.{ts,tsx,js,jsx}"],
     languageOptions: {
-      parser: tseslint.parser,
       parserOptions: {
-        ecmaVersion: 2021,
+        ecmaVersion: 2022,
         sourceType: "module",
-        projectService: true,
       },
     },
     plugins: {
-      "@typescript-eslint": tseslint.plugin,
+      "@next/next": nextPlugin,
     },
-    rules: {},
-    linterOptions: {
-      reportUnusedDisableDirectives: "off",
+    rules: {
+      "@next/next/no-html-link-for-pages": "off",
     },
-  },
-]
-
+  }
+);
 
