@@ -29,23 +29,25 @@ export default async function HomePage() {
       <Navigation />
       <main>
 
-      <section className="relative bg-gradient-to-b from-[#6ca4ac] via-[#dfead0] to-[var(--section-bg-1)]">
-        <div className="container mx-auto px-6 md:px-8 py-24 md:py-36">
-          <div className="grid gap-16 lg:grid-cols-2 items-center max-w-7xl mx-auto">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#6ca4ac] via-[#88b2ba] to-[#f3f6da]">
+        <div className="container mx-auto px-6 md:px-8 py-32 md:py-40">
+          <div className="grid items-center gap-16 lg:grid-cols-2 max-w-7xl mx-auto">
             {/* Left Column - Text */}
-            <div className="space-y-10 lg:pr-12">
-              <div className="space-y-6">
-                <p className="text-[var(--primary)] text-xs uppercase tracking-[0.2em] font-semibold">Financial Trauma & Monetary Psychotherapy</p>
-                <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[var(--foreground)] leading-[1.05] text-balance font-light">
+            <div className="space-y-10 lg:pr-12 text-[#1c2e40]">
+              <div className="space-y-5">
+                <p className="text-xs uppercase tracking-[0.4em] text-[#5f6b63]/80 font-semibold">
+                  Financial Trauma & Monetary Psychotherapy
+                </p>
+                <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-balance font-light">
                   Reclaim Your Power. Heal Your Relationship With Money.
                 </h1>
               </div>
 
-              <div className="space-y-4 text-[var(--primary)] text-lg leading-relaxed">
-                <p className="text-2xl text-[var(--foreground)] font-serif font-medium">
+              <div className="space-y-4 text-lg leading-relaxed text-[#566860]">
+                <p className="text-2xl text-[#1f3243] font-serif font-medium">
                   Financial trauma can leave deep emotional scars — from shame and anxiety to a loss of self‑trust.
                 </p>
-                <p className="text-[var(--primary)]">
+                <p>
                   Dan offers a safe, confidential space for women to understand, process, and transform their emotional
                   relationship with money, self‑worth, and security.
                 </p>
@@ -55,7 +57,7 @@ export default async function HomePage() {
                 <Button
                   asChild
                   size="lg"
-                  className="bg-[var(--accent)] hover:opacity-90 text-white border-0 text-base h-14 px-10 font-medium shadow-lg"
+                  className="bg-[#7c8d44] hover:bg-[#6c7c39] text-white border-0 text-base h-14 px-10 font-medium shadow-lg"
                 >
                   <Link href="/#book">
                     Book a Session
@@ -66,7 +68,7 @@ export default async function HomePage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="border-2 border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white bg-white text-base h-14 px-10 font-medium"
+                  className="border border-[#5f7c77] text-[#35515b] hover:bg-[#5f7c77] hover:text-white bg-transparent text-base h-14 px-10 font-medium"
                 >
                   <a href="#monetary-psychotherapy">Learn More</a>
                 </Button>
@@ -74,14 +76,13 @@ export default async function HomePage() {
             </div>
 
             {/* Right Column - Image */}
-            <div className="relative lg:pl-8">
-              <div className="relative aspect-[3/4] max-w-[39.2rem] mx-auto isolate">
-                {/* Main framed photo card */}
-                <div className="relative z-10 bg-[#6ca4ac] p-4 rounded-xl shadow-xl">
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative w-full max-w-[28rem] rounded-[40px] border-[5px] border-[#6585a1] bg-white/80 p-4 shadow-[0_35px_80px_rgba(28,55,66,0.25)]">
+                <div className="overflow-hidden rounded-[30px] border border-white/50 bg-[#f3f6f6]">
                   <img
                     src={config.hero.imageUrl}
                     alt="Portrait of Dan Lobel, counsellor in Melbourne"
-                    className="w-full h-full object-cover rounded-lg"
+                    className="w-full h-full object-cover"
                   />
                 </div>
               </div>

@@ -29,40 +29,28 @@ export function Navigation() {
     { label: "Contact", href: "/#contact" },
   ]
   const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
-  const logoSrc = "/LOGO.png"
+  const logoSrc = "/Logo.png"
   const brandColor = "#1f3f5c"
 
   return (
     <nav
-      className="relative z-50 border-b border-white/40 shadow-[0_20px_45px_rgba(32,69,79,0.2)]"
+      className="relative z-50 shadow-[0_15px_35px_rgba(30,60,70,0.18)]"
       style={{
-        background: "linear-gradient(180deg, #b5c371 0%, #88b1b9 55%, #eff4dc 100%)",
+        background: "linear-gradient(180deg, #929d5b 0%, #6ca4ac 100%)",
       }}
     >
       <div className="container mx-auto px-6 md:px-8">
-        <div className="relative py-10 md:py-14">
-          <div className="flex justify-center">
-            <Link href="/" aria-label="Home" className="inline-flex items-center">
-              <span
-                className="relative inline-flex items-center rounded-full border-[3px] px-10 py-4 shadow-[0_25px_60px_rgba(23,56,76,0.25)]"
-                style={{ borderColor: brandColor, backgroundColor: "rgba(255,255,255,0.35)" }}
-              >
-                <img src={logoSrc} alt={brandName} className="h-20 md:h-28 lg:h-32 w-auto object-contain" />
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-3 rounded-full border border-white/60"
-                />
-              </span>
-            </Link>
-          </div>
+        <div className="relative py-12 md:py-16 flex items-center justify-center">
+          <Link href="/" aria-label="Home" className="inline-flex justify-center">
+            <img src={logoSrc} alt={brandName} className="h-24 md:h-32 lg:h-36 w-auto object-contain" />
+          </Link>
 
           {/* Right-aligned Menu dropdown */}
           <div className="absolute inset-y-0 right-4 md:right-8 z-10 flex items-center">
             <div className="relative">
               <button
                 onClick={() => setIsMenuOpen((o) => !o)}
-                className="flex flex-col items-center gap-1 rounded-full border-2 px-5 py-4 text-[var(--foreground)] transition hover:bg-white/40"
-                style={{ borderColor: brandColor }}
+                className="flex flex-col items-center gap-1 rounded-full border-2 border-white/70 px-5 py-4 text-white transition hover:bg-white/10"
                 aria-expanded={isMenuOpen}
                 aria-haspopup="menu"
                 aria-label="Open navigation menu"
@@ -116,7 +104,7 @@ export function Footer() {
 
   const links = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
   const brandName = cfg.brand?.name ?? "Financial Abuse Therapist"
-  const footerLogoSrc = cfg.brand?.logoUrl || "/LOGO.png"
+  const footerLogoSrc = cfg.brand?.logoUrl || "/Logo.png"
   const quickLinks = [
     ...links,
     { label: "Book Appointment", href: "/#book" },
