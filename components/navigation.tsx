@@ -1,9 +1,8 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Phone, Mail, Facebook, Instagram, Linkedin } from "lucide-react"
-import { LogoMark } from "@/components/logo"
 
 type NavLink = { label: string; href: string }
 type Config = {
@@ -15,8 +14,6 @@ type Config = {
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cfg, setCfg] = useState<Config>({})
-  const menuRef = useRef<HTMLDivElement | null>(null)
-  const [rightGapPx, setRightGapPx] = useState<number>(0)
 
   useEffect(() => {
     fetch("/api/site-config")
@@ -33,91 +30,56 @@ export function Navigation() {
   ]
   const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
   const headerBannerUrl = cfg.brand?.headerBannerUrl
-
-  // Measure the Menu container and reserve enough right padding so the title never overlaps it
-  useEffect(() => {
-    const update = () => {
-      const el = menuRef.current
-      const width = el ? el.getBoundingClientRect().width : 0
-      // Add an extra safety buffer so text never collides visually
-      setRightGapPx(Math.ceil(width + 24))
-    }
-    update()
-    window.addEventListener("resize", update)
-    const el = menuRef.current
-    let ro: ResizeObserver | null = null
-    if (el && typeof ResizeObserver !== "undefined") {
-      ro = new ResizeObserver(update)
-      ro.observe(el)
-    }
-    return () => {
-      window.removeEventListener("resize", update)
-      if (ro && el) ro.unobserve(el)
-    }
-  }, [])
+  const defaultLogo = "/LOGO.png"
+  const logoSrc = cfg.brand?.logoUrl || headerBannerUrl || defaultLogo
 
   return (
     <nav
       className="sticky top-0 z-50 shadow-sm border-b border-[var(--secondary)]"
       style={{
         background:
-          "linear-gradient(180deg, color-mix(in srgb, var(--primary, #6CA4AC) 100%, transparent) 0%, color-mix(in srgb, var(--accent, #929D5B) 70%, transparent) 60%, transparent 100%)",
+          "linear-gradient(180deg, color-mix(in srgb, var(--primary, #6CA4AC) 100%, transparent) 0%, color-mix(in srgb, var(--primary, #6CA4AC) 50%, transparent) 100%)",
       }}
     >
       <div className="container mx-auto px-6 md:px-8">
-        <div className="grid grid-cols-3 items-center h-20 md:h-28 relative">
-          {/* Left spacer / optional logo (kept minimal to allow perfect centering) */}
-          <div className="justify-self-start" />
-
-        {/* Centered Title (absolute overlay so it can use full width) */}
-        <div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
-          style={{ paddingLeft: 16, paddingRight: Math.max(rightGapPx || 96, 96) }}
-        >
-          <Link href="/" aria-label="Home" className="pointer-events-auto inline-flex items-center">
-            {headerBannerUrl ? (
-              <img
-                src={headerBannerUrl}
-                alt={brandName}
-                className="h-16 md:h-24 lg:h-28 w-auto object-contain"
-              />
-            ) : (
-              <span className="font-serif whitespace-nowrap text-[clamp(1.25rem,6.5vw,3.5rem)] md:text-[clamp(1.75rem,4.5vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
-                {brandName}
-              </span>
-            )}
-          </Link>
-        </div>
+        <div className="relative py-8 md:py-12">
+          <div className="flex justify-center">
+            <Link href="/" aria-label="Home" className="inline-flex items-center py-4">
+              <img src={logoSrc} alt={brandName} className="h-20 md:h-28 lg:h-32 w-auto object-contain" />
+            </Link>
+          </div>
 
           {/* Right-aligned Menu dropdown */}
-        <div className="justify-self-end relative z-10 flex justify-end pr-0" ref={menuRef}>
-            <button
-              onClick={() => setIsMenuOpen((o) => !o)}
-              className="px-4 py-2 text-[var(--foreground)]/90 hover:text-[var(--foreground)] rounded-md transition-colors text-sm md:text-base underline decoration-[color-mix(in_oklch,_var(--foreground)_30%,_transparent)] underline-offset-4"
-              aria-expanded={isMenuOpen}
-              aria-haspopup="menu"
-            >
-              Menu
-            </button>
-            {isMenuOpen && (
-              <div
-                role="menu"
-                className="absolute right-0 mt-2 w-56 rounded-md bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black/5 overflow-hidden"
+          <div className="absolute top-4 right-4 md:right-8 z-10">
+            <div className="relative">
+              <button
+                onClick={() => setIsMenuOpen((o) => !o)}
+                className="px-4 py-2 text-[var(--foreground)]/90 hover:text-[var(--foreground)] rounded-md transition-colors text-sm md:text-base underline decoration-[color-mix(in_oklch,_var(--foreground)_30%,_transparent)] underline-offset-4"
+                aria-expanded={isMenuOpen}
+                aria-haspopup="menu"
               >
-                <div className="py-1">
-                  {links.map((l) => (
-                    <Link
-                      key={l.href}
-                      href={l.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="block px-4 py-2 text-[var(--foreground)]/90 hover:bg-[var(--secondary)]/20 transition-colors"
-                    >
-                      {l.label}
-                    </Link>
-                  ))}
+                Menu
+              </button>
+              {isMenuOpen && (
+                <div
+                  role="menu"
+                  className="absolute right-0 mt-2 w-56 rounded-md bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black/5 overflow-hidden"
+                >
+                  <div className="py-1">
+                    {links.map((l) => (
+                      <Link
+                        key={l.href}
+                        href={l.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="block px-4 py-2 text-[var(--foreground)]/90 hover:bg-[var(--secondary)]/20 transition-colors"
+                      >
+                        {l.label}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -134,6 +96,9 @@ export function Footer() {
       .catch(() => {})
   }, [])
   const links = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
+  const brandName = cfg.brand?.name ?? "The Financial Therapist"
+  const defaultLogo = "/LOGO.png"
+  const footerLogoSrc = cfg.brand?.logoUrl || cfg.brand?.headerBannerUrl || defaultLogo
 
   return (
     <footer className="bg-[var(--section-bg-1)] text-[var(--foreground)]">
@@ -142,17 +107,9 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-3 max-w-6xl mx-auto">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              {cfg.brand?.logoUrl ? (
-                <img
-                  src={cfg.brand.logoUrl}
-                  alt={`${cfg.brand?.name ?? "Site"} logo`}
-                  className="h-10 w-10 object-contain"
-                />
-              ) : (
-                <LogoMark className="h-10 w-10 text-[var(--primary)]" title={`${cfg.brand?.name ?? "Site"} logo`} />
-              )}
-              <h3 className="font-serif text-3xl font-light">{cfg.brand?.name ?? "The Financial Therapist"}</h3>
+            <div className="flex items-center gap-3 py-4">
+              <img src={footerLogoSrc} alt={`${brandName} logo`} className="h-16 w-auto object-contain" />
+              <h3 className="font-serif text-3xl font-light">{brandName}</h3>
             </div>
             <p className="text-[var(--primary)]/80 leading-relaxed">
               {cfg.brand?.tagline ??
