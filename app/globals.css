@@ -167,9 +167,10 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-feature-settings: "rlig" 1, "calt" 1;
-    background-image: var(--bg-radial-1), var(--bg-radial-2);
-    background-attachment: fixed, fixed;
-    background-size: auto, auto;
+    background-color: #dfe7ef;
+    background-image: linear-gradient(180deg, #cfdde9 0%, #f5f7ed 65%, #fdfbf7 100%);
+    background-attachment: fixed;
+    background-size: cover;
   }
   html {
     color-scheme: light dark;
@@ -230,31 +231,6 @@
   }
   main, section, article {
     overflow-wrap: anywhere;
-  }
-}
-
-@layer base {
-  /* Alternate section backgrounds with a gentle fade between them */
-  main > section {
-    position: relative;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-  }
-  main > section:nth-of-type(odd) {
-    background-image: linear-gradient(
-      to bottom,
-      var(--section-bg-1) 0%,
-      var(--section-bg-1) calc(100% - var(--section-fade-height)),
-      var(--section-bg-2) 100%
-    );
-  }
-  main > section:nth-of-type(even) {
-    background-image: linear-gradient(
-      to bottom,
-      var(--section-bg-2) 0%,
-      var(--section-bg-2) calc(100% - var(--section-fade-height)),
-      var(--section-bg-1) 100%
-    );
   }
 }
 

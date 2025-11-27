@@ -69,47 +69,47 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
   }
 
   return (
-    <div className="space-y-10">
-      <div className="rounded-[32px] border border-[var(--primary)]/10 bg-[color-mix(in_oklch,_var(--brand-pale-blue)_70%,_white)]/70 p-6 sm:p-10 shadow-lg">
-        <div className="grid gap-6 lg:grid-cols-2">
+    <div className="space-y-12">
+      <div className="rounded-[40px] border border-[#d3dcd9] bg-white/85 p-6 sm:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {options.map((option) => {
             const Icon = getModeIcon(option.mode)
             return (
               <article
                 key={option.format}
-                className="group h-full rounded-3xl border border-white/40 bg-white/85 p-6 shadow-sm ring-1 ring-[var(--primary)]/5 transition hover:-translate-y-1 hover:shadow-xl"
+                className="group h-full rounded-[28px] border border-[#d4ddd8] bg-[#f8faf6] p-6 shadow-[0_25px_55px_rgba(42,63,70,0.12)] transition hover:-translate-y-1 hover:shadow-[0_35px_80px_rgba(42,63,70,0.16)]"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     {option.mode && (
-                      <p className="text-xs uppercase tracking-[0.2em] text-[var(--primary)]/70">{option.mode}</p>
+                      <p className="text-xs uppercase tracking-[0.25em] text-[#5a7264]">{option.mode}</p>
                     )}
-                    <h3 className="font-serif text-2xl text-[var(--foreground)]">{option.format}</h3>
+                    <h3 className="font-serif text-2xl text-[#1f2d38]">{option.format}</h3>
                   </div>
                   {option.highlight && (
-                    <span className="rounded-full bg-[var(--accent)]/15 px-3 py-1 text-xs font-semibold text-[var(--accent)]">
+                    <span className="rounded-full bg-[#7b8c45]/15 px-3 py-1 text-xs font-semibold text-[#556026]">
                       {option.highlight}
                     </span>
                   )}
                 </div>
                 {option.description && (
-                  <p className="mt-4 text-sm leading-relaxed text-[var(--primary)]/85">{option.description}</p>
+                  <p className="mt-4 text-sm leading-relaxed text-[#4a5a61]">{option.description}</p>
                 )}
                 <div className="mt-6 flex items-baseline gap-3">
-                  <span className="font-serif text-4xl text-[var(--foreground)]">{option.price}</span>
-                  <span className="text-sm text-[var(--primary)]/80">{option.duration}</span>
+                  <span className="font-serif text-4xl text-[#1f2d38]">{option.price}</span>
+                  <span className="text-sm text-[#4a5c63]">{option.duration}</span>
                 </div>
-                <div className="mt-3 flex items-center gap-3 text-sm text-[var(--primary)]/90">
-                  <Icon className="h-4 w-4" aria-hidden="true" />
+                <div className="mt-3 flex items-center gap-3 text-sm text-[#4a5c63]">
+                  <Icon className="h-4 w-4 text-[#7b8c45]" aria-hidden="true" />
                   <span>{option.location ?? "Flexible delivery"}</span>
                 </div>
                 <Button
                   asChild
                   size="lg"
-                  className="mt-6 w-full bg-[var(--accent)] text-[var(--foreground)] hover:opacity-90"
+                  className="mt-6 w-full rounded-full bg-[#7b8c45] text-white hover:bg-[#6d7c39]"
                 >
                   <a href={buildBookingUrl(option.typeId)} target="_blank" rel="noopener noreferrer">
-                    Book via Acuity
+                    Book this session
                   </a>
                 </Button>
               </article>
@@ -120,35 +120,35 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
           {billingHighlights.map(({ title, detail, icon: Icon }) => (
             <div
               key={title}
-              className="rounded-2xl border border-[var(--primary)]/10 bg-white/80 p-5 shadow-sm backdrop-blur"
+              className="rounded-2xl border border-[#dfe6d5] bg-white/90 p-5 shadow-sm backdrop-blur"
             >
               <div className="flex items-center gap-3">
-                <div className="rounded-full bg-[var(--accent)]/15 p-2 text-[var(--accent)]">
+                <div className="rounded-full bg-[#7b8c45]/15 p-2 text-[#7b8c45]">
                   <Icon className="h-4 w-4" aria-hidden="true" />
                 </div>
-                <h4 className="text-base font-semibold text-[var(--foreground)]">{title}</h4>
+                <h4 className="text-base font-semibold text-[#1f2d38]">{title}</h4>
               </div>
-              <p className="mt-3 text-sm text-[var(--primary)]/85">{detail}</p>
+              <p className="mt-3 text-sm text-[#4a5c63]">{detail}</p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="rounded-[28px] border border-dashed border-[var(--primary)]/30 bg-white/85 p-6 shadow-sm">
+      <div className="rounded-[32px] border border-dashed border-[#c8d4cf] bg-white/80 p-6 shadow-sm">
         <div className="grid gap-5 md:grid-cols-2">
           {paymentSupport.map(({ title, detail, icon: Icon }) => (
             <div key={title} className="flex gap-3">
-              <div className="h-10 w-10 rounded-2xl bg-[var(--accent)]/15 text-[var(--accent)]">
+              <div className="h-10 w-10 rounded-2xl bg-[#7b8c45]/15 text-[#7b8c45]">
                 <Icon className="m-2 h-6 w-6" aria-hidden="true" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[var(--foreground)]">{title}</p>
-                <p className="text-sm text-[var(--primary)]/85">{detail}</p>
+                <p className="text-sm font-semibold text-[#1f2d38]">{title}</p>
+                <p className="text-sm text-[#4a5c63]">{detail}</p>
               </div>
             </div>
           ))}
         </div>
-        <p className="mt-4 text-xs uppercase tracking-[0.2em] text-[var(--primary)]/70">
+        <p className="mt-4 text-xs uppercase tracking-[0.2em] text-[#4a5c63]">
           Billing enquiries: dan@themelbournecounsellor.com.au · 0467 477 786
         </p>
       </div>
