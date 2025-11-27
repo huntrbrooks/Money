@@ -29,16 +29,14 @@ export function Navigation() {
     { label: "Contact", href: "/#contact" },
   ]
   const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
-  const headerBannerUrl = cfg.brand?.headerBannerUrl
-  const defaultLogo = "/LOGO.png"
-  const logoSrc = cfg.brand?.logoUrl || headerBannerUrl || defaultLogo
+  const logoSrc = "/LOGO.png"
 
   return (
     <nav
-      className="sticky top-0 z-50 shadow-sm border-b border-[var(--secondary)]"
+      className="z-50 shadow-sm border-b border-[var(--secondary)]"
       style={{
         background:
-          "linear-gradient(180deg, color-mix(in srgb, var(--primary, #6CA4AC) 100%, transparent) 0%, color-mix(in srgb, var(--primary, #6CA4AC) 50%, transparent) 100%)",
+          "linear-gradient(180deg, color-mix(in srgb, var(--primary, #6CA4AC) 100%, transparent) 0%, color-mix(in srgb, var(--primary, #6CA4AC) 70%, transparent) 100%)",
       }}
     >
       <div className="container mx-auto px-6 md:px-8">
@@ -97,8 +95,7 @@ export function Footer() {
   }, [])
   const links = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
   const brandName = cfg.brand?.name ?? "The Financial Therapist"
-  const defaultLogo = "/LOGO.png"
-  const footerLogoSrc = cfg.brand?.logoUrl || cfg.brand?.headerBannerUrl || defaultLogo
+  const footerLogoSrc = "/LOGO.png"
 
   return (
     <footer className="bg-[var(--section-bg-1)] text-[var(--foreground)]">
