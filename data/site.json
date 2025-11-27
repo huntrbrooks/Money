@@ -29,7 +29,11 @@
     },
     {
       "label": "About",
-      "href": "/#about"
+      "href": "/about-dan"
+    },
+    {
+      "label": "Monetary Psychotherapy",
+      "href": "/monetary-psychotherapy"
     },
     {
       "label": "Services",

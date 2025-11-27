@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Phone, Mail, Facebook, Instagram, Linkedin } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 type NavLink = { label: string; href: string }
 type Config = {
@@ -24,7 +25,8 @@ export function Navigation() {
 
   const links = cfg.navigation ?? [
     { label: "Home", href: "/" },
-    { label: "About", href: "/#about" },
+    { label: "About", href: "/about-dan" },
+    { label: "Monetary Psychotherapy", href: "/monetary-psychotherapy" },
     { label: "Services", href: "/#services" },
     { label: "Contact", href: "/#contact" },
   ]
@@ -103,127 +105,155 @@ export function Footer() {
   }, [])
 
   const links = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
-  const brandName = cfg.brand?.name ?? "Financial Abuse Therapist"
+  const brandName = cfg.brand?.name ?? "The Financial Therapist"
   const footerLogoSrc = cfg.brand?.logoUrl || "/Logo.png"
+  const defaultTagline =
+    "Trauma‑informed care with safety, dignity, and choice. Specialised support for financial trauma, monetary psychotherapy, and nervous system regulation."
+  const tagline = cfg.brand?.tagline ?? defaultTagline
   const quickLinks = [
     ...links,
     { label: "Book Appointment", href: "/#book" },
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },
   ]
-  const accentHeadingClass = "text-[11px] uppercase tracking-[0.55em] text-[#9ba367] font-semibold"
-  const linkClass =
-    "block text-[var(--foreground)]/80 text-lg no-underline hover:text-[var(--foreground)] transition-colors"
+  const dedupedLinks = quickLinks.filter(
+    (link, index, self) => index === self.findIndex((l) => l.href === link.href && l.label === link.label),
+  )
+  const phone = cfg.contact?.phone ?? "+61 488 222 137"
+  const email = cfg.contact?.email ?? "dan@themelbournecounsellor.com.au"
+  const phoneHref = phone.replace(/\s+/g, "")
+  const sectionLabelClass = "text-[0.65rem] uppercase tracking-[0.4em] text-[#96a271] font-semibold"
+  const navLinkClass =
+    "block rounded-2xl border border-transparent bg-white/60 px-4 py-2 text-[var(--foreground)]/80 no-underline transition hover:border-[#9fb18d] hover:bg-white"
   const socialButtonClass =
-    "flex h-11 w-11 items-center justify-center rounded-full border border-[#c1cda7] text-[#5b7484] bg-white/50 hover:bg-white transition"
+    "flex h-12 w-12 items-center justify-center rounded-2xl border border-white/70 bg-white/80 text-[#4c665c] shadow-sm transition hover:-translate-y-0.5 hover:text-[#1d2f3a]"
+  const pillLinkClass =
+    "inline-flex items-center gap-3 rounded-full border border-[#cad5b4] px-4 py-2 text-sm font-medium text-[#465651] no-underline hover:border-[#7c8d44] hover:text-[#1f2d28] transition"
 
   return (
-    <footer className="bg-[#E7F0D4] text-[#1D2F3A]">
-      <div className="container mx-auto px-6 md:px-8 py-16">
-        <div className="grid gap-12 lg:grid-cols-[1.35fr,0.85fr,1fr]">
-          <div className="space-y-6">
-            <div className="max-w-md">
-              <img src={footerLogoSrc} alt={`${brandName} logo`} className="w-full max-w-sm object-contain" />
-            </div>
-            <p className="text-lg leading-relaxed text-[#6A7A84]">
-              {cfg.brand?.tagline ??
-                "Trauma‑informed care with safety, dignity and choice. Specialised support for financial trauma, monetary psychotherapy and healing nervous systems gently."}
-            </p>
-          </div>
+    <footer className="relative overflow-hidden bg-gradient-to-b from-[#f9f7ef] via-[#e7efdc] to-[#dfe8d4] text-[#1d2f3a]">
+      <div className="container relative mx-auto px-6 md:px-8 py-24">
+        <div className="rounded-[36px] border border-white/50 bg-white/80 p-8 sm:p-12 shadow-[0_35px_90px_rgba(78,103,92,0.18)] backdrop-blur">
+          <div className="grid gap-12 xl:grid-cols-[1.25fr,0.9fr]">
+            <div className="space-y-10">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+                <div className="w-fit rounded-[30px] bg-gradient-to-b from-[#f9fbef] to-[#e7f0db] p-5 shadow-[0_25px_60px_rgba(124,141,68,0.35)]">
+                  <img src={footerLogoSrc} alt={`${brandName} logo`} className="h-16 w-auto object-contain sm:h-20" />
+                </div>
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#6e7a57]">{brandName}</p>
+                  <p className="font-serif text-3xl leading-tight text-[var(--foreground)]">
+                    {cfg.brand?.subtitle ?? "Financial trauma therapy rooted in consent and pacing"}
+                  </p>
+                  <p className="text-lg text-[#4d5b54]">{tagline}</p>
+                </div>
+              </div>
 
-          <div className="space-y-5">
-            <p className={accentHeadingClass}>Quick Links</p>
-            <div className="space-y-3">
-              {quickLinks.map((l) => (
-                <Link key={`${l.href}-${l.label}`} href={l.href} className={linkClass}>
-                  {l.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+              <div className="flex flex-wrap gap-4">
+                <Button
+                  asChild
+                  size="lg"
+                  className="h-12 rounded-full bg-[#7c8d44] px-8 text-base font-medium text-white shadow-lg hover:bg-[#6c7c39]"
+                >
+                  <Link href="/#book">Book a confidential consultation</Link>
+                </Button>
+                <a href={`tel:${phoneHref}`} className={pillLinkClass}>
+                  <Phone className="h-4 w-4" />
+                  {phone}
+                </a>
+                <a href={`mailto:${email}`} className={pillLinkClass}>
+                  <Mail className="h-4 w-4" />
+                  {email}
+                </a>
+              </div>
 
-          <div className="space-y-8">
-            <div className="space-y-5">
-              <p className={accentHeadingClass}>Contact</p>
-              <div className="space-y-4 text-lg text-[#4D6377]">
-                {cfg.contact?.phone && (
-                  <a
-                    href={`tel:${cfg.contact.phone.replace(/\s+/g, "")}`}
-                    className="flex items-center gap-4 no-underline hover:text-[#1F385B] transition-colors"
-                  >
-                    <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#C3DCDD] text-[#1F385B] shadow-sm">
-                      <Phone className="w-5 h-5" />
-                    </span>
-                    <span className="font-medium">{cfg.contact.phone}</span>
-                  </a>
-                )}
-                {cfg.contact?.email && (
-                  <a
-                    href={`mailto:${cfg.contact.email}`}
-                    className="flex items-start gap-4 no-underline hover:text-[#1F385B] transition-colors"
-                  >
-                    <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#b5bd75] text-white shadow-sm">
-                      <Mail className="w-5 h-5" />
-                    </span>
-                    <span className="break-all font-medium pt-1.5">{cfg.contact.email}</span>
-                  </a>
-                )}
+              <div className="grid gap-8 md:grid-cols-2">
+                <div className="space-y-3">
+                  <p className={sectionLabelClass}>Practice Details</p>
+                  <div className="space-y-1.5 text-lg text-[#485650]">
+                    <p>Unit 503, 666 Chapel Street</p>
+                    <p>South Yarra VIC 3141</p>
+                    <p>In-person & telehealth across Australia</p>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <p className={sectionLabelClass}>Availability</p>
+                  <div className="space-y-1.5 text-lg text-[#485650]">
+                    <p>Monday – Friday · 10:00am – 7:00pm</p>
+                    <p>Saturday appointments by request</p>
+                    <p>Consent-led, paced sessions</p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <p className={accentHeadingClass}>Follow Dan</p>
-              <div className="flex items-center gap-3 text-[#5b7484]">
-                <a
-                  href="https://www.facebook.com/the.melbourne.counsellor/"
-                  aria-label="Visit Facebook"
-                  target="_blank"
-                  rel="noreferrer"
-                  className={socialButtonClass}
-                >
-                  <Facebook className="w-5 h-5" />
-                </a>
-                <a
-                  href="https://www.instagram.com/the.melbourne.counsellor/#"
-                  aria-label="Visit Instagram"
-                  target="_blank"
-                  rel="noreferrer"
-                  className={socialButtonClass}
-                >
-                  <Instagram className="w-5 h-5" />
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/"
-                  aria-label="Visit LinkedIn"
-                  target="_blank"
-                  rel="noreferrer"
-                  className={socialButtonClass}
-                >
-                  <Linkedin className="w-5 h-5" />
-                </a>
+            <div className="space-y-10">
+              <div className="space-y-4">
+                <p className={sectionLabelClass}>Quick Links</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {dedupedLinks.map((l) => (
+                    <Link key={`${l.href}-${l.label}`} href={l.href} className={navLinkClass}>
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <p className={sectionLabelClass}>Follow Dan</p>
+                <div className="flex flex-wrap items-center gap-3 text-[#5b7484]">
+                  <a
+                    href="https://www.facebook.com/the.melbourne.counsellor/"
+                    aria-label="Visit Facebook"
+                    target="_blank"
+                    rel="noreferrer"
+                    className={socialButtonClass}
+                  >
+                    <Facebook className="w-5 h-5" />
+                  </a>
+                  <a
+                    href="https://www.instagram.com/the.melbourne.counsellor/#"
+                    aria-label="Visit Instagram"
+                    target="_blank"
+                    rel="noreferrer"
+                    className={socialButtonClass}
+                  >
+                    <Instagram className="w-5 h-5" />
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/"
+                    aria-label="Visit LinkedIn"
+                    target="_blank"
+                    rel="noreferrer"
+                    className={socialButtonClass}
+                  >
+                    <Linkedin className="w-5 h-5" />
+                  </a>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-[#dfe8ce] bg-[#f5f7ec] p-5 text-sm leading-relaxed text-[#56635c]">
+                <p>
+                  We acknowledge the Wurundjeri people of the Kulin Nation as the Traditional Custodians of the land on
+                  which we work, and we pay our respects to Elders past, present, and emerging.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-[#CAD5B4] bg-[#E7F0D4]/80">
-        <div className="container mx-auto px-6 md:px-8 py-10">
-          <div className="text-center space-y-3 text-sm text-[#65765F] max-w-4xl mx-auto">
-            <p>© 2025 The Financial Therapist. All rights reserved.</p>
-            <p>The Financial Therapist Pty. Ltd. atf The Financial Therapist Trust.</p>
-            <p className="leading-relaxed">
-              The Financial Therapist acknowledges the Wurundjeri people who are the Traditional Custodians of the land
-              on which we work. We pay our respects to Elders past, present and emerging.
-            </p>
-            <p className="space-x-5">
-              <Link href="/privacy" className="no-underline text-[#4D6377] hover:text-[#1F385B]">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="no-underline text-[#4D6377] hover:text-[#1F385B]">
-                Terms of Service
-              </Link>
-            </p>
+      <div className="border-t border-white/60 bg-[#d8e3ca]/70">
+        <div className="container mx-auto px-6 md:px-8 py-8 text-center text-sm text-[#56635c] space-y-3">
+          <p>© 2025 {brandName}. All rights reserved.</p>
+          <p>The Financial Therapist Pty. Ltd. atf The Financial Therapist Trust.</p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link href="/privacy" className="no-underline text-[#4D6377] hover:text-[#1F385B]">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="no-underline text-[#4D6377] hover:text-[#1F385B]">
+              Terms of Service
+            </Link>
           </div>
         </div>
       </div>
