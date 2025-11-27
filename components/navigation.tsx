@@ -47,15 +47,25 @@ export function Navigation() {
           </div>
 
           {/* Right-aligned Menu dropdown */}
-          <div className="absolute top-4 right-4 md:right-8 z-10">
+          <div className="absolute inset-y-0 right-4 md:right-8 z-10 flex items-center">
             <div className="relative">
               <button
                 onClick={() => setIsMenuOpen((o) => !o)}
-                className="px-4 py-2 text-[var(--foreground)]/90 hover:text-[var(--foreground)] rounded-md transition-colors text-sm md:text-base underline decoration-[color-mix(in_oklch,_var(--foreground)_30%,_transparent)] underline-offset-4"
+                className="p-3 rounded-full border-2 border-[var(--foreground)]/60 hover:border-[var(--foreground)] transition-colors"
                 aria-expanded={isMenuOpen}
                 aria-haspopup="menu"
+                aria-label="Open navigation menu"
               >
-                Menu
+                <span className="sr-only">Menu</span>
+                <span className="flex flex-col gap-1.5">
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      className="block w-8 h-1.5 bg-[var(--foreground)] rounded-full"
+                      aria-hidden="true"
+                    />
+                  ))}
+                </span>
               </button>
               {isMenuOpen && (
                 <div

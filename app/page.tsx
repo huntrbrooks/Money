@@ -28,7 +28,7 @@ export default async function HomePage() {
       <Navigation />
       <main>
 
-      <section className="relative">
+      <section className="relative bg-gradient-to-b from-[#6ca4ac] via-[#dfead0] to-[var(--section-bg-1)]">
         <div className="container mx-auto px-6 md:px-8 py-24 md:py-36">
           <div className="grid gap-16 lg:grid-cols-2 items-center max-w-7xl mx-auto">
             {/* Left Column - Text */}
@@ -75,8 +75,8 @@ export default async function HomePage() {
             {/* Right Column - Image */}
             <div className="relative lg:pl-8">
               <div className="relative aspect-[3/4] max-w-[39.2rem] mx-auto isolate">
-                {/* Main white framed photo card */}
-                <div className="relative z-10 bg-white p-4 rounded-xl shadow-xl">
+                {/* Main framed photo card */}
+                <div className="relative z-10 bg-[#6ca4ac] p-4 rounded-xl shadow-xl">
                   <img
                     src={config.hero.imageUrl}
                     alt="Portrait of Dan Lobel, counsellor in Melbourne"

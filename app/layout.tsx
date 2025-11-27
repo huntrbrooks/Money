@@ -57,10 +57,18 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    shortcut: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    other: [{ rel: "mask-icon", url: "/safari-pinned-tab.svg" }],
+    icon: [
+      { url: "/favicon_io/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon_io/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+      { url: "/favicon_io/favicon.ico" },
+    ],
+    shortcut: [{ url: "/favicon_io/favicon.ico" }],
+    apple: [{ url: "/favicon_io/apple-touch-icon.png", sizes: "180x180" }],
+    other: [
+      { rel: "android-chrome-192x192", url: "/favicon_io/android-chrome-192x192.png" },
+      { rel: "android-chrome-512x512", url: "/favicon_io/android-chrome-512x512.png" },
+      { rel: "mask-icon", url: "/safari-pinned-tab.svg" },
+    ],
   },
 }
 
@@ -97,9 +105,12 @@ export default async function RootLayout({
         <meta name="twitter:title" content={config.seo?.title || "Financial Abuse Therapist — Dan Lobel"} />
         <meta name="twitter:description" content={config.seo?.description || ""} />
         <meta name="twitter:image" content={config.seo?.ogImage || "/placeholder.jpg"} />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png" />
+        <link rel="shortcut icon" href="/favicon_io/favicon.ico" />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#20385B" />
-        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="manifest" href="/favicon_io/site.webmanifest" />
         <style dangerouslySetInnerHTML={{ __html: themeCss }} />
       </head>
       <body className={`font-sans antialiased`}>
