@@ -43,15 +43,17 @@ export function Navigation() {
         }}
       >
         <div className="relative z-10">
-          <div className="container mx-auto px-6 md:px-8 relative">
+          <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
             <div className="flex items-center justify-center min-h-[7.5rem] sm:min-h-[9rem] md:min-h-[11rem] py-4 md:py-6">
-              <Link href="/" aria-label="Home" className="inline-flex items-center justify-center">
+              <Link href="/" aria-label="Home" className="inline-flex items-center justify-center group">
                 {headerBannerUrl || brandLogo ? (
-                  <img
-                    src={headerBannerUrl || brandLogo}
-                    alt={brandName}
-                    className="h-20 sm:h-28 md:h-40 lg:h-44 w-auto object-contain drop-shadow-[0_18px_35px_rgba(32,56,91,0.28)]"
-                  />
+                  <span className="header-logo-shell">
+                    <img
+                      src={headerBannerUrl || brandLogo}
+                      alt={brandName}
+                      className="header-logo-img h-20 sm:h-28 md:h-40 lg:h-44 w-auto object-contain drop-shadow-[0_18px_35px_rgba(32,56,91,0.28)] transition-transform duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-[1.02]"
+                    />
+                  </span>
                 ) : (
                   <span className="font-serif whitespace-nowrap text-[clamp(1.75rem,7vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
                     {brandName}
@@ -59,7 +61,7 @@ export function Navigation() {
                 )}
               </Link>
             </div>
-            <div className="absolute right-4 top-6 sm:right-6 md:right-4 md:top-1/2 md:-translate-y-1/2 flex items-center justify-end z-20">
+            <div className="relative mt-4 mb-2 flex justify-center z-20 md:mb-0 md:mt-0 md:absolute md:right-4 md:top-1/2 md:-translate-y-1/2 md:flex md:justify-end">
               <div className="relative">
                 <button
                   onClick={() => setIsMenuOpen((o) => !o)}

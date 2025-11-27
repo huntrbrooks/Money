@@ -334,6 +334,53 @@
     transform: scale(1);
     animation-play-state: running;
   }
+
+  .header-logo-shell {
+    position: relative;
+    display: inline-flex;
+    padding: clamp(0.3rem, 0.75vw, 0.9rem);
+    border-radius: clamp(2rem, 8vw, 4.5rem);
+    isolation: isolate;
+  }
+  .header-logo-shell::before {
+    content: "";
+    position: absolute;
+    inset: 12%;
+    border-radius: inherit;
+    background: radial-gradient(
+      circle at 35% 30%,
+      color-mix(in oklch, var(--accent) 40%, transparent),
+      color-mix(in oklch, var(--brand-pale-blue) 55%, transparent) 55%,
+      transparent 75%
+    );
+    filter: blur(18px);
+    opacity: 0.75;
+    z-index: 0;
+    animation: headerLogoPulse 11s ease-in-out infinite;
+  }
+  .header-logo-shell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid color-mix(in oklch, var(--accent) 38%, transparent);
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklch, var(--brand-pale-green) 20%, transparent),
+      color-mix(in oklch, var(--brand-teal) 25%, transparent)
+    );
+    opacity: 0.4;
+    mix-blend-mode: screen;
+    z-index: 1;
+    transform-origin: center;
+    animation: headerLogoOrbit 18s linear infinite;
+  }
+  .header-logo-img {
+    position: relative;
+    z-index: 2;
+    animation: headerLogoFloat 16s ease-in-out infinite;
+    will-change: transform;
+  }
 }
 
 @keyframes accordionGradientPan {
@@ -345,5 +392,49 @@
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+@keyframes headerLogoPulse {
+  0% {
+    opacity: 0.45;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.45;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes headerLogoOrbit {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes headerLogoFloat {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-logo-shell::before,
+  .header-logo-shell::after,
+  .header-logo-img {
+    animation: none !important;
   }
 }

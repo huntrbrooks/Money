@@ -42,8 +42,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   const config = await readSiteConfig()
   const hero = config.hero
+  const experiments = config.experiments ?? {}
   const homepageContent = config.homepage ?? {}
-  const experiments = config.experiments ?? { showNewsletterSection: true, showLeadMagnet: true }
   const valueProps = homepageContent.valueProps ?? []
   const testimonials = homepageContent.testimonials ?? []
   const homepageFaqs = homepageContent.faqs ?? []
@@ -82,7 +82,7 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-32">
           <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 items-center max-w-7xl mx-auto">
             {/* Left Column - Text */}
-            <div className="space-y-8 sm:space-y-10 lg:pr-12">
+            <div className="order-2 space-y-8 sm:space-y-10 lg:order-1 lg:pr-12">
               <div className="space-y-6">
                 <p className="text-[#6b7d86] text-xs uppercase tracking-[0.3em] font-semibold">
                   {hero.eyebrow ?? "Financial Trauma & Monetary Psychotherapy"}
@@ -99,11 +99,11 @@ export default async function HomePage() {
                 <p className="text-[var(--foreground)]/80">{hero.description}</p>
               </div>
 
-              <div className="pt-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="pt-4 flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
                 <Button
                   asChild
                   size="lg"
-                  className="w-full sm:w-auto bg-[#586621] hover:bg-[#4b571b] text-white border border-[#3d4514]/40 text-base h-14 px-10 font-semibold rounded-full shadow-[0_0_35px_rgba(146,157,91,0.45)]"
+                  className="w-full sm:w-auto min-w-[220px] bg-[#586621] hover:bg-[#4b571b] text-white border border-[#3d4514]/40 text-base h-14 px-10 font-semibold rounded-full shadow-[0_0_35px_rgba(146,157,91,0.45)] flex items-center justify-center gap-2"
                 >
                   <Link href={primaryCta.href} aria-label={primaryCta.label} data-analytics-id="hero-primary-cta">
                     {primaryCta.label}
@@ -114,7 +114,7 @@ export default async function HomePage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="w-full sm:w-auto bg-white/80 border border-[var(--foreground)]/20 text-[var(--foreground)] hover:border-[var(--foreground)]/60 text-base h-14 px-10 font-medium rounded-full"
+                  className="w-full sm:w-auto min-w-[220px] bg-white/85 border border-white/70 text-[var(--foreground)] hover:border-[var(--foreground)]/30 hover:bg-white text-base h-14 px-10 font-medium rounded-full flex items-center justify-center gap-2 shadow-[0_20px_35px_rgba(32,56,91,0.08)]"
                 >
                   <Link href={secondaryCta.href} aria-label={secondaryCta.label} data-analytics-id="hero-secondary-cta">
                     {secondaryCta.label}
@@ -122,19 +122,21 @@ export default async function HomePage() {
                 </Button>
               </div>
               {hero.stats && hero.stats.length > 0 && (
-                <div className="grid gap-3 pt-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-4 pt-6 sm:grid-cols-2 lg:grid-cols-3">
                   {hero.stats.map((stat, idx) => (
-                    <div
-                      key={`${stat.label}-${idx}`}
-                      className="rounded-2xl border border-white/40 bg-white/50 p-4 shadow-[0_12px_30px_rgba(32,56,91,0.1)] backdrop-blur"
-                    >
-                      <p className="font-serif text-3xl text-[var(--foreground)]">{stat.value}</p>
-                      <p className="text-sm font-semibold text-[var(--accent)] uppercase tracking-widest">
-                        {stat.label}
-                      </p>
-                      {stat.description && (
-                        <p className="text-sm text-[var(--foreground)]/70">{stat.description}</p>
-                      )}
+                    <div key={`${stat.label}-${idx}`} className="group relative h-full">
+                      <div className="absolute inset-0 rounded-[32px] bg-white/30 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100" />
+                      <div className="relative h-full rounded-[28px] border border-white/55 bg-white/80 px-6 py-8 text-center shadow-[0_25px_50px_rgba(32,56,91,0.12)] backdrop-blur-sm flex flex-col items-center">
+                        <p className="font-serif text-4xl sm:text-5xl text-[var(--foreground)] leading-tight">{stat.value}</p>
+                        <p className="mt-3 text-xs font-semibold text-[var(--accent)] uppercase tracking-[0.35em]">
+                          {stat.label}
+                        </p>
+                        {stat.description && (
+                          <p className="mt-4 text-sm text-[var(--foreground)]/70 leading-relaxed max-w-[16rem]">
+                            {stat.description}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -142,7 +144,7 @@ export default async function HomePage() {
             </div>
 
             {/* Right Column - Image */}
-            <div className="relative lg:pl-8">
+            <div className="order-1 lg:order-2 relative lg:pl-8">
               <div className="relative mx-auto w-full max-w-[32rem] sm:max-w-[48rem] md:max-w-[56rem]">
                 <div
                   aria-hidden="true"
