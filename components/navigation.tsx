@@ -29,7 +29,7 @@ export function Navigation() {
     { label: "Contact", href: "/#contact" },
   ]
   const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
-  const logoSrc = "/Logo.webp"
+  const logoSrc = "/logo.webp"
 
   return (
     <nav
@@ -104,7 +104,7 @@ export function Footer() {
   }, [])
   const links = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
   const brandName = cfg.brand?.name ?? "The Financial Therapist"
-  const footerLogoSrc = "/Logo.webp"
+  const footerLogoSrc = "/logo.webp"
 
   return (
     <footer className="bg-[var(--section-bg-1)] text-[var(--foreground)]">
