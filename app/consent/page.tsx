@@ -86,7 +86,7 @@ export default function ConsentPage() {
                 <p className="text-[var(--primary)] mt-2">Please read carefully and complete the acknowledgement below.</p>
               </div>
 
-              <div className="bg-white border border-[var(--secondary)] rounded-xl p-6 md:p-10 space-y-6">
+              <div className="bg-[var(--section-bg-2)] border border-[var(--secondary)] rounded-xl p-6 md:p-10 space-y-6">
                 <div className="space-y-4 text-[var(--primary)] leading-relaxed">
                   <p>Skip to Content</p>
                   <p className="text-[var(--foreground)] font-medium">The Financial Therapist</p>

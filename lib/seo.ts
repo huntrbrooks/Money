@@ -2,8 +2,7 @@ import type { Metadata } from "next"
 
 import { readSiteConfig } from "@/lib/config"
 import type { SiteConfig } from "@/lib/config"
-
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://financialabusetherapist.com"
+import { absoluteUrl, SITE_URL } from "@/lib/urls"
 
 const DEFAULT_TITLE = "Financial Abuse Therapist — Dan Lobel"
 const DEFAULT_DESCRIPTION =
@@ -43,15 +42,6 @@ type BuildMetadataInput = {
   modifiedTime?: string
   noIndex?: boolean
   noFollow?: boolean
-}
-
-export function absoluteUrl(path = "/"): string {
-  if (!path) return SITE_URL
-  try {
-    return new URL(path, SITE_URL).toString()
-  } catch {
-    return SITE_URL
-  }
 }
 
 export async function buildPageMetadata(options: BuildMetadataInput = {}): Promise<Metadata> {

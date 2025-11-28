@@ -79,7 +79,7 @@ export default async function AboutPage() {
                     <a
                       href={`mailto:${email}`}
                       aria-label={`Email Dan at ${email}`}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--primary)]/20 bg-white text-[var(--primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--primary)]/20 bg-[var(--section-bg-1)] text-[var(--primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
                     >
                       <Mail className="w-4 h-4" aria-hidden="true" />
                       <span className="text-sm">{email}</span>
@@ -87,7 +87,7 @@ export default async function AboutPage() {
                     <a
                       href={`tel:${phone.replace(/\s+/g, "")}`}
                       aria-label={`Call Dan on ${phone}`}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--primary)]/20 bg-white text-[var(--primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--primary)]/20 bg-[var(--section-bg-1)] text-[var(--primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
                     >
                       <Phone className="w-4 h-4" aria-hidden="true" />
                       <span className="text-sm">{phone}</span>
@@ -131,7 +131,7 @@ export default async function AboutPage() {
               </div>
               <div className="grid gap-6 md:grid-cols-2">
                 {focusAreas.map((area) => (
-                  <div key={area} className="rounded-2xl border border-[var(--secondary)] bg-white/70 p-6 shadow-sm space-y-3">
+                  <div key={area} className="rounded-2xl border border-[var(--secondary)] bg-[var(--section-bg-2)]/80 p-6 shadow-sm space-y-3">
                     <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)]/15 text-[var(--accent)] font-semibold text-lg uppercase">
                       {area.slice(0, 1)}
                     </span>
@@ -159,7 +159,7 @@ export default async function AboutPage() {
               {(config.about?.paragraphs ?? []).map((paragraph, idx) => (
                 <p key={idx}>{paragraph}</p>
               ))}
-              <div className="rounded-2xl border border-[var(--secondary)] bg-white/80 p-8 space-y-4">
+              <div className="rounded-2xl border border-[var(--secondary)] bg-[var(--section-bg-1)]/85 p-8 space-y-4">
                 <p className="text-xs uppercase tracking-[0.15em] text-[var(--primary)] font-bold">Ready when you are</p>
                 <p className="text-2xl font-serif text-[var(--foreground)]">
                   Therapy is collaborative. You choose the format, pace, and boundaries that protect your nervous system.

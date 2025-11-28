@@ -23,7 +23,7 @@ export function CrisisBanner({ resources, intervalMs = 3500 }: CrisisBannerProps
   if (!items.length) return null
 
   return (
-    <div className="relative mx-auto w-full max-w-2xl h-16 overflow-hidden rounded-lg border border-[var(--secondary)] bg-white/80">
+    <div className="relative mx-auto w-full max-w-2xl h-16 overflow-hidden rounded-lg border border-[var(--secondary)] bg-[var(--section-bg-1)]/80">
       {items.map((it, i) => (
         <div
           key={it.name}

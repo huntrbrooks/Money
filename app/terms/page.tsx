@@ -30,7 +30,7 @@ export default function TermsPage() {
           </a>
           .
         </p>
-        <div className="w-full overflow-hidden rounded-md border border-[var(--secondary)] bg-white">
+        <div className="w-full overflow-hidden rounded-md border border-[var(--secondary)] bg-[var(--section-bg-1)]">
           <iframe
             title="Terms of Service"
             src={viewerUrl}

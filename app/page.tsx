@@ -68,7 +68,7 @@ export default async function HomePage() {
   const secondaryCta = hero.secondaryCta ?? { label: "Learn More", href: "/monetary-psychotherapy" }
 
   return (
-    <div className="min-h-screen bg-muted">
+    <div className="min-h-screen bg-[var(--section-bg-2)]">
       <Navigation />
       <main>
 
@@ -76,7 +76,7 @@ export default async function HomePage() {
         className="relative overflow-hidden"
         style={{
           background:
-            "linear-gradient(180deg, #6ca4ac 0%, rgba(108,164,172,0.9) 30%, rgba(108,164,172,0.75) 58%, rgba(215,233,236,0.85) 82%, #d7e9ec 100%)",
+            "linear-gradient(180deg, #d7e9ec 0%, rgba(215,233,236,0.95) 20%, rgba(108,164,172,0.85) 55%, rgba(108,164,172,0.7) 72%, rgba(229,238,210,0.9) 90%, #e5eed2 100%)",
         }}
       >
         <div className="container mx-auto px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-32">
@@ -103,7 +103,7 @@ export default async function HomePage() {
                 <Button
                   asChild
                   size="lg"
-                  className="w-full sm:w-auto min-w-[220px] bg-[#586621] hover:bg-[#4b571b] text-white border border-[#3d4514]/40 text-base h-14 px-10 font-semibold rounded-full shadow-[0_0_35px_rgba(146,157,91,0.45)] flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto min-w-[220px] bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-[var(--accent-foreground)] border border-[var(--accent)]/40 text-base h-14 px-10 font-semibold rounded-full shadow-[0_0_35px_rgba(222,236,79,0.35)] flex items-center justify-center gap-2"
                 >
                   <Link href={primaryCta.href} aria-label={primaryCta.label} data-analytics-id="hero-primary-cta">
                     {primaryCta.label}
@@ -114,33 +114,13 @@ export default async function HomePage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="w-full sm:w-auto min-w-[220px] bg-white/85 border border-white/70 text-[var(--foreground)] hover:border-[var(--foreground)]/30 hover:bg-white text-base h-14 px-10 font-medium rounded-full flex items-center justify-center gap-2 shadow-[0_20px_35px_rgba(32,56,91,0.08)]"
+                  className="w-full sm:w-auto min-w-[220px] bg-[var(--section-bg-2)]/85 border border-[var(--section-bg-2)]/70 text-[var(--foreground)] hover:border-[var(--foreground)]/30 hover:bg-[var(--section-bg-1)] text-base h-14 px-10 font-medium rounded-full flex items-center justify-center gap-2 shadow-[0_20px_35px_rgba(32,56,91,0.08)]"
                 >
                   <Link href={secondaryCta.href} aria-label={secondaryCta.label} data-analytics-id="hero-secondary-cta">
                     {secondaryCta.label}
                   </Link>
                 </Button>
               </div>
-              {hero.stats && hero.stats.length > 0 && (
-                <div className="grid gap-4 pt-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {hero.stats.map((stat, idx) => (
-                    <div key={`${stat.label}-${idx}`} className="group relative h-full">
-                      <div className="absolute inset-0 rounded-[32px] bg-white/30 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100" />
-                      <div className="relative h-full rounded-[28px] border border-white/55 bg-white/80 px-6 py-8 text-center shadow-[0_25px_50px_rgba(32,56,91,0.12)] backdrop-blur-sm flex flex-col items-center">
-                        <p className="font-serif text-4xl sm:text-5xl text-[var(--foreground)] leading-tight">{stat.value}</p>
-                        <p className="mt-3 text-xs font-semibold text-[var(--accent)] uppercase tracking-[0.35em]">
-                          {stat.label}
-                        </p>
-                        {stat.description && (
-                          <p className="mt-4 text-sm text-[var(--foreground)]/70 leading-relaxed max-w-[16rem]">
-                            {stat.description}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
 
             {/* Right Column - Image */}
@@ -150,10 +130,10 @@ export default async function HomePage() {
                   aria-hidden="true"
                   className="absolute inset-0 translate-x-5 translate-y-5 rounded-[40px] bg-[var(--foreground)]/5 blur-[2px]"
                 />
-                <div className="relative rounded-[36px] bg-white/85 p-2 sm:p-3 md:p-4 shadow-[0_35px_60px_rgba(32,56,91,0.18)] backdrop-blur-sm">
+                <div className="relative rounded-[42px] border-[6px] border-[#6ca4ac] bg-[var(--section-bg-2)]/95 p-2 sm:p-3 md:p-4 shadow-[0_35px_60px_rgba(32,56,91,0.18)] backdrop-blur-sm">
                   <div className="rounded-[30px] overflow-hidden shadow-inner aspect-[4/3] sm:aspect-auto">
                     <img
-                      src={hero.imageUrl || "/og.png"}
+                      src={hero.imageUrl || "/og.png?v=20251128"}
                       alt="Portrait of Dan Lobel, counsellor in Melbourne"
                       className="w-full h-full object-cover object-center"
                     />
@@ -166,7 +146,7 @@ export default async function HomePage() {
       </section>
 
       {valueProps.length > 0 && (
-        <section className="py-12 sm:py-16 md:py-24 bg-white">
+        <section className="py-12 sm:py-16 md:py-24 bg-[var(--section-bg-1)]">
           <div className="container mx-auto px-4 sm:px-6 md:px-8">
             <div className="max-w-5xl mx-auto space-y-8 text-center">
               <div className="space-y-2">
@@ -318,7 +298,7 @@ export default async function HomePage() {
                 {testimonials.map((testimonial, idx) => (
                   <div
                     key={`testimonial-${idx}`}
-                    className="rounded-3xl border border-[var(--secondary)] bg-white p-6 text-left shadow-[0_20px_40px_rgba(32,56,91,0.08)]"
+                    className="rounded-3xl border border-[var(--secondary)] bg-[var(--section-bg-2)] p-6 text-left shadow-[0_20px_40px_rgba(32,56,91,0.08)]"
                   >
                     <p className="text-[var(--primary)] italic leading-relaxed">“{testimonial.quote}”</p>
                     <div className="mt-6">
@@ -401,7 +381,7 @@ export default async function HomePage() {
                   Questions clients ask before booking
                 </h2>
               </div>
-              <Accordion type="single" collapsible className="bg-white rounded-2xl border border-[var(--secondary)] divide-y">
+              <Accordion type="single" collapsible className="bg-[var(--section-bg-2)] rounded-2xl border border-[var(--secondary)] divide-y">
                 {homepageFaqs.map((faq, idx) => (
                   <AccordionItem key={`homepage-faq-${idx}`} value={`homepage-faq-${idx}`} className="px-4 sm:px-6">
                     <AccordionTrigger className="text-left text-lg font-serif text-[var(--foreground)] py-4">

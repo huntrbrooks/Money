@@ -215,7 +215,7 @@ export default function IntakePage() {
                   <div
                     key={step.label}
                     className={`rounded-2xl border p-4 text-left ${
-                      step.complete ? 'border-[var(--accent)] bg-[var(--accent)]/10' : 'border-[var(--secondary)] bg-white'
+                      step.complete ? 'border-[var(--accent)] bg-[var(--accent)]/10' : 'border-[var(--secondary)] bg-[var(--section-bg-1)]'
                     }`}
                   >
                     <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary)]/80">Step {idx + 1}</p>
@@ -231,7 +231,7 @@ export default function IntakePage() {
                 .
               </p>
 
-              <form onSubmit={handleSubmit} className="bg-white border border-[var(--secondary)] rounded-xl p-6 md:p-10 space-y-8">
+              <form onSubmit={handleSubmit} className="bg-[var(--section-bg-2)] border border-[var(--secondary)] rounded-xl p-6 md:p-10 space-y-8">
                 <div className="space-y-1">
                   <p className="text-sm text-[var(--primary)]/80">Skip to Content</p>
                   <p className="text-[var(--foreground)] font-medium">The Financial Therapist</p>

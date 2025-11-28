@@ -33,7 +33,7 @@ export default async function VlogIndexPage() {
               <Link
                 key={video.slug}
                 href={`/vlog/${video.slug}`}
-                className="rounded-3xl border border-[var(--secondary)] bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_25px_50px_rgba(32,56,91,0.1)]"
+                className="rounded-3xl border border-[var(--secondary)] bg-[var(--section-bg-1)] p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_25px_50px_rgba(32,56,91,0.1)]"
               >
                 <div className="aspect-video rounded-2xl bg-[var(--section-bg-1)] mb-4 flex items-center justify-center text-[var(--primary)]/60 text-sm uppercase tracking-[0.3em]">
                   {video.platform ?? "Video"}

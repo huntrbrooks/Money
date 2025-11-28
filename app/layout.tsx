@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { readSiteConfig } from "@/lib/config"
-import { SITE_URL } from "@/lib/seo"
+import { SITE_URL } from "@/lib/urls"
 import { AnalyticsScripts } from "@/components/analytics-scripts"
 
 export const metadata: Metadata = {

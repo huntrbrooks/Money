@@ -47,7 +47,7 @@ export function SocialShare({ url, title, summary }: SocialShareProps) {
   }
 
   return (
-    <div className="rounded-2xl border border-[var(--secondary)] bg-white/80 p-4 shadow-sm">
+    <div className="rounded-2xl border border-[var(--secondary)] bg-[var(--section-bg-1)]/80 p-4 shadow-sm">
       <div className="flex flex-wrap items-center gap-3">
         <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[var(--primary)]">Share</p>
         <div className="flex flex-wrap gap-2">

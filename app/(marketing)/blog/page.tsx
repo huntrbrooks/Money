@@ -34,7 +34,7 @@ export default async function BlogIndexPage() {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="rounded-3xl border border-[var(--secondary)] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(32,56,91,0.1)]"
+                className="rounded-3xl border border-[var(--secondary)] bg-[var(--section-bg-1)] p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(32,56,91,0.1)]"
               >
                 <p className="text-xs uppercase tracking-[0.2em] text-[var(--primary)] font-semibold">
                   {new Date(post.date).toLocaleDateString("en-AU", { dateStyle: "medium" })}

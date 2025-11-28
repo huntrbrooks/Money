@@ -67,7 +67,7 @@ export function LeadMagnet({ content }: LeadMagnetProps) {
             <button
               type="button"
               onClick={handleDismiss}
-              className="rounded-full bg-white/10 p-1 text-white hover:bg-white/20"
+              className="rounded-full bg-[var(--section-bg-2)]/20 p-1 text-white hover:bg-[var(--section-bg-1)]/30"
               aria-label="Dismiss offer"
             >
               <X className="h-4 w-4" />
@@ -76,7 +76,7 @@ export function LeadMagnet({ content }: LeadMagnetProps) {
           <Link
             href={ctaHref}
             onClick={handleClick}
-            className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-[#586621] px-6 py-3 text-sm font-semibold uppercase tracking-wide text-white shadow-[0_0_25px_rgba(146,157,91,0.45)]"
+            className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-semibold uppercase tracking-wide text-[var(--accent-foreground)] shadow-[0_0_25px_rgba(222,236,79,0.3)]"
           >
             {ctaLabel}
           </Link>
@@ -90,7 +90,7 @@ export function LeadMagnet({ content }: LeadMagnetProps) {
           showDesktop && !dismissed ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0 pointer-events-none"
         }`}
       >
-        <div className="w-[360px] rounded-[32px] border border-[var(--secondary)] bg-white p-6 shadow-[0_30px_70px_rgba(32,56,91,0.25)]">
+        <div className="w-[360px] rounded-[32px] border border-[var(--secondary)] bg-[var(--section-bg-2)] p-6 shadow-[0_30px_70px_rgba(32,56,91,0.25)]">
           <div className="flex items-start gap-3">
             <div className="flex-1 space-y-2">
               <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary)] font-semibold">{content.heading}</p>

@@ -38,8 +38,8 @@ export function Navigation() {
       <div
         className="relative overflow-visible"
         style={{
-          background:
-            "linear-gradient(180deg, #929d5b 0%, rgba(146,157,91,0.85) 18%, rgba(108,164,172,0.92) 58%, #6ca4ac 95%)",
+          background: "linear-gradient(180deg, #929d5b 0%, #6ca4ac 100%)",
+          boxShadow: "0 22px 55px rgba(32,56,91,0.18)",
         }}
       >
         <div className="relative z-10">
@@ -65,7 +65,7 @@ export function Navigation() {
               <div className="relative">
                 <button
                   onClick={() => setIsMenuOpen((o) => !o)}
-                  className="flex flex-col items-center justify-center gap-1.5 w-14 h-14 rounded-full border border-white/40 text-white bg-[#6ca4ac]/90 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.2)] transition-colors"
+                  className="flex flex-col items-center justify-center gap-1.5 w-14 h-14 rounded-full border border-[var(--section-bg-2)]/60 text-white bg-[#6ca4ac]/90 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.2)] transition-colors"
                   aria-expanded={isMenuOpen}
                   aria-haspopup="menu"
                   aria-label="Toggle navigation menu"
@@ -78,7 +78,7 @@ export function Navigation() {
                 {isMenuOpen && (
                   <div
                     role="menu"
-                    className="absolute right-0 mt-3 w-56 rounded-2xl bg-[#6ca4ac] text-white shadow-[0_20px_35px_rgba(32,56,91,0.15)] ring-1 ring-white/25 overflow-hidden"
+                    className="absolute right-0 mt-3 w-56 rounded-2xl bg-[#6ca4ac] text-white shadow-[0_20px_35px_rgba(32,56,91,0.15)] ring-1 ring-[var(--section-bg-2)]/25 overflow-hidden"
                   >
                     <div className="py-1">
                       {links.map((l) => (
@@ -86,7 +86,7 @@ export function Navigation() {
                           key={l.href}
                           href={l.href}
                           onClick={() => setIsMenuOpen(false)}
-                          className="block px-4 py-2 text-white/90 hover:bg-white/10 transition-colors"
+                          className="block px-4 py-2 text-white/90 hover:bg-[var(--section-bg-1)]/20 transition-colors"
                         >
                           {l.label}
                         </Link>
@@ -98,13 +98,6 @@ export function Navigation() {
             </div>
           </div>
         </div>
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-[-1px] h-16"
-          style={{
-            background: "linear-gradient(180deg, rgba(108,164,172,0.65) 0%, rgba(108,164,172,0.9) 55%, #6ca4ac 100%)",
-          }}
-        />
       </div>
     </nav>
   )

@@ -3,7 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
- :root {
+:root {
   /* Core palette (from brand image) */
   --brand-navy: #20385B;
   --brand-teal: #6CA4AC;
@@ -13,11 +13,11 @@
   --brand-citrus: #DEEC4F;
 
   /* Base tokens driven by the palette */
-  --background: #FFFFFF;
+  --background: var(--brand-pale-green);
   --foreground: var(--brand-navy);
-  --card: #FFFFFF;
+  --card: var(--brand-pale-blue);
   --card-foreground: var(--brand-navy);
-  --popover: #FFFFFF;
+  --popover: var(--brand-pale-blue);
   --popover-foreground: var(--brand-navy);
   /* Keep primary as teal for non-CTA buttons and links */
   --primary: var(--brand-teal);
@@ -25,7 +25,7 @@
   /* Use teal for non‑CTA filled buttons */
   --secondary: var(--brand-teal);
   --secondary-foreground: var(--brand-navy);
-  --muted: color-mix(in oklch, var(--brand-pale-blue) 50%, white);
+  --muted: color-mix(in oklch, var(--brand-pale-blue) 55%, var(--brand-pale-green));
   --muted-foreground: color-mix(in oklch, var(--brand-navy) 55%, black);
   /* Accent doubles as primary CTA color across the site */
   --accent: var(--brand-citrus);
@@ -42,11 +42,11 @@
   --chart-4: var(--brand-pale-blue);
   --chart-5: var(--brand-navy);
   --radius: 0.5rem;
-  --sidebar: #FFFFFF;
+  --sidebar: var(--brand-pale-green);
   --sidebar-foreground: var(--brand-navy);
   --sidebar-primary: var(--brand-teal);
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: color-mix(in oklch, var(--brand-pale-blue) 60%, white);
+  --sidebar-accent: color-mix(in oklch, var(--brand-pale-blue) 60%, var(--brand-pale-green));
   --sidebar-accent-foreground: var(--brand-navy);
   --sidebar-border: color-mix(in oklch, var(--brand-navy) 10%, transparent);
   --sidebar-ring: var(--brand-teal);
@@ -61,7 +61,7 @@
   /* Section divider palette (aligned to brand) */
   --section-bg-1: var(--brand-pale-green);
   --section-bg-2: var(--brand-pale-blue);
-  --section-bg-3: #FFFFFF;
+  --section-bg-3: var(--brand-pale-blue);
   /* Section foregrounds chosen for strong juxtaposition */
   --section-fg-1: var(--brand-navy);
   --section-fg-2: var(--brand-navy);
@@ -219,7 +219,7 @@
     @apply list-decimal pl-6 text-[var(--primary)] space-y-2;
   }
   .mdx-content details {
-    @apply border border-[var(--secondary)] rounded-xl p-4 bg-white/80;
+    @apply border border-[var(--secondary)] rounded-xl p-4 bg-[var(--section-bg-1)]/80;
   }
   .mdx-content summary {
     @apply cursor-pointer font-semibold text-[var(--foreground)];
@@ -310,9 +310,9 @@
     border-radius: inherit;
     background-image: linear-gradient(
       120deg,
-      color-mix(in oklch, var(--accent) 55%, white),
-      color-mix(in oklch, var(--primary) 40%, white),
-      color-mix(in oklch, var(--brand-asparagus) 45%, white)
+      color-mix(in oklch, var(--accent) 55%, var(--brand-pale-blue)),
+      color-mix(in oklch, var(--primary) 40%, var(--brand-pale-green)),
+      color-mix(in oklch, var(--brand-asparagus) 45%, var(--brand-pale-blue))
     );
     background-size: 240% 240%;
     opacity: 0;
@@ -338,42 +338,33 @@
   .header-logo-shell {
     position: relative;
     display: inline-flex;
-    padding: clamp(0.3rem, 0.75vw, 0.9rem);
+    padding: clamp(0.35rem, 0.8vw, 1rem) clamp(0.8rem, 2vw, 2.25rem);
     border-radius: clamp(2rem, 8vw, 4.5rem);
     isolation: isolate;
+    background: linear-gradient(135deg, rgba(229, 238, 210, 0.78), rgba(215, 233, 236, 0.34));
+    border: 1px solid rgba(215, 233, 236, 0.65);
+    box-shadow: 0 22px 40px rgba(32, 56, 91, 0.18);
+    backdrop-filter: blur(12px);
   }
   .header-logo-shell::before {
     content: "";
     position: absolute;
-    inset: 12%;
+    inset: 6%;
     border-radius: inherit;
-    background: radial-gradient(
-      circle at 35% 30%,
-      color-mix(in oklch, var(--accent) 40%, transparent),
-      color-mix(in oklch, var(--brand-pale-blue) 55%, transparent) 55%,
-      transparent 75%
-    );
-    filter: blur(18px);
-    opacity: 0.75;
+    background: radial-gradient(circle at 50% 45%, rgba(229, 238, 210, 0.95), rgba(215, 233, 236, 0.15) 70%);
+    opacity: 0.55;
     z-index: 0;
-    animation: headerLogoPulse 11s ease-in-out infinite;
   }
   .header-logo-shell::after {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    border: 1px solid color-mix(in oklch, var(--accent) 38%, transparent);
-    background: linear-gradient(
-      135deg,
-      color-mix(in oklch, var(--brand-pale-green) 20%, transparent),
-      color-mix(in oklch, var(--brand-teal) 25%, transparent)
-    );
-    opacity: 0.4;
-    mix-blend-mode: screen;
+    border: 1.5px solid rgba(30, 64, 104, 0.1);
+    box-shadow: 0 0 0 6px rgba(229, 238, 210, 0.25);
+    opacity: 0.65;
     z-index: 1;
-    transform-origin: center;
-    animation: headerLogoOrbit 18s linear infinite;
+    pointer-events: none;
   }
   .header-logo-img {
     position: relative;

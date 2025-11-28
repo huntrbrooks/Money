@@ -119,7 +119,7 @@ export default function EnquiryPage() {
                   <div
                     key={step.label}
                     className={`rounded-2xl border p-4 text-left ${
-                      step.complete ? 'border-[var(--accent)] bg-[var(--accent)]/10' : 'border-[var(--secondary)] bg-white'
+                      step.complete ? 'border-[var(--accent)] bg-[var(--accent)]/10' : 'border-[var(--secondary)] bg-[var(--section-bg-1)]'
                     }`}
                   >
                     <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary)]/80">Step {idx + 1}</p>
@@ -128,7 +128,7 @@ export default function EnquiryPage() {
                 ))}
               </div>
 
-              <form onSubmit={handleSubmit} className="bg-white border border-[var(--secondary)] rounded-xl p-6 md:p-10 space-y-6">
+              <form onSubmit={handleSubmit} className="bg-[var(--section-bg-2)] border border-[var(--secondary)] rounded-xl p-6 md:p-10 space-y-6">
                 <div>
                   <p className="text-sm text-[var(--primary)]/80">Name <span className="text-[var(--accent)]">(required)</span></p>
                   <div className="grid gap-4 md:grid-cols-2 mt-2">
@@ -199,7 +199,7 @@ export default function EnquiryPage() {
                   <Label htmlFor="preferredFormat">Preferred session format</Label>
                   <select
                     id="preferredFormat"
-                    className="w-full rounded-md border border-input bg-white px-3 py-2 text-sm text-[var(--foreground)]"
+                    className="w-full rounded-md border border-input bg-[var(--section-bg-1)] px-3 py-2 text-sm text-[var(--foreground)]"
                     value={form.preferredFormat}
                     onChange={(e) => setForm({ ...form, preferredFormat: e.target.value })}
                   >

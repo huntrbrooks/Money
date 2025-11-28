@@ -68,7 +68,7 @@ export default async function ContemporaryIntegrativeCounsellingPage() {
           <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-6xl mx-auto grid gap-10 md:grid-cols-3">
               {pillars.map((pillar) => (
-                <div key={pillar.title} className="rounded-3xl border border-[var(--secondary)] bg-white p-6 space-y-3 shadow-sm">
+                <div key={pillar.title} className="rounded-3xl border border-[var(--secondary)] bg-[var(--section-bg-1)] p-6 space-y-3 shadow-sm">
                   <p className="text-xs uppercase tracking-[0.2em] text-[var(--accent)] font-semibold">Pillar</p>
                   <h3 className="font-serif text-2xl text-[var(--foreground)]">{pillar.title}</h3>
                   <p className="text-[var(--primary)] leading-relaxed">{pillar.detail}</p>
@@ -105,7 +105,7 @@ export default async function ContemporaryIntegrativeCounsellingPage() {
                 {coreValues.map((value) => (
                   <span
                     key={value}
-                    className="px-5 py-2 bg-white text-[var(--primary)] text-sm rounded-full border border-[var(--primary)]/20"
+                    className="px-5 py-2 bg-[var(--section-bg-1)] text-[var(--primary)] text-sm rounded-full border border-[var(--primary)]/20"
                   >
                     {value}
                   </span>

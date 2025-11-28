@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next"
 
 import { getAllPostsMeta, getAllVideosMeta } from "@/lib/mdx"
-import { SITE_URL } from "@/lib/seo"
+import { SITE_URL } from "@/lib/urls"
 
 type RouteConfig = {
   path: string

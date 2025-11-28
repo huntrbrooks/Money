@@ -73,7 +73,7 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
     primary: "#6CA4AC",
     secondary: "#E5EED2",
     accent: "#929D5B",
-    background: "#FFFFFF",
+    background: "#E5EED2",
     foreground: "#20385B",
     radius: "0.5rem",
     fontSans: "",
@@ -321,19 +321,19 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
               <p className="text-sm opacity-80">The Financial Therapist</p>
              </div>
              <div className="flex items-center gap-4">
-               <Button
-                 variant="ghost"
-                 size="sm"
-                 className="hover:bg-white/10"
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hover:bg-[var(--section-bg-1)]/20"
                  onClick={() => window.open("/", "_blank")}
                >
                  <Eye className="w-4 h-4 mr-2" />
                  Preview Site
                </Button>
-               <Button
-                 variant="ghost"
-                 size="sm"
-                 className="hover:bg-white/10"
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hover:bg-[var(--section-bg-1)]/20"
                  onClick={logout}
                >
                  <LogOut className="w-4 h-4 mr-2" />

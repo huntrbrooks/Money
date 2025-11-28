@@ -50,7 +50,7 @@ export default async function ClientCarePage() {
 
         <section className="py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 grid gap-6 lg:grid-cols-2">
-            <Card className="bg-white/90">
+            <Card className="bg-[var(--section-bg-2)]/90">
               <CardHeader>
                 <CardTitle>Session preparation (5 minutes)</CardTitle>
               </CardHeader>
@@ -62,7 +62,7 @@ export default async function ClientCarePage() {
                 </ul>
               </CardContent>
             </Card>
-            <Card className="bg-white/90">
+            <Card className="bg-[var(--section-bg-2)]/90">
               <CardHeader>
                 <CardTitle>Aftercare ritual</CardTitle>
               </CardHeader>
@@ -88,7 +88,7 @@ export default async function ClientCarePage() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="rounded-2xl border border-[var(--secondary)] bg-white p-4 text-[var(--primary)] hover:shadow-md"
+                    className="rounded-2xl border border-[var(--secondary)] bg-[var(--section-bg-1)] p-4 text-[var(--primary)] hover:shadow-md"
                   >
                     {item.label}
                   </Link>
@@ -117,7 +117,7 @@ export default async function ClientCarePage() {
           </div>
         </section>
 
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-[var(--section-bg-1)]">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 space-y-6">
             <div className="text-center space-y-2">
               <h3 className="font-serif text-3xl text-[var(--foreground)] font-light">Crisis & helplines</h3>

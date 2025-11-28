@@ -4,7 +4,7 @@
     "primary": "#6CA4AC",
     "secondary": "#E5EED2",
     "accent": "#929D5B",
-    "background": "#FFFFFF",
+    "background": "#E5EED2",
     "foreground": "#20385B",
     "radius": "0.5rem",
     "fontSans": "\"Geist\", system-ui, -apple-system, Segoe UI, Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", \"Liberation Sans\", sans-serif",
@@ -13,7 +13,7 @@
   "seo": {
     "title": "Financial Trauma & Monetary Psychotherapy | Financial Abuse Therapist — Dan Lobel",
     "description": "Financial trauma therapy in Melbourne for women. Heal money shame and anxiety with compassionate, trauma‑informed counselling and monetary psychotherapy. Safe, inclusive, gender‑aware care.",
-    "ogImage": "/og.jpg"
+    "ogImage": "/og.png"
   },
   "brand": {
     "name": "Financial Abuse Therapist",
@@ -57,7 +57,7 @@
     "title": "Reclaim Your Power. Heal Your Relationship With Money.",
     "subtitle": "with Dan Lobel, D.Couns., B.Couns., MCouns&Psych",
     "description": "Trauma-informed counselling for financial abuse recovery, economic stress, and nervous-system-aware money work.",
-    "imageUrl": "/og.png",
+    "imageUrl": "/og.png?v=20251128",
     "primaryCta": {
       "label": "Book a Session",
       "href": "/#book"

@@ -125,7 +125,7 @@ export default async function MonetaryPsychotherapyPage() {
               {therapeuticPrinciples.map((principle) => (
                 <div
                   key={principle.title}
-                  className="rounded-3xl border border-[var(--secondary)] bg-white p-6 shadow-[0_20px_60px_rgba(32,56,91,0.08)]"
+                  className="rounded-3xl border border-[var(--secondary)] bg-[var(--section-bg-1)] p-6 shadow-[0_20px_60px_rgba(32,56,91,0.08)]"
                 >
                   <p className="text-xs uppercase tracking-[0.2em] text-[var(--accent)] font-semibold">Principle</p>
                   <h3 className="font-serif text-2xl text-[var(--foreground)] mt-2">{principle.title}</h3>

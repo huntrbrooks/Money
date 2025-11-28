@@ -16,7 +16,7 @@ const schedulerPoints = [
 
 export function BookingScheduler({ showEmbedToggle = true }: BookingSchedulerProps) {
   return (
-    <div className="space-y-8 rounded-[40px] border border-[#d3dcd9] bg-white/85 p-5 sm:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
+    <div className="space-y-8 rounded-[40px] border border-[#d3dcd9] bg-[var(--section-bg-1)]/85 p-5 sm:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
       <div className="grid gap-8 lg:gap-10 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="space-y-5 text-[#4a5c63]">
           <p className="text-xs uppercase tracking-[0.25em] text-[#5a7264]">Secure checkout</p>
@@ -35,7 +35,7 @@ export function BookingScheduler({ showEmbedToggle = true }: BookingSchedulerPro
           </ul>
         </div>
 
-        <div className="rounded-[28px] border border-[#c7d1cc] bg-[#f8faf6] p-5 sm:p-6 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.7)]">
+        <div className="rounded-[28px] border border-[#c7d1cc] bg-[var(--section-bg-2)] p-5 sm:p-6 shadow-[inset_0_0_0_1px_rgba(229,238,210,0.85)]">
           <div className="space-y-4 text-[#33444b]">
             <p className="text-sm leading-relaxed">
               Need help deciding on a format? Email dan@themelbournecounsellor.com.au or call 0467&nbsp;477&nbsp;786 — a
@@ -44,7 +44,7 @@ export function BookingScheduler({ showEmbedToggle = true }: BookingSchedulerPro
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button
                 asChild
-                className="flex-1 rounded-full bg-[#7b8c45] text-white hover:bg-[#6d7c39] focus-visible:ring-[#7b8c45]"
+                className="flex-1 rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90 focus-visible:ring-[var(--accent)]"
               >
                 <a href={SCHEDULER_URL} target="_blank" rel="noopener noreferrer">
                   Launch secure scheduler
@@ -53,7 +53,7 @@ export function BookingScheduler({ showEmbedToggle = true }: BookingSchedulerPro
               <Button
                 asChild
                 variant="outline"
-                className="flex-1 rounded-full border-[#c8d4cf] bg-white text-[#3f4f57] hover:bg-[#f4f7f4]"
+                className="flex-1 rounded-full border-[#c8d4cf] bg-[var(--section-bg-1)] text-[#3f4f57] hover:bg-[var(--section-bg-1)]/90"
               >
                 <a href="mailto:dan@themelbournecounsellor.com.au">Email Dan instead</a>
               </Button>
@@ -67,13 +67,13 @@ export function BookingScheduler({ showEmbedToggle = true }: BookingSchedulerPro
       </div>
 
       {showEmbedToggle && (
-        <details className="group rounded-[32px] border border-dashed border-[#c8d4cf] bg-white/90 p-5 sm:p-6">
+        <details className="group rounded-[32px] border border-dashed border-[#c8d4cf] bg-[var(--section-bg-2)]/90 p-5 sm:p-6">
           <summary className="flex cursor-pointer items-center justify-between gap-4 text-sm font-semibold text-[#4a5c63] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7b8c45] focus-visible:ring-offset-2 list-none">
             <span>Prefer to stay on this page? Use the embedded scheduler</span>
             <span className="text-base text-[#7b8c45] transition-transform duration-200 group-open:rotate-45">+</span>
           </summary>
           <div className="mt-5 space-y-4">
-            <div className="overflow-hidden rounded-[24px] border border-[#dfe6d5] bg-white shadow-inner">
+            <div className="overflow-hidden rounded-[24px] border border-[#dfe6d5] bg-[var(--section-bg-1)] shadow-inner">
               <iframe
                 src={SCHEDULER_EMBED_URL}
                 title="Embedded Acuity scheduler"

@@ -2,8 +2,6 @@ import { NextResponse } from "next/server"
 import { readSiteConfig } from "@/lib/config"
 import { sendLeadToCrm } from "@/lib/crm"
 
-export const runtime = "nodejs"
-
 type EnquiryPayload = {
   firstName?: string
   lastName?: string

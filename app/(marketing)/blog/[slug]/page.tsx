@@ -3,7 +3,8 @@ import Link from "next/link"
 import Script from "next/script"
 import { notFound } from "next/navigation"
 import { getAllPostsMeta, getPostBySlug } from "@/lib/mdx"
-import { absoluteUrl, buildArticleSchema, buildPageMetadata } from "@/lib/seo"
+import { buildArticleSchema, buildPageMetadata } from "@/lib/seo"
+import { absoluteUrl } from "@/lib/urls"
 import { SocialShare } from "@/components/social-share"
 
 type BlogPageProps = {
@@ -74,7 +75,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
               Book a Session
             </Link>
             <Link
-              className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-white text-[var(--accent)] font-semibold border border-[var(--accent)] hover:bg-[var(--secondary)]/20"
+              className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--section-bg-1)] text-[var(--accent)] font-semibold border border-[var(--accent)] hover:bg-[var(--section-bg-2)]/60"
               href="/enquiry"
               aria-label="Contact Dan Lobel"
               data-analytics-id="blog-contact"

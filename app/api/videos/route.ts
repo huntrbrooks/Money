@@ -5,8 +5,6 @@ import { access, constants, mkdir, writeFile } from "fs/promises"
 import { AUTH_COOKIE_NAME, getEnvVar, verifyAuthToken } from "@/lib/auth"
 import { getAllVideosMeta } from "@/lib/mdx"
 
-export const runtime = "nodejs"
-
 async function requireAuth() {
   const cookieStore = await cookies()
   const token = cookieStore.get(AUTH_COOKIE_NAME)?.value

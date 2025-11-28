@@ -3,8 +3,6 @@ import { readSiteConfig, writeSiteConfig, type SiteConfig } from "@/lib/config"
 import { cookies } from "next/headers"
 import { AUTH_COOKIE_NAME, getEnvVar, verifyAuthToken } from "@/lib/auth"
 
-export const runtime = "nodejs"
-
 function parseColor(input: string): string | null {
   const hex = input.match(/#([0-9a-f]{3,8})/i)?.[0]
   if (hex) return hex

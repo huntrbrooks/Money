@@ -3,8 +3,6 @@ import { readSiteConfig, writeSiteConfig, type SiteConfig } from "@/lib/config"
 import { cookies } from "next/headers"
 import { AUTH_COOKIE_NAME, getEnvVar, verifyAuthToken } from "@/lib/auth"
 
-export const runtime = "nodejs"
-
 export async function GET() {
   const config = await readSiteConfig()
   return NextResponse.json(config)

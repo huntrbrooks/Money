@@ -70,14 +70,14 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
 
   return (
     <div className="space-y-12">
-      <div className="rounded-[40px] border border-[#d3dcd9] bg-white/85 p-5 sm:p-8 lg:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
+      <div className="rounded-[40px] border border-[#d3dcd9] bg-[var(--section-bg-1)]/85 p-5 sm:p-8 lg:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
         <div className="grid gap-5 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {options.map((option) => {
             const Icon = getModeIcon(option.mode)
             return (
               <article
                 key={option.format}
-                className="group flex h-full flex-col rounded-[28px] border border-[#d4ddd8] bg-[#f8faf6] p-6 shadow-[0_25px_55px_rgba(42,63,70,0.12)] transition hover:-translate-y-1 hover:shadow-[0_35px_80px_rgba(42,63,70,0.16)]"
+                className="group flex h-full flex-col rounded-[28px] border border-[#d4ddd8] bg-[var(--section-bg-2)] p-6 shadow-[0_25px_55px_rgba(42,63,70,0.12)] transition hover:-translate-y-1 hover:shadow-[0_35px_80px_rgba(42,63,70,0.16)]"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -106,7 +106,7 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
                 <Button
                   asChild
                   size="lg"
-                  className="mt-6 w-full rounded-full bg-[#7b8c45] text-white hover:bg-[#6d7c39]"
+                  className="mt-6 w-full rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90"
                 >
                   <a href={buildBookingUrl(option.typeId)} target="_blank" rel="noopener noreferrer">
                     Book this session
@@ -120,7 +120,7 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
           {billingHighlights.map(({ title, detail, icon: Icon }) => (
             <div
               key={title}
-              className="rounded-2xl border border-[#dfe6d5] bg-white/90 p-5 shadow-sm backdrop-blur"
+              className="rounded-2xl border border-[#dfe6d5] bg-[var(--section-bg-2)]/90 p-5 shadow-sm backdrop-blur"
             >
               <div className="flex items-center gap-3">
                 <div className="rounded-full bg-[#7b8c45]/15 p-2 text-[#7b8c45]">
@@ -134,7 +134,7 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
         </div>
       </div>
 
-      <div className="rounded-[32px] border border-dashed border-[#c8d4cf] bg-white/80 p-5 sm:p-6 shadow-sm">
+      <div className="rounded-[32px] border border-dashed border-[#c8d4cf] bg-[#d7e9ec] p-5 sm:p-6 shadow-sm">
         <div className="grid gap-4 sm:grid-cols-2">
           {paymentSupport.map(({ title, detail, icon: Icon }) => (
             <div key={title} className="flex gap-3">
@@ -148,9 +148,18 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
             </div>
           ))}
         </div>
-        <p className="mt-4 text-center text-xs uppercase tracking-[0.2em] text-[#4a5c63] sm:text-left">
-          Billing enquiries: dan@themelbournecounsellor.com.au · 0467 477 786
-        </p>
+        <div className="mt-6 flex flex-col items-center gap-1 text-center">
+          <p className="text-xs uppercase tracking-[0.25em] text-[#4a5c63]">Billing enquiries</p>
+          <a
+            href="mailto:dan@themelbournecounsellor.com.au"
+            className="text-sm font-semibold text-[#1f2d38]"
+          >
+            dan@themelbournecounsellor.com.au
+          </a>
+          <a href="tel:+61467477786" className="text-sm text-[#4a5c63]">
+            0467 477 786
+          </a>
+        </div>
       </div>
     </div>
   )

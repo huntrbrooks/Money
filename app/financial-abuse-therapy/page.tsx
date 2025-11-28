@@ -63,7 +63,7 @@ export default async function FinancialAbuseTherapyPage() {
               Book a Session
             </Link>
             <Link
-              className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-white text-[var(--accent)] font-semibold border border-[var(--accent)] hover:bg-[var(--secondary)]/20"
+              className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--section-bg-1)] text-[var(--accent)] font-semibold border border-[var(--accent)] hover:bg-[var(--section-bg-2)]/60"
               href="/enquiry"
               aria-label="Contact"
             >
@@ -91,7 +91,7 @@ export default async function FinancialAbuseTherapyPage() {
           </ul>
         </section>
 
-        <nav className="border border-[var(--secondary)] rounded-xl p-4 bg-white">
+        <nav className="border border-[var(--secondary)] rounded-xl p-4 bg-[var(--section-bg-1)]">
           <strong className="text-[var(--foreground)]">Explore more</strong>
           <ul className="mt-2 grid gap-1 list-disc pl-5 text-[var(--accent)]">
             <li><a href="/financial-abuse">What is Financial Abuse?</a></li>

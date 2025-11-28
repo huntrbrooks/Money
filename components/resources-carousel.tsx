@@ -87,7 +87,7 @@ export function ResourcesCarousel({ resources, durationSeconds = 45 }: Resources
       </div>
 
       <Dialog open={!!selected} onOpenChange={(open) => !open && setSelected(null)}>
-        <DialogContent className="bg-white">
+        <DialogContent className="bg-[var(--section-bg-2)]">
           {selected && (
             <>
               <DialogHeader>

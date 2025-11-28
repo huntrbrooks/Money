@@ -145,7 +145,7 @@ export const defaultConfig: SiteConfig = {
     primary: "#6CA4AC",
     secondary: "#E5EED2",
     accent: "#929D5B",
-    background: "#FFFFFF",
+    background: "#E5EED2",
     foreground: "#20385B",
     radius: "0.5rem",
     fontSans: "\"Geist\", system-ui, -apple-system, Segoe UI, Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", \"Liberation Sans\", sans-serif",

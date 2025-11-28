@@ -3,7 +3,8 @@ import Link from "next/link"
 import Script from "next/script"
 import { notFound } from "next/navigation"
 import { getAllVideosMeta, getVideoBySlug } from "@/lib/mdx"
-import { absoluteUrl, buildPageMetadata, buildVideoSchema } from "@/lib/seo"
+import { buildPageMetadata, buildVideoSchema } from "@/lib/seo"
+import { absoluteUrl } from "@/lib/urls"
 import { SocialShare } from "@/components/social-share"
 
 type VlogPageProps = {
@@ -89,7 +90,7 @@ export default async function VlogPostPage({ params }: VlogPageProps) {
             Book a Session
           </Link>
           <Link
-            className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-white text-[var(--accent)] font-semibold border border-[var(--accent)] hover:bg-[var(--secondary)]/20"
+            className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--section-bg-1)] text-[var(--accent)] font-semibold border border-[var(--accent)] hover:bg-[var(--section-bg-2)]/60"
             href="/enquiry"
             data-analytics-id="vlog-download-guide"
           >

@@ -1,4 +1,4 @@
-import { SITE_URL } from "@/lib/seo"
+import { SITE_URL } from "@/lib/urls"
 import { getAllPostsMeta } from "@/lib/mdx"
 
 export async function GET() {
