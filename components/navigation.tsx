@@ -12,7 +12,7 @@ type Config = {
   contact?: { phone?: string; email?: string }
 }
 
-const DEFAULT_LOGO_SRC = "/logo.png?v=20251205"
+const DEFAULT_LOGO_SRC = "/logo.png?v=20251205b"
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
