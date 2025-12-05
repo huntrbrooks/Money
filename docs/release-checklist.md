@@ -35,3 +35,6 @@
 3. Promote to production.
 4. Monitor `/api/events` logs for lead magnet & newsletter events during first 24h.
 
+
+
+

@@ -469,7 +469,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <Footer backgroundColor="#E5EED2" />
+      <Footer backgroundColor="#d7e9ec" />
       </main>
       {experiments.showLeadMagnet !== false && <LeadMagnet content={leadMagnet} />}
       {[

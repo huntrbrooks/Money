@@ -177,7 +177,7 @@ export default async function AboutPage() {
           </div>
         </section>
       </main>
-      <Footer backgroundColor="#E5EED2" />
+      <Footer backgroundColor="#d7e9ec" />
     </div>
   )
 }
