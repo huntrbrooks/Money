@@ -15,7 +15,7 @@ type Config = {
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cfg, setCfg] = useState<Config>({})
-  const brandLogo = cfg.brand?.headerBannerUrl || cfg.brand?.logoUrl || "/Logo.png"
+  const brandLogo = cfg.brand?.headerBannerUrl || cfg.brand?.logoUrl || "/logo.png"
 
   useEffect(() => {
     fetch("/api/site-config")
@@ -34,12 +34,11 @@ export function Navigation() {
   const headerBannerUrl = cfg.brand?.headerBannerUrl
 
   return (
-    <nav className="relative z-50 overflow-visible">
+    <nav className="relative z-50 overflow-visible shadow-[0_22px_45px_rgba(32,56,91,0.12)]">
       <div
-        className="relative overflow-visible"
+        className="relative overflow-visible border-b border-white/20"
         style={{
           background: "linear-gradient(180deg, #929d5b 0%, #6ca4ac 100%)",
-          boxShadow: "0 22px 55px rgba(32,56,91,0.18)",
         }}
       >
         <div className="relative z-10">
@@ -47,13 +46,11 @@ export function Navigation() {
             <div className="flex items-center justify-center min-h-[7.5rem] sm:min-h-[9rem] md:min-h-[11rem] py-4 md:py-6">
               <Link href="/" aria-label="Home" className="inline-flex items-center justify-center group">
                 {headerBannerUrl || brandLogo ? (
-                  <span className="header-logo-shell">
-                    <img
-                      src={headerBannerUrl || brandLogo}
-                      alt={brandName}
-                      className="header-logo-img h-20 sm:h-28 md:h-40 lg:h-44 w-auto object-contain drop-shadow-[0_18px_35px_rgba(32,56,91,0.28)] transition-transform duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-[1.02]"
-                    />
-                  </span>
+                  <img
+                    src={headerBannerUrl || brandLogo}
+                    alt={brandName}
+                    className="h-20 sm:h-28 md:h-40 lg:h-44 w-auto object-contain transition-transform duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-[1.02]"
+                  />
                 ) : (
                   <span className="font-serif whitespace-nowrap text-[clamp(1.75rem,7vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
                     {brandName}
