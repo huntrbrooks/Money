@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { verifyAuthToken, AUTH_COOKIE_NAME } from "@/lib/auth"
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isLogin = pathname === "/admin/login"
   const token = request.cookies.get(AUTH_COOKIE_NAME)?.value || ""

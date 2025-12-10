@@ -335,6 +335,28 @@
     animation-play-state: running;
   }
 
+  .header-logo-shell {
+    position: relative;
+    display: inline-flex;
+    padding: 0;
+    border-radius: 0;
+    isolation: isolate;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+  .header-logo-shell::before,
+  .header-logo-shell::after {
+    content: none;
+    display: none;
+  }
+  .header-logo-img {
+    position: relative;
+    z-index: 2;
+    animation: headerLogoFloat 16s ease-in-out infinite;
+    will-change: transform;
+  }
 }
 
 @keyframes accordionGradientPan {
@@ -348,3 +370,47 @@
     background-position: 0% 50%;
   }
 }
+@keyframes headerLogoPulse {
+  0% {
+    opacity: 0.45;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.45;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes headerLogoOrbit {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes headerLogoFloat {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-logo-shell::before,
+  .header-logo-shell::after,
+  .header-logo-img {
+    animation: none !important;
+  }
+}
+
