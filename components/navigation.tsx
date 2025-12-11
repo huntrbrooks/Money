@@ -12,12 +12,10 @@ type Config = {
   contact?: { phone?: string; email?: string }
 }
 
-const DEFAULT_LOGO_SRC = "/logo.png?v=20251205b"
-
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cfg, setCfg] = useState<Config>({})
-  const brandLogo = cfg.brand?.headerBannerUrl || cfg.brand?.logoUrl || DEFAULT_LOGO_SRC
+  const brandLogo = cfg.brand?.headerBannerUrl || cfg.brand?.logoUrl || "/logo.png"
 
   useEffect(() => {
     fetch("/api/site-config")
@@ -36,11 +34,12 @@ export function Navigation() {
   const headerBannerUrl = cfg.brand?.headerBannerUrl
 
   return (
-    <nav className="relative z-50 overflow-visible shadow-[0_22px_45px_rgba(32,56,91,0.12)]">
+    <nav className="relative z-50 overflow-visible">
       <div
-        className="relative overflow-visible border-b border-white/20"
+        className="relative overflow-visible"
         style={{
-          background: "linear-gradient(180deg, #929d5b 0%, #6ca4ac 100%)",
+          background:
+            "linear-gradient(180deg, #929d5b 0%, rgba(146,157,91,0.85) 18%, rgba(108,164,172,0.92) 58%, #6ca4ac 95%)",
         }}
       >
         <div className="relative z-10">
@@ -48,11 +47,13 @@ export function Navigation() {
             <div className="flex items-center justify-center min-h-[7.5rem] sm:min-h-[9rem] md:min-h-[11rem] py-4 md:py-6">
               <Link href="/" aria-label="Home" className="inline-flex items-center justify-center group">
                 {headerBannerUrl || brandLogo ? (
-                  <img
-                    src={headerBannerUrl || brandLogo}
-                    alt={brandName}
-                    className="h-20 sm:h-28 md:h-40 lg:h-44 w-auto object-contain transition-transform duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-[1.02]"
-                  />
+                  <span className="header-logo-shell">
+                    <img
+                      src={headerBannerUrl || brandLogo}
+                      alt={brandName}
+                      className="header-logo-img h-20 sm:h-28 md:h-40 lg:h-44 w-auto object-contain drop-shadow-[0_18px_35px_rgba(32,56,91,0.28)] transition-transform duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-[1.02]"
+                    />
+                  </span>
                 ) : (
                   <span className="font-serif whitespace-nowrap text-[clamp(1.75rem,7vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
                     {brandName}
@@ -97,6 +98,13 @@ export function Navigation() {
             </div>
           </div>
         </div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-[-1px] h-16"
+          style={{
+            background: "linear-gradient(180deg, rgba(108,164,172,0.65) 0%, rgba(108,164,172,0.9) 55%, #6ca4ac 100%)",
+          }}
+        />
       </div>
     </nav>
   )
