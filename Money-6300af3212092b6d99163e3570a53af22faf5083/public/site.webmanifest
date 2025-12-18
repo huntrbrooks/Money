@@ -1,0 +1,18 @@
+{
+  "name": "Finacial Abuse Therapist",
+  "short_name": "Finacial Abuse Therapist",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
+
+

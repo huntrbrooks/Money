@@ -47,6 +47,8 @@ export default async function HomePage() {
   const valueProps = homepageContent.valueProps ?? []
   const testimonials = homepageContent.testimonials ?? []
   const homepageFaqs = homepageContent.faqs ?? []
+  const hasTestimonials = testimonials.length > 0
+  const testimonialsHidden = experiments.showTestimonialsSection === false
   const leadMagnet = homepageContent.leadMagnet
   const otherAreas = [
     { title: "Grief Therapy", summary: "Gentle support for loss, meaning-making, and navigating the waves of grief.", more: "Space to honour your loss, hold ambivalence, and rebuild a relationship with life at your pace." },
@@ -73,11 +75,7 @@ export default async function HomePage() {
       <main>
 
       <section
-        className="relative overflow-hidden"
-        style={{
-          background:
-            "linear-gradient(180deg, #d7e9ec 0%, rgba(215,233,236,0.95) 20%, rgba(108,164,172,0.85) 55%, rgba(108,164,172,0.7) 72%, rgba(229,238,210,0.9) 90%, #e5eed2 100%)",
-        }}
+        className="relative overflow-hidden bg-[linear-gradient(180deg,#d7e9ec_0%,rgba(215,233,236,0.95)_20%,rgba(108,164,172,0.85)_55%,rgba(108,164,172,0.7)_72%,rgba(229,238,210,0.9)_90%,#e5eed2_100%)]"
       >
         <div className="container mx-auto px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-32">
           <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 items-center max-w-7xl mx-auto">
@@ -284,9 +282,16 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {testimonials.length > 0 && (
-        <section className="py-12 sm:py-16 md:py-24 bg-[var(--section-bg-2)]">
-          <div className="container mx-auto px-4 sm:px-6 md:px-8">
+      {hasTestimonials && (
+        <section
+          // Keep in DOM (hidden) so section background cadence stays consistent when toggled off
+          className={`relative overflow-hidden py-12 sm:py-16 md:py-24 ${testimonialsHidden ? "hidden" : ""}`}
+        >
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--section-bg-2)] via-[color-mix(in_oklch,var(--section-bg-2)_68%,var(--section-bg-1))] to-[var(--section-bg-1)]" />
+          <div
+            className="pointer-events-none absolute inset-0 opacity-65 bg-[radial-gradient(1200px_720px_at_18%_12%,color-mix(in_oklch,var(--primary)_24%,transparent),transparent_62%),radial-gradient(980px_560px_at_78%_6%,color-mix(in_oklch,var(--accent)_20%,transparent),transparent_60%),radial-gradient(1100px_620px_at_52%_88%,color-mix(in_oklch,var(--foreground)_12%,transparent),transparent_64%)]"
+          />
+          <div className="container relative mx-auto px-4 sm:px-6 md:px-8">
             <div className="max-w-6xl mx-auto space-y-8 text-center">
               <div className="space-y-3">
                 <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary)] font-semibold">Gentle proof</p>
@@ -298,10 +303,10 @@ export default async function HomePage() {
                 {testimonials.map((testimonial, idx) => (
                   <div
                     key={`testimonial-${idx}`}
-                    className="rounded-3xl border border-[var(--secondary)] bg-[var(--section-bg-2)] p-6 text-left shadow-[0_20px_40px_rgba(32,56,91,0.08)]"
+                    className="rounded-3xl border border-[var(--secondary)]/70 bg-[color-mix(in_oklch,var(--section-bg-2)_82%,white)] backdrop-blur-sm p-6 text-left shadow-[0_24px_48px_rgba(32,56,91,0.08)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_30px_60px_rgba(32,56,91,0.12)]"
                   >
                     <p className="text-[var(--primary)] italic leading-relaxed">“{testimonial.quote}”</p>
-                    <div className="mt-6">
+                    <div className="mt-6 border-t border-[var(--secondary)]/50 pt-4">
                       <p className="font-serif text-xl text-[var(--foreground)]">{testimonial.author}</p>
                       {testimonial.context && (
                         <p className="text-sm text-[var(--primary)]/80">{testimonial.context}</p>

@@ -228,6 +228,7 @@
   },
   "experiments": {
     "showNewsletterSection": false,
-    "showLeadMagnet": false
+    "showLeadMagnet": false,
+    "showTestimonialsSection": false
   }
 }

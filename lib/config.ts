@@ -84,6 +84,7 @@ export type HomepageContent = {
 export type ExperimentsConfig = {
   showNewsletterSection?: boolean
   showLeadMagnet?: boolean
+  showTestimonialsSection?: boolean
 }
 
 export type SiteConfig = {
@@ -319,6 +320,7 @@ export const defaultConfig: SiteConfig = {
   experiments: {
     showNewsletterSection: false,
     showLeadMagnet: false,
+    showTestimonialsSection: false,
   },
 }
 
