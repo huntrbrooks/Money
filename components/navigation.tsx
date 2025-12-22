@@ -341,13 +341,6 @@ export function Navigation() {
             {menuOverlayContent}
           </div>
         )}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-[-1px] h-16"
-          style={{
-            background: "linear-gradient(180deg, rgba(108,164,172,0.65) 0%, rgba(108,164,172,0.9) 55%, #6ca4ac 100%)",
-          }}
-        />
       </div>
     </nav>
   )

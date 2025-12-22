@@ -348,21 +348,17 @@
   }
 
   .site-header-two-tone {
-    /* Fixed 2-tone split that stays centered on any aspect ratio */
-    background-image:
-      /* thin gold divider line like your reference */
-      linear-gradient(
-        to bottom,
-        transparent calc(50% - 2px),
-        color-mix(in oklch, var(--brand-citrus) 55%, transparent) calc(50% - 2px),
-        color-mix(in oklch, var(--brand-citrus) 55%, transparent) calc(50% + 2px),
-        transparent calc(50% + 2px)
-      ),
-      /* main 2-tone bands */
-      linear-gradient(to bottom, var(--brand-teal) 0 50%, var(--brand-asparagus) 50% 100%);
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-position: center;
+    /* Crisp 50/50 split that stays centered on any aspect ratio */
+    --header-split: 50%;
+    background: linear-gradient(
+      to bottom,
+      var(--brand-teal) 0,
+      var(--brand-teal) calc(var(--header-split) - 1px),
+      rgba(222, 236, 79, 0.55) calc(var(--header-split) - 1px),
+      rgba(222, 236, 79, 0.55) calc(var(--header-split) + 1px),
+      var(--brand-asparagus) calc(var(--header-split) + 1px),
+      var(--brand-asparagus) 100%
+    );
   }
   .header-logo-shell::before,
   .header-logo-shell::after {
