@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   const config = await readSiteConfig()
-  const email = config.contact?.email ?? "dan@themelbournecounsellor.com.au"
+  const email = config.contact?.email ?? "dan@financialabusetherapist.com"
   const phone = config.contact?.phone ?? "+61 488 222 137"
   const credentials = ["D.Couns.", "B.Couns.", "MCouns&Psych"]
   const focusAreas = [

@@ -38,7 +38,7 @@ export function BookingScheduler({ showEmbedToggle = true }: BookingSchedulerPro
         <div className="rounded-[28px] border border-[#c7d1cc] bg-[var(--section-bg-2)] p-5 sm:p-6 shadow-[inset_0_0_0_1px_rgba(229,238,210,0.85)]">
           <div className="space-y-4 text-[#33444b]">
             <p className="text-sm leading-relaxed">
-              Need help deciding on a format? Email dan@themelbournecounsellor.com.au or call 0467&nbsp;477&nbsp;786 — a
+              Need help deciding on a format? Email dan@financialabusetherapist.com or call 0467&nbsp;477&nbsp;786 — a
               personal reply is guaranteed.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -55,7 +55,7 @@ export function BookingScheduler({ showEmbedToggle = true }: BookingSchedulerPro
                 variant="outline"
                 className="flex-1 rounded-full border-[#c8d4cf] bg-[var(--section-bg-1)] text-[#3f4f57] hover:bg-[var(--section-bg-1)]/90"
               >
-                <a href="mailto:dan@themelbournecounsellor.com.au">Email Dan instead</a>
+                <a href="mailto:dan@financialabusetherapist.com">Email Dan instead</a>
               </Button>
             </div>
             <p className="text-xs text-[#4a5c63]">

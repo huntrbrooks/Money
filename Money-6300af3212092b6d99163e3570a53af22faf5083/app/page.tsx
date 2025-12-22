@@ -121,12 +121,12 @@ export default async function HomePage() {
                   <p className="text-sm text-[var(--primary)]/90">📍 Based in Melbourne | Online & In‑Person Sessions</p>
                   <div className="flex flex-wrap gap-2">
                     <a
-                      href={`mailto:${config.contact?.email || "dan@themelbournecounsellor.com.au"}`}
-                      aria-label={`Email Dan at ${config.contact?.email || "dan@themelbournecounsellor.com.au"}`}
+                      href={`mailto:${config.contact?.email || "dan@financialabusetherapist.com"}`}
+                      aria-label={`Email Dan at ${config.contact?.email || "dan@financialabusetherapist.com"}`}
                       className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--primary)]/20 bg-white text-[var(--primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
                     >
                       <Mail className="w-4 h-4" aria-hidden="true" />
-                      <span className="text-sm">{config.contact?.email || "dan@themelbournecounsellor.com.au"}</span>
+                      <span className="text-sm">{config.contact?.email || "dan@financialabusetherapist.com"}</span>
                     </a>
                     <a
                       href={`tel:${(config.contact?.phone || "0467 477 786").replace(/\\s+/g, "")}`}
@@ -508,7 +508,7 @@ export default async function HomePage() {
                   </a>
 
                   <a
-                    href="mailto:dan@themelbournecounsellor.com.au"
+                    href="mailto:dan@financialabusetherapist.com"
                     className="flex items-center gap-5 p-6 bg-transparent rounded-lg hover:shadow-lg transition-all group border border-transparent hover:border-[var(--accent)]"
                   >
                     <div className="size-14 bg-[var(--accent)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
@@ -516,7 +516,7 @@ export default async function HomePage() {
                     </div>
                     <div>
                       <p className="text-xs text-[var(--primary)] uppercase tracking-wider font-semibold">Email</p>
-                      <p className="text-xl text-[var(--foreground)] font-medium break-all">dan@themelbournecounsellor.com.au</p>
+                      <p className="text-xl text-[var(--foreground)] font-medium break-all">dan@financialabusetherapist.com</p>
                     </div>
                   </a>
                 </div>

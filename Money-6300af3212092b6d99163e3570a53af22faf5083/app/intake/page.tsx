@@ -662,7 +662,7 @@ export default function IntakePage() {
                   </div>
                   <div className="pt-4 space-y-1">
                     <p>Contact:  Dan Lobel</p>
-                    <p><a className="underline" href="mailto:dan@themelbournecounsellor.com.au">dan@themelbournecounsellor.com.au</a></p>
+                    <p><a className="underline" href="mailto:dan@financialabusetherapist.com">dan@financialabusetherapist.com</a></p>
                     <p><a className="underline" href="tel:0467477786">0467 477 786</a></p>
                     <p>©The Financial Therapist. 2025.</p>
                     <p>The Financial Therapist Pty. Ltd. atf  The Financial Therapist Trust.</p>

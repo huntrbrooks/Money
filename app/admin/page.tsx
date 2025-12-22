@@ -50,6 +50,44 @@ const createEmptyHero = (): SiteConfig["hero"] => ({
 })
 
 const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
+  sections: {
+    showValueProps: true,
+    showNewsletter: true,
+    showImportantLinks: true,
+    showTestimonials: true,
+    showOtherAreas: true,
+    showBooking: true,
+    showFaqs: true,
+    showContact: true,
+    showCrisis: true,
+    showLeadMagnet: true,
+  },
+  copy: {
+    valuePropsEyebrow: "",
+    valuePropsHeading: "",
+    newsletterEyebrow: "",
+    newsletterHeading: "",
+    newsletterBody: "",
+    newsletterCtaLabel: "",
+    newsletterTags: [],
+    importantLinksHeading: "",
+    importantLinksSubheading: "",
+    testimonialsEyebrow: "",
+    testimonialsHeading: "",
+    otherAreasHeading: "",
+    otherAreasSubheading: "",
+    bookingHeading: "",
+    bookingSubheading: "",
+    faqsEyebrow: "",
+    faqsHeading: "",
+    contactHeading: "",
+    contactBody: "",
+    crisisHeading: "",
+    crisisBody: "",
+    crisisNote: "",
+  },
+  otherAreas: [],
+  importantSectionLinks: [],
   valueProps: [],
   testimonials: [],
   faqs: [],
@@ -141,6 +179,10 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
        setHomepage({
          ...homepageDefaults,
          ...(data.homepage ?? {}),
+         sections: { ...(homepageDefaults.sections ?? {}), ...(data.homepage?.sections ?? {}) },
+         copy: { ...(homepageDefaults.copy ?? {}), ...(data.homepage?.copy ?? {}) },
+         otherAreas: data.homepage?.otherAreas ?? [],
+         importantSectionLinks: data.homepage?.importantSectionLinks ?? [],
          valueProps: data.homepage?.valueProps ?? [],
          testimonials: data.homepage?.testimonials ?? [],
          faqs: data.homepage?.faqs ?? [],
@@ -698,6 +740,488 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
 
           {/* Homepage Tab */}
           <TabsContent value="homepage" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Homepage Controls</CardTitle>
+                <CardDescription>Toggle sections and edit homepage headings/copy</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                <div className="space-y-4">
+                  <p className="text-sm font-semibold">Show / hide sections</p>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {(
+                      [
+                        ["showValueProps", "Value props"],
+                        ["showNewsletter", "Newsletter band"],
+                        ["showImportantLinks", "Important links"],
+                        ["showTestimonials", "Testimonials"],
+                        ["showOtherAreas", "Other areas"],
+                        ["showBooking", "Booking"],
+                        ["showFaqs", "FAQs"],
+                        ["showContact", "Contact"],
+                        ["showCrisis", "Crisis resources"],
+                        ["showLeadMagnet", "Lead magnet widget"],
+                      ] as const
+                    ).map(([key, label]) => (
+                      <div
+                        key={key}
+                        className="flex items-center justify-between border border-border/40 rounded-2xl p-4"
+                      >
+                        <div>
+                          <p className="font-semibold text-[var(--foreground)]">{label}</p>
+                          <p className="text-sm text-muted-foreground">Controls visibility on the homepage.</p>
+                        </div>
+                        <Switch
+                          checked={(homepage.sections?.[key] ?? true) as boolean}
+                          onCheckedChange={(checked) =>
+                            setHomepage((prev) => ({
+                              ...prev,
+                              sections: { ...(prev.sections ?? {}), [key]: Boolean(checked) },
+                            }))
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <p className="text-sm font-semibold">Homepage headings & copy</p>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Value props eyebrow</Label>
+                      <Input
+                        value={homepage.copy?.valuePropsEyebrow ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), valuePropsEyebrow: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Value props heading</Label>
+                      <Input
+                        value={homepage.copy?.valuePropsHeading ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), valuePropsHeading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Newsletter eyebrow</Label>
+                      <Input
+                        value={homepage.copy?.newsletterEyebrow ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), newsletterEyebrow: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Newsletter heading</Label>
+                      <Input
+                        value={homepage.copy?.newsletterHeading ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), newsletterHeading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label>Newsletter body</Label>
+                      <Textarea
+                        rows={3}
+                        value={homepage.copy?.newsletterBody ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), newsletterBody: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Newsletter button label</Label>
+                      <Input
+                        value={homepage.copy?.newsletterCtaLabel ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), newsletterCtaLabel: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Newsletter tags (comma-separated)</Label>
+                      <Input
+                        value={(homepage.copy?.newsletterTags ?? []).join(", ")}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: {
+                              ...(prev.copy ?? {}),
+                              newsletterTags: e.target.value
+                                .split(",")
+                                .map((s) => s.trim())
+                                .filter(Boolean),
+                            },
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Important links heading</Label>
+                      <Input
+                        value={homepage.copy?.importantLinksHeading ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), importantLinksHeading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Important links subheading</Label>
+                      <Input
+                        value={homepage.copy?.importantLinksSubheading ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), importantLinksSubheading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Testimonials eyebrow</Label>
+                      <Input
+                        value={homepage.copy?.testimonialsEyebrow ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), testimonialsEyebrow: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Testimonials heading</Label>
+                      <Input
+                        value={homepage.copy?.testimonialsHeading ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), testimonialsHeading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Other areas heading</Label>
+                      <Input
+                        value={homepage.copy?.otherAreasHeading ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), otherAreasHeading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Other areas subheading</Label>
+                      <Input
+                        value={homepage.copy?.otherAreasSubheading ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), otherAreasSubheading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Booking heading</Label>
+                      <Input
+                        value={homepage.copy?.bookingHeading ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), bookingHeading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Booking subheading</Label>
+                      <Input
+                        value={homepage.copy?.bookingSubheading ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), bookingSubheading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>FAQ eyebrow</Label>
+                      <Input
+                        value={homepage.copy?.faqsEyebrow ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), faqsEyebrow: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>FAQ heading</Label>
+                      <Input
+                        value={homepage.copy?.faqsHeading ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), faqsHeading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Contact heading</Label>
+                      <Input
+                        value={homepage.copy?.contactHeading ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), contactHeading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label>Contact body</Label>
+                      <Textarea
+                        rows={2}
+                        value={homepage.copy?.contactBody ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), contactBody: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Crisis heading</Label>
+                      <Input
+                        value={homepage.copy?.crisisHeading ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), crisisHeading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Crisis body</Label>
+                      <Input
+                        value={homepage.copy?.crisisBody ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), crisisBody: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label>Crisis note</Label>
+                      <Input
+                        value={homepage.copy?.crisisNote ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), crisisNote: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <Button onClick={() => saveAll("Homepage Controls")} disabled={saving !== null}>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Homepage Controls
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Important links (editable row)</CardTitle>
+                <CardDescription>Controls the “internal section deep-dives” buttons</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {(homepage.importantSectionLinks ?? []).map((link, idx) => (
+                  <div key={`${link.href}-${idx}`} className="grid gap-3 sm:grid-cols-2 items-end rounded-lg border border-border/40 p-4">
+                    <div className="space-y-2">
+                      <Label>Label</Label>
+                      <Input
+                        value={link.label}
+                        onChange={(e) => {
+                          const next = [...(homepage.importantSectionLinks ?? [])]
+                          next[idx] = { ...next[idx], label: e.target.value }
+                          setHomepage((prev) => ({ ...prev, importantSectionLinks: next }))
+                        }}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Href</Label>
+                      <Input
+                        value={link.href}
+                        onChange={(e) => {
+                          const next = [...(homepage.importantSectionLinks ?? [])]
+                          next[idx] = { ...next[idx], href: e.target.value }
+                          setHomepage((prev) => ({ ...prev, importantSectionLinks: next }))
+                        }}
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => {
+                        const next = [...(homepage.importantSectionLinks ?? [])]
+                        next.splice(idx, 1)
+                        setHomepage((prev) => ({ ...prev, importantSectionLinks: next }))
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() =>
+                      setHomepage((prev) => ({
+                        ...prev,
+                        importantSectionLinks: [...(prev.importantSectionLinks ?? []), { label: "New link", href: "/" }],
+                      }))
+                    }
+                  >
+                    + Add link
+                  </Button>
+                  <Button onClick={() => saveAll("Important links")} disabled={saving !== null}>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save links
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Other areas (accordion)</CardTitle>
+                <CardDescription>Controls the “Other Areas of Specialisation” accordion items</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {(homepage.otherAreas ?? []).map((item, idx) => (
+                  <div key={`${item.title}-${idx}`} className="rounded-lg border border-border/40 p-4 space-y-3">
+                    <div className="space-y-2">
+                      <Label>Title</Label>
+                      <Input
+                        value={item.title}
+                        onChange={(e) => {
+                          const next = [...(homepage.otherAreas ?? [])]
+                          next[idx] = { ...next[idx], title: e.target.value }
+                          setHomepage((prev) => ({ ...prev, otherAreas: next }))
+                        }}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Summary</Label>
+                      <Textarea
+                        rows={2}
+                        value={item.summary}
+                        onChange={(e) => {
+                          const next = [...(homepage.otherAreas ?? [])]
+                          next[idx] = { ...next[idx], summary: e.target.value }
+                          setHomepage((prev) => ({ ...prev, otherAreas: next }))
+                        }}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>More</Label>
+                      <Textarea
+                        rows={2}
+                        value={item.more}
+                        onChange={(e) => {
+                          const next = [...(homepage.otherAreas ?? [])]
+                          next[idx] = { ...next[idx], more: e.target.value }
+                          setHomepage((prev) => ({ ...prev, otherAreas: next }))
+                        }}
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => {
+                        const next = [...(homepage.otherAreas ?? [])]
+                        next.splice(idx, 1)
+                        setHomepage((prev) => ({ ...prev, otherAreas: next }))
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() =>
+                      setHomepage((prev) => ({
+                        ...prev,
+                        otherAreas: [
+                          ...(prev.otherAreas ?? []),
+                          { title: "New area", summary: "Short summary", more: "Longer description" },
+                        ],
+                      }))
+                    }
+                  >
+                    + Add area
+                  </Button>
+                  <Button onClick={() => saveAll("Other areas")} disabled={saving !== null}>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save other areas
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle>Value Props</CardTitle>

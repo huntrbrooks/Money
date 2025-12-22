@@ -76,7 +76,63 @@ export type LeadMagnetContent = {
   helper?: string
 }
 
+export type HomepageSectionToggles = {
+  showValueProps?: boolean
+  showNewsletter?: boolean
+  showImportantLinks?: boolean
+  showTestimonials?: boolean
+  showOtherAreas?: boolean
+  showBooking?: boolean
+  showFaqs?: boolean
+  showContact?: boolean
+  showCrisis?: boolean
+  showLeadMagnet?: boolean
+}
+
+export type HomepageCopy = {
+  valuePropsEyebrow?: string
+  valuePropsHeading?: string
+
+  newsletterEyebrow?: string
+  newsletterHeading?: string
+  newsletterBody?: string
+  newsletterCtaLabel?: string
+  newsletterTags?: string[]
+
+  importantLinksHeading?: string
+  importantLinksSubheading?: string
+
+  testimonialsEyebrow?: string
+  testimonialsHeading?: string
+
+  otherAreasHeading?: string
+  otherAreasSubheading?: string
+
+  bookingHeading?: string
+  bookingSubheading?: string
+
+  faqsEyebrow?: string
+  faqsHeading?: string
+
+  contactHeading?: string
+  contactBody?: string
+
+  crisisHeading?: string
+  crisisBody?: string
+  crisisNote?: string
+}
+
+export type OtherAreaCard = {
+  title: string
+  summary: string
+  more: string
+}
+
 export type HomepageContent = {
+  sections?: HomepageSectionToggles
+  copy?: HomepageCopy
+  otherAreas?: OtherAreaCard[]
+  importantSectionLinks?: NavLink[]
   valueProps?: ValueProp[]
   testimonials?: Testimonial[]
   faqs?: FaqEntry[]
@@ -173,7 +229,7 @@ export const defaultConfig: SiteConfig = {
   ],
   contact: {
     phone: "0467 477 786",
-    email: "dan@themelbournecounsellor.com.au",
+    email: "dan@financialabusetherapist.com",
   },
   hero: {
     eyebrow: "Financial Trauma & Monetary Psychotherapy",
@@ -263,6 +319,99 @@ export const defaultConfig: SiteConfig = {
     intake: "",
   },
   homepage: {
+    sections: {
+      showValueProps: true,
+      showNewsletter: true,
+      showImportantLinks: true,
+      showTestimonials: true,
+      showOtherAreas: true,
+      showBooking: true,
+      showFaqs: true,
+      showContact: true,
+      showCrisis: true,
+      showLeadMagnet: true,
+    },
+    copy: {
+      valuePropsEyebrow: "What to expect",
+      valuePropsHeading: "Therapy that honours your nervous system",
+
+      newsletterEyebrow: "Between sessions",
+      newsletterHeading: "Download the 5-step Financial Safety Check-in",
+      newsletterBody:
+        "A gentle ritual used in session to settle your system before money admin — delivered straight to your inbox.",
+      newsletterCtaLabel: "Email me the check-in",
+      newsletterTags: ["newsletter", "safety-check-in"],
+
+      importantLinksHeading: "Important Links",
+      importantLinksSubheading: "Quick access to key information",
+
+      testimonialsEyebrow: "Gentle proof",
+      testimonialsHeading: "Reflections from clients",
+
+      otherAreasHeading: "Other Areas of Specialisation",
+      otherAreasSubheading: "Short, digestible overviews with the option to read more",
+
+      bookingHeading: "Book a Confidential Consultation",
+      bookingSubheading: "Choose the appointment style that feels safest, then confirm via the secure scheduler.",
+
+      faqsEyebrow: "FAQ",
+      faqsHeading: "Questions clients ask before booking",
+
+      contactHeading: "When you're ready, I'm here.",
+      contactBody:
+        "Reach out to schedule an initial consultation or to ask questions. Your privacy, boundaries, and pace are respected at every step.",
+
+      crisisHeading: "If you’re in crisis or need immediate support, please reach out.",
+      crisisBody: "You are not alone — help is available 24/7.",
+      crisisNote: "If you or someone you know is in crisis and needs help now, call triple zero (000).",
+    },
+    importantSectionLinks: [
+      { label: "About Dan", href: "/about" },
+      { label: "Monetary Psychotherapy", href: "/monetary-psychotherapy" },
+      { label: "Integrative Counselling", href: "/contemporary-integrative-counselling" },
+    ],
+    otherAreas: [
+      {
+        title: "Grief Therapy",
+        summary: "Gentle support for loss, meaning-making, and navigating the waves of grief.",
+        more: "Space to honour your loss, hold ambivalence, and rebuild a relationship with life at your pace.",
+      },
+      {
+        title: "Trauma Therapy",
+        summary: "Trauma‑informed care prioritising safety, pacing, and consent.",
+        more: "We work collaboratively with your nervous system to build stability, choice, and self‑trust.",
+      },
+      {
+        title: "Stress Management",
+        summary: "Reduce overwhelm with practical tools and compassionate awareness.",
+        more: "Learn regulation skills, boundary‑setting, and restore a grounded sense of capability.",
+      },
+      {
+        title: "Anxiety & Depression",
+        summary: "Warm, evidence‑informed support to ease anxiety and low mood.",
+        more: "Understand patterns, reduce shame, and build steadier day‑to‑day foundations.",
+      },
+      {
+        title: "Family & Relationships",
+        summary: "Navigate dynamics, roles, and boundaries with clarity and care.",
+        more: "Strengthen communication, repair trust, and honour your needs in connection.",
+      },
+      {
+        title: "Guardianship & Caregiving",
+        summary: "Support for the emotional weight of responsibility and change.",
+        more: "Make space for grief, fatigue, identity shifts, and sustainable care.",
+      },
+      {
+        title: "Social Isolation & Loneliness",
+        summary: "Compassionate support when life feels disconnected or small.",
+        more: "Rebuild belonging, confidence, and meaningful connection, one step at a time.",
+      },
+      {
+        title: "LGBTQIA+ Therapy",
+        summary: "Inclusive, affirming counselling for identity, relationships, and safety.",
+        more: "A non‑judgemental space that respects every part of who you are.",
+      },
+    ],
     valueProps: [
       {
         title: "Consent-led therapy",
@@ -376,7 +525,22 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       consultations: parsed.consultations ?? defaultConfig.consultations,
       resources: parsed.resources ?? defaultConfig.resources,
       forms: { ...(defaultConfig.forms ?? {}), ...(parsed.forms ?? {}) },
-      homepage: { ...defaultConfig.homepage, ...(parsed.homepage ?? {}) },
+      homepage: (() => {
+        const defaults = defaultConfig.homepage ?? {}
+        const hp = (parsed.homepage ?? {}) as Partial<HomepageContent>
+        return {
+          ...defaults,
+          ...hp,
+          sections: { ...(defaults.sections ?? {}), ...(hp.sections ?? {}) },
+          copy: { ...(defaults.copy ?? {}), ...(hp.copy ?? {}) },
+          importantSectionLinks: hp.importantSectionLinks ?? defaults.importantSectionLinks,
+          otherAreas: hp.otherAreas ?? defaults.otherAreas,
+          valueProps: hp.valueProps ?? defaults.valueProps,
+          testimonials: hp.testimonials ?? defaults.testimonials,
+          faqs: hp.faqs ?? defaults.faqs,
+          leadMagnet: { ...(defaults.leadMagnet ?? ({} as any)), ...(hp.leadMagnet ?? {}) },
+        }
+      })(),
       experiments: { ...defaultConfig.experiments, ...(parsed.experiments ?? {}) },
     }
   } catch {
@@ -411,7 +575,22 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
     consultations: newConfig.consultations ?? defaultConfig.consultations,
     resources: newConfig.resources ?? defaultConfig.resources,
     forms: { ...(defaultConfig.forms ?? {}), ...(newConfig.forms ?? {}) },
-    homepage: { ...defaultConfig.homepage, ...(newConfig.homepage ?? {}) },
+    homepage: (() => {
+      const defaults = defaultConfig.homepage ?? {}
+      const hp = (newConfig.homepage ?? {}) as Partial<HomepageContent>
+      return {
+        ...defaults,
+        ...hp,
+        sections: { ...(defaults.sections ?? {}), ...(hp.sections ?? {}) },
+        copy: { ...(defaults.copy ?? {}), ...(hp.copy ?? {}) },
+        importantSectionLinks: hp.importantSectionLinks ?? defaults.importantSectionLinks,
+        otherAreas: hp.otherAreas ?? defaults.otherAreas,
+        valueProps: hp.valueProps ?? defaults.valueProps,
+        testimonials: hp.testimonials ?? defaults.testimonials,
+        faqs: hp.faqs ?? defaults.faqs,
+        leadMagnet: { ...(defaults.leadMagnet ?? ({} as any)), ...(hp.leadMagnet ?? {}) },
+      }
+    })(),
     experiments: { ...defaultConfig.experiments, ...(newConfig.experiments ?? {}) },
   }
   if (hasSupabase()) {

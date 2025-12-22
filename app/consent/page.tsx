@@ -112,7 +112,7 @@ export default function ConsentPage() {
                   <p>Initial intake session lasts for 90 minutes, and subsequent sessions last for 60 minutes. Appointments may be scheduled once weekly or once every two weeks, as agreed. There will invariably be exceptions contingent upon the specific personal needs of the individual.</p>
 
                   <h3 className="font-serif text-xl md:text-2xl text-[var(--foreground)] font-light mt-6">PREPAYMENT POLICY</h3>
-                  <p>For online booking, prepayment is required at the time of booking to ensure the appointment time is reserved. If you require additional information regarding service fees or available times, please send an email to <a href="mailto:dan@themelbournecounsellor.com.au" className="underline">dan@themelbournecounsellor.com.au</a> or call Dan to discuss on 0467 477 786. All fees are inclusive of GST.</p>
+                  <p>For online booking, prepayment is required at the time of booking to ensure the appointment time is reserved. If you require additional information regarding service fees or available times, please send an email to <a href="mailto:dan@financialabusetherapist.com" className="underline">dan@financialabusetherapist.com</a> or call Dan to discuss on 0467 477 786. All fees are inclusive of GST.</p>
 
                   <h3 className="font-serif text-xl md:text-2xl text-[var(--foreground)] font-light mt-6">CANCELLATION &amp; RESCHEDULING POLICY</h3>
                   <p>It should be noted that the online booking system of &quot;The Financial Therapist&quot; does not provide support for online cancellations or rescheduling. Notifications of rescheduling or cancellation must be validated by contacting Dan at 0467 477 786. Post-telephone confirmation of the cancellation or rescheduling will be provided via email. The client shall not consider the appointment cancelled or rescheduled in the absence of a confirmatory phone call and an email confirming the change.</p>
@@ -259,7 +259,7 @@ export default function ConsentPage() {
                   </div>
                   <div className="pt-4 space-y-1">
                     <p>Contact:  Dan Lobel</p>
-                    <p><a className="underline" href="mailto:dan@themelbournecounsellor.com.au">dan@themelbournecounsellor.com.au</a></p>
+                    <p><a className="underline" href="mailto:dan@financialabusetherapist.com">dan@financialabusetherapist.com</a></p>
                     <p><a className="underline" href="tel:0467477786">0467 477 786</a></p>
                     <p>©The Financial Therapist. 2025.</p>
                     <p>The Financial Therapist Pty. Ltd. atf  The Financial Therapist Trust.</p>

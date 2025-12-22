@@ -112,7 +112,7 @@ export const defaultConfig: SiteConfig = {
   ],
   contact: {
     phone: "0467 477 786",
-    email: "dan@themelbournecounsellor.com.au",
+    email: "dan@financialabusetherapist.com",
   },
   hero: {
     title: "The guided solo journey with practitioner",

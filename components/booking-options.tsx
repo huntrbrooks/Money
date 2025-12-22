@@ -234,10 +234,10 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
         <div className="mt-6 flex flex-col items-center gap-1 text-center">
           <p className="text-xs uppercase tracking-[0.25em] text-[#4a5c63]">Billing enquiries</p>
           <a
-            href="mailto:dan@themelbournecounsellor.com.au"
+            href="mailto:dan@financialabusetherapist.com"
             className="text-sm font-semibold text-[#1f2d38]"
           >
-            dan@themelbournecounsellor.com.au
+            dan@financialabusetherapist.com
           </a>
           <a href="tel:+61467477786" className="text-sm text-[#4a5c63]">
             0467 477 786
