@@ -5,14 +5,11 @@ import { compileMDX } from "next-mdx-remote/rsc"
 import remarkGfm from "remark-gfm"
 import rehypeSlug from "rehype-slug"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
-import { hasKv, kvGet, kvScanKeys } from "@/lib/kv"
+import { hasSupabase, sbGetContent, sbListContent } from "@/lib/supabase-rest"
 
 const CONTENT_DIR = path.join(process.cwd(), "content")
 const POSTS_DIR = path.join(CONTENT_DIR, "posts")
 const VIDEOS_DIR = path.join(CONTENT_DIR, "videos")
-
-const KV_POST_PREFIX = "content:posts:"
-const KV_VIDEO_PREFIX = "content:videos:"
 
 export type PostMeta = {
   title: string
@@ -64,18 +61,15 @@ export async function getAllPostsMeta(): Promise<PostMeta[]> {
     })
   }
 
-  if (!hasKv()) return sortByDateDescending(fsMetas)
+  if (!hasSupabase()) return sortByDateDescending(fsMetas)
 
-  let kvMetas: PostMeta[] = []
+  let sbMetas: PostMeta[] = []
   try {
-    const kvKeys = await kvScanKeys(`${KV_POST_PREFIX}*`)
-    const kvSources = await Promise.all(kvKeys.map(async (key) => ({ key, source: await kvGet(key) })))
-    kvMetas = []
-    for (const entry of kvSources) {
-      if (!entry.source) continue
-      const { data } = matter(entry.source)
-      const slug = (data.slug as string) ?? entry.key.slice(KV_POST_PREFIX.length)
-      kvMetas.push({
+    const rows = await sbListContent("posts")
+    for (const row of rows) {
+      const { data } = matter(row.mdx)
+      const slug = (data.slug as string) ?? row.slug
+      sbMetas.push({
         title: data.title as string,
         description: data.description as string,
         date: data.date as string,
@@ -85,23 +79,23 @@ export async function getAllPostsMeta(): Promise<PostMeta[]> {
       })
     }
   } catch {
-    kvMetas = []
+    sbMetas = []
   }
 
-  // KV overrides filesystem by slug
+  // Supabase overrides filesystem by slug
   const bySlug = new Map<string, PostMeta>()
   for (const m of fsMetas) bySlug.set(m.slug, m)
-  for (const m of kvMetas) bySlug.set(m.slug, m)
+  for (const m of sbMetas) bySlug.set(m.slug, m)
   return sortByDateDescending(Array.from(bySlug.values()))
 }
 
 export async function getPostBySlug(slug: string) {
-  if (hasKv()) {
+  if (hasSupabase()) {
     try {
-      const kvSource = await kvGet(`${KV_POST_PREFIX}${slug}`)
-      if (kvSource) {
+      const sbSource = await sbGetContent("posts", slug)
+      if (sbSource) {
         const { content, frontmatter } = await compileMDX<PostMeta>({
-          source: kvSource,
+          source: sbSource,
           options: {
             parseFrontmatter: true,
             mdxOptions: {
@@ -168,18 +162,15 @@ export async function getAllVideosMeta(): Promise<VideoMeta[]> {
     })
   }
 
-  if (!hasKv()) return sortByDateDescending(fsMetas)
+  if (!hasSupabase()) return sortByDateDescending(fsMetas)
 
-  let kvMetas: VideoMeta[] = []
+  let sbMetas: VideoMeta[] = []
   try {
-    const kvKeys = await kvScanKeys(`${KV_VIDEO_PREFIX}*`)
-    const kvSources = await Promise.all(kvKeys.map(async (key) => ({ key, source: await kvGet(key) })))
-    kvMetas = []
-    for (const entry of kvSources) {
-      if (!entry.source) continue
-      const { data } = matter(entry.source)
-      const slug = (data.slug as string) ?? entry.key.slice(KV_VIDEO_PREFIX.length)
-      kvMetas.push({
+    const rows = await sbListContent("videos")
+    for (const row of rows) {
+      const { data } = matter(row.mdx)
+      const slug = (data.slug as string) ?? row.slug
+      sbMetas.push({
         title: data.title as string,
         description: data.description as string,
         date: data.date as string,
@@ -191,22 +182,22 @@ export async function getAllVideosMeta(): Promise<VideoMeta[]> {
       })
     }
   } catch {
-    kvMetas = []
+    sbMetas = []
   }
 
   const bySlug = new Map<string, VideoMeta>()
   for (const m of fsMetas) bySlug.set(m.slug, m)
-  for (const m of kvMetas) bySlug.set(m.slug, m)
+  for (const m of sbMetas) bySlug.set(m.slug, m)
   return sortByDateDescending(Array.from(bySlug.values()))
 }
 
 export async function getVideoBySlug(slug: string) {
-  if (hasKv()) {
+  if (hasSupabase()) {
     try {
-      const kvSource = await kvGet(`${KV_VIDEO_PREFIX}${slug}`)
-      if (kvSource) {
+      const sbSource = await sbGetContent("videos", slug)
+      if (sbSource) {
         const { content, frontmatter } = await compileMDX<VideoMeta>({
-          source: kvSource,
+          source: sbSource,
           options: {
             parseFrontmatter: true,
             mdxOptions: {

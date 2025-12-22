@@ -4,7 +4,7 @@ import path from "path"
 import { access, constants, mkdir, writeFile } from "fs/promises"
 import { AUTH_COOKIE_NAME, getEnvVar, verifyAuthToken } from "@/lib/auth"
 import { getAllVideosMeta } from "@/lib/mdx"
-import { hasKv, kvGet, kvSet } from "@/lib/kv"
+import { hasSupabase, sbGetContent, sbInsertContent } from "@/lib/supabase-rest"
 
 async function requireAuth() {
   const cookieStore = await cookies()
@@ -47,9 +47,8 @@ export async function POST(request: Request) {
   }
   const slug = body.slug ? slugify(body.slug) : slugify(body.title)
 
-  const kvKey = `content:videos:${slug}`
-  if (hasKv()) {
-    const existing = await kvGet(kvKey)
+  if (hasSupabase()) {
+    const existing = await sbGetContent("videos", slug)
     if (existing) {
       return NextResponse.json({ error: "A video with this slug already exists" }, { status: 409 })
     }
@@ -80,8 +79,11 @@ tags:
 Add optional show notes here...
 `
 
-  if (hasKv()) {
-    await kvSet(kvKey, template)
+  if (hasSupabase()) {
+    const result = await sbInsertContent("videos", slug, template)
+    if (result === "exists") {
+      return NextResponse.json({ error: "A video with this slug already exists" }, { status: 409 })
+    }
     return NextResponse.json({ ok: true, slug })
   }
 

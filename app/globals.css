@@ -347,11 +347,22 @@
     backdrop-filter: none;
   }
 
-  .site-header-banner {
-    background-image: url("/logo%20header-background.png");
-    background-size: cover;
-    background-position: center;
+  .site-header-two-tone {
+    /* Fixed 2-tone split that stays centered on any aspect ratio */
+    background-image:
+      /* thin gold divider line like your reference */
+      linear-gradient(
+        to bottom,
+        transparent calc(50% - 2px),
+        color-mix(in oklch, var(--brand-citrus) 55%, transparent) calc(50% - 2px),
+        color-mix(in oklch, var(--brand-citrus) 55%, transparent) calc(50% + 2px),
+        transparent calc(50% + 2px)
+      ),
+      /* main 2-tone bands */
+      linear-gradient(to bottom, var(--brand-teal) 0 50%, var(--brand-asparagus) 50% 100%);
     background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center;
   }
   .header-logo-shell::before,
   .header-logo-shell::after {

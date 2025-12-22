@@ -4,7 +4,7 @@ import path from "path"
 import { access, constants, mkdir, writeFile } from "fs/promises"
 import { AUTH_COOKIE_NAME, getEnvVar, verifyAuthToken } from "@/lib/auth"
 import { getAllPostsMeta } from "@/lib/mdx"
-import { hasKv, kvGet, kvSet } from "@/lib/kv"
+import { hasSupabase, sbGetContent, sbInsertContent } from "@/lib/supabase-rest"
 
 async function requireAuth() {
   const cookieStore = await cookies()
@@ -46,9 +46,8 @@ export async function POST(request: Request) {
   }
   const slug = body.slug ? slugify(body.slug) : slugify(body.title)
 
-  const kvKey = `content:posts:${slug}`
-  if (hasKv()) {
-    const existing = await kvGet(kvKey)
+  if (hasSupabase()) {
+    const existing = await sbGetContent("posts", slug)
     if (existing) {
       return NextResponse.json({ error: "A post with this slug already exists" }, { status: 409 })
     }
@@ -79,8 +78,11 @@ coverImage: "/og.jpg"
 Write your article content here...
 `
 
-  if (hasKv()) {
-    await kvSet(kvKey, template)
+  if (hasSupabase()) {
+    const result = await sbInsertContent("posts", slug, template)
+    if (result === "exists") {
+      return NextResponse.json({ error: "A post with this slug already exists" }, { status: 409 })
+    }
     return NextResponse.json({ ok: true, slug })
   }
 

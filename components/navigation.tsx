@@ -15,7 +15,6 @@ type Config = {
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cfg, setCfg] = useState<Config>({})
-  const headerBackgroundUrl = cfg.brand?.headerBannerUrl || "/logo%20header-background.png"
   const brandLogo = cfg.brand?.logoUrl || "/logo.png"
   const postFallbackLog = (payload: Record<string, unknown>) => {
     const base = { ...payload }
@@ -270,8 +269,7 @@ export function Navigation() {
   return (
     <nav className="relative z-50 overflow-visible">
       <div
-        className="relative overflow-visible site-header-banner"
-        style={headerBackgroundUrl ? { backgroundImage: `url('${headerBackgroundUrl}')` } : undefined}
+        className="relative overflow-visible site-header-two-tone"
       >
         <div className="relative z-10">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
