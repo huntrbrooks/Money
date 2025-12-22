@@ -389,6 +389,14 @@
   }
 }
 
+/* iPhone-sized widths (incl. iPhone 16 Pro): tighten the header so the Menu never visually sits on the logo */
+@media (max-width: 430px) {
+  .header-logo-shell--nav {
+    height: clamp(52px, 11vw, 84px);
+    max-width: min(680px, calc(100vw - 9.25rem));
+  }
+}
+
 @keyframes accordionGradientPan {
   0% {
     background-position: 0% 50%;

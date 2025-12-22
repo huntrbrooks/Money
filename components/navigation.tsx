@@ -273,13 +273,13 @@ export function Navigation() {
       >
         <div className="relative z-10">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center min-h-[7.5rem] sm:min-h-[9rem] md:min-h-[11rem] py-6 md:py-10">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center min-h-[7.5rem] sm:min-h-[9rem] md:min-h-[11rem] py-6 md:py-10">
               {/* Left spacer keeps the logo truly centered even when the right side has content */}
               <div aria-hidden="true" />
 
-              <Link href="/" aria-label="Home" className="inline-flex items-center justify-center group justify-self-center">
+              <Link href="/" aria-label="Home" className="min-w-0 inline-flex items-center justify-center group justify-self-center">
                 {brandLogo ? (
-                  <span className="header-logo-shell header-logo-shell--nav">
+                  <span className="header-logo-shell header-logo-shell--nav min-w-0">
                     <img
                       src={brandLogo}
                       alt={brandName}
