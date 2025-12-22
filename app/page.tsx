@@ -124,18 +124,12 @@ export default async function HomePage() {
             {/* Right Column - Image */}
             <div className="order-1 lg:order-2 relative lg:pl-8">
               <div className="relative mx-auto w-full max-w-[32rem] sm:max-w-[48rem] md:max-w-[56rem]">
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 translate-x-5 translate-y-5 rounded-[40px] bg-[var(--foreground)]/5 blur-[2px]"
-                />
-                <div className="relative rounded-[42px] border-[6px] border-[#6ca4ac] bg-[var(--section-bg-2)]/95 p-2 sm:p-3 md:p-4 shadow-[0_35px_60px_rgba(32,56,91,0.18)] backdrop-blur-sm">
-                  <div className="rounded-[30px] overflow-hidden shadow-inner aspect-[4/3] sm:aspect-auto">
-                    <img
-                      src={hero.imageUrl || "/og.png?v=20251128"}
-                      alt="Portrait of Dan Lobel, counsellor in Melbourne"
-                      className="w-full h-full object-cover object-center"
-                    />
-                  </div>
+                <div className="overflow-hidden rounded-[30px] aspect-[4/3] sm:aspect-auto">
+                  <img
+                    src={hero.imageUrl || "/og.png?v=20251128"}
+                    alt="Portrait of Dan Lobel, counsellor in Melbourne"
+                    className="w-full h-full object-cover object-center"
+                  />
                 </div>
               </div>
             </div>
