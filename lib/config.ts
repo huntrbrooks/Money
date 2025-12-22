@@ -1,6 +1,6 @@
 import { promises as fs } from "fs"
 import path from "path"
-import { hasKv, kvGet, kvSet } from "@/lib/kv"
+import { hasSupabase, sbGetSiteConfigJson, sbUpsertSiteConfigJson } from "@/lib/supabase-rest"
 
 export type HeroButton = {
   label: string
@@ -139,7 +139,6 @@ export type SiteConfig = {
 }
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), "data", "site.json")
-const KV_CONFIG_KEY = "site:config"
 
 export const defaultConfig: SiteConfig = {
   theme: {
@@ -335,10 +334,10 @@ async function ensureDir(filePath: string) {
 
 export async function readSiteConfig(): Promise<SiteConfig> {
   try {
-    if (hasKv()) {
-      const kvRaw = await kvGet(KV_CONFIG_KEY)
-      if (kvRaw) {
-        const parsed = JSON.parse(kvRaw)
+    if (hasSupabase()) {
+      const sbData = await sbGetSiteConfigJson()
+      if (sbData) {
+        const parsed = sbData as any
         return {
           ...defaultConfig,
           ...parsed,
@@ -378,7 +377,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       experiments: { ...defaultConfig.experiments, ...(parsed.experiments ?? {}) },
     }
   } catch {
-    if (hasKv()) {
+    if (hasSupabase()) {
       return defaultConfig
     }
     await ensureDir(CONFIG_FILE_PATH)
@@ -412,8 +411,8 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
     homepage: { ...defaultConfig.homepage, ...(newConfig.homepage ?? {}) },
     experiments: { ...defaultConfig.experiments, ...(newConfig.experiments ?? {}) },
   }
-  if (hasKv()) {
-    await kvSet(KV_CONFIG_KEY, JSON.stringify(merged))
+  if (hasSupabase()) {
+    await sbUpsertSiteConfigJson(merged as any)
     return
   }
   await ensureDir(CONFIG_FILE_PATH)
