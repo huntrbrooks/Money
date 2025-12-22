@@ -350,13 +350,12 @@
   .site-header-two-tone {
     /* Crisp 50/50 split that stays centered on any aspect ratio */
     --header-split: 50%;
+    /* Slight overlap avoids a 1px seam on some displays */
     background: linear-gradient(
       to bottom,
       var(--brand-teal) 0,
-      var(--brand-teal) calc(var(--header-split) - 1px),
-      rgba(222, 236, 79, 0.55) calc(var(--header-split) - 1px),
-      rgba(222, 236, 79, 0.55) calc(var(--header-split) + 1px),
-      var(--brand-asparagus) calc(var(--header-split) + 1px),
+      var(--brand-teal) calc(var(--header-split) + 0.75px),
+      var(--brand-asparagus) calc(var(--header-split) - 0.75px),
       var(--brand-asparagus) 100%
     );
   }
