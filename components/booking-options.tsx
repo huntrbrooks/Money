@@ -235,7 +235,7 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
           <p className="text-xs uppercase tracking-[0.25em] text-[#4a5c63]">Billing enquiries</p>
           <a
             href="mailto:dan@financialabusetherapist.com"
-            className="text-sm font-semibold text-[#1f2d38]"
+            className="text-sm font-semibold text-[#1f2d38] break-all"
           >
             dan@financialabusetherapist.com
           </a>

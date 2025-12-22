@@ -323,7 +323,7 @@ export const defaultConfig: SiteConfig = {
       showValueProps: true,
       showNewsletter: true,
       showImportantLinks: true,
-      showTestimonials: true,
+      showTestimonials: false,
       showOtherAreas: true,
       showBooking: true,
       showFaqs: true,

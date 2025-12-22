@@ -25,16 +25,18 @@ export async function POST(request: Request) {
   if (!allowedUsernames.includes(String(username ?? "")) || !allowedPasswords.includes(String(password ?? ""))) {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
   }
+
   const JWT_SECRET = getEnvVar("JWT_SECRET", "dev-secret-change")
   const exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7 // 7 days
-  const token = await createAuthToken({ username, exp }, JWT_SECRET)
+  const token = await createAuthToken({ username: String(username ?? ""), exp }, JWT_SECRET)
   const res = NextResponse.json({ ok: true })
+
   const secure = process.env.NODE_ENV === "production" ? " Secure;" : ""
   res.headers.append(
     "Set-Cookie",
     `${AUTH_COOKIE_NAME}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${60 * 60 * 24 * 7};${secure}`
   )
+
   return res
 }
-
 

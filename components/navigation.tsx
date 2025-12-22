@@ -228,7 +228,7 @@ export function Navigation() {
   ]
   const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
   const menuButtonClasses =
-    "flex items-center justify-center w-32 h-12 px-6 rounded-full border border-white/30 text-white text-base font-serif tracking-[0.2em] uppercase bg-[#6ca4ac]/95 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.22)] transition-colors"
+    "flex items-center justify-center w-24 h-10 px-4 rounded-full border border-white/30 text-white text-sm font-serif tracking-[0.18em] uppercase bg-[#6ca4ac]/95 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.22)] transition-colors sm:w-32 sm:h-12 sm:px-6 sm:text-base sm:tracking-[0.2em]"
   const overlayBaseClasses = "fixed inset-0 z-40 flex flex-col bg-[#6ca4ac] text-white transition duration-500 ease-out"
   const overlayOpenClasses = "opacity-100 pointer-events-auto translate-y-0"
   const overlayClosedClasses = "opacity-0 pointer-events-none translate-y-2"
@@ -239,10 +239,10 @@ export function Navigation() {
   const menuOverlayContent = (
     <>
       <div className="flex items-center justify-between px-6 md:px-10 py-6 border-b border-white/15">
-        <span className="text-lg md:text-xl font-serif tracking-wide">{brandName}</span>
+        <span className="min-w-0 text-lg md:text-xl font-serif tracking-wide truncate">{brandName}</span>
         <button
           onClick={closeMenu}
-          className="px-5 py-2 rounded-full border border-white/40 text-xs font-semibold tracking-[0.25em] uppercase hover:bg-white/10 transition"
+          className="shrink-0 px-5 py-2 rounded-full border border-white/40 text-xs font-semibold tracking-[0.25em] uppercase hover:bg-white/10 transition"
           aria-label="Close menu"
         >
           Close
@@ -273,47 +273,36 @@ export function Navigation() {
       >
         <div className="relative z-10">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
-            <div className="relative flex items-center justify-center min-h-[7.5rem] sm:min-h-[9rem] md:min-h-[11rem] py-6 md:py-10">
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <Link href="/" aria-label="Home" className="pointer-events-auto inline-flex items-center justify-center group">
-                  {brandLogo ? (
-                    <span className="header-logo-shell">
-                      <img
-                        src={brandLogo}
-                        alt={brandName}
-                        className="header-logo-img w-auto max-w-[min(62rem,92vw)] max-h-[70%] object-contain drop-shadow-[0_18px_35px_rgba(32,56,91,0.28)] transition-transform duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-[1.02]"
-                      />
-                    </span>
-                  ) : (
-                    <span className="font-serif whitespace-nowrap text-[clamp(1.75rem,7vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
-                      {brandName}
-                    </span>
-                  )}
-                </Link>
-              </div>
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center min-h-[7.5rem] sm:min-h-[9rem] md:min-h-[11rem] py-6 md:py-10">
+              {/* Left spacer keeps the logo truly centered even when the right side has content */}
+              <div aria-hidden="true" />
 
-              <div className="absolute right-4 top-4 sm:right-6 sm:top-6 z-20">
-                {isMenuOpen ? (
-                  <button
-                    onClick={handleMenuToggle}
-                    className={menuButtonClasses}
-                    aria-expanded="true"
-                    aria-haspopup="true"
-                    aria-label="Close navigation menu"
-                  >
-                    Menu
-                  </button>
+              <Link href="/" aria-label="Home" className="inline-flex items-center justify-center group justify-self-center">
+                {brandLogo ? (
+                  <span className="header-logo-shell header-logo-shell--nav">
+                    <img
+                      src={brandLogo}
+                      alt={brandName}
+                      className="header-logo-img header-logo-img--nav object-contain drop-shadow-[0_18px_35px_rgba(32,56,91,0.28)] transition-transform duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-[1.02]"
+                    />
+                  </span>
                 ) : (
-                  <button
-                    onClick={handleMenuToggle}
-                    className={menuButtonClasses}
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                    aria-label="Open navigation menu"
-                  >
-                    Menu
-                  </button>
+                  <span className="font-serif whitespace-nowrap text-[clamp(1.5rem,6vw,3.25rem)] text-[var(--foreground)] font-medium leading-none tracking-tight text-center px-2">
+                    {brandName}
+                  </span>
                 )}
+              </Link>
+
+              <div className="justify-self-end self-start sm:self-center pt-1 sm:pt-0">
+                <button
+                  onClick={handleMenuToggle}
+                  className={menuButtonClasses}
+                  aria-expanded={isMenuOpen}
+                  aria-haspopup="true"
+                  aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                >
+                  Menu
+                </button>
               </div>
             </div>
           </div>

@@ -249,6 +249,9 @@
 }
 
 @media (max-width: 768px) {
+  html, body {
+    overflow-x: clip;
+  }
   body {
     background-attachment: scroll, scroll;
   }
@@ -346,6 +349,15 @@
     box-shadow: none;
     backdrop-filter: none;
   }
+  .header-logo-shell--nav {
+    /* Fixed visual box to prevent layout thrash and keep aspect ratio consistent */
+    height: clamp(56px, 12vw, 96px);
+    /* Leave room for the Menu button + container padding on narrow screens */
+    max-width: min(680px, calc(100vw - 10.5rem));
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
 
   .site-header-two-tone {
     /* Crisp 50/50 split that stays centered on any aspect ratio */
@@ -369,6 +381,11 @@
     z-index: 2;
     animation: headerLogoFloat 16s ease-in-out infinite;
     will-change: transform;
+  }
+  .header-logo-img--nav {
+    height: 100%;
+    width: auto;
+    max-width: 100%;
   }
 }
 

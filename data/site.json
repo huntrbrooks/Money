@@ -173,6 +173,9 @@
     "intake": "/intake"
   },
   "homepage": {
+    "sections": {
+      "showTestimonials": false
+    },
     "valueProps": [
       {
         "title": "Consent-led therapy",

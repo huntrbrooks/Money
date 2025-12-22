@@ -38,8 +38,9 @@ export function BookingScheduler({ showEmbedToggle = true }: BookingSchedulerPro
         <div className="rounded-[28px] border border-[#c7d1cc] bg-[var(--section-bg-2)] p-5 sm:p-6 shadow-[inset_0_0_0_1px_rgba(229,238,210,0.85)]">
           <div className="space-y-4 text-[#33444b]">
             <p className="text-sm leading-relaxed">
-              Need help deciding on a format? Email dan@financialabusetherapist.com or call 0467&nbsp;477&nbsp;786 — a
-              personal reply is guaranteed.
+              Need help deciding on a format? Email{" "}
+              <span className="break-words">dan@financialabusetherapist.com</span> or call 0467 477 786 — a personal
+              reply is guaranteed.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button
