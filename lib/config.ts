@@ -1,5 +1,6 @@
 import { promises as fs } from "fs"
 import path from "path"
+import { hasKv, kvGet, kvSet } from "@/lib/kv"
 
 export type HeroButton = {
   label: string
@@ -84,7 +85,6 @@ export type HomepageContent = {
 export type ExperimentsConfig = {
   showNewsletterSection?: boolean
   showLeadMagnet?: boolean
-  showTestimonialsSection?: boolean
 }
 
 export type SiteConfig = {
@@ -139,6 +139,7 @@ export type SiteConfig = {
 }
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), "data", "site.json")
+const KV_CONFIG_KEY = "site:config"
 
 export const defaultConfig: SiteConfig = {
   theme: {
@@ -320,7 +321,6 @@ export const defaultConfig: SiteConfig = {
   experiments: {
     showNewsletterSection: false,
     showLeadMagnet: false,
-    showTestimonialsSection: false,
   },
 }
 
@@ -335,6 +335,29 @@ async function ensureDir(filePath: string) {
 
 export async function readSiteConfig(): Promise<SiteConfig> {
   try {
+    if (hasKv()) {
+      const kvRaw = await kvGet(KV_CONFIG_KEY)
+      if (kvRaw) {
+        const parsed = JSON.parse(kvRaw)
+        return {
+          ...defaultConfig,
+          ...parsed,
+          theme: { ...defaultConfig.theme, ...(parsed.theme ?? {}) },
+          seo: { ...defaultConfig.seo, ...(parsed.seo ?? {}) },
+          brand: { ...defaultConfig.brand, ...(parsed.brand ?? {}) },
+          navigation: parsed.navigation ?? defaultConfig.navigation,
+          contact: { ...defaultConfig.contact, ...(parsed.contact ?? {}) },
+          hero: { ...defaultConfig.hero, ...(parsed.hero ?? {}) },
+          about: { ...defaultConfig.about, ...(parsed.about ?? {}) },
+          services: parsed.services ?? defaultConfig.services,
+          consultations: parsed.consultations ?? defaultConfig.consultations,
+          resources: parsed.resources ?? defaultConfig.resources,
+          forms: { ...(defaultConfig.forms ?? {}), ...(parsed.forms ?? {}) },
+          homepage: { ...defaultConfig.homepage, ...(parsed.homepage ?? {}) },
+          experiments: { ...defaultConfig.experiments, ...(parsed.experiments ?? {}) },
+        }
+      }
+    }
     const raw = await fs.readFile(CONFIG_FILE_PATH, "utf8")
     const parsed = JSON.parse(raw)
     return {
@@ -355,6 +378,9 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       experiments: { ...defaultConfig.experiments, ...(parsed.experiments ?? {}) },
     }
   } catch {
+    if (hasKv()) {
+      return defaultConfig
+    }
     await ensureDir(CONFIG_FILE_PATH)
     await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(defaultConfig, null, 2), "utf8")
     return defaultConfig
@@ -362,7 +388,6 @@ export async function readSiteConfig(): Promise<SiteConfig> {
 }
 
 export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
-  await ensureDir(CONFIG_FILE_PATH)
   const mergedBrand: NonNullable<SiteConfig["brand"]> = {
     name: newConfig.brand?.name ?? defaultConfig.brand!.name,
     subtitle: newConfig.brand?.subtitle ?? defaultConfig.brand!.subtitle,
@@ -387,6 +412,11 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
     homepage: { ...defaultConfig.homepage, ...(newConfig.homepage ?? {}) },
     experiments: { ...defaultConfig.experiments, ...(newConfig.experiments ?? {}) },
   }
+  if (hasKv()) {
+    await kvSet(KV_CONFIG_KEY, JSON.stringify(merged))
+    return
+  }
+  await ensureDir(CONFIG_FILE_PATH)
   await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(merged, null, 2), "utf8")
 }
 

@@ -66,6 +66,10 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
    const router = useRouter()
    const [loading, setLoading] = useState(true)
    const [saving, setSaving] = useState<null | string>(null)
+
+   const redirectToLogin = (nextPath = "/admin") => {
+     router.replace(`/admin/login?next=${encodeURIComponent(nextPath)}`)
+   }
  
    // Theme state
   const [theme, setTheme] = useState<ThemeState>({
@@ -109,6 +113,11 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
      async function load() {
        try {
          const res = await fetch("/api/site-config", { cache: "no-store" })
+        if (res.status === 401) {
+          redirectToLogin("/admin")
+          return
+        }
+        if (!res.ok) throw new Error("Failed to load config")
         const data = await res.json()
         setTheme(data.theme)
         const heroDefaults = createEmptyHero()
@@ -151,7 +160,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
      }
      load()
     loadContent()
-   }, [toast])
+   }, [toast, router])
  
    async function saveAll(section?: string) {
      setSaving(section ?? "all")
@@ -174,6 +183,11 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
            homepage,
          }),
        })
+       if (res.status === 401) {
+         toast({ title: "Session expired", description: "Please sign in again.", variant: "destructive" })
+         redirectToLogin("/admin")
+         return
+       }
        if (!res.ok) throw new Error("Save failed")
        toast({ title: "Saved", description: section ? `${section} updated` : "All changes saved" })
      } catch (error: unknown) {
@@ -187,6 +201,11 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   async function loadContent() {
     try {
       const [postsRes, videosRes] = await Promise.all([fetch("/api/posts"), fetch("/api/videos")])
+      if (postsRes.status === 401 || videosRes.status === 401) {
+        toast({ title: "Session expired", description: "Please sign in again.", variant: "destructive" })
+        redirectToLogin("/admin")
+        return
+      }
       const postsData = await postsRes.json()
       const videosData = await videosRes.json()
       setPostsMeta(postsData)
@@ -211,6 +230,11 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
           description: newPostDraft.description.trim(),
         }),
       })
+      if (res.status === 401) {
+        toast({ title: "Session expired", description: "Please sign in again.", variant: "destructive" })
+        redirectToLogin("/admin")
+        return
+      }
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
         throw new Error(data.error ?? "Unable to create post")
@@ -242,6 +266,11 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
           videoUrl: newVideoDraft.videoUrl.trim(),
         }),
       })
+      if (res.status === 401) {
+        toast({ title: "Session expired", description: "Please sign in again.", variant: "destructive" })
+        redirectToLogin("/admin")
+        return
+      }
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
         throw new Error(data.error ?? "Unable to create video")
@@ -1194,6 +1223,7 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
                           value={theme[key]}
                           onChange={(e) => updateTheme(key, e.target.value)}
                            className="h-10 w-14 rounded-md border border-border"
+                           aria-label={`${key} color`}
                          />
                          <Input
                           value={theme[key]}

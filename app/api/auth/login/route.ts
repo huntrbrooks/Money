@@ -3,9 +3,7 @@ import { AUTH_COOKIE_NAME, createAuthToken, getEnvVar } from "@/lib/auth"
 
 function normalizeEnvValue(value: string): string {
   const trimmed = value.trim()
-  // Handle common env formatting mistakes: wrapping quotes / extra whitespace
-  const unquoted = trimmed.replace(/^["']([\s\S]*)["']$/, "$1").trim()
-  return unquoted
+  return trimmed.replace(/^["']([\s\S]*)["']$/, "$1").trim()
 }
 
 function parseAllowedValues(raw: string | undefined, fallback: string): string[] {

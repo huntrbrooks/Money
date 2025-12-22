@@ -15,7 +15,8 @@ type Config = {
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cfg, setCfg] = useState<Config>({})
-  const brandLogo = cfg.brand?.headerBannerUrl || cfg.brand?.logoUrl || "/logo.png"
+  const headerBackgroundUrl = cfg.brand?.headerBannerUrl || "/logo%20header-background.png"
+  const brandLogo = cfg.brand?.logoUrl || "/logo.png"
   const postFallbackLog = (payload: Record<string, unknown>) => {
     const base = { ...payload }
     const fetchBody = JSON.stringify({ ...base, transport: "fetch" })
@@ -227,7 +228,6 @@ export function Navigation() {
     { label: "Contact", href: "/#contact" },
   ]
   const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
-  const headerBannerUrl = cfg.brand?.headerBannerUrl
   const menuButtonClasses =
     "flex items-center justify-center w-32 h-12 px-6 rounded-full border border-white/30 text-white text-base font-serif tracking-[0.2em] uppercase bg-[#6ca4ac]/95 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.22)] transition-colors"
   const overlayBaseClasses = "fixed inset-0 z-40 flex flex-col bg-[#6ca4ac] text-white transition duration-500 ease-out"
@@ -270,51 +270,53 @@ export function Navigation() {
   return (
     <nav className="relative z-50 overflow-visible">
       <div
-        className="relative overflow-visible"
-        style={{
-          background:
-            "linear-gradient(180deg, #929d5b 0%, rgba(146,157,91,0.85) 18%, rgba(108,164,172,0.92) 58%, #6ca4ac 95%)",
-        }}
+        className="relative overflow-visible site-header-banner"
+        style={headerBackgroundUrl ? { backgroundImage: `url('${headerBackgroundUrl}')` } : undefined}
       >
         <div className="relative z-10">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
-            <div className="flex items-center justify-center min-h-[7.5rem] sm:min-h-[9rem] md:min-h-[11rem] py-4 md:py-6 gap-4 sm:gap-6 flex-wrap">
-              <Link href="/" aria-label="Home" className="inline-flex items-center justify-center group">
-                {headerBannerUrl || brandLogo ? (
-                  <span className="header-logo-shell">
-                    <img
-                      src={headerBannerUrl || brandLogo}
-                      alt={brandName}
-                      className="header-logo-img h-20 sm:h-28 md:h-40 lg:h-44 w-auto max-w-[min(42rem,70vw)] object-contain drop-shadow-[0_18px_35px_rgba(32,56,91,0.28)] transition-transform duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-[1.02]"
-                    />
-                  </span>
+            <div className="relative flex items-center justify-center min-h-[7.5rem] sm:min-h-[9rem] md:min-h-[11rem] py-6 md:py-10">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <Link href="/" aria-label="Home" className="pointer-events-auto inline-flex items-center justify-center group">
+                  {brandLogo ? (
+                    <span className="header-logo-shell">
+                      <img
+                        src={brandLogo}
+                        alt={brandName}
+                        className="header-logo-img w-auto max-w-[min(62rem,92vw)] max-h-[70%] object-contain drop-shadow-[0_18px_35px_rgba(32,56,91,0.28)] transition-transform duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-[1.02]"
+                      />
+                    </span>
+                  ) : (
+                    <span className="font-serif whitespace-nowrap text-[clamp(1.75rem,7vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
+                      {brandName}
+                    </span>
+                  )}
+                </Link>
+              </div>
+
+              <div className="absolute right-4 top-4 sm:right-6 sm:top-6 z-20">
+                {isMenuOpen ? (
+                  <button
+                    onClick={handleMenuToggle}
+                    className={menuButtonClasses}
+                    aria-expanded="true"
+                    aria-haspopup="true"
+                    aria-label="Close navigation menu"
+                  >
+                    Menu
+                  </button>
                 ) : (
-                  <span className="font-serif whitespace-nowrap text-[clamp(1.75rem,7vw,4rem)] text-[var(--foreground)] font-medium leading-none tracking-tight">
-                    {brandName}
-                  </span>
+                  <button
+                    onClick={handleMenuToggle}
+                    className={menuButtonClasses}
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    aria-label="Open navigation menu"
+                  >
+                    Menu
+                  </button>
                 )}
-              </Link>
-              {isMenuOpen ? (
-                <button
-                  onClick={handleMenuToggle}
-                  className={`${menuButtonClasses} relative z-20 shrink-0`}
-                  aria-expanded="true"
-                  aria-haspopup="true"
-                  aria-label="Close navigation menu"
-                >
-                  Menu
-                </button>
-              ) : (
-                <button
-                  onClick={handleMenuToggle}
-                  className={`${menuButtonClasses} relative z-20 shrink-0`}
-                  aria-expanded="false"
-                  aria-haspopup="true"
-                  aria-label="Open navigation menu"
-                >
-                  Menu
-                </button>
-              )}
+              </div>
             </div>
           </div>
         </div>

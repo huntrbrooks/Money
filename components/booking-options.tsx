@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import type { ConsultationOption } from "@/lib/config"
 import {
   Building,
@@ -71,7 +72,61 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
   return (
     <div className="space-y-12">
       <div className="rounded-[40px] border border-[#d3dcd9] bg-[var(--section-bg-1)]/85 p-5 sm:p-8 lg:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
-        <div className="grid gap-5 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        {/* Mobile: compact dropdowns (accordion) */}
+        <div className="sm:hidden">
+          <Accordion type="single" collapsible className="divide-y rounded-3xl border border-[#d4ddd8] bg-[var(--section-bg-2)]/60">
+            {options.map((option) => {
+              const Icon = getModeIcon(option.mode)
+              const value = `consultation-${option.typeId ?? option.format}`
+              return (
+                <AccordionItem key={value} value={value} className="px-4">
+                  <AccordionTrigger className="py-4 text-left">
+                    <div className="flex w-full items-center justify-between gap-3 pr-2">
+                      <div className="min-w-0">
+                        {option.mode && (
+                          <p className="text-[11px] uppercase tracking-[0.25em] text-[#5a7264]">{option.mode}</p>
+                        )}
+                        <p className="font-serif text-lg text-[#1f2d38] leading-snug truncate">{option.format}</p>
+                      </div>
+                      <div className="flex items-baseline gap-2 shrink-0">
+                        <span className="font-serif text-2xl text-[#1f2d38]">{option.price}</span>
+                        <span className="text-xs text-[#4a5c63]">{option.duration}</span>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-5 text-[#4a5c63]">
+                    <div className="space-y-3">
+                      {option.highlight && (
+                        <span className="inline-flex rounded-full bg-[#7b8c45]/15 px-3 py-1 text-xs font-semibold text-[#556026]">
+                          {option.highlight}
+                        </span>
+                      )}
+                      {option.description && (
+                        <p className="text-sm leading-relaxed text-[#4a5a61]">{option.description}</p>
+                      )}
+                      <div className="flex flex-wrap items-center gap-3 text-sm">
+                        <Icon className="h-4 w-4 text-[#7b8c45]" aria-hidden="true" />
+                        <span>{option.location ?? "Flexible delivery"}</span>
+                      </div>
+                      <Button
+                        asChild
+                        size="lg"
+                        className="w-full rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90"
+                      >
+                        <a href={buildBookingUrl(option.typeId)} target="_blank" rel="noopener noreferrer">
+                          Book this session
+                        </a>
+                      </Button>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              )
+            })}
+          </Accordion>
+        </div>
+
+        {/* Desktop: existing cards */}
+        <div className="hidden gap-5 sm:grid sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {options.map((option) => {
             const Icon = getModeIcon(option.mode)
             return (
@@ -116,7 +171,35 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
             )
           })}
         </div>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+
+        {/* Mobile: collapse billing highlights into one dropdown */}
+        <div className="mt-8 sm:hidden">
+          <Accordion type="single" collapsible className="rounded-3xl border border-[#dfe6d5] bg-[var(--section-bg-2)]/60">
+            <AccordionItem value="billing-highlights" className="px-4">
+              <AccordionTrigger className="py-4 text-left">
+                <span className="font-serif text-lg text-[#1f2d38]">Billing &amp; payment details</span>
+              </AccordionTrigger>
+              <AccordionContent className="pb-5">
+                <div className="space-y-4">
+                  {billingHighlights.map(({ title, detail, icon: Icon }) => (
+                    <div key={title} className="flex gap-3">
+                      <div className="mt-0.5 rounded-2xl bg-[#7b8c45]/15 p-2 text-[#7b8c45]">
+                        <Icon className="h-4 w-4" aria-hidden="true" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-[#1f2d38]">{title}</p>
+                        <p className="mt-1 text-sm text-[#4a5c63]">{detail}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+
+        {/* Desktop: keep the highlight tiles */}
+        <div className="mt-10 hidden gap-4 sm:grid sm:grid-cols-2 md:grid-cols-3">
           {billingHighlights.map(({ title, detail, icon: Icon }) => (
             <div
               key={title}

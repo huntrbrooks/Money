@@ -346,6 +346,13 @@
     box-shadow: none;
     backdrop-filter: none;
   }
+
+  .site-header-banner {
+    background-image: url("/logo%20header-background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
   .header-logo-shell::before,
   .header-logo-shell::after {
     content: none;
