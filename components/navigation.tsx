@@ -293,44 +293,53 @@ export function Navigation() {
                 )}
               </Link>
 
-              <div className="justify-self-end self-start sm:self-center pt-1 sm:pt-0">
-                <button
-                  onClick={handleMenuToggle}
-                  className={menuButtonClasses}
-                  aria-expanded={isMenuOpen}
-                  aria-haspopup="true"
-                  aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-                >
-                  Menu
-                </button>
-              </div>
+              {/* Right spacer (menu button now lives below header, above hero) */}
+              <div aria-hidden="true" />
             </div>
           </div>
         </div>
-        {isMenuOpen ? (
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Navigation menu"
-            aria-hidden="false"
-            className={`${overlayBaseClasses} ${overlayOpenClasses}`}
-            style={overlayStyle}
-          >
-            {menuOverlayContent}
-          </div>
-        ) : (
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Navigation menu"
-            aria-hidden="true"
-            className={`${overlayBaseClasses} ${overlayClosedClasses}`}
-            style={overlayStyle}
-          >
-            {menuOverlayContent}
-          </div>
-        )}
       </div>
+
+      {/* Menu button just below header (above hero), not inside the 2‑tone bar */}
+      <div className="relative z-20 h-0 pointer-events-none">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8">
+          <div className="flex justify-end pointer-events-auto">
+            <button
+              onClick={handleMenuToggle}
+              className={`${menuButtonClasses} -translate-y-1/2`}
+              aria-expanded={isMenuOpen ? "true" : "false"}
+              aria-haspopup="true"
+              aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            >
+              Menu
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {isMenuOpen ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+          aria-hidden="false"
+          className={`${overlayBaseClasses} ${overlayOpenClasses}`}
+          style={overlayStyle}
+        >
+          {menuOverlayContent}
+        </div>
+      ) : (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+          aria-hidden="true"
+          className={`${overlayBaseClasses} ${overlayClosedClasses}`}
+          style={overlayStyle}
+        >
+          {menuOverlayContent}
+        </div>
+      )}
     </nav>
   )
 }
