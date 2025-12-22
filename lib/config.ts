@@ -1,6 +1,7 @@
 import { promises as fs } from "fs"
 import path from "path"
 import { hasSupabase, sbGetSiteConfigJson, sbUpsertSiteConfigJson } from "@/lib/supabase-rest"
+import { unstable_noStore as noStore } from "next/cache"
 
 export type HeroButton = {
   label: string
@@ -333,6 +334,8 @@ async function ensureDir(filePath: string) {
 }
 
 export async function readSiteConfig(): Promise<SiteConfig> {
+  // Ensure Next.js doesn't statically cache the config.
+  noStore()
   try {
     if (hasSupabase()) {
       const sbData = await sbGetSiteConfigJson()

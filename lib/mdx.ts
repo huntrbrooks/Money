@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm"
 import rehypeSlug from "rehype-slug"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import { hasSupabase, sbGetContent, sbListContent } from "@/lib/supabase-rest"
+import { unstable_noStore as noStore } from "next/cache"
 
 const CONTENT_DIR = path.join(process.cwd(), "content")
 const POSTS_DIR = path.join(CONTENT_DIR, "posts")
@@ -44,6 +45,7 @@ function sortByDateDescending<T extends { date: string }>(entries: T[]) {
 }
 
 export async function getAllPostsMeta(): Promise<PostMeta[]> {
+  noStore()
   const files = await readDirSafe(POSTS_DIR)
   const fsMetas: PostMeta[] = []
   for (const file of files.filter((file) => file.endsWith(".mdx"))) {
@@ -90,6 +92,7 @@ export async function getAllPostsMeta(): Promise<PostMeta[]> {
 }
 
 export async function getPostBySlug(slug: string) {
+  noStore()
   if (hasSupabase()) {
     try {
       const sbSource = await sbGetContent("posts", slug)
@@ -143,6 +146,7 @@ export async function getPostBySlug(slug: string) {
 }
 
 export async function getAllVideosMeta(): Promise<VideoMeta[]> {
+  noStore()
   const files = await readDirSafe(VIDEOS_DIR)
   const fsMetas: VideoMeta[] = []
   for (const file of files.filter((file) => file.endsWith(".mdx"))) {
@@ -192,6 +196,7 @@ export async function getAllVideosMeta(): Promise<VideoMeta[]> {
 }
 
 export async function getVideoBySlug(slug: string) {
+  noStore()
   if (hasSupabase()) {
     try {
       const sbSource = await sbGetContent("videos", slug)

@@ -29,7 +29,7 @@ type ThemeState = {
   fontSerif?: string
 }
 
-const themeColorKeys: Array<keyof Pick<ThemeState, "primary" | "secondary" | "accent" | "background" | "foreground">> = [
+const themeColorKeys: Array<keyof Pick<ThemeState, "primary" | "secondary" | "accent" | "background" | "foreground">> = ["primary", "secondary", "accent", "background", "foreground"] /*
   "primary",
   "secondary",
   "accent",
@@ -37,6 +37,7 @@ const themeColorKeys: Array<keyof Pick<ThemeState, "primary" | "secondary" | "ac
   "foreground",
 ]
 
+*/
 const createEmptyHero = (): SiteConfig["hero"] => ({
   eyebrow: "",
   title: "",
