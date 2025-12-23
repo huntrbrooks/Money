@@ -337,7 +337,8 @@ export const defaultConfig: SiteConfig = {
       showFaqs: true,
       showContact: true,
       showCrisis: true,
-      showLeadMagnet: true,
+      // The bottom-right lead magnet popup should be opt-in (off by default).
+      showLeadMagnet: false,
     },
     copy: {
       valuePropsEyebrow: "What to expect",

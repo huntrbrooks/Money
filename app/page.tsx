@@ -59,6 +59,12 @@ export default async function HomePage() {
   const showFaqs = sections.showFaqs !== false
   const showContact = sections.showContact !== false
   const showCrisis = sections.showCrisis !== false
+  // Lead magnet popup (bottom-right). Default OFF unless explicitly enabled.
+  // Priority:
+  // - `config.experiments.showLeadMagnet` (admin toggle) if present
+  // - `homepage.sections.showLeadMagnet` if present
+  // - otherwise false
+  const showLeadMagnet = config.experiments?.showLeadMagnet ?? sections.showLeadMagnet ?? false
 
   const otherAreas = homepageContent.otherAreas ?? []
   const importantSectionLinks = homepageContent.importantSectionLinks ?? []
@@ -507,7 +513,7 @@ export default async function HomePage() {
 
       <Footer backgroundColor="#d7e9ec" />
       </main>
-      {sections.showLeadMagnet !== false && <LeadMagnet content={leadMagnet} />}
+      {showLeadMagnet && <LeadMagnet content={leadMagnet} />}
       {[
         { id: "org-jsonld", data: buildOrganizationSchema(config) },
         {

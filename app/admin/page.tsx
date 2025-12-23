@@ -61,7 +61,8 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
     showFaqs: true,
     showContact: true,
     showCrisis: true,
-    showLeadMagnet: true,
+    // Lead magnet popup should be opt-in.
+    showLeadMagnet: false,
   },
   copy: {
     valuePropsEyebrow: "",
@@ -174,7 +175,8 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
   const [newVideoDraft, setNewVideoDraft] = useState({ title: "", description: "", videoUrl: "" })
 const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   showNewsletterSection: true,
-  showLeadMagnet: true,
+  // Lead magnet popup should be opt-in.
+  showLeadMagnet: false,
 })
 
   // Dirty tracking must be computed AFTER state initialisation (avoids TDZ crash in production bundles).
@@ -363,7 +365,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     setConsultations(loadedConfig.consultations ?? [])
     setResources(loadedConfig.resources ?? [])
     setHomepage(loadedConfig.homepage ?? createEmptyHomepage())
-    setExperiments(loadedConfig.experiments ?? { showNewsletterSection: true, showLeadMagnet: true })
+    setExperiments(loadedConfig.experiments ?? { showNewsletterSection: true, showLeadMagnet: false })
     toast({ title: "Reverted", description: "Changes reverted to last loaded state." })
   }
  
