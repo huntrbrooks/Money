@@ -633,6 +633,12 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
     await sbUpsertSiteConfigJson(merged as any)
     return
   }
+  // In production, filesystem writes won't persist (and may fail). Force a clear error instead.
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "Persistence is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in Vercel (or connect the Supabase integration) so admin saves can persist."
+    )
+  }
   await ensureDir(CONFIG_FILE_PATH)
   await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(merged, null, 2), "utf8")
 }

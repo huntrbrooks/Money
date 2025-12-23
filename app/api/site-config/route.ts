@@ -20,10 +20,19 @@ export async function PUT(request: Request) {
   if (!body) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
   }
-  await writeSiteConfig(body)
-  // Return current version so the admin UI can confirm "live" status.
-  const updated = await readSiteConfig()
-  return NextResponse.json({ ok: true, version: updated.meta?.version ?? null, updatedAt: updated.meta?.updatedAt ?? null })
+  try {
+    await writeSiteConfig(body)
+    // Return current version so the admin UI can confirm "live" status.
+    const updated = await readSiteConfig()
+    return NextResponse.json({
+      ok: true,
+      version: updated.meta?.version ?? null,
+      updatedAt: updated.meta?.updatedAt ?? null,
+    })
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Unable to save"
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }
 
 

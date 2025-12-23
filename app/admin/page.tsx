@@ -393,7 +393,10 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          redirectToLogin("/admin")
          return
        }
-       if (!res.ok) throw new Error("Save failed")
+      if (!res.ok) {
+        const err = (await res.json().catch(() => ({}))) as { error?: string }
+        throw new Error(err.error ?? "Save failed")
+      }
       const payload = (await res.json().catch(() => ({}))) as { version?: number | null; updatedAt?: string | null }
 
       toast({ title: "Saved", description: section ? `${section} updated` : "All changes saved" })
