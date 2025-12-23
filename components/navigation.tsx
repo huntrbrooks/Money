@@ -30,12 +30,16 @@ export function Navigation() {
         const beaconBody = JSON.stringify({ ...base, transport: "beacon" })
         const blob = new Blob([beaconBody], { type: "application/json" })
         navigator.sendBeacon("/api/debug-log", blob)
-      } catch {}
+      } catch {
+        // ignore
+      }
     }
     try {
       const img = new Image()
       img.src = `/api/debug-log?p=${encodeURIComponent(JSON.stringify({ ...base, transport: "img" }))}`
-    } catch {}
+    } catch {
+      // ignore
+    }
   }
   const closeMenu = () => {
     setIsMenuOpen(false)

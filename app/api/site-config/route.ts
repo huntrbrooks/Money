@@ -21,7 +21,9 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
   }
   await writeSiteConfig(body)
-  return NextResponse.json({ ok: true })
+  // Return current version so the admin UI can confirm "live" status.
+  const updated = await readSiteConfig()
+  return NextResponse.json({ ok: true, version: updated.meta?.version ?? null, updatedAt: updated.meta?.updatedAt ?? null })
 }
 
 

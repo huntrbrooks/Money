@@ -1,4 +1,4 @@
-type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
+export type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
 
 function env(name: string): string | undefined {
   const v = process.env[name]
@@ -58,11 +58,53 @@ export async function sbUpsertSiteConfigJson(data: Json): Promise<void> {
       "Content-Type": "application/json",
       Prefer: "resolution=merge-duplicates",
     },
-    body: JSON.stringify([{ id: 1, data }]),
+    body: JSON.stringify([{ id: 1, data, updated_at: new Date().toISOString() }]),
   })
   if (!res.ok) {
     throw new Error(`Supabase upsert failed (${res.status})`)
   }
+}
+
+export type SiteConfigVersionRow = {
+  id: number
+  version: number
+  updated_at: string
+}
+
+export async function sbInsertSiteConfigVersion(data: Json, version: number, updatedAt: string): Promise<void> {
+  if (!hasSupabase()) throw new Error("Supabase not configured")
+  const url = restUrl("site_config_versions")
+  const res = await sbFetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify([{ config_id: 1, version, updated_at: updatedAt, data }]),
+  })
+  if (!res.ok) {
+    throw new Error(`Supabase insert version failed (${res.status})`)
+  }
+}
+
+export async function sbListSiteConfigVersions(limit = 25): Promise<SiteConfigVersionRow[]> {
+  if (!hasSupabase()) return []
+  const url = `${restUrl("site_config_versions")}?config_id=eq.1&select=id,version,updated_at&order=updated_at.desc&limit=${limit}`
+  const res = await sbFetch(url, { method: "GET" })
+  if (!res.ok) return []
+  const rows = (await res.json().catch(() => null)) as SiteConfigVersionRow[] | null
+  return Array.isArray(rows) ? rows : []
+}
+
+export async function sbGetSiteConfigVersionById(id: number): Promise<{ data: Json; version: number; updated_at: string } | null> {
+  if (!hasSupabase()) return null
+  const url = `${restUrl("site_config_versions")}?id=eq.${id}&select=data,version,updated_at&limit=1`
+  const res = await sbFetch(url, { method: "GET" })
+  if (!res.ok) return null
+  const rows = (await res.json().catch(() => null)) as Array<{ data: Json; version: number; updated_at: string }> | null
+  const row = rows?.[0]
+  if (!row) return null
+  return row
 }
 
 export async function sbListContent(type: "posts" | "videos"): Promise<Array<{ slug: string; mdx: string }>> {

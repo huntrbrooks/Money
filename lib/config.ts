@@ -1,6 +1,6 @@
 import { promises as fs } from "fs"
 import path from "path"
-import { hasSupabase, sbGetSiteConfigJson, sbUpsertSiteConfigJson } from "@/lib/supabase-rest"
+import { hasSupabase, sbGetSiteConfigJson, sbInsertSiteConfigVersion, sbUpsertSiteConfigJson, type Json } from "@/lib/supabase-rest"
 import { unstable_noStore as noStore } from "next/cache"
 
 export type HeroButton = {
@@ -145,6 +145,10 @@ export type ExperimentsConfig = {
 }
 
 export type SiteConfig = {
+  meta?: {
+    version: number
+    updatedAt: string
+  }
   theme: {
     mode: "light" | "dark"
     primary: string
@@ -198,6 +202,10 @@ export type SiteConfig = {
 const CONFIG_FILE_PATH = path.join(process.cwd(), "data", "site.json")
 
 export const defaultConfig: SiteConfig = {
+  meta: {
+    version: 1,
+    updatedAt: new Date().toISOString(),
+  },
   theme: {
     mode: "light",
     primary: "#6CA4AC",
@@ -489,7 +497,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
     if (hasSupabase()) {
       const sbData = await sbGetSiteConfigJson()
       if (sbData) {
-        const parsed = sbData as any
+        const parsed = sbData as unknown as Partial<SiteConfig>
         return {
           ...defaultConfig,
           ...parsed,
@@ -504,7 +512,23 @@ export async function readSiteConfig(): Promise<SiteConfig> {
           consultations: parsed.consultations ?? defaultConfig.consultations,
           resources: parsed.resources ?? defaultConfig.resources,
           forms: { ...(defaultConfig.forms ?? {}), ...(parsed.forms ?? {}) },
-          homepage: { ...defaultConfig.homepage, ...(parsed.homepage ?? {}) },
+          homepage: (() => {
+            const defaults = defaultConfig.homepage ?? {}
+            const hp = (parsed.homepage ?? {}) as Partial<HomepageContent>
+            return {
+              ...defaults,
+              ...hp,
+              sections: { ...(defaults.sections ?? {}), ...(hp.sections ?? {}) },
+              copy: { ...(defaults.copy ?? {}), ...(hp.copy ?? {}) },
+              importantSectionLinks: hp.importantSectionLinks ?? defaults.importantSectionLinks,
+              otherAreas: hp.otherAreas ?? defaults.otherAreas,
+              valueProps: hp.valueProps ?? defaults.valueProps,
+              testimonials: hp.testimonials ?? defaults.testimonials,
+              faqs: hp.faqs ?? defaults.faqs,
+              leadMagnet: { ...(defaults.leadMagnet ?? {}), ...(hp.leadMagnet ?? {}) },
+            }
+          })(),
+          meta: { ...(defaultConfig.meta ?? { version: 1, updatedAt: new Date().toISOString() }), ...(parsed.meta ?? {}) },
           experiments: { ...defaultConfig.experiments, ...(parsed.experiments ?? {}) },
         }
       }
@@ -538,9 +562,10 @@ export async function readSiteConfig(): Promise<SiteConfig> {
           valueProps: hp.valueProps ?? defaults.valueProps,
           testimonials: hp.testimonials ?? defaults.testimonials,
           faqs: hp.faqs ?? defaults.faqs,
-          leadMagnet: { ...(defaults.leadMagnet ?? ({} as any)), ...(hp.leadMagnet ?? {}) },
+          leadMagnet: { ...(defaults.leadMagnet ?? {}), ...(hp.leadMagnet ?? {}) },
         }
       })(),
+      meta: { ...(defaultConfig.meta ?? { version: 1, updatedAt: new Date().toISOString() }), ...(parsed.meta ?? {}) },
       experiments: { ...defaultConfig.experiments, ...(parsed.experiments ?? {}) },
     }
   } catch {
@@ -564,6 +589,10 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
   const merged: SiteConfig = {
     ...defaultConfig,
     ...newConfig,
+    meta: {
+      version: Date.now(),
+      updatedAt: new Date().toISOString(),
+    },
     theme: { ...defaultConfig.theme, ...newConfig.theme },
     seo: { ...defaultConfig.seo, ...(newConfig.seo ?? {}) },
     brand: mergedBrand,
@@ -588,13 +617,20 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
         valueProps: hp.valueProps ?? defaults.valueProps,
         testimonials: hp.testimonials ?? defaults.testimonials,
         faqs: hp.faqs ?? defaults.faqs,
-        leadMagnet: { ...(defaults.leadMagnet ?? ({} as any)), ...(hp.leadMagnet ?? {}) },
+        leadMagnet: { ...(defaults.leadMagnet ?? {}), ...(hp.leadMagnet ?? {}) },
       }
     })(),
     experiments: { ...defaultConfig.experiments, ...(newConfig.experiments ?? {}) },
   }
   if (hasSupabase()) {
-    await sbUpsertSiteConfigJson(merged as any)
+    // Write an immutable history record for rollback/auditing.
+    // (Best-effort: if history insert fails, we still try to save the current config.)
+    try {
+      await sbInsertSiteConfigVersion(merged as unknown as Json, merged.meta?.version ?? Date.now(), merged.meta?.updatedAt ?? new Date().toISOString())
+    } catch {
+      // ignore
+    }
+    await sbUpsertSiteConfigJson(merged as unknown as Json)
     return
   }
   await ensureDir(CONFIG_FILE_PATH)

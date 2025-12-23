@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation"
 import type { SiteConfig } from "@/lib/config"
 import type { PostMeta, VideoMeta } from "@/lib/mdx"
 import { Switch } from "@/components/ui/switch"
+import { Progress } from "@/components/ui/progress"
  
 type ThemeState = {
   mode: "light" | "dark"
@@ -105,11 +106,58 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
    const router = useRouter()
    const [loading, setLoading] = useState(true)
    const [saving, setSaving] = useState<null | string>(null)
+  const [saveUi, setSaveUi] = useState<{
+    phase: "idle" | "saving" | "verifying" | "done" | "error"
+    progress: number
+    message?: string
+    version?: number | null
+  }>({ phase: "idle", progress: 0 })
+  const [loadedSnapshot, setLoadedSnapshot] = useState<string | null>(null)
+  const [loadedConfig, setLoadedConfig] = useState<SiteConfig | null>(null)
+  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null)
+  const [versions, setVersions] = useState<Array<{ id: number; version: number; updated_at: string }>>([])
+  const [versionsLoading, setVersionsLoading] = useState(false)
+
+  const showSaveBar = saveUi.phase !== "idle"
 
    const redirectToLogin = (nextPath = "/admin") => {
      router.replace(`/admin/login?next=${encodeURIComponent(nextPath)}`)
    }
  
+  function stableStringify(value: unknown): string {
+    const seen = new WeakSet<object>()
+    const normalize = (v: unknown): unknown => {
+      if (v === null || typeof v !== "object") return v
+      if (Array.isArray(v)) return v.map(normalize)
+      if (seen.has(v)) return "[Circular]"
+      seen.add(v)
+      const keys = Object.keys(v).sort()
+      const out: Record<string, unknown> = {}
+      const obj = v as Record<string, unknown>
+      for (const k of keys) out[k] = normalize(obj[k])
+      return out
+    }
+    return JSON.stringify(normalize(value))
+  }
+
+  const buildSaveBody = (): Omit<SiteConfig, "meta"> => ({
+    theme,
+    hero: heroContent,
+    about: aboutContent,
+    services,
+    brand,
+    seo,
+    navigation,
+    contact,
+    consultations,
+    resources,
+    experiments,
+    homepage,
+  })
+
+  const currentSnapshot = stableStringify(buildSaveBody())
+  const isDirty = Boolean(loadedSnapshot && loadedSnapshot !== currentSnapshot)
+
    // Theme state
   const [theme, setTheme] = useState<ThemeState>({
     mode: "light",
@@ -126,12 +174,12 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
   // Content state
   const [heroContent, setHeroContent] = useState<SiteConfig["hero"]>(createEmptyHero())
  
-   const [aboutContent, setAboutContent] = useState({
+   const [aboutContent, setAboutContent] = useState<SiteConfig["about"]>({
      title: "",
      paragraphs: [""],
    })
  
-   const [services, setServices] = useState<{ id: string; name: string; price: string }[]>([])
+   const [services, setServices] = useState<SiteConfig["services"]>([])
   const [brand, setBrand] = useState<{ name: string; subtitle?: string; tagline?: string }>({ name: "" })
   const [seo, setSeo] = useState<{ title?: string; description?: string; ogImage?: string }>({})
   const [navigation, setNavigation] = useState<{ label: string; href: string }[]>([])
@@ -160,23 +208,32 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
         const data = await res.json()
         setTheme(data.theme)
         const heroDefaults = createEmptyHero()
-        setHeroContent({
+        const nextHero = {
           ...heroDefaults,
           ...(data.hero ?? {}),
           primaryCta: { ...heroDefaults.primaryCta, ...(data.hero?.primaryCta ?? {}) },
           secondaryCta: { ...heroDefaults.secondaryCta, ...(data.hero?.secondaryCta ?? {}) },
           stats: data.hero?.stats ?? [],
-        })
-        setAboutContent(data.about)
-        setServices(data.services)
-       setBrand(data.brand ?? {})
-       setSeo(data.seo ?? {})
-       setNavigation(data.navigation ?? [])
-       setContact(data.contact ?? {})
-       setConsultations(data.consultations ?? [])
-       setResources(data.resources ?? [])
+        }
+        setHeroContent(nextHero)
+        const nextAbout = data.about
+        const nextServices = data.services
+        const nextBrand = data.brand ?? {}
+        const nextSeo = data.seo ?? {}
+        const nextNav = data.navigation ?? []
+        const nextContact = data.contact ?? {}
+        const nextConsultations = data.consultations ?? []
+        const nextResources = data.resources ?? []
+        setAboutContent(nextAbout)
+        setServices(nextServices)
+        setBrand(nextBrand)
+        setSeo(nextSeo)
+        setNavigation(nextNav)
+        setContact(nextContact)
+        setConsultations(nextConsultations)
+        setResources(nextResources)
        const homepageDefaults = createEmptyHomepage()
-       setHomepage({
+       const nextHomepage = {
          ...homepageDefaults,
          ...(data.homepage ?? {}),
          sections: { ...(homepageDefaults.sections ?? {}), ...(data.homepage?.sections ?? {}) },
@@ -190,11 +247,48 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
            ...homepageDefaults.leadMagnet,
            ...(data.homepage?.leadMagnet ?? {}),
          },
-       })
-       setExperiments({
+       }
+       setHomepage(nextHomepage)
+       const nextExperiments = {
          showNewsletterSection: data.experiments?.showNewsletterSection ?? true,
          showLeadMagnet: data.experiments?.showLeadMagnet ?? true,
-       })
+       }
+       setExperiments(nextExperiments)
+
+       // baseline snapshot + revert point
+       const baseline: SiteConfig = {
+         meta: data.meta ?? undefined,
+         theme: data.theme,
+         hero: nextHero,
+         about: nextAbout,
+         services: nextServices,
+         brand: nextBrand,
+         seo: nextSeo,
+         navigation: nextNav,
+         contact: nextContact,
+         consultations: nextConsultations,
+         resources: nextResources,
+         homepage: nextHomepage,
+         experiments: nextExperiments,
+       }
+       setLoadedConfig(baseline)
+       setLoadedSnapshot(stableStringify({
+         theme: baseline.theme,
+         hero: baseline.hero,
+         about: baseline.about,
+         services: baseline.services,
+         brand: baseline.brand,
+         seo: baseline.seo,
+         navigation: baseline.navigation,
+         contact: baseline.contact,
+         consultations: baseline.consultations,
+         resources: baseline.resources,
+         experiments: baseline.experiments,
+         homepage: baseline.homepage,
+       }))
+       setLastSavedAt(baseline.meta?.updatedAt ?? null)
+       // Load version history (best-effort)
+       void loadVersions()
        } catch {
          toast({ title: "Failed to load config", variant: "destructive" })
        } finally {
@@ -204,27 +298,95 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
      load()
     loadContent()
    }, [toast, router])
+
+  async function loadVersions() {
+    setVersionsLoading(true)
+    try {
+      const res = await fetch("/api/site-config/versions", { cache: "no-store" })
+      if (res.status === 401) return
+      const data = (await res.json().catch(() => null)) as { versions?: Array<{ id: number; version: number; updated_at: string }> } | null
+      setVersions(Array.isArray(data?.versions) ? data!.versions : [])
+    } finally {
+      setVersionsLoading(false)
+    }
+  }
+
+  async function rollbackTo(id: number) {
+    const ok = window.confirm("Rollback will restore the site to that saved version. Continue?")
+    if (!ok) return
+    setSaving("rollback")
+    setSaveUi({ phase: "saving", progress: 20, message: "Rolling back…" })
+    try {
+      const res = await fetch("/api/site-config/rollback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      })
+      if (res.status === 401) {
+        toast({ title: "Session expired", description: "Please sign in again.", variant: "destructive" })
+        redirectToLogin("/admin")
+        return
+      }
+      if (!res.ok) throw new Error("Rollback failed")
+      toast({ title: "Rolled back", description: "Reloading admin…" })
+      window.location.reload()
+    } catch (e: unknown) {
+      toast({ title: "Rollback failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+      setSaveUi({ phase: "error", progress: 100, message: "Rollback failed" })
+      window.setTimeout(() => setSaveUi({ phase: "idle", progress: 0 }), 2000)
+    } finally {
+      setSaving(null)
+    }
+  }
+
+  useEffect(() => {
+    if (!isDirty) return
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ""
+      return ""
+    }
+    window.addEventListener("beforeunload", onBeforeUnload)
+    return () => window.removeEventListener("beforeunload", onBeforeUnload)
+  }, [isDirty])
+
+  function revertToLoaded() {
+    if (!loadedConfig) return
+    setTheme(loadedConfig.theme)
+    setHeroContent(loadedConfig.hero)
+    setAboutContent(loadedConfig.about)
+    setServices(loadedConfig.services)
+    setBrand(loadedConfig.brand ?? {})
+    setSeo(loadedConfig.seo ?? {})
+    setNavigation(loadedConfig.navigation ?? [])
+    setContact(loadedConfig.contact ?? {})
+    setConsultations(loadedConfig.consultations ?? [])
+    setResources(loadedConfig.resources ?? [])
+    setHomepage(loadedConfig.homepage ?? createEmptyHomepage())
+    setExperiments(loadedConfig.experiments ?? { showNewsletterSection: true, showLeadMagnet: true })
+    toast({ title: "Reverted", description: "Changes reverted to last loaded state." })
+  }
  
    async function saveAll(section?: string) {
+     if (!isDirty) {
+       toast({ title: "No changes", description: "There’s nothing new to save." })
+       return
+     }
      setSaving(section ?? "all")
+    setSaveUi({ phase: "saving", progress: 12, message: "Saving changes…" })
+
+    let tick = 12
+    const interval = window.setInterval(() => {
+      tick = Math.min(85, tick + Math.random() * 7)
+      setSaveUi((prev) => (prev.phase === "saving" ? { ...prev, progress: tick } : prev))
+    }, 250)
+
      try {
+       const snapshotBeforeSave = currentSnapshot
        const res = await fetch("/api/site-config", {
          method: "PUT",
          headers: { "Content-Type": "application/json" },
-         body: JSON.stringify({
-           theme,
-           hero: heroContent,
-           about: aboutContent,
-           services,
-           brand,
-           seo,
-           navigation,
-           contact,
-           consultations,
-           resources,
-          experiments,
-           homepage,
-         }),
+         body: JSON.stringify(buildSaveBody()),
        })
        if (res.status === 401) {
          toast({ title: "Session expired", description: "Please sign in again.", variant: "destructive" })
@@ -232,11 +394,49 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          return
        }
        if (!res.ok) throw new Error("Save failed")
-       toast({ title: "Saved", description: section ? `${section} updated` : "All changes saved" })
+      const payload = (await res.json().catch(() => ({}))) as { version?: number | null; updatedAt?: string | null }
+
+      toast({ title: "Saved", description: section ? `${section} updated` : "All changes saved" })
+      setLastSavedAt(payload.updatedAt ?? new Date().toISOString())
+
+      // Verify the public site sees the same version (best-effort "deployed" signal).
+      const targetVersion = payload.version ?? null
+      setSaveUi({ phase: "verifying", progress: 92, message: "Verifying live site…", version: targetVersion })
+
+      const started = Date.now()
+      let verified = false
+      while (Date.now() - started < 15000) {
+        const checkRes = await fetch("/api/site-config", { cache: "no-store" })
+        const check = (await checkRes.json().catch(() => null)) as SiteConfig | null
+        const liveVersion = check?.meta?.version ?? null
+        if (targetVersion && liveVersion === targetVersion) {
+          verified = true
+          break
+        }
+        await new Promise((r) => setTimeout(r, 500))
+      }
+
+      if (verified) {
+        setSaveUi({ phase: "done", progress: 100, message: "Live on site" })
+        setLoadedSnapshot(snapshotBeforeSave)
+        setLoadedConfig((prev) =>
+          prev
+            ? { ...prev, meta: { version: targetVersion ?? prev.meta?.version ?? Date.now(), updatedAt: payload.updatedAt ?? new Date().toISOString() } }
+            : null
+        )
+        window.setTimeout(() => setSaveUi({ phase: "idle", progress: 0 }), 1200)
+      } else {
+        setSaveUi({ phase: "error", progress: 100, message: "Saved, but live verification timed out" })
+        setLoadedSnapshot(snapshotBeforeSave)
+        window.setTimeout(() => setSaveUi({ phase: "idle", progress: 0 }), 2500)
+      }
      } catch (error: unknown) {
        const description = error instanceof Error ? error.message : "Unable to save"
        toast({ title: "Save failed", description, variant: "destructive" })
+      setSaveUi({ phase: "error", progress: 100, message: "Save failed" })
+      window.setTimeout(() => setSaveUi({ phase: "idle", progress: 0 }), 2500)
      } finally {
+      window.clearInterval(interval)
        setSaving(null)
      }
    }
@@ -370,6 +570,122 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
     </div>
   )
 }
+
+function CodeAgentBox() {
+  const { toast } = useToast()
+  const [prompt, setPrompt] = useState("")
+  const [busy, setBusy] = useState(false)
+  const [lastIssueUrl, setLastIssueUrl] = useState<string | null>(null)
+  const [lastIssueNumber, setLastIssueNumber] = useState<number | null>(null)
+  const [status, setStatus] = useState<{
+    phase: "idle" | "queued" | "searching" | "pr_found"
+    prUrl?: string | null
+    prState?: string | null
+    message?: string
+  }>({ phase: "idle" })
+
+  useEffect(() => {
+    if (!lastIssueNumber) return
+    let cancelled = false
+    let tries = 0
+    setStatus({ phase: "queued", message: "Queued. Waiting for workflow to start…" })
+
+    const poll = async () => {
+      tries += 1
+      try {
+        setStatus((prev) => ({ ...prev, phase: "searching", message: "Checking for PR…" }))
+        const res = await fetch(`/api/admin/code-agent/status?issue=${lastIssueNumber}`, { cache: "no-store" })
+        if (!res.ok) return
+        const data = (await res.json().catch(() => null)) as { pr?: { url: string; state: string } | null } | null
+        const pr = data?.pr ?? null
+        if (pr?.url) {
+          if (cancelled) return
+          setStatus({ phase: "pr_found", prUrl: pr.url, prState: pr.state, message: "PR created" })
+          return
+        }
+      } catch {
+        // ignore transient errors
+      }
+      if (tries < 60 && !cancelled) {
+        window.setTimeout(poll, 5000)
+      } else if (!cancelled) {
+        setStatus({ phase: "queued", message: "Still queued. Check the GitHub issue for workflow logs." })
+      }
+    }
+
+    window.setTimeout(poll, 1500)
+    return () => {
+      cancelled = true
+    }
+  }, [lastIssueNumber])
+
+  async function run() {
+    if (!prompt.trim()) return
+    setBusy(true)
+    try {
+      const res = await fetch("/api/admin/code-agent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      })
+      const data = (await res.json().catch(() => ({}))) as { url?: string | null; number?: number | null; error?: string }
+      if (!res.ok) throw new Error(data.error ?? "Unable to create agent issue")
+      setLastIssueUrl(data.url ?? null)
+      setLastIssueNumber(typeof data.number === "number" ? data.number : null)
+      toast({ title: "Agent queued", description: "Created a GitHub issue to open a PR." })
+      setPrompt("")
+    } catch (e: unknown) {
+      toast({
+        title: "Agent failed",
+        description: e instanceof Error ? e.message : "Unknown error",
+        variant: "destructive",
+      })
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="space-y-3">
+      <Textarea
+        placeholder='Describe a code change. Example: "Add a toggle in Admin to hide the Testimonials section."'
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        rows={4}
+      />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex gap-3">
+          <Button onClick={run} disabled={busy || !prompt.trim()}>
+            {busy ? "Creating…" : "Create PR via Agent"}
+          </Button>
+          <Button variant="outline" onClick={() => setPrompt("")} disabled={busy}>
+            Clear
+          </Button>
+        </div>
+        {lastIssueUrl && (
+          <a className="text-sm underline text-[var(--accent)]" href={lastIssueUrl} target="_blank" rel="noreferrer noopener">
+            View GitHub issue
+          </a>
+        )}
+      </div>
+      {status.phase !== "idle" && (
+        <div className="rounded-lg border border-border/40 p-3 text-sm">
+          <p className="text-muted-foreground">{status.message ?? "Working…"}</p>
+          {status.prUrl && (
+            <p className="mt-2">
+              <a className="underline text-[var(--accent)]" href={status.prUrl} target="_blank" rel="noreferrer noopener">
+                View PR ({status.prState})
+              </a>
+            </p>
+          )}
+        </div>
+      )}
+      <p className="text-xs text-muted-foreground">
+        This creates a GitHub issue labeled <code>agent</code>. A GitHub Action will generate a PR for review.
+      </p>
+    </div>
+  )
+}
    async function logout() {
      await fetch("/api/auth/logout", { method: "POST" })
      router.replace("/admin/login")
@@ -384,6 +700,14 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
  
    return (
      <div className="min-h-screen bg-muted">
+      {showSaveBar && (
+        <div className="fixed inset-x-0 top-0 z-[60]">
+          <Progress value={saveUi.progress} className="h-1 rounded-none" />
+          <div className="bg-background/80 backdrop-blur border-b border-border/40 px-4 py-1 text-xs text-muted-foreground">
+            {saveUi.message ?? "Working…"}
+          </div>
+        </div>
+      )}
        {/* Header */}
        <header className="bg-primary text-primary-foreground py-4 sticky top-0 z-10 shadow-lg">
          <div className="container mx-auto px-4">
@@ -393,6 +717,26 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
               <p className="text-sm opacity-80">The Financial Therapist</p>
              </div>
              <div className="flex items-center gap-4">
+              {!loading && (
+                <div className="hidden sm:flex items-center gap-2 rounded-full bg-black/10 px-3 py-1 text-xs">
+                  <span className={`inline-block h-2 w-2 rounded-full ${isDirty ? "bg-yellow-300" : "bg-green-300"}`} />
+                  <span className="opacity-90">{isDirty ? "Unsaved changes" : "All changes saved"}</span>
+                  {lastSavedAt && !isDirty && (
+                    <span className="opacity-75">
+                      · {new Date(lastSavedAt).toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                  )}
+                </div>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hover:bg-[var(--section-bg-1)]/20"
+                onClick={revertToLoaded}
+                disabled={!isDirty || saving !== null}
+              >
+                Revert
+              </Button>
               <Button
                 variant="ghost"
                 size="sm"
@@ -418,7 +762,7 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
  
        <div className="container mx-auto px-4 py-8">
          <Tabs defaultValue="hero" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-15 gap-2 max-w-full">
+        <TabsList className="grid w-full grid-cols-16 gap-2 max-w-full">
             <TabsTrigger value="hero">Hero Section</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
             <TabsTrigger value="services">Services</TabsTrigger>
@@ -433,6 +777,7 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
            <TabsTrigger value="seo">SEO</TabsTrigger>
            <TabsTrigger value="consultations">Consultations</TabsTrigger>
            <TabsTrigger value="resources">Resources</TabsTrigger>
+            <TabsTrigger value="history">History</TabsTrigger>
             <TabsTrigger value="assistant">Assistant</TabsTrigger>
           </TabsList>
  
@@ -1997,6 +2342,47 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
              </Card>
            </TabsContent>
 
+           {/* History Tab */}
+           <TabsContent value="history" className="space-y-6">
+             <Card>
+               <CardHeader>
+                 <CardTitle>Version history</CardTitle>
+                 <CardDescription>Rollback to a previous saved configuration.</CardDescription>
+               </CardHeader>
+               <CardContent className="space-y-4">
+                 <div className="flex gap-3">
+                   <Button variant="outline" onClick={loadVersions} disabled={versionsLoading || saving !== null}>
+                     {versionsLoading ? "Loading…" : "Refresh history"}
+                   </Button>
+                 </div>
+                 {versions.length === 0 ? (
+                   <p className="text-sm text-muted-foreground">
+                     No history yet. (A history entry is created on each save once `site_config_versions` exists.)
+                   </p>
+                 ) : (
+                   <div className="space-y-3">
+                     {versions.map((v) => (
+                       <div
+                         key={v.id}
+                         className="flex flex-col gap-3 rounded-lg border border-border/40 p-4 sm:flex-row sm:items-center sm:justify-between"
+                       >
+                         <div>
+                           <p className="font-semibold text-[var(--foreground)]">
+                             {new Date(v.updated_at).toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" })}
+                           </p>
+                           <p className="text-sm text-muted-foreground">Version: {v.version}</p>
+                         </div>
+                         <Button onClick={() => rollbackTo(v.id)} disabled={saving !== null}>
+                           Rollback
+                         </Button>
+                       </div>
+                     ))}
+                   </div>
+                 )}
+               </CardContent>
+             </Card>
+           </TabsContent>
+
            {/* Assistant Tab */}
            <TabsContent value="assistant" className="space-y-6">
              <Card>
@@ -2006,6 +2392,15 @@ function AssistantBox({ onSaved }: { onSaved: () => void }) {
                </CardHeader>
                <CardContent className="space-y-4">
                  <AssistantBox onSaved={() => toast({ title: "Updated via Assistant" })} />
+               </CardContent>
+             </Card>
+             <Card>
+               <CardHeader>
+                 <CardTitle>Code Agent (GitHub PR)</CardTitle>
+                 <CardDescription>Creates a GitHub issue that triggers an automated PR workflow.</CardDescription>
+               </CardHeader>
+               <CardContent className="space-y-4">
+                 <CodeAgentBox />
                </CardContent>
              </Card>
            </TabsContent>
