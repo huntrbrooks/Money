@@ -1,6 +1,6 @@
 import { promises as fs } from "fs"
 import path from "path"
-import { hasSupabase, sbGetSiteConfigJson, sbInsertSiteConfigVersion, sbUpsertSiteConfigJson, type Json } from "@/lib/supabase-rest"
+import { hasSupabase, sbGetSiteConfigJson, sbInsertSiteConfigVersion, sbUpsertSiteConfigJson } from "@/lib/supabase-rest"
 import { unstable_noStore as noStore } from "next/cache"
 
 export type HeroButton = {
@@ -497,7 +497,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
     if (hasSupabase()) {
       const sbData = await sbGetSiteConfigJson()
       if (sbData) {
-        const parsed = sbData as unknown as Partial<SiteConfig>
+        const parsed = sbData as any
         return {
           ...defaultConfig,
           ...parsed,
@@ -525,7 +525,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
               valueProps: hp.valueProps ?? defaults.valueProps,
               testimonials: hp.testimonials ?? defaults.testimonials,
               faqs: hp.faqs ?? defaults.faqs,
-              leadMagnet: { ...(defaults.leadMagnet ?? {}), ...(hp.leadMagnet ?? {}) },
+              leadMagnet: { ...(defaults.leadMagnet ?? ({} as any)), ...(hp.leadMagnet ?? {}) },
             }
           })(),
           meta: { ...(defaultConfig.meta ?? { version: 1, updatedAt: new Date().toISOString() }), ...(parsed.meta ?? {}) },
@@ -562,7 +562,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
           valueProps: hp.valueProps ?? defaults.valueProps,
           testimonials: hp.testimonials ?? defaults.testimonials,
           faqs: hp.faqs ?? defaults.faqs,
-          leadMagnet: { ...(defaults.leadMagnet ?? {}), ...(hp.leadMagnet ?? {}) },
+          leadMagnet: { ...(defaults.leadMagnet ?? ({} as any)), ...(hp.leadMagnet ?? {}) },
         }
       })(),
       meta: { ...(defaultConfig.meta ?? { version: 1, updatedAt: new Date().toISOString() }), ...(parsed.meta ?? {}) },
@@ -617,7 +617,7 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
         valueProps: hp.valueProps ?? defaults.valueProps,
         testimonials: hp.testimonials ?? defaults.testimonials,
         faqs: hp.faqs ?? defaults.faqs,
-        leadMagnet: { ...(defaults.leadMagnet ?? {}), ...(hp.leadMagnet ?? {}) },
+        leadMagnet: { ...(defaults.leadMagnet ?? ({} as any)), ...(hp.leadMagnet ?? {}) },
       }
     })(),
     experiments: { ...defaultConfig.experiments, ...(newConfig.experiments ?? {}) },
@@ -626,11 +626,11 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
     // Write an immutable history record for rollback/auditing.
     // (Best-effort: if history insert fails, we still try to save the current config.)
     try {
-      await sbInsertSiteConfigVersion(merged as unknown as Json, merged.meta?.version ?? Date.now(), merged.meta?.updatedAt ?? new Date().toISOString())
+      await sbInsertSiteConfigVersion(merged as any, merged.meta?.version ?? Date.now(), merged.meta?.updatedAt ?? new Date().toISOString())
     } catch {
       // ignore
     }
-    await sbUpsertSiteConfigJson(merged as unknown as Json)
+    await sbUpsertSiteConfigJson(merged as any)
     return
   }
   await ensureDir(CONFIG_FILE_PATH)

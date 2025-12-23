@@ -1,4 +1,4 @@
-export type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
+type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
 
 function env(name: string): string | undefined {
   const v = process.env[name]

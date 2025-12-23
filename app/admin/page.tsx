@@ -126,37 +126,18 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
  
   function stableStringify(value: unknown): string {
     const seen = new WeakSet<object>()
-    const normalize = (v: unknown): unknown => {
+    const normalize = (v: any): any => {
       if (v === null || typeof v !== "object") return v
       if (Array.isArray(v)) return v.map(normalize)
       if (seen.has(v)) return "[Circular]"
       seen.add(v)
       const keys = Object.keys(v).sort()
-      const out: Record<string, unknown> = {}
-      const obj = v as Record<string, unknown>
-      for (const k of keys) out[k] = normalize(obj[k])
+      const out: Record<string, any> = {}
+      for (const k of keys) out[k] = normalize(v[k])
       return out
     }
     return JSON.stringify(normalize(value))
   }
-
-  const buildSaveBody = (): Omit<SiteConfig, "meta"> => ({
-    theme,
-    hero: heroContent,
-    about: aboutContent,
-    services,
-    brand,
-    seo,
-    navigation,
-    contact,
-    consultations,
-    resources,
-    experiments,
-    homepage,
-  })
-
-  const currentSnapshot = stableStringify(buildSaveBody())
-  const isDirty = Boolean(loadedSnapshot && loadedSnapshot !== currentSnapshot)
 
    // Theme state
   const [theme, setTheme] = useState<ThemeState>({
@@ -174,12 +155,12 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
   // Content state
   const [heroContent, setHeroContent] = useState<SiteConfig["hero"]>(createEmptyHero())
  
-   const [aboutContent, setAboutContent] = useState<SiteConfig["about"]>({
+   const [aboutContent, setAboutContent] = useState({
      title: "",
      paragraphs: [""],
    })
  
-   const [services, setServices] = useState<SiteConfig["services"]>([])
+   const [services, setServices] = useState<{ id: string; name: string; price: string }[]>([])
   const [brand, setBrand] = useState<{ name: string; subtitle?: string; tagline?: string }>({ name: "" })
   const [seo, setSeo] = useState<{ title?: string; description?: string; ogImage?: string }>({})
   const [navigation, setNavigation] = useState<{ label: string; href: string }[]>([])
@@ -195,6 +176,25 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   showNewsletterSection: true,
   showLeadMagnet: true,
 })
+
+  // Dirty tracking must be computed AFTER state initialisation (avoids TDZ crash in production bundles).
+  const buildSaveBody = (): Omit<SiteConfig, "meta"> => ({
+    theme,
+    hero: heroContent,
+    about: aboutContent,
+    services,
+    brand,
+    seo,
+    navigation,
+    contact,
+    consultations,
+    resources,
+    experiments,
+    homepage,
+  })
+
+  const currentSnapshot = stableStringify(buildSaveBody())
+  const isDirty = Boolean(loadedSnapshot && loadedSnapshot !== currentSnapshot)
  
    useEffect(() => {
      async function load() {
@@ -354,8 +354,8 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     if (!loadedConfig) return
     setTheme(loadedConfig.theme)
     setHeroContent(loadedConfig.hero)
-    setAboutContent(loadedConfig.about)
-    setServices(loadedConfig.services)
+    setAboutContent(loadedConfig.about as any)
+    setServices(loadedConfig.services as any)
     setBrand(loadedConfig.brand ?? {})
     setSeo(loadedConfig.seo ?? {})
     setNavigation(loadedConfig.navigation ?? [])
