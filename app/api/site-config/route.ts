@@ -4,8 +4,13 @@ import { cookies } from "next/headers"
 import { AUTH_COOKIE_NAME, getEnvVar, verifyAuthToken } from "@/lib/auth"
 
 export async function GET() {
-  const config = await readSiteConfig()
-  return NextResponse.json(config)
+  try {
+    const config = await readSiteConfig()
+    return NextResponse.json(config)
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Unable to load config"
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }
 
 export async function PUT(request: Request) {

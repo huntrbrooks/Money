@@ -572,6 +572,11 @@ export async function readSiteConfig(): Promise<SiteConfig> {
     if (hasSupabase()) {
       return defaultConfig
     }
+    // On Vercel (production), the filesystem is not a safe persistence layer.
+    // If Supabase isn't configured, return defaults instead of trying to write files (which can cause 500s).
+    if (process.env.NODE_ENV === "production") {
+      return defaultConfig
+    }
     await ensureDir(CONFIG_FILE_PATH)
     await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(defaultConfig, null, 2), "utf8")
     return defaultConfig
