@@ -597,10 +597,18 @@ export default async function HomePage() {
 
           return enabled.map((s, idx) => {
             const bg = bgForIndex(idx)
-            const prevBg = idx === 0 ? HERO_END_BG : bgForIndex(idx - 1)
+            const prevBg = idx === 0 ? HERO_END_BG : undefined
             const nextBg = idx === enabled.length - 1 ? FOOTER_BG : bgForIndex(idx + 1)
             return (
-              <FlowSection key={s.key} id={s.id} className={s.className} bg={bg} prevBg={prevBg} nextBg={nextBg}>
+              <FlowSection
+                key={s.key}
+                id={s.id}
+                className={s.className}
+                bg={bg}
+                prevBg={prevBg}
+                nextBg={nextBg}
+                topFade={idx === 0}
+              >
                 {s.content}
               </FlowSection>
             )
