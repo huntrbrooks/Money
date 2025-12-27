@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Navigation, Footer } from '@/components/navigation'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -60,6 +60,7 @@ export default function IntakePage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState<null | 'ok' | 'error'>(null)
   const [errorMessage, setErrorMessage] = useState<string>('')
+  const [contact, setContact] = useState<{ phone?: string; email?: string; emailAlt?: string }>({})
   const [form, setForm] = useState<IntakeFormState>({
     firstName: '',
     lastName: '',
@@ -93,6 +94,16 @@ export default function IntakePage() {
     recentRecreationalDrugUse: '',
     mainReason: '',
   })
+  const email = contact.email || 'dan@financialabusetherapist.com.au'
+  const emailAlt = contact.emailAlt || ''
+  const phone = contact.phone || '0467 477 786'
+
+  useEffect(() => {
+    fetch('/api/site-config')
+      .then((r) => r.json())
+      .then((d) => setContact(d?.contact ?? {}))
+      .catch(() => {})
+  }, [])
   const steps = [
     {
       label: 'Contact & logistics',
@@ -698,8 +709,11 @@ export default function IntakePage() {
                   </div>
                   <div className="pt-4 space-y-1">
                     <p>Contact:  Dan Lobel</p>
-                    <p><a className="underline" href="mailto:dan@financialabusetherapist.com">dan@financialabusetherapist.com</a></p>
-                    <p><a className="underline" href="tel:0467477786">0467 477 786</a></p>
+                    <p><a className="underline" href={`mailto:${email}`}>{email}</a></p>
+                    {emailAlt && emailAlt !== email ? (
+                      <p><a className="underline" href={`mailto:${emailAlt}`}>{emailAlt}</a></p>
+                    ) : null}
+                    <p><a className="underline" href={`tel:${phone.replace(/\s+/g, "")}`}>{phone}</a></p>
                     <p>©The Financial Therapist. 2025.</p>
                     <p>The Financial Therapist Pty. Ltd. atf  The Financial Therapist Trust.</p>
                     <p>The Financial Therapist acknowledges the Wurundjeri people who are the Traditional Custodians of the land on which we work.</p>

@@ -20,7 +20,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   const config = await readSiteConfig()
-  const email = config.contact?.email ?? "dan@financialabusetherapist.com"
+  const email = config.contact?.email ?? "dan@financialabusetherapist.com.au"
+  const emailAlt = config.contact?.emailAlt ?? ""
   const phone = config.contact?.phone ?? "+61 488 222 137"
   const credentials = ["D.Couns.", "B.Couns.", "MCouns&Psych"]
   const focusAreas = [
@@ -84,6 +85,16 @@ export default async function AboutPage() {
                       <Mail className="w-4 h-4" aria-hidden="true" />
                       <span className="text-sm">{email}</span>
                     </a>
+                    {emailAlt && emailAlt !== email ? (
+                      <a
+                        href={`mailto:${emailAlt}`}
+                        aria-label={`Email Dan at ${emailAlt}`}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--primary)]/20 bg-[var(--section-bg-1)] text-[var(--primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+                      >
+                        <Mail className="w-4 h-4" aria-hidden="true" />
+                        <span className="text-sm">{emailAlt}</span>
+                      </a>
+                    ) : null}
                     <a
                       href={`tel:${phone.replace(/\s+/g, "")}`}
                       aria-label={`Call Dan on ${phone}`}

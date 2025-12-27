@@ -9,7 +9,7 @@ type NavLink = { label: string; href: string }
 type Config = {
   brand?: { name?: string; subtitle?: string; tagline?: string; logoUrl?: string; headerBannerUrl?: string }
   navigation?: NavLink[]
-  contact?: { phone?: string; email?: string }
+  contact?: { phone?: string; email?: string; emailAlt?: string }
   social?: { facebook?: string; instagram?: string; linkedin?: string }
 }
 
@@ -449,6 +449,17 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
                     <Mail className="w-4 h-4 text-white" />
                   </div>
                   <span className="break-all pt-2">{cfg.contact.email}</span>
+                </a>
+              )}
+              {cfg.contact?.emailAlt && cfg.contact.emailAlt !== cfg.contact.email && (
+                <a
+                  href={`mailto:${cfg.contact.emailAlt}`}
+                  className="flex items-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                >
+                  <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <Mail className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="break-all pt-2">{cfg.contact.emailAlt}</span>
                 </a>
               )}
             </div>

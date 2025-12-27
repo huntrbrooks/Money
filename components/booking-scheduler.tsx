@@ -20,7 +20,7 @@ export function BookingScheduler({
     "Need to reschedule? Reach out with 72 hours notice and we’ll arrange a new time.",
   ],
   helpText = "Need help deciding on a format? Email or call — a personal reply is guaranteed.",
-  email = "dan@financialabusetherapist.com",
+  email = "dan@financialabusetherapist.com.au",
   phone = "0467 477 786",
 }: BookingSchedulerProps) {
   return (

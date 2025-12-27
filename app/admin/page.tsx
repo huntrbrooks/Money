@@ -183,7 +183,7 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
   const [brand, setBrand] = useState<NonNullable<SiteConfig["brand"]>>({ name: "", subtitle: "", tagline: "", logoUrl: "", headerBannerUrl: "" })
   const [seo, setSeo] = useState<{ title?: string; description?: string; ogImage?: string }>({})
   const [navigation, setNavigation] = useState<{ label: string; href: string }[]>([])
-  const [contact, setContact] = useState<{ phone?: string; email?: string }>({})
+  const [contact, setContact] = useState<{ phone?: string; email?: string; emailAlt?: string }>({})
   const [social, setSocial] = useState<NonNullable<SiteConfig["social"]>>({ facebook: "", instagram: "", linkedin: "" })
   const [consultations, setConsultations] = useState<{ format: string; price: string; duration: string }[]>([])
   const [resources, setResources] = useState<
@@ -2592,6 +2592,10 @@ function CodeAgentBox() {
                    <Label>Email</Label>
                    <Input value={contact.email ?? ""} onChange={(e) => setContact({ ...contact, email: e.target.value })} />
                  </div>
+                <div className="space-y-2">
+                  <Label>Alternate Email (optional)</Label>
+                  <Input value={contact.emailAlt ?? ""} onChange={(e) => setContact({ ...contact, emailAlt: e.target.value })} />
+                </div>
                  <div className="space-y-2">
                    <Label>Facebook URL</Label>
                    <Input value={social.facebook ?? ""} onChange={(e) => setSocial((p) => ({ ...p, facebook: e.target.value }))} />

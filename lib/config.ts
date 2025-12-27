@@ -259,6 +259,7 @@ export type SiteConfig = {
   contact?: {
     phone?: string
     email?: string
+    emailAlt?: string
   }
   hero: {
     eyebrow?: string
@@ -324,7 +325,8 @@ export const defaultConfig: SiteConfig = {
   ],
   contact: {
     phone: "0467 477 786",
-    email: "dan@financialabusetherapist.com",
+    email: "dan@financialabusetherapist.com.au",
+    emailAlt: "dan@financialabusetherapist.com",
   },
   social: {
     facebook: "https://www.facebook.com/the.melbourne.counsellor/",
