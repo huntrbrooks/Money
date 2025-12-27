@@ -1,21 +1,17 @@
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import type { ConsultationOption } from "@/lib/config"
+import type { BookingCopy, ConsultationOption } from "@/lib/config"
 import {
   Building,
   CreditCard,
-  Footprints,
-  Home,
   RefreshCcw,
   ShieldCheck,
   Sparkles,
-  Users,
-  Video,
 } from "lucide-react"
 
 const OWNER_BOOKING_URL = "https://app.acuityscheduling.com/schedule.php?owner=32223024"
 
-const billingHighlights = [
+const defaultBillingHighlights = [
   {
     title: "Transparent billing",
     detail: "Fees listed are inclusive of GST with no surprise surcharges.",
@@ -33,7 +29,7 @@ const billingHighlights = [
   },
 ]
 
-const paymentSupport = [
+const defaultPaymentSupport = [
   {
     title: "Cards & wallets",
     detail: "Visa, Mastercard, AMEX, Apple Pay and Google Pay are accepted.",
@@ -51,23 +47,28 @@ function buildBookingUrl(typeId?: number) {
   return `${OWNER_BOOKING_URL}&appointmentType=${typeId}`
 }
 
-function getModeIcon(mode?: string) {
-  const value = (mode ?? "").toLowerCase()
-  if (value.includes("walk")) return Footprints
-  if (value.includes("home")) return Home
-  if (value.includes("room")) return Building
-  if (value.includes("couple")) return Users
-  return Video
-}
-
 type BookingOptionsProps = {
   options: ConsultationOption[]
+  bookingCopy?: BookingCopy
+  contactEmail?: string
+  contactPhone?: string
 }
 
-export function BookingOptions({ options = [] }: BookingOptionsProps) {
+export function BookingOptions({ options = [], bookingCopy, contactEmail, contactPhone }: BookingOptionsProps) {
   if (!options.length) {
     return null
   }
+
+  const email = contactEmail || "dan@financialabusetherapist.com"
+  const phone = contactPhone || "0467 477 786"
+  const billingHighlights = (bookingCopy?.billingHighlights ?? defaultBillingHighlights).map((item, idx) => ({
+    ...item,
+    icon: defaultBillingHighlights[idx]?.icon ?? Sparkles,
+  }))
+  const paymentSupport = (bookingCopy?.paymentSupport ?? defaultPaymentSupport).map((item, idx) => ({
+    ...item,
+    icon: defaultPaymentSupport[idx]?.icon ?? CreditCard,
+  }))
 
   return (
     <div className="space-y-12">
@@ -76,14 +77,14 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
         <div className="sm:hidden">
           <Accordion type="single" collapsible className="divide-y rounded-3xl border border-[#d4ddd8] bg-[var(--section-bg-2)]/60">
             {options.map((option) => {
-              const Icon = getModeIcon(option.mode)
               const value = `consultation-${option.typeId ?? option.format}`
+              const location = option.location ?? ""
               return (
                 <AccordionItem key={value} value={value} className="px-4">
                   <AccordionTrigger className="py-4 text-left">
                     <div className="flex w-full items-center justify-between gap-3 pr-2">
                       <div className="min-w-0">
-                        {option.mode && (
+                        {option.mode && option.mode !== "Flexible Delivery" && (
                           <p className="text-[11px] uppercase tracking-[0.25em] text-[#5a7264]">{option.mode}</p>
                         )}
                         <p className="font-serif text-lg text-[#1f2d38] leading-snug truncate">{option.format}</p>
@@ -105,8 +106,8 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
                         <p className="text-sm leading-relaxed text-[#4a5a61]">{option.description}</p>
                       )}
                       <div className="flex flex-wrap items-center gap-3 text-sm">
-                        <Icon className="h-4 w-4 text-[#7b8c45]" aria-hidden="true" />
-                        <span>{option.location ?? "Flexible delivery"}</span>
+                        <span aria-hidden="true" className="inline-block h-4 w-4" />
+                        {location ? <span>{location}</span> : <span aria-hidden="true">&nbsp;</span>}
                       </div>
                       <Button
                         asChild
@@ -128,7 +129,7 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
         {/* Desktop: existing cards */}
         <div className="hidden gap-5 sm:grid sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {options.map((option) => {
-            const Icon = getModeIcon(option.mode)
+            const location = option.location ?? ""
             return (
               <article
                 key={option.format}
@@ -136,7 +137,7 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    {option.mode && (
+                    {option.mode && option.mode !== "Flexible Delivery" && (
                       <p className="text-xs uppercase tracking-[0.25em] text-[#5a7264]">{option.mode}</p>
                     )}
                     <h3 className="font-serif text-2xl text-[#1f2d38]">{option.format}</h3>
@@ -155,8 +156,8 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
                   <span className="text-sm text-[#4a5c63]">{option.duration}</span>
                 </div>
                 <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-[#4a5c63]">
-                  <Icon className="h-4 w-4 text-[#7b8c45]" aria-hidden="true" />
-                  <span>{option.location ?? "Flexible delivery"}</span>
+                  <span aria-hidden="true" className="inline-block h-4 w-4" />
+                  {location ? <span>{location}</span> : <span aria-hidden="true">&nbsp;</span>}
                 </div>
                 <Button
                   asChild
@@ -234,13 +235,13 @@ export function BookingOptions({ options = [] }: BookingOptionsProps) {
         <div className="mt-6 flex flex-col items-center gap-1 text-center">
           <p className="text-xs uppercase tracking-[0.25em] text-[#4a5c63]">Billing enquiries</p>
           <a
-            href="mailto:dan@financialabusetherapist.com"
+            href={`mailto:${email}`}
             className="text-sm font-semibold text-[#1f2d38] break-all"
           >
-            dan@financialabusetherapist.com
+            {email}
           </a>
-          <a href="tel:+61467477786" className="text-sm text-[#4a5c63]">
-            0467 477 786
+          <a href={`tel:${phone.replace(/\s+/g, "")}`} className="text-sm text-[#4a5c63]">
+            {phone}
           </a>
         </div>
       </div>

@@ -17,6 +17,7 @@ import type { SiteConfig } from "@/lib/config"
 import type { PostMeta, VideoMeta } from "@/lib/mdx"
 import { Switch } from "@/components/ui/switch"
 import { Progress } from "@/components/ui/progress"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
  
 type ThemeState = {
   mode: "light" | "dark"
@@ -89,7 +90,23 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
     crisisNote: "",
   },
   otherAreas: [],
-  importantSectionLinks: [],
+  importantLinks: {
+    blogLinks: [
+      { label: "Why Money Triggers Anxiety", href: "/blog/why-money-triggers-anxiety" },
+      { label: "Financial Abuse and Emotional Healing", href: "/blog/financial-abuse-and-emotional-healing" },
+      { label: "The Psychology Behind Spending Habits", href: "/blog/the-psychology-behind-spending-habits" },
+    ],
+    specialistLinks: [
+      { label: "Financial Abuse", href: "/financial-abuse" },
+      { label: "Financial Abuse Therapy", href: "/financial-abuse-therapy" },
+      { label: "Financial Abuse Therapist", href: "/financial-abuse-therapist" },
+    ],
+  },
+  importantSectionLinks: [
+    { label: "About Dan", href: "/about" },
+    { label: "Monetary Psychotherapy", href: "/monetary-psychotherapy" },
+    { label: "Integrative Counselling", href: "/contemporary-integrative-counselling" },
+  ],
   valueProps: [],
   testimonials: [],
   faqs: [],
@@ -127,14 +144,15 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
  
   function stableStringify(value: unknown): string {
     const seen = new WeakSet<object>()
-    const normalize = (v: any): any => {
+    const normalize = (v: unknown): unknown => {
       if (v === null || typeof v !== "object") return v
       if (Array.isArray(v)) return v.map(normalize)
       if (seen.has(v)) return "[Circular]"
       seen.add(v)
-      const keys = Object.keys(v).sort()
-      const out: Record<string, any> = {}
-      for (const k of keys) out[k] = normalize(v[k])
+      const rec = v as Record<string, unknown>
+      const keys = Object.keys(rec).sort()
+      const out: Record<string, unknown> = {}
+      for (const k of keys) out[k] = normalize(rec[k])
       return out
     }
     return JSON.stringify(normalize(value))
@@ -156,18 +174,28 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
   // Content state
   const [heroContent, setHeroContent] = useState<SiteConfig["hero"]>(createEmptyHero())
  
-   const [aboutContent, setAboutContent] = useState({
+   const [aboutContent, setAboutContent] = useState<SiteConfig["about"]>({
      title: "",
      paragraphs: [""],
    })
  
-   const [services, setServices] = useState<{ id: string; name: string; price: string }[]>([])
-  const [brand, setBrand] = useState<{ name: string; subtitle?: string; tagline?: string }>({ name: "" })
+   const [services, setServices] = useState<SiteConfig["services"]>([])
+  const [brand, setBrand] = useState<NonNullable<SiteConfig["brand"]>>({ name: "", subtitle: "", tagline: "", logoUrl: "", headerBannerUrl: "" })
   const [seo, setSeo] = useState<{ title?: string; description?: string; ogImage?: string }>({})
   const [navigation, setNavigation] = useState<{ label: string; href: string }[]>([])
   const [contact, setContact] = useState<{ phone?: string; email?: string }>({})
+  const [social, setSocial] = useState<NonNullable<SiteConfig["social"]>>({ facebook: "", instagram: "", linkedin: "" })
   const [consultations, setConsultations] = useState<{ format: string; price: string; duration: string }[]>([])
-  const [resources, setResources] = useState<{ name: string; number: string }[]>([])
+  const [resources, setResources] = useState<
+    Array<{
+      name: string
+      number: string
+      website?: string
+      description?: string
+      logoUrl?: string
+      logoHeight?: number
+    }>
+  >([])
   const [homepage, setHomepage] = useState<NonNullable<SiteConfig["homepage"]>>(createEmptyHomepage())
   const [postsMeta, setPostsMeta] = useState<PostMeta[]>([])
   const [videosMeta, setVideosMeta] = useState<VideoMeta[]>([])
@@ -179,6 +207,31 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   showLeadMagnet: false,
 })
 
+  const [legal, setLegal] = useState<NonNullable<SiteConfig["legal"]>>({
+    privacy: { title: "Privacy Policy", bodyMdx: "", downloadUrl: "" },
+    terms: { title: "Terms of Service", bodyMdx: "", downloadUrl: "" },
+  })
+  const [forms, setForms] = useState<NonNullable<SiteConfig["forms"]>>({
+    enquiry: "/enquiry",
+    consent: "/consent",
+    intake: "/intake",
+  })
+  const [clientCare, setClientCare] = useState<SiteConfig["clientCare"]>({ downloads: [] })
+  const [bookingCopy, setBookingCopy] = useState<SiteConfig["bookingCopy"]>({
+    billingHighlights: [],
+    paymentSupport: [],
+  })
+
+  const [postEditor, setPostEditor] = useState<{
+    open: boolean
+    slug: string | null
+    title: string | null
+    mdx: string
+    loading: boolean
+    saving: boolean
+    source: string | null
+  }>({ open: false, slug: null, title: null, mdx: "", loading: false, saving: false, source: null })
+
   // Dirty tracking must be computed AFTER state initialisation (avoids TDZ crash in production bundles).
   const buildSaveBody = (): Omit<SiteConfig, "meta"> => ({
     theme,
@@ -189,10 +242,15 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     seo,
     navigation,
     contact,
+    social,
     consultations,
     resources,
     experiments,
     homepage,
+    legal,
+    forms,
+    clientCare,
+    bookingCopy,
   })
 
   const currentSnapshot = stableStringify(buildSaveBody())
@@ -224,16 +282,42 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
         const nextSeo = data.seo ?? {}
         const nextNav = data.navigation ?? []
         const nextContact = data.contact ?? {}
+       const nextSocial = data.social ?? {}
         const nextConsultations = data.consultations ?? []
         const nextResources = data.resources ?? []
+       const nextLegal = data.legal ?? {}
+       const nextForms = data.forms ?? {}
+       const nextClientCare = data.clientCare ?? {}
+       const nextBookingCopy = data.bookingCopy ?? {}
         setAboutContent(nextAbout)
         setServices(nextServices)
         setBrand(nextBrand)
         setSeo(nextSeo)
         setNavigation(nextNav)
         setContact(nextContact)
+        setSocial({ facebook: "", instagram: "", linkedin: "", ...(nextSocial ?? {}) })
         setConsultations(nextConsultations)
         setResources(nextResources)
+        setLegal({
+          privacy: { title: "Privacy Policy", bodyMdx: "", downloadUrl: "", ...(nextLegal.privacy ?? {}) },
+          terms: { title: "Terms of Service", bodyMdx: "", downloadUrl: "", ...(nextLegal.terms ?? {}) },
+        })
+        setForms({
+          enquiry: nextForms.enquiry ?? "/enquiry",
+          consent: nextForms.consent ?? "/consent",
+          intake: nextForms.intake ?? "/intake",
+        })
+        setClientCare({
+          downloads: Array.isArray(nextClientCare.downloads) ? nextClientCare.downloads : [],
+          prepChecklist: Array.isArray(nextClientCare.prepChecklist) ? nextClientCare.prepChecklist : [],
+          aftercareChecklist: Array.isArray(nextClientCare.aftercareChecklist) ? nextClientCare.aftercareChecklist : [],
+        })
+        setBookingCopy({
+          billingHighlights: Array.isArray(nextBookingCopy.billingHighlights) ? nextBookingCopy.billingHighlights : [],
+          paymentSupport: Array.isArray(nextBookingCopy.paymentSupport) ? nextBookingCopy.paymentSupport : [],
+          schedulerPoints: Array.isArray(nextBookingCopy.schedulerPoints) ? nextBookingCopy.schedulerPoints : [],
+          schedulerHelpText: nextBookingCopy.schedulerHelpText ?? "",
+        })
        const homepageDefaults = createEmptyHomepage()
        const nextHomepage = {
          ...homepageDefaults,
@@ -241,7 +325,13 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          sections: { ...(homepageDefaults.sections ?? {}), ...(data.homepage?.sections ?? {}) },
          copy: { ...(homepageDefaults.copy ?? {}), ...(data.homepage?.copy ?? {}) },
          otherAreas: data.homepage?.otherAreas ?? [],
-         importantSectionLinks: data.homepage?.importantSectionLinks ?? [],
+         importantLinks: {
+           ...(homepageDefaults.importantLinks ?? {}),
+           ...(data.homepage?.importantLinks ?? {}),
+           blogLinks: data.homepage?.importantLinks?.blogLinks ?? homepageDefaults.importantLinks?.blogLinks ?? [],
+           specialistLinks: data.homepage?.importantLinks?.specialistLinks ?? homepageDefaults.importantLinks?.specialistLinks ?? [],
+         },
+         importantSectionLinks: data.homepage?.importantSectionLinks ?? homepageDefaults.importantSectionLinks ?? [],
          valueProps: data.homepage?.valueProps ?? [],
          testimonials: data.homepage?.testimonials ?? [],
          faqs: data.homepage?.faqs ?? [],
@@ -268,10 +358,31 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          seo: nextSeo,
          navigation: nextNav,
          contact: nextContact,
+         social: { facebook: "", instagram: "", linkedin: "", ...(nextSocial ?? {}) },
          consultations: nextConsultations,
          resources: nextResources,
          homepage: nextHomepage,
          experiments: nextExperiments,
+         legal: {
+           privacy: { title: "Privacy Policy", bodyMdx: "", downloadUrl: "", ...(nextLegal.privacy ?? {}) },
+           terms: { title: "Terms of Service", bodyMdx: "", downloadUrl: "", ...(nextLegal.terms ?? {}) },
+         },
+         forms: {
+           enquiry: nextForms.enquiry ?? "/enquiry",
+           consent: nextForms.consent ?? "/consent",
+           intake: nextForms.intake ?? "/intake",
+         },
+         clientCare: {
+           downloads: Array.isArray(nextClientCare.downloads) ? nextClientCare.downloads : [],
+           prepChecklist: Array.isArray(nextClientCare.prepChecklist) ? nextClientCare.prepChecklist : [],
+           aftercareChecklist: Array.isArray(nextClientCare.aftercareChecklist) ? nextClientCare.aftercareChecklist : [],
+         },
+         bookingCopy: {
+           billingHighlights: Array.isArray(nextBookingCopy.billingHighlights) ? nextBookingCopy.billingHighlights : [],
+           paymentSupport: Array.isArray(nextBookingCopy.paymentSupport) ? nextBookingCopy.paymentSupport : [],
+           schedulerPoints: Array.isArray(nextBookingCopy.schedulerPoints) ? nextBookingCopy.schedulerPoints : [],
+           schedulerHelpText: nextBookingCopy.schedulerHelpText ?? "",
+         },
        }
        setLoadedConfig(baseline)
        setLoadedSnapshot(stableStringify({
@@ -283,10 +394,15 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          seo: baseline.seo,
          navigation: baseline.navigation,
          contact: baseline.contact,
+         social: baseline.social,
          consultations: baseline.consultations,
          resources: baseline.resources,
          experiments: baseline.experiments,
          homepage: baseline.homepage,
+         legal: baseline.legal,
+         forms: baseline.forms,
+         clientCare: baseline.clientCare,
+         bookingCopy: baseline.bookingCopy,
        }))
        setLastSavedAt(baseline.meta?.updatedAt ?? null)
        // Load version history (best-effort)
@@ -356,17 +472,116 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     if (!loadedConfig) return
     setTheme(loadedConfig.theme)
     setHeroContent(loadedConfig.hero)
-    setAboutContent(loadedConfig.about as any)
-    setServices(loadedConfig.services as any)
+    setAboutContent(loadedConfig.about)
+    setServices(loadedConfig.services)
     setBrand(loadedConfig.brand ?? {})
     setSeo(loadedConfig.seo ?? {})
     setNavigation(loadedConfig.navigation ?? [])
     setContact(loadedConfig.contact ?? {})
+    setSocial({ facebook: "", instagram: "", linkedin: "", ...(loadedConfig.social ?? {}) })
     setConsultations(loadedConfig.consultations ?? [])
     setResources(loadedConfig.resources ?? [])
     setHomepage(loadedConfig.homepage ?? createEmptyHomepage())
     setExperiments(loadedConfig.experiments ?? { showNewsletterSection: true, showLeadMagnet: false })
+    setLegal({
+      privacy: { title: "Privacy Policy", bodyMdx: "", downloadUrl: "", ...(loadedConfig.legal?.privacy ?? {}) },
+      terms: { title: "Terms of Service", bodyMdx: "", downloadUrl: "", ...(loadedConfig.legal?.terms ?? {}) },
+    })
+    setForms({
+      enquiry: loadedConfig.forms?.enquiry ?? "/enquiry",
+      consent: loadedConfig.forms?.consent ?? "/consent",
+      intake: loadedConfig.forms?.intake ?? "/intake",
+    })
+    setClientCare({
+      downloads: loadedConfig.clientCare?.downloads ?? [],
+      prepChecklist: loadedConfig.clientCare?.prepChecklist ?? [],
+      aftercareChecklist: loadedConfig.clientCare?.aftercareChecklist ?? [],
+    })
+    setBookingCopy({
+      billingHighlights: loadedConfig.bookingCopy?.billingHighlights ?? [],
+      paymentSupport: loadedConfig.bookingCopy?.paymentSupport ?? [],
+      schedulerPoints: loadedConfig.bookingCopy?.schedulerPoints ?? [],
+      schedulerHelpText: loadedConfig.bookingCopy?.schedulerHelpText ?? "",
+    })
     toast({ title: "Reverted", description: "Changes reverted to last loaded state." })
+  }
+
+  async function pickFile(accept?: string): Promise<File | null> {
+    return await new Promise((resolve) => {
+      const input = document.createElement("input")
+      input.type = "file"
+      if (accept) input.accept = accept
+      input.onchange = () => {
+        const file = input.files?.[0] ?? null
+        resolve(file)
+      }
+      input.click()
+    })
+  }
+
+  async function uploadAsset(params: { path: string; accept?: string }) {
+    const file = await pickFile(params.accept)
+    if (!file) return null
+    const body = new FormData()
+    body.set("path", params.path)
+    body.set("file", file)
+    const res = await fetch("/api/admin/upload", { method: "POST", body })
+    if (res.status === 401) {
+      toast({ title: "Session expired", description: "Please sign in again.", variant: "destructive" })
+      redirectToLogin("/admin")
+      return null
+    }
+    if (!res.ok) {
+      const err = (await res.json().catch(() => ({}))) as { error?: string }
+      throw new Error(err.error ?? "Upload failed")
+    }
+    const data = (await res.json().catch(() => null)) as { url?: string } | null
+    if (!data?.url) throw new Error("Upload did not return a URL")
+    return data.url
+  }
+
+  async function openPostEditor(post: PostMeta) {
+    setPostEditor({ open: true, slug: post.slug, title: post.title, mdx: "", loading: true, saving: false, source: null })
+    try {
+      const res = await fetch(`/api/posts/${encodeURIComponent(post.slug)}`, { cache: "no-store" })
+      if (!res.ok) {
+        const err = (await res.json().catch(() => ({}))) as { error?: string }
+        throw new Error(err.error ?? "Unable to load article content")
+      }
+      const data = (await res.json().catch(() => null)) as { mdx?: string; source?: string } | null
+      setPostEditor((prev) => ({ ...prev, mdx: data?.mdx ?? "", source: data?.source ?? null, loading: false }))
+    } catch (e: unknown) {
+      toast({ title: "Load failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+      setPostEditor((prev) => ({ ...prev, loading: false }))
+    }
+  }
+
+  async function savePostEditor() {
+    if (!postEditor.slug) return
+    setPostEditor((prev) => ({ ...prev, saving: true }))
+    try {
+      const res = await fetch(`/api/posts/${encodeURIComponent(postEditor.slug)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mdx: postEditor.mdx }),
+      })
+      if (res.status === 401) {
+        toast({ title: "Session expired", description: "Please sign in again.", variant: "destructive" })
+        redirectToLogin("/admin")
+        return
+      }
+      if (!res.ok) {
+        const err = (await res.json().catch(() => ({}))) as { error?: string }
+        throw new Error(err.error ?? "Save failed")
+      }
+      toast({ title: "Saved", description: "Article updated." })
+      // Refresh meta list (title/description/date could change)
+      await loadContent()
+      setPostEditor((prev) => ({ ...prev, saving: false, open: false }))
+    } catch (e: unknown) {
+      toast({ title: "Save failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+      setPostEditor((prev) => ({ ...prev, saving: false }))
+    }
   }
  
    async function saveAll(section?: string) {
@@ -696,12 +911,40 @@ function CodeAgentBox() {
      router.replace("/admin/login")
    }
  
-   const handleImageUpload = (section: string) => {
-     toast({
-       title: "Image Upload",
-       description: `Image for ${section} would be uploaded here`,
-     })
-   }
+  const handleImageUpload = async (section: "Profile Photo" | "Background Images" | "Logo" | "Header Banner" | "OG Image") => {
+    try {
+      const base =
+        section === "Profile Photo"
+          ? "images/profile"
+          : section === "Background Images"
+            ? "images/background"
+            : section === "Logo"
+              ? "images/logo"
+              : section === "Header Banner"
+                ? "images/header-banner"
+                : "images/og"
+
+      const url = await uploadAsset({ path: `${base}.png`, accept: "image/*" })
+      if (!url) return
+
+      if (section === "Profile Photo") {
+        setHeroContent((prev) => ({ ...prev, imageUrl: url }))
+      } else if (section === "Logo") {
+        setBrand((prev) => ({ ...prev, logoUrl: url }))
+      } else if (section === "Header Banner") {
+        setBrand((prev) => ({ ...prev, headerBannerUrl: url }))
+      } else if (section === "OG Image") {
+        setSeo((prev) => ({ ...prev, ogImage: url }))
+      } else {
+        // Background images aren't currently a first-class config field; store in brand headerBannerUrl as a safe default.
+        setBrand((prev) => ({ ...prev, headerBannerUrl: url }))
+      }
+
+      toast({ title: "Uploaded", description: `${section} updated. Remember to Save.` })
+    } catch (e: unknown) {
+      toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+    }
+  }
  
    return (
      <div className="min-h-screen bg-muted">
@@ -767,7 +1010,7 @@ function CodeAgentBox() {
  
        <div className="container mx-auto px-4 py-8">
          <Tabs defaultValue="hero" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-16 gap-2 max-w-full">
+        <TabsList className="grid w-full grid-cols-[repeat(17,minmax(0,1fr))] gap-2 max-w-full">
             <TabsTrigger value="hero">Hero Section</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
             <TabsTrigger value="services">Services</TabsTrigger>
@@ -780,6 +1023,7 @@ function CodeAgentBox() {
            <TabsTrigger value="nav">Navigation</TabsTrigger>
            <TabsTrigger value="contact">Contact</TabsTrigger>
            <TabsTrigger value="seo">SEO</TabsTrigger>
+           <TabsTrigger value="documents">Documents</TabsTrigger>
            <TabsTrigger value="consultations">Consultations</TabsTrigger>
            <TabsTrigger value="resources">Resources</TabsTrigger>
             <TabsTrigger value="history">History</TabsTrigger>
@@ -1430,65 +1674,133 @@ function CodeAgentBox() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Important links (editable row)</CardTitle>
-                <CardDescription>Controls the “internal section deep-dives” buttons</CardDescription>
+                <CardTitle>Important Links (all 9 navy buttons)</CardTitle>
+                <CardDescription>Controls the 9 navy buttons in the homepage “Important Links” section.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {(homepage.importantSectionLinks ?? []).map((link, idx) => (
-                  <div key={`${link.href}-${idx}`} className="grid gap-3 sm:grid-cols-2 items-end rounded-lg border border-border/40 p-4">
-                    <div className="space-y-2">
-                      <Label>Label</Label>
-                      <Input
-                        value={link.label}
-                        onChange={(e) => {
-                          const next = [...(homepage.importantSectionLinks ?? [])]
-                          next[idx] = { ...next[idx], label: e.target.value }
-                          setHomepage((prev) => ({ ...prev, importantSectionLinks: next }))
-                        }}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Href</Label>
-                      <Input
-                        value={link.href}
-                        onChange={(e) => {
-                          const next = [...(homepage.importantSectionLinks ?? [])]
-                          next[idx] = { ...next[idx], href: e.target.value }
-                          setHomepage((prev) => ({ ...prev, importantSectionLinks: next }))
-                        }}
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={() => {
-                        const next = [...(homepage.importantSectionLinks ?? [])]
-                        next.splice(idx, 1)
-                        setHomepage((prev) => ({ ...prev, importantSectionLinks: next }))
-                      }}
-                    >
-                      Remove
-                    </Button>
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <p className="text-sm font-semibold text-[var(--foreground)]">Row 3 — Blog links (3)</p>
+                    {Array.from({ length: 3 }).map((_, idx) => {
+                      const link = homepage.importantLinks?.blogLinks?.[idx] ?? { label: "", href: "" }
+                      return (
+                        <div key={`blog-${idx}`} className="grid gap-3 sm:grid-cols-2 items-end rounded-lg border border-border/40 p-4">
+                          <div className="space-y-2">
+                            <Label>Label</Label>
+                            <Input
+                              value={link.label}
+                              onChange={(e) =>
+                                setHomepage((prev) => {
+                                  const next = [...(prev.importantLinks?.blogLinks ?? [])]
+                                  while (next.length < 3) next.push({ label: "", href: "" })
+                                  next[idx] = { ...next[idx], label: e.target.value }
+                                  return { ...prev, importantLinks: { ...(prev.importantLinks ?? {}), blogLinks: next } }
+                                })
+                              }
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Href</Label>
+                            <Input
+                              value={link.href}
+                              onChange={(e) =>
+                                setHomepage((prev) => {
+                                  const next = [...(prev.importantLinks?.blogLinks ?? [])]
+                                  while (next.length < 3) next.push({ label: "", href: "" })
+                                  next[idx] = { ...next[idx], href: e.target.value }
+                                  return { ...prev, importantLinks: { ...(prev.importantLinks ?? {}), blogLinks: next } }
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                      )
+                    })}
                   </div>
-                ))}
-                <div className="flex gap-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() =>
-                      setHomepage((prev) => ({
-                        ...prev,
-                        importantSectionLinks: [...(prev.importantSectionLinks ?? []), { label: "New link", href: "/" }],
-                      }))
-                    }
-                  >
-                    + Add link
-                  </Button>
-                  <Button onClick={() => saveAll("Important links")} disabled={saving !== null}>
-                    <Save className="w-4 h-4 mr-2" />
-                    Save links
-                  </Button>
+
+                  <div className="space-y-3">
+                    <p className="text-sm font-semibold text-[var(--foreground)]">Row 4 — Internal deep-dives (3)</p>
+                    {Array.from({ length: 3 }).map((_, idx) => {
+                      const link = homepage.importantSectionLinks?.[idx] ?? { label: "", href: "" }
+                      return (
+                        <div key={`deep-${idx}`} className="grid gap-3 sm:grid-cols-2 items-end rounded-lg border border-border/40 p-4">
+                          <div className="space-y-2">
+                            <Label>Label</Label>
+                            <Input
+                              value={link.label}
+                              onChange={(e) =>
+                                setHomepage((prev) => {
+                                  const next = [...(prev.importantSectionLinks ?? [])]
+                                  while (next.length < 3) next.push({ label: "", href: "" })
+                                  next[idx] = { ...next[idx], label: e.target.value }
+                                  return { ...prev, importantSectionLinks: next }
+                                })
+                              }
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Href</Label>
+                            <Input
+                              value={link.href}
+                              onChange={(e) =>
+                                setHomepage((prev) => {
+                                  const next = [...(prev.importantSectionLinks ?? [])]
+                                  while (next.length < 3) next.push({ label: "", href: "" })
+                                  next[idx] = { ...next[idx], href: e.target.value }
+                                  return { ...prev, importantSectionLinks: next }
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  <div className="space-y-3">
+                    <p className="text-sm font-semibold text-[var(--foreground)]">Row 5 — Specialist pages (3)</p>
+                    {Array.from({ length: 3 }).map((_, idx) => {
+                      const link = homepage.importantLinks?.specialistLinks?.[idx] ?? { label: "", href: "" }
+                      return (
+                        <div key={`spec-${idx}`} className="grid gap-3 sm:grid-cols-2 items-end rounded-lg border border-border/40 p-4">
+                          <div className="space-y-2">
+                            <Label>Label</Label>
+                            <Input
+                              value={link.label}
+                              onChange={(e) =>
+                                setHomepage((prev) => {
+                                  const next = [...(prev.importantLinks?.specialistLinks ?? [])]
+                                  while (next.length < 3) next.push({ label: "", href: "" })
+                                  next[idx] = { ...next[idx], label: e.target.value }
+                                  return { ...prev, importantLinks: { ...(prev.importantLinks ?? {}), specialistLinks: next } }
+                                })
+                              }
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Href</Label>
+                            <Input
+                              value={link.href}
+                              onChange={(e) =>
+                                setHomepage((prev) => {
+                                  const next = [...(prev.importantLinks?.specialistLinks ?? [])]
+                                  while (next.length < 3) next.push({ label: "", href: "" })
+                                  next[idx] = { ...next[idx], href: e.target.value }
+                                  return { ...prev, importantLinks: { ...(prev.importantLinks ?? {}), specialistLinks: next } }
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
+
+                <Button onClick={() => saveAll("Important links")} disabled={saving !== null}>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Important Links
+                </Button>
               </CardContent>
             </Card>
 
@@ -1864,13 +2176,14 @@ function CodeAgentBox() {
                           {new Date(post.date).toLocaleDateString("en-AU", { dateStyle: "medium" })} · /blog/{post.slug}
                         </p>
                       </div>
-                      <Link
-                        href={`/blog/${post.slug}`}
-                        target="_blank"
-                        className="text-sm font-semibold text-[var(--accent)] underline"
-                      >
-                        View
-                      </Link>
+                      <div className="flex flex-wrap gap-3">
+                        <Button type="button" variant="outline" onClick={() => openPostEditor(post)}>
+                          Edit
+                        </Button>
+                        <Link href={`/blog/${post.slug}`} target="_blank" className="text-sm font-semibold text-[var(--accent)] underline">
+                          View
+                        </Link>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -1946,6 +2259,51 @@ function CodeAgentBox() {
             </Card>
           </TabsContent>
 
+          <Dialog
+            open={postEditor.open}
+            onOpenChange={(open) => {
+              if (!open) setPostEditor({ open: false, slug: null, title: null, mdx: "", loading: false, saving: false, source: null })
+            }}
+          >
+            <DialogContent className="max-w-3xl">
+              <DialogHeader>
+                <DialogTitle>Edit article</DialogTitle>
+                <DialogDescription>
+                  {postEditor.slug ? (
+                    <>
+                      <span className="font-medium">/blog/{postEditor.slug}</span>
+                      {postEditor.source ? <span className="text-muted-foreground"> · source: {postEditor.source}</span> : null}
+                    </>
+                  ) : (
+                    "Loading…"
+                  )}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-2">
+                <Label>MDX</Label>
+                <Textarea
+                  rows={18}
+                  value={postEditor.mdx}
+                  onChange={(e) => setPostEditor((prev) => ({ ...prev, mdx: e.target.value }))}
+                  disabled={postEditor.loading || postEditor.saving}
+                />
+              </div>
+              <DialogFooter className="sm:justify-between gap-3">
+                <div className="text-xs text-muted-foreground">
+                  {postEditor.loading ? "Loading content…" : postEditor.saving ? "Saving…" : "Tip: frontmatter controls title/description/date."}
+                </div>
+                <div className="flex gap-3">
+                  <Button type="button" variant="outline" onClick={() => setPostEditor((prev) => ({ ...prev, open: false }))} disabled={postEditor.saving}>
+                    Cancel
+                  </Button>
+                  <Button type="button" onClick={savePostEditor} disabled={postEditor.loading || postEditor.saving || !postEditor.slug}>
+                    Save
+                  </Button>
+                </div>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
           {/* Experiments Tab */}
           <TabsContent value="experiments" className="space-y-6">
             <Card>
@@ -2006,8 +2364,8 @@ function CodeAgentBox() {
                  <div className="space-y-4">
                    <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
                      <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-40" />
-                     <h3 className="text-lg font-medium mb-2">Profile Photo</h3>
-                     <p className="text-sm text-muted-foreground mb-4">Current: Dan Lobel headshot</p>
+                     <h3 className="text-lg font-medium mb-2">Profile Photo (Hero)</h3>
+                     <p className="text-sm text-muted-foreground mb-4">Current: {heroContent.imageUrl || "—"}</p>
                      <Button
                        onClick={() => handleImageUpload("Profile Photo")}
                        variant="outline"
@@ -2019,17 +2377,41 @@ function CodeAgentBox() {
  
                    <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
                      <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-40" />
-                     <h3 className="text-lg font-medium mb-2">Background Images</h3>
-                     <p className="text-sm text-muted-foreground mb-4">Add decorative images for sections</p>
+                     <h3 className="text-lg font-medium mb-2">Logo</h3>
+                     <p className="text-sm text-muted-foreground mb-4">Current: {brand.logoUrl || "—"}</p>
                      <Button
-                       onClick={() => handleImageUpload("Background Images")}
+                       onClick={() => handleImageUpload("Logo")}
                        variant="outline"
                      >
                        <Upload className="w-4 h-4 mr-2" />
-                       Upload Images
+                       Upload Logo
+                     </Button>
+                   </div>
+
+                   <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
+                     <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-40" />
+                     <h3 className="text-lg font-medium mb-2">Header Banner</h3>
+                     <p className="text-sm text-muted-foreground mb-4">Current: {brand.headerBannerUrl || "—"}</p>
+                     <Button onClick={() => handleImageUpload("Header Banner")} variant="outline">
+                       <Upload className="w-4 h-4 mr-2" />
+                       Upload Banner
+                     </Button>
+                   </div>
+
+                   <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
+                     <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-40" />
+                     <h3 className="text-lg font-medium mb-2">Open Graph Image</h3>
+                     <p className="text-sm text-muted-foreground mb-4">Current: {seo.ogImage || "—"}</p>
+                     <Button onClick={() => handleImageUpload("OG Image")} variant="outline">
+                       <Upload className="w-4 h-4 mr-2" />
+                       Upload OG Image
                      </Button>
                    </div>
                  </div>
+                 <Button onClick={() => saveAll("Images")} disabled={saving !== null}>
+                   <Save className="w-4 h-4 mr-2" />
+                   Save Images
+                 </Button>
                </CardContent>
              </Card>
            </TabsContent>
@@ -2199,7 +2581,7 @@ function CodeAgentBox() {
              <Card>
                <CardHeader>
                  <CardTitle>Contact</CardTitle>
-                 <CardDescription>Manage phone and email</CardDescription>
+                 <CardDescription>Manage phone, email, and social links</CardDescription>
                </CardHeader>
                <CardContent className="space-y-4">
                  <div className="space-y-2">
@@ -2209,6 +2591,18 @@ function CodeAgentBox() {
                  <div className="space-y-2">
                    <Label>Email</Label>
                    <Input value={contact.email ?? ""} onChange={(e) => setContact({ ...contact, email: e.target.value })} />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Facebook URL</Label>
+                   <Input value={social.facebook ?? ""} onChange={(e) => setSocial((p) => ({ ...p, facebook: e.target.value }))} />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Instagram URL</Label>
+                   <Input value={social.instagram ?? ""} onChange={(e) => setSocial((p) => ({ ...p, instagram: e.target.value }))} />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>LinkedIn URL</Label>
+                   <Input value={social.linkedin ?? ""} onChange={(e) => setSocial((p) => ({ ...p, linkedin: e.target.value }))} />
                  </div>
                  <Button onClick={() => saveAll("Contact")} disabled={saving !== null}>
                    <Save className="w-4 h-4 mr-2" /> Save Contact
@@ -2239,6 +2633,242 @@ function CodeAgentBox() {
                  </div>
                  <Button onClick={() => saveAll("SEO")} disabled={saving !== null}>
                    <Save className="w-4 h-4 mr-2" /> Save SEO
+                 </Button>
+               </CardContent>
+             </Card>
+           </TabsContent>
+
+           {/* Documents Tab */}
+           <TabsContent value="documents" className="space-y-6">
+             <Card>
+               <CardHeader>
+                 <CardTitle>Legal pages</CardTitle>
+                 <CardDescription>Manage Privacy Policy and Terms of Service content and downloadable files.</CardDescription>
+               </CardHeader>
+               <CardContent className="space-y-8">
+                 <div className="grid gap-6 lg:grid-cols-2">
+                   <div className="space-y-3 rounded-lg border border-border/40 p-4">
+                     <p className="font-semibold text-[var(--foreground)]">Privacy Policy</p>
+                     <div className="space-y-2">
+                       <Label>Title</Label>
+                       <Input
+                         value={legal.privacy?.title ?? ""}
+                         onChange={(e) => setLegal((prev) => ({ ...prev, privacy: { ...(prev.privacy ?? {}), title: e.target.value } }))}
+                       />
+                     </div>
+                     <div className="space-y-2">
+                       <Label>Download URL</Label>
+                       <Input
+                         value={legal.privacy?.downloadUrl ?? ""}
+                         onChange={(e) =>
+                           setLegal((prev) => ({ ...prev, privacy: { ...(prev.privacy ?? {}), downloadUrl: e.target.value } }))
+                         }
+                       />
+                       <div className="flex flex-wrap gap-3">
+                         <Button
+                           type="button"
+                           variant="outline"
+                           onClick={async () => {
+                             try {
+                               const url = await uploadAsset({ path: "docs/privacy-policy.docx", accept: ".docx,.pdf" })
+                               if (!url) return
+                               setLegal((prev) => ({ ...prev, privacy: { ...(prev.privacy ?? {}), downloadUrl: url } }))
+                               toast({ title: "Uploaded", description: "Privacy Policy document updated." })
+                             } catch (e: unknown) {
+                               toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+                             }
+                           }}
+                         >
+                           <Upload className="w-4 h-4 mr-2" />
+                           Replace file
+                         </Button>
+                         {legal.privacy?.downloadUrl ? (
+                           <a className="text-sm underline text-[var(--accent)]" href={legal.privacy.downloadUrl} target="_blank" rel="noreferrer noopener">
+                             View file
+                           </a>
+                         ) : null}
+                       </div>
+                     </div>
+                     <div className="space-y-2">
+                       <Label>Body (MDX/Markdown)</Label>
+                       <Textarea
+                         rows={10}
+                         value={legal.privacy?.bodyMdx ?? ""}
+                         onChange={(e) =>
+                           setLegal((prev) => ({ ...prev, privacy: { ...(prev.privacy ?? {}), bodyMdx: e.target.value } }))
+                         }
+                       />
+                     </div>
+                   </div>
+
+                   <div className="space-y-3 rounded-lg border border-border/40 p-4">
+                     <p className="font-semibold text-[var(--foreground)]">Terms of Service</p>
+                     <div className="space-y-2">
+                       <Label>Title</Label>
+                       <Input
+                         value={legal.terms?.title ?? ""}
+                         onChange={(e) => setLegal((prev) => ({ ...prev, terms: { ...(prev.terms ?? {}), title: e.target.value } }))}
+                       />
+                     </div>
+                     <div className="space-y-2">
+                       <Label>Download URL</Label>
+                       <Input
+                         value={legal.terms?.downloadUrl ?? ""}
+                         onChange={(e) =>
+                           setLegal((prev) => ({ ...prev, terms: { ...(prev.terms ?? {}), downloadUrl: e.target.value } }))
+                         }
+                       />
+                       <div className="flex flex-wrap gap-3">
+                         <Button
+                           type="button"
+                           variant="outline"
+                           onClick={async () => {
+                             try {
+                               const url = await uploadAsset({ path: "docs/terms-of-service.docx", accept: ".docx,.pdf" })
+                               if (!url) return
+                               setLegal((prev) => ({ ...prev, terms: { ...(prev.terms ?? {}), downloadUrl: url } }))
+                               toast({ title: "Uploaded", description: "Terms of Service document updated." })
+                             } catch (e: unknown) {
+                               toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+                             }
+                           }}
+                         >
+                           <Upload className="w-4 h-4 mr-2" />
+                           Replace file
+                         </Button>
+                         {legal.terms?.downloadUrl ? (
+                           <a className="text-sm underline text-[var(--accent)]" href={legal.terms.downloadUrl} target="_blank" rel="noreferrer noopener">
+                             View file
+                           </a>
+                         ) : null}
+                       </div>
+                     </div>
+                     <div className="space-y-2">
+                       <Label>Body (MDX/Markdown)</Label>
+                       <Textarea
+                         rows={10}
+                         value={legal.terms?.bodyMdx ?? ""}
+                         onChange={(e) =>
+                           setLegal((prev) => ({ ...prev, terms: { ...(prev.terms ?? {}), bodyMdx: e.target.value } }))
+                         }
+                       />
+                     </div>
+                   </div>
+                 </div>
+               </CardContent>
+             </Card>
+
+             <Card>
+               <CardHeader>
+                 <CardTitle>Forms</CardTitle>
+                 <CardDescription>Control where the “forms” links point (routes only).</CardDescription>
+               </CardHeader>
+               <CardContent className="space-y-4">
+                 <div className="space-y-2">
+                   <Label>Enquiry</Label>
+                   <Input value={forms.enquiry ?? ""} onChange={(e) => setForms((p) => ({ ...p, enquiry: e.target.value }))} />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Consent</Label>
+                   <Input value={forms.consent ?? ""} onChange={(e) => setForms((p) => ({ ...p, consent: e.target.value }))} />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Intake</Label>
+                   <Input value={forms.intake ?? ""} onChange={(e) => setForms((p) => ({ ...p, intake: e.target.value }))} />
+                 </div>
+                 <Button onClick={() => saveAll("Documents")} disabled={saving !== null}>
+                   <Save className="w-4 h-4 mr-2" /> Save Documents
+                 </Button>
+               </CardContent>
+             </Card>
+
+             <Card>
+               <CardHeader>
+                 <CardTitle>Client Care page</CardTitle>
+                 <CardDescription>Edit the Client Care Hub checklists and downloads.</CardDescription>
+               </CardHeader>
+               <CardContent className="space-y-6">
+                 <div className="space-y-3">
+                   <p className="text-sm font-semibold text-[var(--foreground)]">Session preparation (3)</p>
+                   {Array.from({ length: 3 }).map((_, idx) => (
+                     <div key={`prep-${idx}`} className="space-y-2">
+                       <Label>Item {idx + 1}</Label>
+                       <Input
+                         value={clientCare?.prepChecklist?.[idx] ?? ""}
+                         onChange={(e) =>
+                           setClientCare((prev) => {
+                             const next = [...((prev?.prepChecklist ?? []) as string[])]
+                             while (next.length < 3) next.push("")
+                             next[idx] = e.target.value
+                             return { ...(prev ?? {}), prepChecklist: next }
+                           })
+                         }
+                       />
+                     </div>
+                   ))}
+                 </div>
+
+                 <div className="space-y-3">
+                   <p className="text-sm font-semibold text-[var(--foreground)]">Aftercare ritual (3)</p>
+                   {Array.from({ length: 3 }).map((_, idx) => (
+                     <div key={`after-${idx}`} className="space-y-2">
+                       <Label>Item {idx + 1}</Label>
+                       <Input
+                         value={clientCare?.aftercareChecklist?.[idx] ?? ""}
+                         onChange={(e) =>
+                           setClientCare((prev) => {
+                             const next = [...((prev?.aftercareChecklist ?? []) as string[])]
+                             while (next.length < 3) next.push("")
+                             next[idx] = e.target.value
+                             return { ...(prev ?? {}), aftercareChecklist: next }
+                           })
+                         }
+                       />
+                     </div>
+                   ))}
+                 </div>
+
+                 <div className="space-y-3">
+                   <p className="text-sm font-semibold text-[var(--foreground)]">Downloads & forms (4)</p>
+                   {Array.from({ length: 4 }).map((_, idx) => {
+                     const link = clientCare?.downloads?.[idx] ?? { label: "", href: "" }
+                     return (
+                       <div key={`dl-${idx}`} className="grid gap-3 sm:grid-cols-2 rounded-lg border border-border/40 p-4">
+                         <div className="space-y-2">
+                           <Label>Label</Label>
+                           <Input
+                             value={link.label}
+                             onChange={(e) =>
+                               setClientCare((prev) => {
+                                 const next = [...(prev?.downloads ?? [])]
+                                 while (next.length < 4) next.push({ label: "", href: "" })
+                                 next[idx] = { ...next[idx], label: e.target.value }
+                                 return { ...(prev ?? {}), downloads: next }
+                               })
+                             }
+                           />
+                         </div>
+                         <div className="space-y-2">
+                           <Label>Href</Label>
+                           <Input
+                             value={link.href}
+                             onChange={(e) =>
+                               setClientCare((prev) => {
+                                 const next = [...(prev?.downloads ?? [])]
+                                 while (next.length < 4) next.push({ label: "", href: "" })
+                                 next[idx] = { ...next[idx], href: e.target.value }
+                                 return { ...(prev ?? {}), downloads: next }
+                               })
+                             }
+                           />
+                         </div>
+                       </div>
+                     )
+                   })}
+                 </div>
+
+                 <Button onClick={() => saveAll("Client care")} disabled={saving !== null}>
+                   <Save className="w-4 h-4 mr-2" /> Save Client Care
                  </Button>
                </CardContent>
              </Card>
@@ -2299,6 +2929,136 @@ function CodeAgentBox() {
                  </div>
                </CardContent>
              </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Payment methods copy (text only)</CardTitle>
+                <CardDescription>Controls the Apple Pay / Google Pay text and related booking highlights. No payment logic is changed.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-[var(--foreground)]">Billing highlights (3)</p>
+                  {Array.from({ length: 3 }).map((_, idx) => {
+                    const item = bookingCopy?.billingHighlights?.[idx] ?? { title: "", detail: "" }
+                    return (
+                      <div key={`bh-${idx}`} className="grid gap-3 sm:grid-cols-2 rounded-lg border border-border/40 p-4">
+                        <div className="space-y-2">
+                          <Label>Title</Label>
+                          <Input
+                            value={item.title}
+                            onChange={(e) =>
+                              setBookingCopy((prev) => {
+                                const next = [...(prev?.billingHighlights ?? [])]
+                                while (next.length < 3) next.push({ title: "", detail: "" })
+                                next[idx] = { ...next[idx], title: e.target.value }
+                                return { ...(prev ?? {}), billingHighlights: next }
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Detail</Label>
+                          <Input
+                            value={item.detail}
+                            onChange={(e) =>
+                              setBookingCopy((prev) => {
+                                const next = [...(prev?.billingHighlights ?? [])]
+                                while (next.length < 3) next.push({ title: "", detail: "" })
+                                next[idx] = { ...next[idx], detail: e.target.value }
+                                return { ...(prev ?? {}), billingHighlights: next }
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-[var(--foreground)]">Payment support (2)</p>
+                  {Array.from({ length: 2 }).map((_, idx) => {
+                    const item = bookingCopy?.paymentSupport?.[idx] ?? { title: "", detail: "" }
+                    return (
+                      <div key={`ps-${idx}`} className="grid gap-3 sm:grid-cols-2 rounded-lg border border-border/40 p-4">
+                        <div className="space-y-2">
+                          <Label>Title</Label>
+                          <Input
+                            value={item.title}
+                            onChange={(e) =>
+                              setBookingCopy((prev) => {
+                                const next = [...(prev?.paymentSupport ?? [])]
+                                while (next.length < 2) next.push({ title: "", detail: "" })
+                                next[idx] = { ...next[idx], title: e.target.value }
+                                return { ...(prev ?? {}), paymentSupport: next }
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Detail</Label>
+                          <Input
+                            value={item.detail}
+                            onChange={(e) =>
+                              setBookingCopy((prev) => {
+                                const next = [...(prev?.paymentSupport ?? [])]
+                                while (next.length < 2) next.push({ title: "", detail: "" })
+                                next[idx] = { ...next[idx], detail: e.target.value }
+                                return { ...(prev ?? {}), paymentSupport: next }
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+
+                <Button onClick={() => saveAll("Payment copy")} disabled={saving !== null}>
+                  <Save className="w-4 h-4 mr-2" /> Save Payment Copy
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Scheduler helper copy</CardTitle>
+                <CardDescription>Controls the “Secure checkout” bullet points and help text (text only).</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-[var(--foreground)]">Bullet points (3)</p>
+                  {Array.from({ length: 3 }).map((_, idx) => (
+                    <div key={`sp-${idx}`} className="space-y-2">
+                      <Label>Point {idx + 1}</Label>
+                      <Input
+                        value={bookingCopy?.schedulerPoints?.[idx] ?? ""}
+                        onChange={(e) =>
+                          setBookingCopy((prev) => {
+                            const next = [...(prev?.schedulerPoints ?? [])]
+                            while (next.length < 3) next.push("")
+                            next[idx] = e.target.value
+                            return { ...(prev ?? {}), schedulerPoints: next }
+                          })
+                        }
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Help text</Label>
+                  <Input
+                    value={bookingCopy?.schedulerHelpText ?? ""}
+                    onChange={(e) => setBookingCopy((prev) => ({ ...(prev ?? {}), schedulerHelpText: e.target.value }))}
+                  />
+                </div>
+
+                <Button onClick={() => saveAll("Scheduler copy")} disabled={saving !== null}>
+                  <Save className="w-4 h-4 mr-2" /> Save Scheduler Copy
+                </Button>
+              </CardContent>
+            </Card>
            </TabsContent>
 
            {/* Resources Tab */}
@@ -2306,29 +3066,99 @@ function CodeAgentBox() {
              <Card>
                <CardHeader>
                  <CardTitle>Crisis Resources</CardTitle>
-                 <CardDescription>Manage crisis support numbers</CardDescription>
+                 <CardDescription>
+                   Carousel is locked to exactly 8 entries. You can edit details and upload logos, but you can’t add extra items.
+                 </CardDescription>
                </CardHeader>
                <CardContent className="space-y-4">
                  {resources.map((r, idx) => (
-                   <div key={idx} className="grid sm:grid-cols-2 gap-3 items-end bg-muted p-3 rounded-md">
-                     <div className="space-y-2">
-                       <Label>Name</Label>
-                       <Input
-                         value={r.name}
-                         onChange={(e) => {
-                           const next = [...resources]
-                           next[idx] = { ...next[idx], name: e.target.value }
-                           setResources(next)
-                         }}
-                       />
+                   <div key={r.name} className="grid gap-3 rounded-lg border border-border/40 p-4">
+                     <div className="grid gap-3 sm:grid-cols-2">
+                       <div className="space-y-2">
+                         <Label>Name (locked)</Label>
+                         <Input value={r.name} disabled />
+                       </div>
+                       <div className="space-y-2">
+                         <Label>Number</Label>
+                         <Input
+                           value={r.number}
+                           onChange={(e) => {
+                             const next = [...resources]
+                             next[idx] = { ...next[idx], number: e.target.value }
+                             setResources(next)
+                           }}
+                         />
+                       </div>
+                     </div>
+                     <div className="grid gap-3 sm:grid-cols-2">
+                       <div className="space-y-2">
+                         <Label>Website</Label>
+                         <Input
+                           value={r.website ?? ""}
+                           onChange={(e) => {
+                             const next = [...resources]
+                             next[idx] = { ...next[idx], website: e.target.value }
+                             setResources(next)
+                           }}
+                         />
+                       </div>
+                       <div className="space-y-2">
+                         <Label>Logo URL</Label>
+                         <Input
+                           value={r.logoUrl ?? ""}
+                           onChange={(e) => {
+                             const next = [...resources]
+                             next[idx] = { ...next[idx], logoUrl: e.target.value }
+                             setResources(next)
+                           }}
+                         />
+                       </div>
+                     </div>
+                     <div className="grid gap-3 sm:grid-cols-2">
+                       <div className="space-y-2">
+                         <Label>Logo Height (px)</Label>
+                         <Input
+                           value={String(r.logoHeight ?? "")}
+                           onChange={(e) => {
+                             const n = Number(e.target.value)
+                             const next = [...resources]
+                             next[idx] = { ...next[idx], logoHeight: Number.isFinite(n) ? n : undefined }
+                             setResources(next)
+                           }}
+                           placeholder="e.g. 80"
+                         />
+                       </div>
+                       <div className="flex items-end">
+                         <Button
+                           type="button"
+                           variant="outline"
+                           onClick={async () => {
+                             try {
+                               const safe = r.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "")
+                               const url = await uploadAsset({ path: `carousel/${safe}.png`, accept: "image/*" })
+                               if (!url) return
+                               const next = [...resources]
+                               next[idx] = { ...next[idx], logoUrl: url }
+                               setResources(next)
+                               toast({ title: "Uploaded", description: `${r.name} logo updated. Remember to Save.` })
+                             } catch (e: unknown) {
+                               toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+                             }
+                           }}
+                         >
+                           <Upload className="w-4 h-4 mr-2" />
+                           Upload logo
+                         </Button>
+                       </div>
                      </div>
                      <div className="space-y-2">
-                       <Label>Number</Label>
-                       <Input
-                         value={r.number}
+                       <Label>Description</Label>
+                       <Textarea
+                         rows={2}
+                         value={r.description ?? ""}
                          onChange={(e) => {
                            const next = [...resources]
-                           next[idx] = { ...next[idx], number: e.target.value }
+                           next[idx] = { ...next[idx], description: e.target.value }
                            setResources(next)
                          }}
                        />
@@ -2336,9 +3166,6 @@ function CodeAgentBox() {
                    </div>
                  ))}
                  <div className="flex gap-3">
-                   <Button variant="outline" onClick={() => setResources((p) => [...p, { name: "New Resource", number: "" }])}>
-                     Add Resource
-                   </Button>
                    <Button onClick={() => saveAll("Resources")} disabled={saving !== null}>
                      <Save className="w-4 h-4 mr-2" /> Save Resources
                    </Button>

@@ -9,27 +9,11 @@ export const metadata = {
   description: "Session preparation, aftercare rituals, and crisis resources for clients working with Dan Lobel.",
 }
 
-const prepChecklist = [
-  "Find a private, comfortable space and something grounding to hold.",
-  "Take 90 seconds to notice your breathing and name one intention for the session.",
-  "Have a glass of water, journal, or tissues nearby.",
-]
-
-const aftercare = [
-  "Give yourself at least 10 minutes before diving into work or caretaking.",
-  "Drink water, have a snack, and if possible step outside for fresh air.",
-  "Note one insight or feeling you’d like to revisit next session.",
-]
-
-const downloads = [
-  { label: "Consent & Policies", href: "/consent" },
-  { label: "Enquiry Form", href: "/enquiry" },
-  { label: "Intake Form", href: "/intake" },
-  { label: "Financial Safety Check-in", href: "/newsletter" },
-]
-
 export default async function ClientCarePage() {
   const config = await readSiteConfig()
+  const prepChecklist = config.clientCare?.prepChecklist ?? []
+  const aftercare = config.clientCare?.aftercareChecklist ?? []
+  const downloads = config.clientCare?.downloads ?? []
   return (
     <div className="min-h-screen bg-muted">
       <Navigation />

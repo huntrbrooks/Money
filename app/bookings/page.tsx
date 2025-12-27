@@ -17,6 +17,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function BookingsPage() {
   const config = await readSiteConfig()
   const consultationOptions = config.consultations ?? []
+  const bookingCopy = config.bookingCopy
+  const contactEmail = config.contact?.email ?? ""
+  const contactPhone = config.contact?.phone ?? ""
 
   return (
     <div className="min-h-screen bg-muted">
@@ -31,8 +34,18 @@ export default async function BookingsPage() {
                   Review pricing, choose your preferred format, and finalise payment via the secure Acuity portal.
                 </p>
               </div>
-              <BookingOptions options={consultationOptions} />
-              <BookingScheduler />
+              <BookingOptions
+                options={consultationOptions}
+                bookingCopy={bookingCopy}
+                contactEmail={contactEmail || undefined}
+                contactPhone={contactPhone || undefined}
+              />
+              <BookingScheduler
+                schedulerPoints={bookingCopy?.schedulerPoints}
+                helpText={bookingCopy?.schedulerHelpText}
+                email={contactEmail || undefined}
+                phone={contactPhone || undefined}
+              />
             </div>
           </div>
         </section>

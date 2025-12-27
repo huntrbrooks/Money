@@ -22,11 +22,23 @@ const DEFAULT_KEYWORDS = [
   "counselling Melbourne",
 ]
 
-export const SOCIAL_PROFILES = [
-  "https://www.facebook.com/the.melbourne.counsellor/",
-  "https://www.instagram.com/the.melbourne.counsellor/#",
-  "https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/",
-]
+function getSocialProfiles(config: SiteConfig): string[] {
+  const fallback = [
+    "https://www.facebook.com/the.melbourne.counsellor/",
+    "https://www.instagram.com/the.melbourne.counsellor/#",
+    "https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/",
+  ]
+  const raw = [config.social?.facebook, config.social?.instagram, config.social?.linkedin].filter(Boolean) as string[]
+  const valid = raw.filter((u) => {
+    try {
+      new URL(u)
+      return true
+    } catch {
+      return false
+    }
+  })
+  return valid.length ? valid : fallback
+}
 
 type OpenGraphType = NonNullable<NonNullable<Metadata["openGraph"]>["type"]>
 
@@ -181,7 +193,7 @@ export function buildOrganizationSchema(config: SiteConfig) {
     name: config.brand?.name ?? "The Financial Therapist",
     url: SITE_URL,
     logo: absoluteUrl(config.brand?.logoUrl ?? "/logo.svg"),
-    sameAs: SOCIAL_PROFILES,
+    sameAs: getSocialProfiles(config),
     contactPoint: config.contact?.phone
       ? [
           {
@@ -236,7 +248,7 @@ export function buildLocalBusinessSchema(config: SiteConfig, options: LocalBusin
       "counselling",
       "monetary psychotherapy",
     ],
-    sameAs: SOCIAL_PROFILES,
+    sameAs: getSocialProfiles(config),
   }
 }
 

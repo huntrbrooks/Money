@@ -6,15 +6,23 @@ const SCHEDULER_EMBED_URL = `${SCHEDULER_URL}&ref=embedded_csp`
 
 type BookingSchedulerProps = {
   showEmbedToggle?: boolean
+  schedulerPoints?: string[]
+  helpText?: string
+  email?: string
+  phone?: string
 }
 
-const schedulerPoints = [
-  "Fees shown above already include GST and reflect the exact session length.",
-  "Payments are captured through Square inside the secure Acuity portal.",
-  "Need to reschedule? Reach out with 72 hours notice and we’ll arrange a new time.",
-]
-
-export function BookingScheduler({ showEmbedToggle = true }: BookingSchedulerProps) {
+export function BookingScheduler({
+  showEmbedToggle = true,
+  schedulerPoints = [
+    "Fees shown above already include GST and reflect the exact session length.",
+    "Payments are captured through Square inside the secure Acuity portal.",
+    "Need to reschedule? Reach out with 72 hours notice and we’ll arrange a new time.",
+  ],
+  helpText = "Need help deciding on a format? Email or call — a personal reply is guaranteed.",
+  email = "dan@financialabusetherapist.com",
+  phone = "0467 477 786",
+}: BookingSchedulerProps) {
   return (
     <div className="space-y-8 rounded-[40px] border border-[#d3dcd9] bg-[var(--section-bg-1)]/85 p-5 sm:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
       <div className="grid gap-8 lg:gap-10 lg:grid-cols-[1.1fr_0.9fr]">
@@ -38,9 +46,9 @@ export function BookingScheduler({ showEmbedToggle = true }: BookingSchedulerPro
         <div className="rounded-[28px] border border-[#c7d1cc] bg-[var(--section-bg-2)] p-5 sm:p-6 shadow-[inset_0_0_0_1px_rgba(229,238,210,0.85)]">
           <div className="space-y-4 text-[#33444b]">
             <p className="text-sm leading-relaxed">
-              Need help deciding on a format? Email{" "}
-              <span className="break-words">dan@financialabusetherapist.com</span> or call 0467 477 786 — a personal
-              reply is guaranteed.
+              {helpText}{" "}
+              <span className="break-words">{email}</span>
+              {phone ? <span> or call {phone}</span> : null}
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button
@@ -56,7 +64,7 @@ export function BookingScheduler({ showEmbedToggle = true }: BookingSchedulerPro
                 variant="outline"
                 className="flex-1 rounded-full border-[#c8d4cf] bg-[var(--section-bg-1)] text-[#3f4f57] hover:bg-[var(--section-bg-1)]/90"
               >
-                <a href="mailto:dan@financialabusetherapist.com">Email Dan instead</a>
+                <a href={`mailto:${email}`}>Email Dan instead</a>
               </Button>
             </div>
             <p className="text-xs text-[#4a5c63]">

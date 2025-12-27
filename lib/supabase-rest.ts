@@ -146,3 +146,27 @@ export async function sbInsertContent(
   throw new Error(`Supabase insert failed (${res.status})`)
 }
 
+export async function sbUpdateContent(
+  type: "posts" | "videos",
+  slug: string,
+  mdx: string
+): Promise<"updated" | "missing"> {
+  if (!hasSupabase()) throw new Error("Supabase not configured")
+  const url = `${restUrl("content_items")}?type=eq.${encodeURIComponent(type)}&slug=eq.${encodeURIComponent(slug)}`
+  const res = await sbFetch(url, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify({ mdx }),
+  })
+  if (res.status === 404) return "missing"
+  if (!res.ok) {
+    throw new Error(`Supabase update failed (${res.status})`)
+  }
+  // PostgREST returns an array of updated rows when using return=representation
+  const rows = (await res.json().catch(() => null)) as Array<{ slug?: string }> | null
+  return Array.isArray(rows) && rows.length > 0 ? "updated" : "missing"
+}
+

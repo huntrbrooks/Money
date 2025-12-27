@@ -37,6 +37,43 @@ export type NavLink = {
   href: string
 }
 
+export type SocialLinks = {
+  facebook?: string
+  instagram?: string
+  linkedin?: string
+}
+
+export type LegalPageConfig = {
+  title?: string
+  // Stored as MDX/Markdown (rendered server-side). Keep this lightweight and text-only.
+  bodyMdx?: string
+  // Optional downloadable document (e.g. docx/pdf). This should be a public URL or `/api/assets/...`.
+  downloadUrl?: string
+}
+
+export type LegalConfig = {
+  privacy?: LegalPageConfig
+  terms?: LegalPageConfig
+}
+
+export type ClientCareConfig = {
+  downloads?: NavLink[]
+  prepChecklist?: string[]
+  aftercareChecklist?: string[]
+}
+
+export type BookingCopyItem = {
+  title: string
+  detail: string
+}
+
+export type BookingCopy = {
+  billingHighlights?: BookingCopyItem[]
+  paymentSupport?: BookingCopyItem[]
+  schedulerPoints?: string[]
+  schedulerHelpText?: string
+}
+
 export type CrisisResource = {
   name: string
   number: string
@@ -44,6 +81,46 @@ export type CrisisResource = {
   description?: string
   logoUrl?: string
   logoHeight?: number
+}
+
+const LOCKED_CAROUSEL_RESOURCES: Array<Pick<CrisisResource, "name" | "number">> = [
+  { name: "Lifeline", number: "13 11 14" },
+  { name: "Suicide CallBack Service", number: "1300 659 467" },
+  { name: "Beyond Blue", number: "1300 224 636" },
+  { name: "1800 Respect", number: "1800 732 732" },
+  { name: "Medicare Mental Health", number: "1800 595 212" },
+  { name: "Headspace", number: "1800 650 890" },
+  { name: "Butterfly National Helpline", number: "1800 334 673" },
+  { name: "Blue Knot Foundation", number: "1300 657 380" },
+]
+
+function normalizeKey(input: string): string {
+  return String(input ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "")
+    .trim()
+}
+
+export function normalizeCarouselResources(resources: CrisisResource[] | undefined | null): CrisisResource[] {
+  const arr = Array.isArray(resources) ? resources : []
+  const byKey = new Map<string, CrisisResource>()
+  for (const r of arr) {
+    if (!r?.name) continue
+    byKey.set(normalizeKey(r.name), r)
+  }
+  // Also accept legacy naming variations (spaces/hyphens/case).
+  const get = (name: string) => byKey.get(normalizeKey(name))
+  return LOCKED_CAROUSEL_RESOURCES.map((locked) => {
+    const match =
+      get(locked.name) ??
+      // common legacy variant:
+      (normalizeKey(locked.name) === normalizeKey("Suicide CallBack Service") ? get("Suicide Call Back Service") : undefined)
+    return {
+      ...match,
+      name: locked.name,
+      number: match?.number ?? locked.number,
+    }
+  })
 }
 
 export type FormsConfig = {
@@ -132,6 +209,12 @@ export type HomepageContent = {
   sections?: HomepageSectionToggles
   copy?: HomepageCopy
   otherAreas?: OtherAreaCard[]
+  importantLinks?: {
+    // Row 3 (navy) in the Important Links section on the homepage.
+    blogLinks?: NavLink[]
+    // Row 5 (navy) in the Important Links section on the homepage.
+    specialistLinks?: NavLink[]
+  }
   importantSectionLinks?: NavLink[]
   valueProps?: ValueProp[]
   testimonials?: Testimonial[]
@@ -197,6 +280,10 @@ export type SiteConfig = {
   forms?: FormsConfig
   homepage?: HomepageContent
   experiments?: ExperimentsConfig
+  social?: SocialLinks
+  legal?: LegalConfig
+  clientCare?: ClientCareConfig
+  bookingCopy?: BookingCopy
 }
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), "data", "site.json")
@@ -231,13 +318,65 @@ export const defaultConfig: SiteConfig = {
   },
   navigation: [
     { label: "Home", href: "/" },
-    { label: "About", href: "/#about" },
+    { label: "About", href: "/about" },
     { label: "Services", href: "/#services" },
     { label: "Contact", href: "/#contact" },
   ],
   contact: {
     phone: "0467 477 786",
     email: "dan@financialabusetherapist.com",
+  },
+  social: {
+    facebook: "https://www.facebook.com/the.melbourne.counsellor/",
+    instagram: "https://www.instagram.com/the.melbourne.counsellor/#",
+    linkedin: "https://www.linkedin.com/in/dan-lobel-the-melbourne.counsellor-769b61204/",
+  },
+  legal: {
+    privacy: {
+      title: "Privacy Policy",
+      downloadUrl: "/Privacy%20Policy.docx",
+      bodyMdx: "",
+    },
+    terms: {
+      title: "Terms of Service",
+      downloadUrl: "/Terms%20of%20Service.docx",
+      bodyMdx: "",
+    },
+  },
+  clientCare: {
+    downloads: [
+      { label: "Consent & Policies", href: "/consent" },
+      { label: "Enquiry Form", href: "/enquiry" },
+      { label: "Intake Form", href: "/intake" },
+      { label: "Financial Safety Check-in", href: "/newsletter" },
+    ],
+    prepChecklist: [
+      "Find a private, comfortable space and something grounding to hold.",
+      "Take 90 seconds to notice your breathing and name one intention for the session.",
+      "Have a glass of water, journal, or tissues nearby.",
+    ],
+    aftercareChecklist: [
+      "Give yourself at least 10 minutes before diving into work or caretaking.",
+      "Drink water, have a snack, and if possible step outside for fresh air.",
+      "Note one insight or feeling you’d like to revisit next session.",
+    ],
+  },
+  bookingCopy: {
+    billingHighlights: [
+      { title: "Transparent billing", detail: "Fees listed are inclusive of GST with no surprise surcharges." },
+      { title: "Secure payment", detail: "Pre-payment is processed by Square with bank-level encryption." },
+      { title: "Flexible rescheduling", detail: "Need to adjust your time? Reach out with 72 hours notice to rebook." },
+    ],
+    paymentSupport: [
+      { title: "Cards & wallets", detail: "Visa, Mastercard, AMEX, Apple Pay and Google Pay are accepted." },
+      { title: "Invoices available", detail: "Detailed receipts can be provided for reimbursement claims." },
+    ],
+    schedulerPoints: [
+      "Fees shown above already include GST and reflect the exact session length.",
+      "Payments are captured through Square inside the secure Acuity portal.",
+      "Need to reschedule? Reach out with 72 hours notice and we’ll arrange a new time.",
+    ],
+    schedulerHelpText: "Need help deciding on a format? Email or call — a personal reply is guaranteed.",
   },
   hero: {
     eyebrow: "Financial Trauma & Monetary Psychotherapy",
@@ -283,42 +422,44 @@ export const defaultConfig: SiteConfig = {
       website: "https://www.lifeline.org.au",
       description: "24/7 crisis support and suicide prevention services across Australia.",
       logoUrl: "/Lifeline.webp",
-      logoHeight: 80
+      logoHeight: 80,
     },
     {
-      name: "Suicide Call Back Service",
+      name: "Suicide CallBack Service",
       number: "1300 659 467",
       website: "https://www.suicidecallbackservice.org.au",
       description: "24/7 nationwide service offering free professional phone and online counselling for people affected by suicide.",
-      logoUrl: "/suicide%20services%20call%20back.webp"
+      logoUrl: "/suicide%20services%20call%20back.webp",
     },
     {
       name: "Beyond Blue",
-      number: "1300 22 4636",
+      number: "1300 224 636",
       website: "https://www.beyondblue.org.au",
       description: "Support, advice and action for anxiety, depression and suicide prevention.",
-      logoUrl: "/beyond%20blue.webp"
+      logoUrl: "/beyond%20blue.webp",
+    },
+    { name: "1800 Respect", number: "1800 732 732", website: "https://1800respect.org.au", description: "", logoUrl: "" },
+    {
+      name: "Medicare Mental Health",
+      number: "1800 595 212",
+      website: "https://www.healthdirect.gov.au/mental-health-helplines",
+      description: "",
+      logoUrl: "",
+    },
+    { name: "Headspace", number: "1800 650 890", website: "https://headspace.org.au", description: "", logoUrl: "" },
+    {
+      name: "Butterfly National Helpline",
+      number: "1800 334 673",
+      website: "https://butterfly.org.au",
+      description: "",
+      logoUrl: "",
     },
     {
-      name: "MensLine Australia",
-      number: "1300 78 99 78",
-      website: "https://mensline.org.au",
-      description: "24/7 counselling, information and referrals for men with family and relationship concerns.",
-      logoUrl: "/mensline.webp"
-    },
-    {
-      name: "Kids Helpline",
-      number: "1800 55 1800",
-      website: "https://kidshelpline.com.au",
-      description: "24/7 phone and online counselling for young people aged 5–25.",
-      logoUrl: "/Kids%20helpline.webp"
-    },
-    {
-      name: "QLife",
-      number: "1800 184 527",
-      website: "https://qlife.org.au",
-      description: "Australia‑wide anonymous LGBTIQ+ peer support and referral service.",
-      logoUrl: "/Qlife.webp"
+      name: "Blue Knot Foundation",
+      number: "1300 657 380",
+      website: "https://blueknot.org.au",
+      description: "",
+      logoUrl: "",
     },
   ],
   forms: {
@@ -373,6 +514,18 @@ export const defaultConfig: SiteConfig = {
       crisisHeading: "If you’re in crisis or need immediate support, please reach out.",
       crisisBody: "You are not alone — help is available 24/7.",
       crisisNote: "If you or someone you know is in crisis and needs help now, call triple zero (000).",
+    },
+    importantLinks: {
+      blogLinks: [
+        { label: "Why Money Triggers Anxiety", href: "/blog/why-money-triggers-anxiety" },
+        { label: "Financial Abuse and Emotional Healing", href: "/blog/financial-abuse-and-emotional-healing" },
+        { label: "The Psychology Behind Spending Habits", href: "/blog/the-psychology-behind-spending-habits" },
+      ],
+      specialistLinks: [
+        { label: "Financial Abuse", href: "/financial-abuse" },
+        { label: "Financial Abuse Therapy", href: "/financial-abuse-therapy" },
+        { label: "Financial Abuse Therapist", href: "/financial-abuse-therapist" },
+      ],
     },
     importantSectionLinks: [
       { label: "About Dan", href: "/about" },
@@ -498,7 +651,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
     if (hasSupabase()) {
       const sbData = await sbGetSiteConfigJson()
       if (sbData) {
-        const parsed = sbData as any
+        const parsed = sbData as Record<string, unknown>
         return {
           ...defaultConfig,
           ...parsed,
@@ -507,26 +660,56 @@ export async function readSiteConfig(): Promise<SiteConfig> {
           brand: { ...defaultConfig.brand, ...(parsed.brand ?? {}) },
           navigation: parsed.navigation ?? defaultConfig.navigation,
           contact: { ...defaultConfig.contact, ...(parsed.contact ?? {}) },
+          social: { ...(defaultConfig.social ?? {}), ...(parsed.social ?? {}) },
+          legal: {
+            privacy: { ...(defaultConfig.legal?.privacy ?? {}), ...(parsed.legal?.privacy ?? {}) },
+            terms: { ...(defaultConfig.legal?.terms ?? {}), ...(parsed.legal?.terms ?? {}) },
+          },
+          clientCare: {
+            downloads: parsed.clientCare?.downloads ?? defaultConfig.clientCare?.downloads,
+            prepChecklist: parsed.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
+            aftercareChecklist: parsed.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
+          },
+          bookingCopy: {
+            ...(defaultConfig.bookingCopy ?? {}),
+            ...(parsed.bookingCopy ?? {}),
+            billingHighlights: parsed.bookingCopy?.billingHighlights ?? defaultConfig.bookingCopy?.billingHighlights,
+            paymentSupport: parsed.bookingCopy?.paymentSupport ?? defaultConfig.bookingCopy?.paymentSupport,
+            schedulerPoints: parsed.bookingCopy?.schedulerPoints ?? defaultConfig.bookingCopy?.schedulerPoints,
+            schedulerHelpText: parsed.bookingCopy?.schedulerHelpText ?? defaultConfig.bookingCopy?.schedulerHelpText,
+          },
           hero: { ...defaultConfig.hero, ...(parsed.hero ?? {}) },
           about: { ...defaultConfig.about, ...(parsed.about ?? {}) },
           services: parsed.services ?? defaultConfig.services,
           consultations: parsed.consultations ?? defaultConfig.consultations,
-          resources: parsed.resources ?? defaultConfig.resources,
+          resources: normalizeCarouselResources(parsed.resources ?? defaultConfig.resources),
           forms: { ...(defaultConfig.forms ?? {}), ...(parsed.forms ?? {}) },
           homepage: (() => {
             const defaults = defaultConfig.homepage ?? {}
             const hp = (parsed.homepage ?? {}) as Partial<HomepageContent>
+            const leadMagnetDefaults = defaults.leadMagnet ?? {
+              heading: "",
+              body: "",
+              ctaLabel: "",
+              ctaHref: "",
+            }
             return {
               ...defaults,
               ...hp,
               sections: { ...(defaults.sections ?? {}), ...(hp.sections ?? {}) },
               copy: { ...(defaults.copy ?? {}), ...(hp.copy ?? {}) },
+              importantLinks: {
+                ...(defaults.importantLinks ?? {}),
+                ...(hp.importantLinks ?? {}),
+                blogLinks: hp.importantLinks?.blogLinks ?? defaults.importantLinks?.blogLinks,
+                specialistLinks: hp.importantLinks?.specialistLinks ?? defaults.importantLinks?.specialistLinks,
+              },
               importantSectionLinks: hp.importantSectionLinks ?? defaults.importantSectionLinks,
               otherAreas: hp.otherAreas ?? defaults.otherAreas,
               valueProps: hp.valueProps ?? defaults.valueProps,
               testimonials: hp.testimonials ?? defaults.testimonials,
               faqs: hp.faqs ?? defaults.faqs,
-              leadMagnet: { ...(defaults.leadMagnet ?? ({} as any)), ...(hp.leadMagnet ?? {}) },
+              leadMagnet: { ...leadMagnetDefaults, ...(hp.leadMagnet ?? {}) },
             }
           })(),
           meta: { ...(defaultConfig.meta ?? { version: 1, updatedAt: new Date().toISOString() }), ...(parsed.meta ?? {}) },
@@ -544,26 +727,56 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       brand: { ...defaultConfig.brand, ...(parsed.brand ?? {}) },
       navigation: parsed.navigation ?? defaultConfig.navigation,
       contact: { ...defaultConfig.contact, ...(parsed.contact ?? {}) },
+      social: { ...(defaultConfig.social ?? {}), ...(parsed.social ?? {}) },
+      legal: {
+        privacy: { ...(defaultConfig.legal?.privacy ?? {}), ...(parsed.legal?.privacy ?? {}) },
+        terms: { ...(defaultConfig.legal?.terms ?? {}), ...(parsed.legal?.terms ?? {}) },
+      },
+      clientCare: {
+        downloads: parsed.clientCare?.downloads ?? defaultConfig.clientCare?.downloads,
+        prepChecklist: parsed.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
+        aftercareChecklist: parsed.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
+      },
+      bookingCopy: {
+        ...(defaultConfig.bookingCopy ?? {}),
+        ...(parsed.bookingCopy ?? {}),
+        billingHighlights: parsed.bookingCopy?.billingHighlights ?? defaultConfig.bookingCopy?.billingHighlights,
+        paymentSupport: parsed.bookingCopy?.paymentSupport ?? defaultConfig.bookingCopy?.paymentSupport,
+        schedulerPoints: parsed.bookingCopy?.schedulerPoints ?? defaultConfig.bookingCopy?.schedulerPoints,
+        schedulerHelpText: parsed.bookingCopy?.schedulerHelpText ?? defaultConfig.bookingCopy?.schedulerHelpText,
+      },
       hero: { ...defaultConfig.hero, ...(parsed.hero ?? {}) },
       about: { ...defaultConfig.about, ...(parsed.about ?? {}) },
       services: parsed.services ?? defaultConfig.services,
       consultations: parsed.consultations ?? defaultConfig.consultations,
-      resources: parsed.resources ?? defaultConfig.resources,
+      resources: normalizeCarouselResources(parsed.resources ?? defaultConfig.resources),
       forms: { ...(defaultConfig.forms ?? {}), ...(parsed.forms ?? {}) },
       homepage: (() => {
         const defaults = defaultConfig.homepage ?? {}
-        const hp = (parsed.homepage ?? {}) as Partial<HomepageContent>
+      const hp = (parsed.homepage ?? {}) as Partial<HomepageContent>
+      const leadMagnetDefaults = defaults.leadMagnet ?? {
+        heading: "",
+        body: "",
+        ctaLabel: "",
+        ctaHref: "",
+      }
         return {
           ...defaults,
           ...hp,
           sections: { ...(defaults.sections ?? {}), ...(hp.sections ?? {}) },
           copy: { ...(defaults.copy ?? {}), ...(hp.copy ?? {}) },
+          importantLinks: {
+            ...(defaults.importantLinks ?? {}),
+            ...(hp.importantLinks ?? {}),
+            blogLinks: hp.importantLinks?.blogLinks ?? defaults.importantLinks?.blogLinks,
+            specialistLinks: hp.importantLinks?.specialistLinks ?? defaults.importantLinks?.specialistLinks,
+          },
           importantSectionLinks: hp.importantSectionLinks ?? defaults.importantSectionLinks,
           otherAreas: hp.otherAreas ?? defaults.otherAreas,
           valueProps: hp.valueProps ?? defaults.valueProps,
           testimonials: hp.testimonials ?? defaults.testimonials,
           faqs: hp.faqs ?? defaults.faqs,
-          leadMagnet: { ...(defaults.leadMagnet ?? ({} as any)), ...(hp.leadMagnet ?? {}) },
+          leadMagnet: { ...leadMagnetDefaults, ...(hp.leadMagnet ?? {}) },
         }
       })(),
       meta: { ...(defaultConfig.meta ?? { version: 1, updatedAt: new Date().toISOString() }), ...(parsed.meta ?? {}) },
@@ -604,39 +817,69 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
     brand: mergedBrand,
     navigation: newConfig.navigation ?? defaultConfig.navigation,
     contact: { ...defaultConfig.contact, ...(newConfig.contact ?? {}) },
+    social: { ...(defaultConfig.social ?? {}), ...(newConfig.social ?? {}) },
+    legal: {
+      privacy: { ...(defaultConfig.legal?.privacy ?? {}), ...(newConfig.legal?.privacy ?? {}) },
+      terms: { ...(defaultConfig.legal?.terms ?? {}), ...(newConfig.legal?.terms ?? {}) },
+    },
+    bookingCopy: {
+      ...(defaultConfig.bookingCopy ?? {}),
+      ...(newConfig.bookingCopy ?? {}),
+      billingHighlights: newConfig.bookingCopy?.billingHighlights ?? defaultConfig.bookingCopy?.billingHighlights,
+      paymentSupport: newConfig.bookingCopy?.paymentSupport ?? defaultConfig.bookingCopy?.paymentSupport,
+      schedulerPoints: newConfig.bookingCopy?.schedulerPoints ?? defaultConfig.bookingCopy?.schedulerPoints,
+      schedulerHelpText: newConfig.bookingCopy?.schedulerHelpText ?? defaultConfig.bookingCopy?.schedulerHelpText,
+    },
     hero: { ...defaultConfig.hero, ...newConfig.hero },
     about: { ...defaultConfig.about, ...newConfig.about },
     services: newConfig.services ?? defaultConfig.services,
     consultations: newConfig.consultations ?? defaultConfig.consultations,
-    resources: newConfig.resources ?? defaultConfig.resources,
+    resources: normalizeCarouselResources(newConfig.resources ?? defaultConfig.resources),
     forms: { ...(defaultConfig.forms ?? {}), ...(newConfig.forms ?? {}) },
     homepage: (() => {
       const defaults = defaultConfig.homepage ?? {}
       const hp = (newConfig.homepage ?? {}) as Partial<HomepageContent>
+      const leadMagnetDefaults = defaults.leadMagnet ?? {
+        heading: "",
+        body: "",
+        ctaLabel: "",
+        ctaHref: "",
+      }
       return {
         ...defaults,
         ...hp,
         sections: { ...(defaults.sections ?? {}), ...(hp.sections ?? {}) },
         copy: { ...(defaults.copy ?? {}), ...(hp.copy ?? {}) },
+      importantLinks: {
+        ...(defaults.importantLinks ?? {}),
+        ...(hp.importantLinks ?? {}),
+        blogLinks: hp.importantLinks?.blogLinks ?? defaults.importantLinks?.blogLinks,
+        specialistLinks: hp.importantLinks?.specialistLinks ?? defaults.importantLinks?.specialistLinks,
+      },
         importantSectionLinks: hp.importantSectionLinks ?? defaults.importantSectionLinks,
         otherAreas: hp.otherAreas ?? defaults.otherAreas,
         valueProps: hp.valueProps ?? defaults.valueProps,
         testimonials: hp.testimonials ?? defaults.testimonials,
         faqs: hp.faqs ?? defaults.faqs,
-        leadMagnet: { ...(defaults.leadMagnet ?? ({} as any)), ...(hp.leadMagnet ?? {}) },
+        leadMagnet: { ...leadMagnetDefaults, ...(hp.leadMagnet ?? {}) },
       }
     })(),
     experiments: { ...defaultConfig.experiments, ...(newConfig.experiments ?? {}) },
+    clientCare: {
+      downloads: newConfig.clientCare?.downloads ?? defaultConfig.clientCare?.downloads,
+      prepChecklist: newConfig.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
+      aftercareChecklist: newConfig.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
+    },
   }
   if (hasSupabase()) {
     // Write an immutable history record for rollback/auditing.
     // (Best-effort: if history insert fails, we still try to save the current config.)
     try {
-      await sbInsertSiteConfigVersion(merged as any, merged.meta?.version ?? Date.now(), merged.meta?.updatedAt ?? new Date().toISOString())
+      await sbInsertSiteConfigVersion(merged, merged.meta?.version ?? Date.now(), merged.meta?.updatedAt ?? new Date().toISOString())
     } catch {
       // ignore
     }
-    await sbUpsertSiteConfigJson(merged as any)
+    await sbUpsertSiteConfigJson(merged)
     return
   }
   // In production, filesystem writes won't persist (and may fail). Force a clear error instead.

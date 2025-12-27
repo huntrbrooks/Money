@@ -1,3 +1,5 @@
+/* global fetch, process, console */
+
 import { execSync } from "node:child_process"
 import fs from "node:fs"
 
@@ -116,6 +118,8 @@ console.log("Patch applied. Changed files:\n" + changed)
 // Ensure we don't leave patch artifacts around in the PR.
 try {
   fs.unlinkSync("agent.patch")
-} catch {}
+} catch {
+  // ignore
+}
 
 

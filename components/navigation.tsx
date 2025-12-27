@@ -10,6 +10,7 @@ type Config = {
   brand?: { name?: string; subtitle?: string; tagline?: string; logoUrl?: string; headerBannerUrl?: string }
   navigation?: NavLink[]
   contact?: { phone?: string; email?: string }
+  social?: { facebook?: string; instagram?: string; linkedin?: string }
 }
 
 export function Navigation() {
@@ -226,46 +227,59 @@ export function Navigation() {
 
   const links = cfg.navigation ?? [
     { label: "Home", href: "/" },
-    { label: "About", href: "/#about" },
+    { label: "About", href: "/about" },
     { label: "Services", href: "/#services" },
     { label: "Contact", href: "/#contact" },
   ]
+  const normalizedLinks = links.map((l) => {
+    const label = (l.label ?? "").trim().toLowerCase()
+    if (label === "home") return { ...l, href: "/" }
+    if (label === "about") return { ...l, href: "/about" }
+    if ((l.href ?? "") === "/#about") return { ...l, href: "/about" }
+    return l
+  })
   const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
   const menuButtonClasses =
     "flex items-center justify-center w-24 h-10 px-4 rounded-full border border-white/30 text-white text-sm font-serif tracking-[0.18em] uppercase bg-[#6ca4ac]/95 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.22)] transition-colors sm:w-32 sm:h-12 sm:px-6 sm:text-base sm:tracking-[0.2em]"
-  const overlayBaseClasses = "fixed inset-0 z-40 flex flex-col bg-[#6ca4ac] text-white transition duration-500 ease-out"
+  // NOTE: global `a { color: var(--primary); text-decoration: underline; }` exists in `app/globals.css`.
+  // For the full-screen menu we explicitly set link colors + remove underlines for legibility.
+  const overlayBaseClasses =
+    "fixed inset-0 z-40 flex flex-col text-[var(--foreground)] transition duration-500 ease-out"
   const overlayOpenClasses = "opacity-100 pointer-events-auto translate-y-0"
   const overlayClosedClasses = "opacity-0 pointer-events-none translate-y-2"
   const overlayStyle = {
     background:
-      "linear-gradient(180deg, #929d5b 0%, rgba(146,157,91,0.9) 16%, rgba(108,164,172,0.94) 60%, #6ca4ac 100%)",
+      // Match the site's header palette (teal → asparagus) and keep it fully opaque for readability.
+      "linear-gradient(180deg, var(--brand-teal) 0%, var(--brand-teal) 18%, var(--brand-asparagus) 100%)",
   }
   const menuOverlayContent = (
     <>
-      <div className="flex items-center justify-between px-6 md:px-10 py-6 border-b border-white/15">
-        <span className="min-w-0 text-lg md:text-xl font-serif tracking-wide truncate">{brandName}</span>
+      <div className="flex items-center justify-between px-6 md:px-10 py-6 border-b border-[var(--foreground)]/20">
+        <span className="min-w-0 text-lg md:text-xl font-serif tracking-wide truncate text-[var(--foreground)]">
+          {brandName}
+        </span>
         <button
           onClick={closeMenu}
-          className="shrink-0 px-5 py-2 rounded-full border border-white/40 text-xs font-semibold tracking-[0.25em] uppercase hover:bg-white/10 transition"
+          className="shrink-0 px-5 py-2 rounded-full border border-[var(--foreground)]/60 text-xs font-semibold tracking-[0.25em] uppercase text-[var(--foreground)] hover:bg-white/30 transition"
           aria-label="Close menu"
         >
           Close
         </button>
       </div>
       <nav className="flex-1 flex flex-col items-center justify-center gap-6 md:gap-8 px-6 py-10 text-center" aria-label="Navigation">
-        {links.map((l) => (
+        {normalizedLinks.map((l) => (
           <Link
             key={l.href}
             href={l.href}
             onClick={closeMenu}
-            className="w-full max-w-sm text-center text-2xl md:text-3xl font-serif tracking-wide px-8 py-3 rounded-full border border-white/30 bg-white/5 hover:bg-white/10 transition"
+            className="w-full max-w-sm text-center text-2xl md:text-3xl font-serif tracking-wide px-8 py-3 rounded-full border border-[#20385B]/35 bg-white/85 hover:bg-white/95 transition text-[#20385B] no-underline"
           >
             {l.label}
           </Link>
         ))}
       </nav>
-      <div className="px-6 md:px-10 py-6 border-t border-white/10 text-center text-sm text-white/80">
-        <p className="font-serif tracking-wide">Trauma-informed counselling for financial wellbeing</p>
+      <div className="px-6 md:px-10 py-6 border-t border-[var(--foreground)]/20 text-center text-sm text-[var(--foreground)]/85">
+        <p className="font-serif tracking-wide text-[var(--foreground)]">Trauma-informed counselling for financial wellbeing</p>
       </div>
     </>
   )
@@ -444,7 +458,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
               <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Follow Dan</h4>
               <div className="flex items-center gap-4">
                 <a
-                  href="https://www.facebook.com/the.melbourne.counsellor/"
+                  href={cfg.social?.facebook || "https://www.facebook.com/the.melbourne.counsellor/"}
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label="Facebook"
@@ -453,7 +467,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
                   <Facebook className="w-5 h-5 text-[var(--primary)]" />
                 </a>
                 <a
-                  href="https://www.instagram.com/the.melbourne.counsellor/#"
+                  href={cfg.social?.instagram || "https://www.instagram.com/the.melbourne.counsellor/#"}
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label="Instagram"
@@ -462,7 +476,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
                   <Instagram className="w-5 h-5 text-[var(--primary)]" />
                 </a>
                 <a
-                  href="https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/"
+                  href={cfg.social?.linkedin || "https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/"}
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label="LinkedIn"

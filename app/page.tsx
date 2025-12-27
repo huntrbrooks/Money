@@ -19,13 +19,12 @@ import {
   buildServiceSchema,
 } from "@/lib/seo"
 
-const HOME_TITLE = "Financial Abuse Therapist | Financial Trauma & Monetary Psychotherapy — Dan Lobel"
+const HOME_TITLE = "Financial Abuse Therapist | Financial Trauma — Dan Lobel"
 const HOME_DESCRIPTION =
-  "Trauma-informed counselling in Melbourne focused on financial abuse recovery, financial trauma, money anxiety and monetary psychotherapy. Safe, gender-aware and inclusive care."
+  "Trauma-informed counselling in Melbourne focused on financial abuse recovery, financial trauma, money anxiety and safe, gender-aware and inclusive care."
 const HOME_KEYWORDS = [
   "financial therapy Melbourne",
   "financial abuse counselling",
-  "monetary psychotherapy",
   "economic abuse recovery",
   "money anxiety therapy",
 ]
@@ -68,11 +67,33 @@ export default async function HomePage() {
 
   const otherAreas = homepageContent.otherAreas ?? []
   const importantSectionLinks = homepageContent.importantSectionLinks ?? []
+  const importantSectionLinksSansMonetaryPsychotherapy = importantSectionLinks.filter(
+    (link) => !String(link.label ?? "").toLowerCase().includes("monetary psychotherapy")
+  )
+  const importantLinks = homepageContent.importantLinks ?? {}
+  const blogLinks =
+    importantLinks.blogLinks ?? [
+      { label: "Why Money Triggers Anxiety", href: "/blog/why-money-triggers-anxiety" },
+      { label: "Financial Abuse and Emotional Healing", href: "/blog/financial-abuse-and-emotional-healing" },
+      { label: "The Psychology Behind Spending Habits", href: "/blog/the-psychology-behind-spending-habits" },
+    ]
+  const specialistLinks =
+    importantLinks.specialistLinks ?? [
+      { label: "Financial Abuse", href: "/financial-abuse" },
+      { label: "Financial Abuse Therapy", href: "/financial-abuse-therapy" },
+      { label: "Financial Abuse Therapist", href: "/financial-abuse-therapist" },
+    ]
   const consultationOptions = config.consultations ?? []
+  const bookingCopy = config.bookingCopy
   const primaryCta = hero.primaryCta ?? { label: "Book a Session", href: "/#book" }
-  const secondaryCta = hero.secondaryCta ?? { label: "Learn More", href: "/monetary-psychotherapy" }
   const contactPhone = config.contact?.phone ?? ""
   const contactEmail = config.contact?.email ?? ""
+  const callDanHref = contactPhone ? `tel:${contactPhone.replace(/\s+/g, "")}` : "tel:"
+  const eyebrow = String(hero.eyebrow ?? "")
+    .replace(/monetary psychotherapy/gi, "")
+    .replace(/\s*&\s*/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim()
 
   return (
     <div className="min-h-screen bg-[var(--section-bg-2)]">
@@ -87,9 +108,9 @@ export default async function HomePage() {
             {/* Left Column - Text */}
             <div className="order-2 space-y-8 sm:space-y-10 lg:order-1 lg:pr-12">
               <div className="space-y-6">
-                <p className="text-[#6b7d86] text-xs uppercase tracking-[0.3em] font-semibold">
-                  {hero.eyebrow ?? "Financial Trauma & Monetary Psychotherapy"}
-                </p>
+                {eyebrow ? (
+                  <p className="text-[#6b7d86] text-xs uppercase tracking-[0.3em] font-semibold">{eyebrow}</p>
+                ) : null}
                 <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-[var(--foreground)] leading-tight text-balance font-light">
                   {hero.title}
                 </h1>
@@ -119,9 +140,9 @@ export default async function HomePage() {
                   variant="outline"
                   className="w-full sm:w-auto min-w-[220px] bg-[var(--section-bg-2)]/85 border border-[var(--section-bg-2)]/70 text-[var(--foreground)] hover:border-[var(--foreground)]/30 hover:bg-[var(--section-bg-1)] text-base h-14 px-10 font-medium rounded-full flex items-center justify-center gap-2 shadow-[0_20px_35px_rgba(32,56,91,0.08)]"
                 >
-                  <Link href={secondaryCta.href} aria-label={secondaryCta.label} data-analytics-id="hero-secondary-cta">
-                    {secondaryCta.label}
-                  </Link>
+                  <a href={callDanHref} aria-label="Call Dan" data-analytics-id="hero-secondary-cta">
+                    Call Dan
+                  </a>
                 </Button>
               </div>
             </div>
@@ -233,28 +254,21 @@ export default async function HomePage() {
 
               {/* Row 3 — three navy buttons */}
               <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-                <Button
-                  asChild
-                  className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
-                >
-                  <Link href="/blog/why-money-triggers-anxiety" className="no-underline">Why Money Triggers Anxiety</Link>
-                </Button>
-                <Button
-                  asChild
-                  className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
-                >
-                  <Link href="/blog/financial-abuse-and-emotional-healing" className="no-underline">Financial Abuse and Emotional Healing</Link>
-                </Button>
-                <Button
-                  asChild
-                  className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
-                >
-                  <Link href="/blog/the-psychology-behind-spending-habits" className="no-underline">The Psychology Behind Spending Habits</Link>
-                </Button>
+                {blogLinks.slice(0, 3).map((link) => (
+                  <Button
+                    key={link.href}
+                    asChild
+                    className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
+                  >
+                    <Link href={link.href} className="no-underline">
+                      {link.label}
+                    </Link>
+                  </Button>
+                ))}
               </div>
               {/* Row 4 — internal section deep-dives */}
               <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-                {importantSectionLinks.map((link) => (
+                {importantSectionLinksSansMonetaryPsychotherapy.map((link) => (
                   <Button
                     key={link.href}
                     asChild
@@ -268,24 +282,17 @@ export default async function HomePage() {
               </div>
               {/* Row 5 — specialist landing pages */}
               <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-                <Button
-                  asChild
-                  className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
-                >
-                  <Link href="/financial-abuse" className="no-underline">Financial Abuse</Link>
-                </Button>
-                <Button
-                  asChild
-                  className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
-                >
-                  <Link href="/financial-abuse-therapy" className="no-underline">Financial Abuse Therapy</Link>
-                </Button>
-                <Button
-                  asChild
-                  className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
-                >
-                  <Link href="/financial-abuse-therapist" className="no-underline">Financial Abuse Therapist</Link>
-                </Button>
+                {specialistLinks.slice(0, 3).map((link) => (
+                  <Button
+                    key={link.href}
+                    asChild
+                    className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
+                  >
+                    <Link href={link.href} className="no-underline">
+                      {link.label}
+                    </Link>
+                  </Button>
+                ))}
               </div>
             </div>
           </div>
@@ -392,8 +399,18 @@ export default async function HomePage() {
                   "Choose the appointment style that feels safest, then confirm via the secure scheduler."}
               </p>
             </div>
-            <BookingOptions options={consultationOptions} />
-            <BookingScheduler />
+            <BookingOptions
+              options={consultationOptions}
+              bookingCopy={bookingCopy}
+              contactEmail={contactEmail || undefined}
+              contactPhone={contactPhone || undefined}
+            />
+            <BookingScheduler
+              schedulerPoints={bookingCopy?.schedulerPoints}
+              helpText={bookingCopy?.schedulerHelpText}
+              email={contactEmail || undefined}
+              phone={contactPhone || undefined}
+            />
           </div>
         </div>
       </section>
