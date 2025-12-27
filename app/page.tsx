@@ -97,7 +97,19 @@ export default async function HomePage() {
     .trim()
 
   const HERO_END_BG = "var(--section-bg-1)"
-  const FOOTER_BG = "var(--section-bg-2)"
+  const bgForIndex = (idx: number) => (idx % 2 === 0 ? "var(--section-bg-2)" : "var(--section-bg-1)")
+  const enabledFlowCount =
+    (showValueProps && valueProps.length > 0 ? 1 : 0) +
+    (showNewsletter ? 1 : 0) +
+    (showImportantLinks ? 1 : 0) +
+    (showTestimonials && hasTestimonials ? 1 : 0) +
+    (showOtherAreas ? 1 : 0) +
+    (showBooking ? 1 : 0) +
+    (showFaqs && homepageFaqs.length > 0 ? 1 : 0) +
+    (showContact ? 1 : 0) +
+    (showCrisis ? 1 : 0)
+  // Footer continues the alternating sequence (the "next" colour after the final enabled section).
+  const footerBg = bgForIndex(enabledFlowCount)
 
   return (
     <div className="min-h-screen bg-[var(--section-bg-2)]">
@@ -588,17 +600,15 @@ export default async function HomePage() {
               <div
                 aria-hidden
                 className="h-[var(--section-fade-height)]"
-                style={{ backgroundImage: `linear-gradient(to bottom, ${HERO_END_BG}, ${FOOTER_BG})` }}
+                style={{ backgroundImage: `linear-gradient(to bottom, ${HERO_END_BG}, ${footerBg})` }}
               />
             )
           }
 
-          const bgForIndex = (idx: number) => (idx % 2 === 0 ? "var(--section-bg-2)" : "var(--section-bg-1)")
-
           return enabled.map((s, idx) => {
             const bg = bgForIndex(idx)
             const prevBg = idx === 0 ? HERO_END_BG : undefined
-            const nextBg = idx === enabled.length - 1 ? FOOTER_BG : bgForIndex(idx + 1)
+            const nextBg = idx === enabled.length - 1 ? footerBg : bgForIndex(idx + 1)
             return (
               <FlowSection
                 key={s.key}
@@ -616,7 +626,7 @@ export default async function HomePage() {
         })()}
       </div>
 
-      <Footer backgroundColor="#d7e9ec" />
+      <Footer backgroundColor={footerBg} />
       </main>
       {showLeadMagnet && <LeadMagnet content={leadMagnet} />}
       {[

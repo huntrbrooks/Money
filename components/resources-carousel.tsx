@@ -20,20 +20,64 @@ export function ResourcesCarousel({ resources, durationSeconds = 45 }: Resources
 
   if (!items.length) return null
 
+  function normalizeKey(input: string): string {
+    return String(input ?? "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "")
+      .trim()
+  }
+
+  const logoMap = useMemo(() => {
+    const pairs: Array<[string, string]> = [
+      ["Lifeline", "/logos/Lifeline.webp"],
+      ["Beyond Blue", "/logos/beyond%20blue.webp"],
+      ["Blue Knot Foundation", "/logos/blue-knot.png"],
+      ["Butterfly National Helpline", "/logos/butterfly-logo.png"],
+      ["Headspace", "/logos/Headspace.png"],
+      ["MensLine Australia", "/logos/mensline.webp"],
+      ["QLife", "/logos/Qlife.webp"],
+      ["Kids Helpline", "/logos/Kids%20helpline.webp"],
+      ["Suicide CallBack Service", "/logos/suicide%20services%20call%20back.webp"],
+      ["Suicide Call Back Service", "/logos/suicide%20services%20call%20back.webp"],
+      ["1800 Respect", "/logos/1800respect%20logo%20small.png"],
+      ["Medicare Mental Health", "/logos/images.png"],
+    ]
+    const map = new Map<string, string>()
+    for (const [name, url] of pairs) map.set(normalizeKey(name), url)
+    return map
+  }, [])
+
+  const legacyLogoFilenames = useMemo(() => {
+    return new Set([
+      "lifeline.webp",
+      "beyond%20blue.webp",
+      "blue-knot.png",
+      "butterfly-logo.png",
+      "headspace.png",
+      "mensline.webp",
+      "qlife.webp",
+      "kids%20helpline.webp",
+      "suicide%20services%20call%20back.webp",
+      "1800respect%20logo%20small.png",
+      "images.png",
+    ])
+  }, [])
+
   function getLogoSrc(resource: CrisisResource): string {
-    return resource.logoUrl ? resource.logoUrl : getFallbackLogo(resource)
+    const mapped = logoMap.get(normalizeKey(resource.name))
+    const raw = (resource.logoUrl ?? "").trim()
+    if (raw) {
+      if (raw.startsWith("/logos/")) return raw
+      // If the config is pointing at an older root-level logo filename, prefer the updated `/logos/...` asset.
+      const filename = raw.split("/").pop()?.toLowerCase() ?? ""
+      if (mapped && legacyLogoFilenames.has(filename)) return mapped
+      return raw
+    }
+    return mapped ?? getFallbackLogo(resource)
   }
 
   function getFallbackLogo(resource: CrisisResource): string {
-    try {
-      if (resource.website) {
-        new URL(resource.website)
-        return `/logo.webp`
-      }
-    } catch {
-      // ignore parse errors
-    }
-    return "/logo.webp"
+    return logoMap.get(normalizeKey(resource.name)) ?? "/logo.webp"
   }
 
   return (
@@ -101,9 +145,9 @@ export function ResourcesCarousel({ resources, durationSeconds = 45 }: Resources
                 </DialogDescription>
               </DialogHeader>
               <div className="flex items-center gap-4 pt-2">
-                {selected.logoUrl ? (
+                {getLogoSrc(selected) ? (
                   <img
-                    src={selected.logoUrl}
+                    src={getLogoSrc(selected)}
                     alt={`${selected.name} logo`}
                     className="h-10 w-auto object-contain"
                   />
