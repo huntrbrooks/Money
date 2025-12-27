@@ -386,18 +386,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
         <div className="grid gap-12 md:grid-cols-3 max-w-6xl mx-auto">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              {cfg.brand?.logoUrl ? (
-                <img
-                  src={cfg.brand.logoUrl}
-                  alt={`${cfg.brand?.name ?? "Site"} logo`}
-                  className="h-10 w-10 object-contain"
-                />
-              ) : (
-                <LogoMark className="h-10 w-10 text-[var(--primary)]" title={`${cfg.brand?.name ?? "Site"} logo`} />
-              )}
-              <h3 className="font-serif text-3xl font-light">{cfg.brand?.name ?? "The Financial Therapist"}</h3>
-            </div>
+            <h3 className="font-serif text-3xl font-light">{cfg.brand?.name ?? "The Financial Therapist"}</h3>
             <p className="text-[var(--primary)]/80 leading-relaxed">
               {cfg.brand?.tagline ??
                 "Trauma‑informed counselling specialising in financial trauma and monetary psychotherapy. A safe, gender‑aware and inclusive space."}
