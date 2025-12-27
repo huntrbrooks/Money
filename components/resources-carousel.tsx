@@ -12,13 +12,17 @@ type ResourcesCarouselProps = {
 
 export function ResourcesCarousel({ resources, durationSeconds = 45 }: ResourcesCarouselProps) {
   const items = useMemo(() => {
-    return (resources || []).filter((r) => Boolean(r.logoUrl))
+    return (resources || []).filter(Boolean)
   }, [resources])
 
   const marqueeItems = useMemo(() => [...items, ...items], [items])
   const [selected, setSelected] = useState<CrisisResource | null>(null)
 
   if (!items.length) return null
+
+  function getLogoSrc(resource: CrisisResource): string {
+    return resource.logoUrl ? resource.logoUrl : getFallbackLogo(resource)
+  }
 
   function getFallbackLogo(resource: CrisisResource): string {
     try {
@@ -47,7 +51,7 @@ export function ResourcesCarousel({ resources, durationSeconds = 45 }: Resources
               aria-label={`${r.name} information`}
             >
               <img
-                src={r.logoUrl ?? ""}
+                src={getLogoSrc(r)}
                 alt={`${r.name} logo`}
                 className="w-auto object-contain opacity-95 group-hover:opacity-100"
                 style={{ height: (r.logoHeight ?? 96) }}

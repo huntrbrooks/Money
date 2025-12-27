@@ -461,7 +461,8 @@ export const defaultConfig: SiteConfig = {
       number: "1300 657 380",
       website: "https://blueknot.org.au",
       description: "",
-      logoUrl: "",
+      logoUrl: "/logos/blue-knot.svg",
+      logoHeight: 72,
     },
   ],
   forms: {
