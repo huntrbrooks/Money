@@ -45,7 +45,11 @@ function sortByDateDescending<T extends { date: string }>(entries: T[]) {
 }
 
 export async function getAllPostsMeta(): Promise<PostMeta[]> {
-  noStore()
+  // Only use noStore if Supabase is configured (for dynamic content)
+  // For static generation, we want to allow caching
+  if (hasSupabase()) {
+    noStore()
+  }
   const files = await readDirSafe(POSTS_DIR)
   const fsMetas: PostMeta[] = []
   for (const file of files.filter((file) => file.endsWith(".mdx"))) {
@@ -92,7 +96,11 @@ export async function getAllPostsMeta(): Promise<PostMeta[]> {
 }
 
 export async function getPostBySlug(slug: string) {
-  noStore()
+  // Only use noStore if Supabase is configured (for dynamic content)
+  // For static generation, we want to allow caching
+  if (hasSupabase()) {
+    noStore()
+  }
   if (hasSupabase()) {
     try {
       const sbSource = await sbGetContent("posts", slug)
