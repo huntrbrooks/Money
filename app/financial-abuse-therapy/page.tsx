@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import Script from "next/script"
+import { Navigation, Footer } from "@/components/navigation"
 import { readSiteConfig } from "@/lib/config"
 import { buildFaqSchema, buildPageMetadata, buildServiceSchema } from "@/lib/seo"
 
@@ -38,8 +39,11 @@ export default async function FinancialAbuseTherapyPage() {
   const faqJsonLd = buildFaqSchema(page.faqs ?? [])
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <article className="max-w-3xl mx-auto space-y-8">
+    <div className="min-h-screen bg-muted">
+      <Navigation />
+      <main>
+        <div className="container mx-auto px-4 py-16">
+          <article className="max-w-3xl mx-auto space-y-8">
         <header className="space-y-2 pb-6 border-b border-[var(--secondary)]">
           {page.eyebrow && (
             <div className="text-xs tracking-wider uppercase text-[var(--primary)]">
@@ -104,7 +108,10 @@ export default async function FinancialAbuseTherapyPage() {
             </ul>
           </nav>
         )}
-      </article>
+          </article>
+        </div>
+      </main>
+      <Footer />
       <Script
         id="financial-abuse-therapy-service"
         type="application/ld+json"
