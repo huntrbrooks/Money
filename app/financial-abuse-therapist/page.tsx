@@ -20,12 +20,23 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function FinancialAbuseTherapistPage() {
-  const config = await readSiteConfig()
+  let config
+  try {
+    config = await readSiteConfig()
+  } catch (error) {
+    console.error("Error reading site config:", error)
+    // Fallback to minimal config
+    config = {
+      brand: { subtitle: "Dan Lobel" },
+      hero: { imageUrl: "/Dan.png" },
+      contact: { phone: undefined },
+    } as any
+  }
   const personJsonLd = buildPersonSchema(config, {
     name: config.brand?.subtitle ?? "Dan Lobel",
     description: "Financial Abuse Therapist — trauma-informed counselling and monetary psychotherapy.",
     jobTitle: "Counsellor & Monetary Psychotherapist",
-    image: config.hero.imageUrl || "/Dan.png",
+    image: config.hero?.imageUrl || "/Dan.png",
     url: "/financial-abuse-therapist",
     telephone: config.contact?.phone,
   })
