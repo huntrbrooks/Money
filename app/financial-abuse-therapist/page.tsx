@@ -9,6 +9,9 @@ const PAGE_DESCRIPTION =
   "Work with a Financial Abuse Therapist. Trauma-informed counselling focused on safety, dignity, and practical confidence. Melbourne & Telehealth."
 const PAGE_KEYWORDS = ["financial abuse therapist", "financial trauma counsellor", "melbourne telehealth therapist"]
 
+// This page uses readSiteConfig() which uses noStore(), so it must be dynamic
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
     title: PAGE_TITLE,
