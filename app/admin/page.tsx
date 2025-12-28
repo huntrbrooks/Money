@@ -54,8 +54,9 @@ const createEmptyHero = (): SiteConfig["hero"] => ({
 const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
   sections: {
     showValueProps: true,
-    showNewsletter: true,
+    showNewsletter: false,
     showImportantLinks: true,
+    showImportantLinksCallButton: false,
     showTestimonials: true,
     showOtherAreas: true,
     showBooking: true,
@@ -1493,6 +1494,7 @@ function CodeAgentBox() {
                         ["showValueProps", "Value props"],
                         ["showNewsletter", "Newsletter band"],
                         ["showImportantLinks", "Important links"],
+                        ["showImportantLinksCallButton", "Call Dan button (in Important Links)"],
                         ["showTestimonials", "Testimonials"],
                         ["showOtherAreas", "Other areas"],
                         ["showBooking", "Booking"],

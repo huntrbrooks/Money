@@ -267,6 +267,7 @@ export type HomepageSectionToggles = {
   showValueProps?: boolean
   showNewsletter?: boolean
   showImportantLinks?: boolean
+  showImportantLinksCallButton?: boolean
   showTestimonials?: boolean
   showOtherAreas?: boolean
   showBooking?: boolean
@@ -933,8 +934,9 @@ export const defaultConfig: SiteConfig = {
   homepage: {
     sections: {
       showValueProps: true,
-      showNewsletter: true,
+      showNewsletter: false,
       showImportantLinks: true,
+      showImportantLinksCallButton: false,
       showTestimonials: false,
       showOtherAreas: true,
       showBooking: true,

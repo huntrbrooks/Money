@@ -51,8 +51,9 @@ export default async function HomePage() {
   const hasTestimonials = testimonials.length > 0
   const leadMagnet = homepageContent.leadMagnet
   const showValueProps = sections.showValueProps !== false
-  const showNewsletter = sections.showNewsletter !== false
+  const showNewsletter = sections.showNewsletter === true
   const showImportantLinks = sections.showImportantLinks !== false
+  const showImportantLinksCallButton = sections.showImportantLinksCallButton === true
   const showTestimonials = sections.showTestimonials !== false
   const showOtherAreas = sections.showOtherAreas !== false
   const showBooking = sections.showBooking !== false
@@ -265,7 +266,7 @@ export default async function HomePage() {
                     </div>
 
                     {/* Feature CTA (call) */}
-                    {contactPhone ? (
+                    {showImportantLinksCallButton && contactPhone ? (
                       <div className="flex justify-center">
                         <Button
                           asChild
