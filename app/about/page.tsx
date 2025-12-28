@@ -5,6 +5,7 @@ import { Navigation, Footer } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
 import { readSiteConfig } from "@/lib/config"
 import { buildPageMetadata } from "@/lib/seo"
+import { EmailLink } from "@/components/email-link"
 
 const PAGE_DESCRIPTION =
   "Meet Dan Lobel — a warm, trauma-informed counsellor specialising in monetary psychotherapy, financial trauma, and self-worth. Learn about his approach, credentials, and how sessions feel."
@@ -77,23 +78,25 @@ export default async function AboutPage() {
                 <div className="grid gap-3 md:grid-cols-2 pt-2">
                   <p className="text-sm text-[var(--primary)]/90">📍 Based in Melbourne | Online &amp; In-Person Sessions</p>
                   <div className="flex flex-wrap gap-2">
-                    <a
-                      href={`mailto:${email}?subject=Contact%20Request`}
-                      aria-label={`Email Dan at ${email}`}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--primary)]/20 bg-[var(--section-bg-1)] text-[var(--primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+                    <EmailLink
+                      email={email}
+                      subject="Contact Request"
+                      ariaLabel={`Email Dan at ${email}`}
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--primary)]/20 bg-[var(--section-bg-1)] text-[var(--primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors cursor-pointer"
                     >
                       <Mail className="w-4 h-4" aria-hidden="true" />
                       <span className="text-sm">{email}</span>
-                    </a>
+                    </EmailLink>
                     {emailAlt && emailAlt !== email ? (
-                      <a
-                        href={`mailto:${emailAlt}?subject=Contact%20Request`}
-                        aria-label={`Email Dan at ${emailAlt}`}
-                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--primary)]/20 bg-[var(--section-bg-1)] text-[var(--primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+                      <EmailLink
+                        email={emailAlt}
+                        subject="Contact Request"
+                        ariaLabel={`Email Dan at ${emailAlt}`}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--primary)]/20 bg-[var(--section-bg-1)] text-[var(--primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors cursor-pointer"
                       >
                         <Mail className="w-4 h-4" aria-hidden="true" />
                         <span className="text-sm">{emailAlt}</span>
-                      </a>
+                      </EmailLink>
                     ) : null}
                     <a
                       href={`tel:${phone.replace(/\s+/g, "")}`}

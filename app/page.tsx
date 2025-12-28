@@ -12,6 +12,7 @@ import { CrisisBanner } from "@/components/crisis-banner"
 import { ResourcesCarousel } from "@/components/resources-carousel"
 import { LeadMagnet } from "@/components/lead-magnet"
 import { FlowSection } from "@/components/flow-section"
+import { EmailLink } from "@/components/email-link"
 import {
   buildLocalBusinessSchema,
   buildOrganizationSchema,
@@ -67,10 +68,18 @@ export default async function HomePage() {
 
   const otherAreas = homepageContent.otherAreas ?? []
   const contentSections = config.contentSections ?? []
+  // Map content sections to their correct routes (dedicated pages take priority)
+  const contentSectionRouteMap: Record<string, string> = {
+    "why-money-triggers-anxiety": "/blog/why-money-triggers-anxiety",
+    "what-is-financial-abuse": "/financial-abuse",
+    "monetary-psychotherapy": "/monetary-psychotherapy",
+    "financial-abuse-therapy": "/financial-abuse-therapy",
+    "about-dan": "/about",
+  }
   // Convert content sections to nav links for display
   const allContentSectionLinks = contentSections.map((section) => ({
     label: section.title,
-    href: `/content-sections/${section.slug}`,
+    href: contentSectionRouteMap[section.slug] ?? `/content-sections/${section.slug}`,
   }))
   const consultationOptions = config.consultations ?? []
   const bookingCopy = config.bookingCopy
@@ -483,9 +492,10 @@ export default async function HomePage() {
                             </div>
                           </a>
 
-                          <a
-                            href={`mailto:${contactEmail || "dan@financialabusetherapist.com.au"}?subject=Contact%20Request`}
-                            className="flex flex-col items-center md:items-start gap-4 p-6 bg-transparent rounded-lg hover:shadow-lg transition-all group border border-transparent hover:border-[var(--accent)] sm:flex-row sm:items-center"
+                          <EmailLink
+                            email={contactEmail || "dan@financialabusetherapist.com.au"}
+                            subject="Contact Request"
+                            className="flex flex-col items-center md:items-start gap-4 p-6 bg-transparent rounded-lg hover:shadow-lg transition-all group border border-transparent hover:border-[var(--accent)] sm:flex-row sm:items-center cursor-pointer"
                           >
                             <div className="size-14 bg-[var(--accent)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                               <Mail className="w-6 h-6 text-white" />
@@ -494,7 +504,7 @@ export default async function HomePage() {
                               <p className="text-xs text-[var(--primary)] uppercase tracking-wider font-semibold">Email</p>
                               <p className="text-xl text-[var(--foreground)] font-medium break-words">{contactEmail || "—"}</p>
                             </div>
-                          </a>
+                          </EmailLink>
                         </div>
 
                         <div className="pt-4">

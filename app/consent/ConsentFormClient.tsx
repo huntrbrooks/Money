@@ -178,7 +178,14 @@ export default function ConsentFormClient({
           {submitting ? "Sending…" : "Send"}
         </Button>
         {email ? (
-          <a className="text-sm underline text-[var(--accent)] break-all" href={`mailto:${email}?subject=Consent%20Form%20Inquiry`}>
+          <a 
+            className="text-sm underline text-[var(--accent)] break-all cursor-pointer" 
+            href={`mailto:${email}?subject=Consent%20Form%20Inquiry`}
+            onClick={(e) => {
+              e.preventDefault()
+              window.location.href = `mailto:${email}?subject=Consent%20Form%20Inquiry`
+            }}
+          >
             {email}
           </a>
         ) : null}

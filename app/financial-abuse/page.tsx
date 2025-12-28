@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import Script from "next/script"
+import { readSiteConfig } from "@/lib/config"
 import { buildArticleSchema, buildFaqSchema, buildPageMetadata } from "@/lib/seo"
 
 const PAGE_TITLE = "Financial Abuse | Signs, Safety, and Support — Financial Abuse Therapist"
@@ -18,9 +19,20 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-export default function FinancialAbusePage() {
-  const articleJsonLd = buildArticleSchema({
+export default async function FinancialAbusePage() {
+  const config = await readSiteConfig()
+  const page = config.financialAbusePage ?? {
     title: "Financial Abuse — Signs, Safety, and Support",
+    description: "If money is being used to control, restrict, or punish you, you are not alone. Support is available.",
+    eyebrow: "Financial Trauma & Monetary Psychotherapy",
+    commonSigns: [],
+    therapySupports: [],
+    crisisText: "",
+    nextStepsLinks: [],
+  }
+
+  const articleJsonLd = buildArticleSchema({
+    title: page.title,
     description: PAGE_DESCRIPTION,
     slug: "/financial-abuse",
   })
@@ -45,14 +57,16 @@ export default function FinancialAbusePage() {
     <div className="container mx-auto px-4 py-16">
       <article className="max-w-3xl mx-auto space-y-8">
         <header className="space-y-2 pb-6 border-b border-[var(--secondary)]">
-          <div className="text-xs tracking-wider uppercase text-[var(--primary)]">
-            Financial Trauma &amp; Monetary Psychotherapy
-          </div>
+          {page.eyebrow && (
+            <div className="text-xs tracking-wider uppercase text-[var(--primary)]">
+              {page.eyebrow}
+            </div>
+          )}
           <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">
-            Financial Abuse — Signs, Safety, and Support
+            {page.title}
           </h1>
           <p className="text-[var(--primary)]">
-            If money is being used to control, restrict, or punish you, you are not alone. Support is available.
+            {page.description}
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
             <Link
@@ -72,40 +86,49 @@ export default function FinancialAbusePage() {
           </div>
         </header>
 
-        <section className="space-y-4">
-          <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">Common signs</h2>
-          <ul className="list-disc pl-6 text-[var(--primary)] space-y-2">
-            <li>Blocking access to accounts, payslips, or financial information</li>
-            <li>Controlling spending or demanding full oversight of purchases</li>
-            <li>Sabotaging employment or study; forced debt or coerced signatures</li>
-            <li>Withholding money, essentials, or transport; creating dependency</li>
-          </ul>
-        </section>
+        {page.commonSigns && page.commonSigns.length > 0 && (
+          <section className="space-y-4">
+            <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">Common signs</h2>
+            <ul className="list-disc pl-6 text-[var(--primary)] space-y-2">
+              {page.commonSigns.map((sign, idx) => (
+                <li key={idx}>{sign}</li>
+              ))}
+            </ul>
+          </section>
+        )}
 
-        <section className="space-y-4">
-          <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">How therapy supports safety</h2>
-          <ul className="list-disc pl-6 text-[var(--primary)] space-y-2">
-            <li>Nervous‑system‑aware pacing to reduce overwhelm</li>
-            <li>Clarifying boundaries, consent, and next steps</li>
-            <li>Planning confidential support and practical safety edges</li>
-            <li>Restoring self‑trust and financial confidence over time</li>
-          </ul>
-        </section>
+        {page.therapySupports && page.therapySupports.length > 0 && (
+          <section className="space-y-4">
+            <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">How therapy supports safety</h2>
+            <ul className="list-disc pl-6 text-[var(--primary)] space-y-2">
+              {page.therapySupports.map((support, idx) => (
+                <li key={idx}>{support}</li>
+              ))}
+            </ul>
+          </section>
+        )}
 
-        <section className="space-y-4">
-          <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">If you’re in crisis</h2>
-          <p className="text-[var(--primary)]">
-            If you’re in immediate danger, call 000. You can also reach Lifeline on 13&nbsp;11&nbsp;14 (24/7).
-          </p>
-        </section>
+        {page.crisisText && (
+          <section className="space-y-4">
+            <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">If you're in crisis</h2>
+            <p className="text-[var(--primary)]">
+              {page.crisisText}
+            </p>
+          </section>
+        )}
 
-        <nav className="border border-[var(--secondary)] rounded-xl p-4 bg-[var(--section-bg-1)]">
-          <strong className="text-[var(--foreground)]">Next steps</strong>
-          <ul className="mt-2 grid gap-1 list-disc pl-5 text-[var(--accent)]">
-            <li><a href="/financial-abuse-therapy">Learn about Financial Abuse Therapy</a></li>
-            <li><a href="/financial-abuse-therapist">Work with a Financial Abuse Therapist</a></li>
-          </ul>
-        </nav>
+        {page.nextStepsLinks && page.nextStepsLinks.length > 0 && (
+          <nav className="border border-[var(--secondary)] rounded-xl p-4 bg-[var(--section-bg-1)]">
+            <strong className="text-[var(--foreground)]">Next steps</strong>
+            <ul className="mt-2 grid gap-1 list-disc pl-5 text-[var(--accent)]">
+              {page.nextStepsLinks.map((link, idx) => (
+                <li key={idx}>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
       </article>
       <Script
         id="financial-abuse-article"

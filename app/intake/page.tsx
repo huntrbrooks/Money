@@ -4,6 +4,7 @@ import { Navigation, Footer } from "@/components/navigation"
 import { readSiteConfig } from "@/lib/config"
 import { DynamicForm } from "@/components/forms/DynamicForm"
 import { buildPageMetadata } from "@/lib/seo"
+import { EmailLink } from "@/components/email-link"
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
@@ -25,9 +26,13 @@ export default async function IntakePage() {
           <h1 className="font-serif text-4xl text-[var(--foreground)] font-light">Intake</h1>
           <p className="text-[var(--primary)] mt-2">
             The intake form is temporarily unavailable. Please email{" "}
-            <a className="underline" href={`mailto:${config.contact?.email ?? "dan@financialabusetherapist.com.au"}?subject=Intake%20Form%20Inquiry`}>
+            <EmailLink
+              email={config.contact?.email ?? "dan@financialabusetherapist.com.au"}
+              subject="Intake Form Inquiry"
+              className="underline cursor-pointer"
+            >
               {config.contact?.email ?? "dan@financialabusetherapist.com.au"}
-            </a>
+            </EmailLink>
             .
           </p>
         </main>

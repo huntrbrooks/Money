@@ -72,6 +72,40 @@ export type ContentSectionConfig = {
   pdfUrl?: string
 }
 
+export type FinancialAbusePageConfig = {
+  title: string
+  description: string
+  eyebrow?: string
+  commonSigns?: string[]
+  therapySupports?: string[]
+  crisisText?: string
+  nextStepsLinks?: NavLink[]
+}
+
+export type MonetaryPsychotherapyPageConfig = {
+  eyebrow?: string
+  title: string
+  subtitle: string
+  intro: string
+  designedFor?: string[]
+  sessionFocus?: string[]
+  therapeuticPrinciples?: Array<{
+    title: string
+    body: string
+  }>
+  howWeBegin?: string[]
+}
+
+export type FinancialAbuseTherapyPageConfig = {
+  eyebrow?: string
+  title: string
+  description: string
+  therapyApproach?: string[]
+  sessionFormats?: string[]
+  nextStepsLinks?: NavLink[]
+  faqs?: FaqEntry[]
+}
+
 export type FooterConfig = {
   copyrightText?: string
   companyName?: string
@@ -415,6 +449,9 @@ export type SiteConfig = {
   contentSections?: ContentSectionConfig[]
   footer?: FooterConfig
   bookingCopy?: BookingCopy
+  financialAbusePage?: FinancialAbusePageConfig
+  monetaryPsychotherapyPage?: MonetaryPsychotherapyPageConfig
+  financialAbuseTherapyPage?: FinancialAbuseTherapyPageConfig
 }
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), "data", "site.json")
@@ -531,6 +568,99 @@ export const defaultConfig: SiteConfig = {
       "Need to reschedule? Reach out with 72 hours notice and we’ll arrange a new time.",
     ],
     schedulerHelpText: "Need help deciding on a format? Email or call — a personal reply is guaranteed.",
+  },
+  financialAbusePage: {
+    title: "Financial Abuse — Signs, Safety, and Support",
+    description: "If money is being used to control, restrict, or punish you, you are not alone. Support is available.",
+    eyebrow: "Financial Trauma & Monetary Psychotherapy",
+    commonSigns: [
+      "Blocking access to accounts, payslips, or financial information",
+      "Controlling spending or demanding full oversight of purchases",
+      "Sabotaging employment or study; forced debt or coerced signatures",
+      "Withholding money, essentials, or transport; creating dependency",
+    ],
+    therapySupports: [
+      "Nervous‑system‑aware pacing to reduce overwhelm",
+      "Clarifying boundaries, consent, and next steps",
+      "Planning confidential support and practical safety edges",
+      "Restoring self‑trust and financial confidence over time",
+    ],
+    crisisText: "If you're in immediate danger, call 000. You can also reach Lifeline on 13 11 14 (24/7).",
+    nextStepsLinks: [
+      { label: "Learn about Financial Abuse Therapy", href: "/financial-abuse-therapy" },
+      { label: "Work with a Financial Abuse Therapist", href: "/financial-abuse-therapist" },
+    ],
+  },
+  monetaryPsychotherapyPage: {
+    eyebrow: "Monetary Psychotherapy",
+    title: "Money carries stories. Some are empowering — others hold pain.",
+    subtitle: "Understanding those stories is the first step toward emotional and financial freedom.",
+    intro: "Monetary psychotherapy explores the deep connection between money, emotion, and self-identity. It's a trauma-informed space for women who have felt disempowered by financial control, scarcity, or uncertainty — especially during life transitions, separation, or rebuilding after abuse.",
+    designedFor: [
+      "Feel anxiety, shame, or guilt when spending or saving",
+      "Have experienced financial control, infidelity, or dependency",
+      "Carry generational narratives about scarcity, inequality, or debt",
+      "Want steady confidence when making financial decisions",
+    ],
+    sessionFocus: [
+      "Exploring the emotional roots of your financial story",
+      "Rebuilding self-trust and values-aligned boundaries",
+      "Integrating practical money actions that feel doable",
+      "Developing resilience, independence, and long-term confidence",
+    ],
+    therapeuticPrinciples: [
+      {
+        title: "Consent-led pacing",
+        body: "You decide what feels safe to share. Sessions move gently, making space for the body's cues and nervous-system capacity.",
+      },
+      {
+        title: "Story + strategy",
+        body: "We untangle family, cultural, and lived stories about money and pair the insights with grounded, compassionate plans.",
+      },
+      {
+        title: "Self-trust first",
+        body: "Financial change sticks when it's anchored in worthiness. We practice choices that honour your needs, boundaries, and values.",
+      },
+    ],
+    howWeBegin: [
+      "We anchor in what safety means for your nervous system and set conversational boundaries.",
+      "We map the moments, relationships, or events that shaped your relationship with money — gently and at your pace.",
+      "We co-create small experiments or practices that honour your values and increase agency with money decisions.",
+    ],
+  },
+  financialAbuseTherapyPage: {
+    eyebrow: "Financial Trauma & Monetary Psychotherapy",
+    title: "Financial Abuse Therapy",
+    description: "A gentle, consent‑led path to restore safety, autonomy, and self‑trust after financial control or coercion.",
+    therapyApproach: [
+      "Trauma‑informed: safety first, always at your pace",
+      "Nervous‑system regulation and practical stabilisation",
+      "Values‑aligned boundary‑setting and next steps",
+      "Rebuilding self‑trust and financial confidence",
+    ],
+    sessionFormats: [
+      "Telehealth (Australia)",
+      "In‑person (Melbourne)",
+      "Walk & Discuss Therapy (by arrangement)",
+    ],
+    nextStepsLinks: [
+      { label: "What is Financial Abuse?", href: "/financial-abuse" },
+      { label: "Find a Financial Abuse Therapist", href: "/financial-abuse-therapist" },
+    ],
+    faqs: [
+      {
+        question: "What happens in the first session?",
+        answer: "We focus on safety, consent, and pacing. You set boundaries on what to share. We outline gentle, practical next steps that respect your situation.",
+      },
+      {
+        question: "Is this confidential?",
+        answer: "Yes. Confidentiality is respected within legal and ethical limits. If there is risk of harm, we discuss appropriate safety steps.",
+      },
+      {
+        question: "Do you offer Telehealth?",
+        answer: "Yes — Telehealth across Australia, as well as in-person sessions in Melbourne.",
+      },
+    ],
   },
   hero: {
     eyebrow: "Financial Trauma & Monetary Psychotherapy",
@@ -1163,6 +1293,9 @@ export async function readSiteConfig(): Promise<SiteConfig> {
           },
           contentSections: parsed.contentSections ?? defaultConfig.contentSections,
           footer: { ...defaultConfig.footer, ...(parsed.footer ?? {}) },
+          financialAbusePage: parsed.financialAbusePage ?? defaultConfig.financialAbusePage,
+          monetaryPsychotherapyPage: parsed.monetaryPsychotherapyPage ?? defaultConfig.monetaryPsychotherapyPage,
+          financialAbuseTherapyPage: parsed.financialAbuseTherapyPage ?? defaultConfig.financialAbuseTherapyPage,
           bookingCopy: {
             ...(defaultConfig.bookingCopy ?? {}),
             ...(parsed.bookingCopy ?? {}),
@@ -1235,6 +1368,9 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       },
       contentSections: parsed.contentSections ?? defaultConfig.contentSections,
       footer: { ...defaultConfig.footer, ...(parsed.footer ?? {}) },
+      financialAbusePage: parsed.financialAbusePage ?? defaultConfig.financialAbusePage,
+      monetaryPsychotherapyPage: parsed.monetaryPsychotherapyPage ?? defaultConfig.monetaryPsychotherapyPage,
+      financialAbuseTherapyPage: parsed.financialAbuseTherapyPage ?? defaultConfig.financialAbuseTherapyPage,
       bookingCopy: {
         ...(defaultConfig.bookingCopy ?? {}),
         ...(parsed.bookingCopy ?? {}),

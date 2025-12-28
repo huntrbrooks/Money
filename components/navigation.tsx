@@ -304,7 +304,11 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
                 {cfg.contact?.email && (
                   <a
                     href={`mailto:${cfg.contact.email}?subject=Contact%20Request`}
-                    className="flex items-start justify-center md:justify-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      window.location.href = `mailto:${cfg.contact.email}?subject=Contact%20Request`
+                    }}
+                    className="flex items-start justify-center md:justify-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group cursor-pointer"
                   >
                     <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform mt-0.5">
                       <Mail className="w-4 h-4 text-white" />
@@ -315,7 +319,11 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
                 {cfg.contact?.emailAlt && cfg.contact.emailAlt !== cfg.contact.email && (
                   <a
                     href={`mailto:${cfg.contact.emailAlt}?subject=Contact%20Request`}
-                    className="flex items-start justify-center md:justify-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      window.location.href = `mailto:${cfg.contact.emailAlt}?subject=Contact%20Request`
+                    }}
+                    className="flex items-start justify-center md:justify-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group cursor-pointer"
                   >
                     <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform mt-0.5">
                       <Mail className="w-4 h-4 text-white" />

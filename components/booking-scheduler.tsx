@@ -64,7 +64,15 @@ export function BookingScheduler({
                 variant="outline"
                 className="flex-1 rounded-full border-[#c8d4cf] bg-[var(--section-bg-1)] text-[#3f4f57] hover:bg-[var(--section-bg-1)]/90"
               >
-                <a href={`mailto:${email}?subject=Booking%20Inquiry`}>Email Dan instead</a>
+                <a 
+                  href={`mailto:${email}?subject=Booking%20Inquiry`}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    window.location.href = `mailto:${email}?subject=Booking%20Inquiry`
+                  }}
+                >
+                  Email Dan instead
+                </a>
               </Button>
             </div>
             <p className="text-xs text-[#4a5c63]">

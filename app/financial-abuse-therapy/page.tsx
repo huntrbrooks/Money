@@ -20,39 +20,37 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function FinancialAbuseTherapyPage() {
   const config = await readSiteConfig()
+  const page = config.financialAbuseTherapyPage ?? {
+    eyebrow: "Financial Trauma & Monetary Psychotherapy",
+    title: "Financial Abuse Therapy",
+    description: "A gentle, consent‑led path to restore safety, autonomy, and self‑trust after financial control or coercion.",
+    therapyApproach: [],
+    sessionFormats: [],
+    nextStepsLinks: [],
+    faqs: [],
+  }
+
   const serviceJsonLd = buildServiceSchema(config, {
     serviceType: "Financial abuse therapy",
     description: PAGE_DESCRIPTION,
     url: "/bookings",
   })
-  const faqJsonLd = buildFaqSchema([
-    {
-      question: "What happens in the first session?",
-      answer:
-        "We focus on safety, consent, and pacing. You set boundaries on what to share. We outline gentle, practical next steps that respect your situation.",
-    },
-    {
-      question: "Is this confidential?",
-      answer:
-        "Yes. Confidentiality is respected within legal and ethical limits. If there is risk of harm, we discuss appropriate safety steps.",
-    },
-    {
-      question: "Do you offer Telehealth?",
-      answer: "Yes — Telehealth across Australia, as well as in-person sessions in Melbourne.",
-    },
-  ])
+  const faqJsonLd = buildFaqSchema(page.faqs ?? [])
+
   return (
     <div className="container mx-auto px-4 py-16">
       <article className="max-w-3xl mx-auto space-y-8">
         <header className="space-y-2 pb-6 border-b border-[var(--secondary)]">
-          <div className="text-xs tracking-wider uppercase text-[var(--primary)]">
-            Financial Trauma &amp; Monetary Psychotherapy
-          </div>
+          {page.eyebrow && (
+            <div className="text-xs tracking-wider uppercase text-[var(--primary)]">
+              {page.eyebrow}
+            </div>
+          )}
           <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">
-            Financial Abuse Therapy
+            {page.title}
           </h1>
           <p className="text-[var(--primary)]">
-            A gentle, consent‑led path to restore safety, autonomy, and self‑trust after financial control or coercion.
+            {page.description}
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
             <Link
@@ -72,32 +70,40 @@ export default async function FinancialAbuseTherapyPage() {
           </div>
         </header>
 
-        <section className="space-y-4">
-          <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">Therapy approach</h2>
-          <ul className="list-disc pl-6 text-[var(--primary)] space-y-2">
-            <li>Trauma‑informed: safety first, always at your pace</li>
-            <li>Nervous‑system regulation and practical stabilisation</li>
-            <li>Values‑aligned boundary‑setting and next steps</li>
-            <li>Rebuilding self‑trust and financial confidence</li>
-          </ul>
-        </section>
+        {page.therapyApproach && page.therapyApproach.length > 0 && (
+          <section className="space-y-4">
+            <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">Therapy approach</h2>
+            <ul className="list-disc pl-6 text-[var(--primary)] space-y-2">
+              {page.therapyApproach.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
+            </ul>
+          </section>
+        )}
 
-        <section className="space-y-4">
-          <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">Session formats</h2>
-          <ul className="list-disc pl-6 text-[var(--primary)] space-y-2">
-            <li>Telehealth (Australia)</li>
-            <li>In‑person (Melbourne)</li>
-            <li>Walk &amp; Discuss Therapy (by arrangement)</li>
-          </ul>
-        </section>
+        {page.sessionFormats && page.sessionFormats.length > 0 && (
+          <section className="space-y-4">
+            <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">Session formats</h2>
+            <ul className="list-disc pl-6 text-[var(--primary)] space-y-2">
+              {page.sessionFormats.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
+            </ul>
+          </section>
+        )}
 
-        <nav className="border border-[var(--secondary)] rounded-xl p-4 bg-[var(--section-bg-1)]">
-          <strong className="text-[var(--foreground)]">Explore more</strong>
-          <ul className="mt-2 grid gap-1 list-disc pl-5 text-[var(--accent)]">
-            <li><a href="/financial-abuse">What is Financial Abuse?</a></li>
-            <li><a href="/financial-abuse-therapist">Find a Financial Abuse Therapist</a></li>
-          </ul>
-        </nav>
+        {page.nextStepsLinks && page.nextStepsLinks.length > 0 && (
+          <nav className="border border-[var(--secondary)] rounded-xl p-4 bg-[var(--section-bg-1)]">
+            <strong className="text-[var(--foreground)]">Explore more</strong>
+            <ul className="mt-2 grid gap-1 list-disc pl-5 text-[var(--accent)]">
+              {page.nextStepsLinks.map((link, idx) => (
+                <li key={idx}>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
       </article>
       <Script
         id="financial-abuse-therapy-service"

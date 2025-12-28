@@ -229,6 +229,34 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     schedulerPoints: [],
     schedulerHelpText: "",
   })
+  const [financialAbusePage, setFinancialAbusePage] = useState<SiteConfig["financialAbusePage"]>({
+    title: "",
+    description: "",
+    eyebrow: "",
+    commonSigns: [],
+    therapySupports: [],
+    crisisText: "",
+    nextStepsLinks: [],
+  })
+  const [monetaryPsychotherapyPage, setMonetaryPsychotherapyPage] = useState<SiteConfig["monetaryPsychotherapyPage"]>({
+    eyebrow: "",
+    title: "",
+    subtitle: "",
+    intro: "",
+    designedFor: [],
+    sessionFocus: [],
+    therapeuticPrinciples: [],
+    howWeBegin: [],
+  })
+  const [financialAbuseTherapyPage, setFinancialAbuseTherapyPage] = useState<SiteConfig["financialAbuseTherapyPage"]>({
+    eyebrow: "",
+    title: "",
+    description: "",
+    therapyApproach: [],
+    sessionFormats: [],
+    nextStepsLinks: [],
+    faqs: [],
+  })
 
   const [postEditor, setPostEditor] = useState<{
     open: boolean
@@ -247,6 +275,9 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     theme,
     hero: heroContent,
     about: aboutContent,
+    financialAbusePage,
+    monetaryPsychotherapyPage,
+    financialAbuseTherapyPage,
     services,
     brand,
     seo,
@@ -305,7 +336,38 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
        const nextContentSections = data.contentSections ?? []
        const nextFooter = data.footer ?? {}
        const nextBookingCopy = data.bookingCopy ?? {}
+       const nextFinancialAbusePage = data.financialAbusePage ?? {
+         title: "",
+         description: "",
+         eyebrow: "",
+         commonSigns: [],
+         therapySupports: [],
+         crisisText: "",
+         nextStepsLinks: [],
+       }
+       const nextMonetaryPsychotherapyPage = data.monetaryPsychotherapyPage ?? {
+         eyebrow: "",
+         title: "",
+         subtitle: "",
+         intro: "",
+         designedFor: [],
+         sessionFocus: [],
+         therapeuticPrinciples: [],
+         howWeBegin: [],
+       }
+       const nextFinancialAbuseTherapyPage = data.financialAbuseTherapyPage ?? {
+         eyebrow: "",
+         title: "",
+         description: "",
+         therapyApproach: [],
+         sessionFormats: [],
+         nextStepsLinks: [],
+         faqs: [],
+       }
         setAboutContent(nextAbout)
+        setFinancialAbusePage(nextFinancialAbusePage)
+        setMonetaryPsychotherapyPage(nextMonetaryPsychotherapyPage)
+        setFinancialAbuseTherapyPage(nextFinancialAbuseTherapyPage)
         setServices(nextServices)
         setBrand(nextBrand)
         setSeo(nextSeo)
@@ -565,6 +627,34 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
       downloads: loadedConfig.clientCare?.downloads ?? [],
       prepChecklist: loadedConfig.clientCare?.prepChecklist ?? [],
       aftercareChecklist: loadedConfig.clientCare?.aftercareChecklist ?? [],
+    })
+    setFinancialAbusePage(loadedConfig.financialAbusePage ?? {
+      title: "",
+      description: "",
+      eyebrow: "",
+      commonSigns: [],
+      therapySupports: [],
+      crisisText: "",
+      nextStepsLinks: [],
+    })
+    setMonetaryPsychotherapyPage(loadedConfig.monetaryPsychotherapyPage ?? {
+      eyebrow: "",
+      title: "",
+      subtitle: "",
+      intro: "",
+      designedFor: [],
+      sessionFocus: [],
+      therapeuticPrinciples: [],
+      howWeBegin: [],
+    })
+    setFinancialAbuseTherapyPage(loadedConfig.financialAbuseTherapyPage ?? {
+      eyebrow: "",
+      title: "",
+      description: "",
+      therapyApproach: [],
+      sessionFormats: [],
+      nextStepsLinks: [],
+      faqs: [],
     })
     setBookingCopy({
       billingHighlights: loadedConfig.bookingCopy?.billingHighlights ?? [],
@@ -1118,6 +1208,18 @@ function CodeAgentBox() {
               <Info className="w-4 h-4" />
               <span className="hidden sm:inline">About</span>
             </TabsTrigger>
+            <TabsTrigger value="financial-abuse" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              <span className="hidden sm:inline">Financial Abuse</span>
+            </TabsTrigger>
+            <TabsTrigger value="monetary-psychotherapy" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              <span className="hidden sm:inline">Monetary Psychotherapy</span>
+            </TabsTrigger>
+            <TabsTrigger value="financial-abuse-therapy" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              <span className="hidden sm:inline">Financial Abuse Therapy</span>
+            </TabsTrigger>
             <TabsTrigger value="services" className="flex items-center gap-2">
               <Briefcase className="w-4 h-4" />
               <span className="hidden sm:inline">Services</span>
@@ -1440,6 +1542,370 @@ function CodeAgentBox() {
                    />
                  </div>
                  <Button onClick={() => saveAll("About Section")} disabled={saving !== null}>
+                   <Save className="w-4 h-4 mr-2" />
+                   Save Changes
+                 </Button>
+               </CardContent>
+             </Card>
+           </TabsContent>
+
+           {/* Financial Abuse Page Tab */}
+           <TabsContent value="financial-abuse" className="space-y-6">
+             <Card>
+               <CardHeader>
+                 <CardTitle className="flex items-center gap-2">
+                   <FileText className="w-5 h-5" />
+                   Edit Financial Abuse Page
+                 </CardTitle>
+                 <CardDescription>Update content for /financial-abuse page</CardDescription>
+               </CardHeader>
+               <CardContent className="space-y-4">
+                 <div className="space-y-2">
+                   <Label>Eyebrow Text</Label>
+                   <Input
+                     value={financialAbusePage?.eyebrow ?? ""}
+                     onChange={(e) => setFinancialAbusePage({ ...financialAbusePage, eyebrow: e.target.value })}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Title</Label>
+                   <Input
+                     value={financialAbusePage?.title ?? ""}
+                     onChange={(e) => setFinancialAbusePage({ ...financialAbusePage, title: e.target.value })}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Description</Label>
+                   <Textarea
+                     value={financialAbusePage?.description ?? ""}
+                     onChange={(e) => setFinancialAbusePage({ ...financialAbusePage, description: e.target.value })}
+                     rows={3}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Common Signs (one per line)</Label>
+                   <Textarea
+                     value={(financialAbusePage?.commonSigns ?? []).join("\n")}
+                     onChange={(e) => setFinancialAbusePage({ ...financialAbusePage, commonSigns: e.target.value.split("\n").filter(Boolean) })}
+                     rows={5}
+                     placeholder="Blocking access to accounts, payslips, or financial information"
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>How Therapy Supports Safety (one per line)</Label>
+                   <Textarea
+                     value={(financialAbusePage?.therapySupports ?? []).join("\n")}
+                     onChange={(e) => setFinancialAbusePage({ ...financialAbusePage, therapySupports: e.target.value.split("\n").filter(Boolean) })}
+                     rows={5}
+                     placeholder="Nervous‑system‑aware pacing to reduce overwhelm"
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Crisis Text</Label>
+                   <Textarea
+                     value={financialAbusePage?.crisisText ?? ""}
+                     onChange={(e) => setFinancialAbusePage({ ...financialAbusePage, crisisText: e.target.value })}
+                     rows={2}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Next Steps Links</Label>
+                   {(financialAbusePage?.nextStepsLinks ?? []).map((link, idx) => (
+                     <div key={idx} className="flex gap-2">
+                       <Input
+                         placeholder="Label"
+                         value={link.label}
+                         onChange={(e) => {
+                           const next = [...(financialAbusePage?.nextStepsLinks ?? [])]
+                           next[idx] = { ...next[idx], label: e.target.value }
+                           setFinancialAbusePage({ ...financialAbusePage, nextStepsLinks: next })
+                         }}
+                       />
+                       <Input
+                         placeholder="URL (e.g., /financial-abuse-therapy)"
+                         value={link.href}
+                         onChange={(e) => {
+                           const next = [...(financialAbusePage?.nextStepsLinks ?? [])]
+                           next[idx] = { ...next[idx], href: e.target.value }
+                           setFinancialAbusePage({ ...financialAbusePage, nextStepsLinks: next })
+                         }}
+                       />
+                       <Button
+                         variant="outline"
+                         onClick={() => {
+                           const next = [...(financialAbusePage?.nextStepsLinks ?? [])]
+                           next.splice(idx, 1)
+                           setFinancialAbusePage({ ...financialAbusePage, nextStepsLinks: next })
+                         }}
+                       >
+                         Remove
+                       </Button>
+                     </div>
+                   ))}
+                   <Button
+                     variant="outline"
+                     onClick={() => setFinancialAbusePage({ ...financialAbusePage, nextStepsLinks: [...(financialAbusePage?.nextStepsLinks ?? []), { label: "", href: "" }] })}
+                   >
+                     + Add Link
+                   </Button>
+                 </div>
+                 <Button onClick={() => saveAll("Financial Abuse Page")} disabled={saving !== null}>
+                   <Save className="w-4 h-4 mr-2" />
+                   Save Changes
+                 </Button>
+               </CardContent>
+             </Card>
+           </TabsContent>
+
+           {/* Monetary Psychotherapy Page Tab */}
+           <TabsContent value="monetary-psychotherapy" className="space-y-6">
+             <Card>
+               <CardHeader>
+                 <CardTitle className="flex items-center gap-2">
+                   <FileText className="w-5 h-5" />
+                   Edit Monetary Psychotherapy Page
+                 </CardTitle>
+                 <CardDescription>Update content for /monetary-psychotherapy page</CardDescription>
+               </CardHeader>
+               <CardContent className="space-y-4">
+                 <div className="space-y-2">
+                   <Label>Eyebrow Text</Label>
+                   <Input
+                     value={monetaryPsychotherapyPage?.eyebrow ?? ""}
+                     onChange={(e) => setMonetaryPsychotherapyPage({ ...monetaryPsychotherapyPage, eyebrow: e.target.value })}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Title</Label>
+                   <Input
+                     value={monetaryPsychotherapyPage?.title ?? ""}
+                     onChange={(e) => setMonetaryPsychotherapyPage({ ...monetaryPsychotherapyPage, title: e.target.value })}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Subtitle</Label>
+                   <Input
+                     value={monetaryPsychotherapyPage?.subtitle ?? ""}
+                     onChange={(e) => setMonetaryPsychotherapyPage({ ...monetaryPsychotherapyPage, subtitle: e.target.value })}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Intro Paragraph</Label>
+                   <Textarea
+                     value={monetaryPsychotherapyPage?.intro ?? ""}
+                     onChange={(e) => setMonetaryPsychotherapyPage({ ...monetaryPsychotherapyPage, intro: e.target.value })}
+                     rows={4}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Designed For (one per line)</Label>
+                   <Textarea
+                     value={(monetaryPsychotherapyPage?.designedFor ?? []).join("\n")}
+                     onChange={(e) => setMonetaryPsychotherapyPage({ ...monetaryPsychotherapyPage, designedFor: e.target.value.split("\n").filter(Boolean) })}
+                     rows={5}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Session Focus (one per line)</Label>
+                   <Textarea
+                     value={(monetaryPsychotherapyPage?.sessionFocus ?? []).join("\n")}
+                     onChange={(e) => setMonetaryPsychotherapyPage({ ...monetaryPsychotherapyPage, sessionFocus: e.target.value.split("\n").filter(Boolean) })}
+                     rows={5}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Therapeutic Principles</Label>
+                   {(monetaryPsychotherapyPage?.therapeuticPrinciples ?? []).map((principle, idx) => (
+                     <div key={idx} className="border rounded-lg p-4 space-y-2">
+                       <Input
+                         placeholder="Principle Title"
+                         value={principle.title}
+                         onChange={(e) => {
+                           const next = [...(monetaryPsychotherapyPage?.therapeuticPrinciples ?? [])]
+                           next[idx] = { ...next[idx], title: e.target.value }
+                           setMonetaryPsychotherapyPage({ ...monetaryPsychotherapyPage, therapeuticPrinciples: next })
+                         }}
+                       />
+                       <Textarea
+                         placeholder="Principle Body"
+                         value={principle.body}
+                         onChange={(e) => {
+                           const next = [...(monetaryPsychotherapyPage?.therapeuticPrinciples ?? [])]
+                           next[idx] = { ...next[idx], body: e.target.value }
+                           setMonetaryPsychotherapyPage({ ...monetaryPsychotherapyPage, therapeuticPrinciples: next })
+                         }}
+                         rows={2}
+                       />
+                       <Button
+                         variant="outline"
+                         size="sm"
+                         onClick={() => {
+                           const next = [...(monetaryPsychotherapyPage?.therapeuticPrinciples ?? [])]
+                           next.splice(idx, 1)
+                           setMonetaryPsychotherapyPage({ ...monetaryPsychotherapyPage, therapeuticPrinciples: next })
+                         }}
+                       >
+                         Remove
+                       </Button>
+                     </div>
+                   ))}
+                   <Button
+                     variant="outline"
+                     onClick={() => setMonetaryPsychotherapyPage({ ...monetaryPsychotherapyPage, therapeuticPrinciples: [...(monetaryPsychotherapyPage?.therapeuticPrinciples ?? []), { title: "", body: "" }] })}
+                   >
+                     + Add Principle
+                   </Button>
+                 </div>
+                 <div className="space-y-2">
+                   <Label>How We Begin (one per line)</Label>
+                   <Textarea
+                     value={(monetaryPsychotherapyPage?.howWeBegin ?? []).join("\n")}
+                     onChange={(e) => setMonetaryPsychotherapyPage({ ...monetaryPsychotherapyPage, howWeBegin: e.target.value.split("\n").filter(Boolean) })}
+                     rows={4}
+                   />
+                 </div>
+                 <Button onClick={() => saveAll("Monetary Psychotherapy Page")} disabled={saving !== null}>
+                   <Save className="w-4 h-4 mr-2" />
+                   Save Changes
+                 </Button>
+               </CardContent>
+             </Card>
+           </TabsContent>
+
+           {/* Financial Abuse Therapy Page Tab */}
+           <TabsContent value="financial-abuse-therapy" className="space-y-6">
+             <Card>
+               <CardHeader>
+                 <CardTitle className="flex items-center gap-2">
+                   <FileText className="w-5 h-5" />
+                   Edit Financial Abuse Therapy Page
+                 </CardTitle>
+                 <CardDescription>Update content for /financial-abuse-therapy page</CardDescription>
+               </CardHeader>
+               <CardContent className="space-y-4">
+                 <div className="space-y-2">
+                   <Label>Eyebrow Text</Label>
+                   <Input
+                     value={financialAbuseTherapyPage?.eyebrow ?? ""}
+                     onChange={(e) => setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, eyebrow: e.target.value })}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Title</Label>
+                   <Input
+                     value={financialAbuseTherapyPage?.title ?? ""}
+                     onChange={(e) => setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, title: e.target.value })}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Description</Label>
+                   <Textarea
+                     value={financialAbuseTherapyPage?.description ?? ""}
+                     onChange={(e) => setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, description: e.target.value })}
+                     rows={3}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Therapy Approach (one per line)</Label>
+                   <Textarea
+                     value={(financialAbuseTherapyPage?.therapyApproach ?? []).join("\n")}
+                     onChange={(e) => setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, therapyApproach: e.target.value.split("\n").filter(Boolean) })}
+                     rows={5}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Session Formats (one per line)</Label>
+                   <Textarea
+                     value={(financialAbuseTherapyPage?.sessionFormats ?? []).join("\n")}
+                     onChange={(e) => setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, sessionFormats: e.target.value.split("\n").filter(Boolean) })}
+                     rows={4}
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label>Next Steps Links</Label>
+                   {(financialAbuseTherapyPage?.nextStepsLinks ?? []).map((link, idx) => (
+                     <div key={idx} className="flex gap-2">
+                       <Input
+                         placeholder="Label"
+                         value={link.label}
+                         onChange={(e) => {
+                           const next = [...(financialAbuseTherapyPage?.nextStepsLinks ?? [])]
+                           next[idx] = { ...next[idx], label: e.target.value }
+                           setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, nextStepsLinks: next })
+                         }}
+                       />
+                       <Input
+                         placeholder="URL"
+                         value={link.href}
+                         onChange={(e) => {
+                           const next = [...(financialAbuseTherapyPage?.nextStepsLinks ?? [])]
+                           next[idx] = { ...next[idx], href: e.target.value }
+                           setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, nextStepsLinks: next })
+                         }}
+                       />
+                       <Button
+                         variant="outline"
+                         onClick={() => {
+                           const next = [...(financialAbuseTherapyPage?.nextStepsLinks ?? [])]
+                           next.splice(idx, 1)
+                           setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, nextStepsLinks: next })
+                         }}
+                       >
+                         Remove
+                       </Button>
+                     </div>
+                   ))}
+                   <Button
+                     variant="outline"
+                     onClick={() => setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, nextStepsLinks: [...(financialAbuseTherapyPage?.nextStepsLinks ?? []), { label: "", href: "" }] })}
+                   >
+                     + Add Link
+                   </Button>
+                 </div>
+                 <div className="space-y-2">
+                   <Label>FAQs</Label>
+                   {(financialAbuseTherapyPage?.faqs ?? []).map((faq, idx) => (
+                     <div key={idx} className="border rounded-lg p-4 space-y-2">
+                       <Input
+                         placeholder="Question"
+                         value={faq.question}
+                         onChange={(e) => {
+                           const next = [...(financialAbuseTherapyPage?.faqs ?? [])]
+                           next[idx] = { ...next[idx], question: e.target.value }
+                           setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, faqs: next })
+                         }}
+                       />
+                       <Textarea
+                         placeholder="Answer"
+                         value={faq.answer}
+                         onChange={(e) => {
+                           const next = [...(financialAbuseTherapyPage?.faqs ?? [])]
+                           next[idx] = { ...next[idx], answer: e.target.value }
+                           setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, faqs: next })
+                         }}
+                         rows={2}
+                       />
+                       <Button
+                         variant="outline"
+                         size="sm"
+                         onClick={() => {
+                           const next = [...(financialAbuseTherapyPage?.faqs ?? [])]
+                           next.splice(idx, 1)
+                           setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, faqs: next })
+                         }}
+                       >
+                         Remove
+                       </Button>
+                     </div>
+                   ))}
+                   <Button
+                     variant="outline"
+                     onClick={() => setFinancialAbuseTherapyPage({ ...financialAbuseTherapyPage, faqs: [...(financialAbuseTherapyPage?.faqs ?? []), { question: "", answer: "" }] })}
+                   >
+                     + Add FAQ
+                   </Button>
+                 </div>
+                 <Button onClick={() => saveAll("Financial Abuse Therapy Page")} disabled={saving !== null}>
                    <Save className="w-4 h-4 mr-2" />
                    Save Changes
                  </Button>
