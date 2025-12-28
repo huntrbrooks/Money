@@ -259,7 +259,6 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
                       className="flex items-center justify-center rounded-full border border-[#c8d4cf] bg-white/35 px-4 py-2 shadow-sm"
                     >
                       {logoUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={logoUrl}
                           alt={label}

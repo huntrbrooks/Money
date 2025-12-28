@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Phone, Mail, Facebook, Instagram, Linkedin } from "lucide-react"
-import { LogoMark } from "@/components/logo"
 
 type NavLink = { label: string; href: string }
 type Config = {
