@@ -13,8 +13,6 @@ type BlogPageProps = {
 
 // Force static generation - don't generate pages on-demand for unknown slugs
 export const dynamicParams = false
-// Ensure static generation at build time
-export const dynamic = 'force-static'
 
 export async function generateStaticParams() {
   const posts = await getAllPostsMeta()
