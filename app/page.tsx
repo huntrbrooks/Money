@@ -484,7 +484,7 @@ export default async function HomePage() {
                           </a>
 
                           <a
-                            href={contactEmail ? `mailto:${contactEmail}?subject=Contact%20Request` : "mailto:?subject=Contact%20Request"}
+                            href={`mailto:${contactEmail || "dan@financialabusetherapist.com.au"}?subject=Contact%20Request`}
                             className="flex flex-col items-center md:items-start gap-4 p-6 bg-transparent rounded-lg hover:shadow-lg transition-all group border border-transparent hover:border-[var(--accent)] sm:flex-row sm:items-center"
                           >
                             <div className="size-14 bg-[var(--accent)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
