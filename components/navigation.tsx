@@ -250,7 +250,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
       <div className="container mx-auto px-6 md:px-8 py-16">
         <div className="grid gap-12 md:gap-16 lg:gap-20 md:grid-cols-3 max-w-6xl mx-auto">
           {/* Brand */}
-          <div className="flex flex-col space-y-5">
+          <div className="flex flex-col space-y-5 text-center md:text-left">
             <h3 className="font-serif text-2xl md:text-3xl font-light leading-tight">{cfg.brand?.name ?? "The Financial Therapist"}</h3>
             <p className="text-[var(--primary)]/80 leading-relaxed text-sm md:text-base">
               {cfg.brand?.tagline ??
@@ -259,7 +259,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
           </div>
 
           {/* Quick Links */}
-          <div className="flex flex-col space-y-5">
+          <div className="flex flex-col space-y-5 text-center md:text-left">
             <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)] mb-1">Quick Links</h4>
             <nav className="flex flex-col gap-2.5">
               {links.map((l) => (
@@ -282,12 +282,12 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
           {/* Contact */}
           <div className="flex flex-col space-y-6">
             <div className="space-y-5">
-              <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)] mb-1">Contact</h4>
+              <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)] mb-1 text-center md:text-left">Contact</h4>
               <div className="space-y-4">
                 {cfg.contact?.phone && (
                   <a
                     href={`tel:${cfg.contact.phone.replace(/\s+/g, "")}`}
-                    className="flex items-center gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                    className="flex items-center justify-center md:justify-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
                   >
                     <div className="w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Phone className="w-4 h-4 text-white" />
@@ -298,7 +298,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
                 {cfg.contact?.email && (
                   <a
                     href={`mailto:${cfg.contact.email}`}
-                    className="flex items-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                    className="flex items-start justify-center md:justify-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
                   >
                     <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform mt-0.5">
                       <Mail className="w-4 h-4 text-white" />
@@ -309,7 +309,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
                 {cfg.contact?.emailAlt && cfg.contact.emailAlt !== cfg.contact.email && (
                   <a
                     href={`mailto:${cfg.contact.emailAlt}`}
-                    className="flex items-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                    className="flex items-start justify-center md:justify-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
                   >
                     <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform mt-0.5">
                       <Mail className="w-4 h-4 text-white" />
@@ -322,8 +322,8 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
 
             {/* Social */}
             <div className="space-y-4">
-              <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)] mb-1">Follow Dan</h4>
-              <div className="flex items-center gap-3">
+              <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)] mb-4 text-center md:text-left">Follow Dan</h4>
+              <div className="flex items-center justify-center md:justify-start gap-3">
                 <a
                   href={cfg.social?.facebook || "https://www.facebook.com/the.melbourne.counsellor/"}
                   target="_blank"

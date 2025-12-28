@@ -121,7 +121,7 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-32">
           <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 items-center max-w-7xl mx-auto">
             {/* Left Column - Text */}
-            <div className="order-2 space-y-8 sm:space-y-10 lg:order-1 lg:pr-12">
+            <div className="order-2 space-y-8 sm:space-y-10 lg:order-1 lg:pr-12 text-center lg:text-left">
               <div className="space-y-6">
                 {eyebrow ? (
                   <p className="text-[#6b7d86] text-xs uppercase tracking-[0.3em] font-semibold">{eyebrow}</p>
@@ -131,14 +131,14 @@ export default async function HomePage() {
                 </h1>
               </div>
 
-              <div className="space-y-5 text-base sm:text-lg leading-relaxed text-[var(--foreground)]/90 max-w-2xl">
+              <div className="space-y-5 text-base sm:text-lg leading-relaxed text-[var(--foreground)]/90 max-w-2xl mx-auto lg:mx-0">
                 <p className="text-xl sm:text-2xl text-[var(--foreground)] font-serif font-medium">
                   {hero.subtitle}
                 </p>
                 <p className="text-[var(--foreground)]/80">{hero.description}</p>
               </div>
 
-              <div className="pt-4 flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
+              <div className="pt-4 flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
                 <Button
                   asChild
                   size="lg"
@@ -202,7 +202,7 @@ export default async function HomePage() {
                         {copy.valuePropsHeading ?? "Therapy that honours your nervous system"}
                       </h2>
                     </div>
-                    <div className="grid gap-6 md:grid-cols-3 text-left">
+                    <div className="grid gap-6 md:grid-cols-3 text-center md:text-left">
                       {valueProps.map((item, idx) => (
                         <div
                           key={`value-prop-${idx}`}
@@ -524,7 +524,7 @@ export default async function HomePage() {
                   <div className="max-w-4xl mx-auto">
                     <div className="grid gap-12 lg:gap-16 md:grid-cols-2">
                       {/* Left - Heading */}
-                      <div className="space-y-8">
+                      <div className="space-y-8 text-center md:text-left">
                         <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-light">
                           {copy.contactHeading ?? "When you're ready, I'm here."}
                         </h2>
@@ -539,12 +539,12 @@ export default async function HomePage() {
                         <div className="space-y-5">
                           <a
                             href={contactPhone ? `tel:${contactPhone.replace(/\s+/g, "")}` : "tel:"}
-                            className="flex flex-col items-start gap-4 p-6 bg-transparent rounded-lg hover:shadow-lg transition-all group border border-transparent hover:border-[var(--primary)] sm:flex-row sm:items-center"
+                            className="flex flex-col items-center md:items-start gap-4 p-6 bg-transparent rounded-lg hover:shadow-lg transition-all group border border-transparent hover:border-[var(--primary)] sm:flex-row sm:items-center"
                           >
                             <div className="size-14 bg-[var(--primary)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                               <Phone className="w-6 h-6 text-white" />
                             </div>
-                            <div>
+                            <div className="text-center md:text-left">
                               <p className="text-xs text-[var(--primary)] uppercase tracking-wider font-semibold">Phone</p>
                               <p className="text-xl text-[var(--foreground)] font-medium">{contactPhone || "—"}</p>
                             </div>
@@ -552,12 +552,12 @@ export default async function HomePage() {
 
                           <a
                             href={contactEmail ? `mailto:${contactEmail}` : "mailto:"}
-                            className="flex flex-col items-start gap-4 p-6 bg-transparent rounded-lg hover:shadow-lg transition-all group border border-transparent hover:border-[var(--accent)] sm:flex-row sm:items-center"
+                            className="flex flex-col items-center md:items-start gap-4 p-6 bg-transparent rounded-lg hover:shadow-lg transition-all group border border-transparent hover:border-[var(--accent)] sm:flex-row sm:items-center"
                           >
                             <div className="size-14 bg-[var(--accent)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                               <Mail className="w-6 h-6 text-white" />
                             </div>
-                            <div>
+                            <div className="text-center md:text-left">
                               <p className="text-xs text-[var(--primary)] uppercase tracking-wider font-semibold">Email</p>
                               <p className="text-xl text-[var(--foreground)] font-medium break-words">{contactEmail || "—"}</p>
                             </div>
