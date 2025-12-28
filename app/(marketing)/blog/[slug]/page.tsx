@@ -11,6 +11,9 @@ type BlogPageProps = {
   params: { slug: string }
 }
 
+// Force static generation - don't generate pages on-demand for unknown slugs
+export const dynamicParams = false
+
 export async function generateStaticParams() {
   const posts = await getAllPostsMeta()
   return posts.map((post) => ({ slug: post.slug }))
