@@ -49,11 +49,14 @@ export type LegalPageConfig = {
   bodyMdx?: string
   // Optional downloadable document (e.g. docx/pdf). This should be a public URL or `/api/assets/...`.
   downloadUrl?: string
+  // Optional: used by the Consent page acknowledgement flow.
+  requiredStatement?: string
 }
 
 export type LegalConfig = {
   privacy?: LegalPageConfig
   terms?: LegalPageConfig
+  consent?: LegalPageConfig
 }
 
 export type ClientCareConfig = {
@@ -67,9 +70,23 @@ export type BookingCopyItem = {
   detail: string
 }
 
+export type PaymentOption = {
+  id: string
+  label: string
+  /**
+   * If omitted (legacy), treat as enabled.
+   */
+  enabled?: boolean
+  /**
+   * Optional logo image URL (prefer `/api/assets/...` from Admin uploads).
+   */
+  logoUrl?: string
+}
+
 export type BookingCopy = {
   billingHighlights?: BookingCopyItem[]
   paymentSupport?: BookingCopyItem[]
+  paymentOptions?: PaymentOption[]
   schedulerPoints?: string[]
   schedulerHelpText?: string
 }
@@ -129,6 +146,99 @@ export type FormsConfig = {
   intake?: string
 }
 
+export type FormFieldOption = {
+  value: string
+  label: string
+}
+
+export type FormField =
+  | {
+      type: "text" | "email" | "tel"
+      name: string
+      label: string
+      required?: boolean
+      placeholder?: string
+      helperText?: string
+    }
+  | {
+      type: "textarea"
+      name: string
+      label: string
+      required?: boolean
+      placeholder?: string
+      helperText?: string
+      rows?: number
+    }
+  | {
+      type: "select"
+      name: string
+      label: string
+      required?: boolean
+      placeholder?: string
+      helperText?: string
+      options: FormFieldOption[]
+    }
+  | {
+      type: "checkbox"
+      name: string
+      label: string
+      required?: boolean
+      helperText?: string
+      /**
+       * If provided, the checkbox must be true (server will validate).
+       */
+      mustBeTrue?: boolean
+      defaultChecked?: boolean
+    }
+  | {
+      type: "slider"
+      name: string
+      label: string
+      required?: boolean
+      helperText?: string
+      min: number
+      max: number
+      step?: number
+      defaultValue?: number
+    }
+
+export type FormSection = {
+  title?: string
+  description?: string
+  /**
+   * Layout hint for UI (keeps the current look while still being schema-driven).
+   */
+  layout?: "stack" | "grid-2" | "grid-3"
+  fields: FormField[]
+}
+
+export type FormStep = {
+  label: string
+  /**
+   * A step is considered complete when ALL of these fields are non-empty (or true for mustBeTrue checkboxes).
+   */
+  completeWhenAllOf: string[]
+}
+
+export type FormPage = {
+  title: string
+  subtitle?: string
+  intro?: string
+  action: string
+  submitLabel: string
+  successMessage: string
+  errorMessageMissingRequired?: string
+  steps?: FormStep[]
+  sections: FormSection[]
+}
+
+export type FormPagesConfig = {
+  enquiry?: FormPage
+  intake?: FormPage
+  consent?: FormPage
+  newsletter?: FormPage
+}
+
 export type ValueProp = {
   title: string
   description: string
@@ -176,6 +286,8 @@ export type HomepageCopy = {
   newsletterCtaLabel?: string
   newsletterTags?: string[]
 
+  // Feature CTA shown above the Important Links section (calls the configured phone number).
+  importantLinksCallCtaLabel?: string
   importantLinksHeading?: string
   importantLinksSubheading?: string
 
@@ -279,6 +391,7 @@ export type SiteConfig = {
   consultations?: ConsultationOption[]
   resources?: CrisisResource[]
   forms?: FormsConfig
+  formPages?: FormPagesConfig
   homepage?: HomepageContent
   experiments?: ExperimentsConfig
   social?: SocialLinks
@@ -326,7 +439,7 @@ export const defaultConfig: SiteConfig = {
   contact: {
     phone: "0467 477 786",
     email: "dan@financialabusetherapist.com.au",
-    emailAlt: "dan@financialabusetherapist.com",
+    emailAlt: "",
   },
   social: {
     facebook: "https://www.facebook.com/the.melbourne.counsellor/",
@@ -343,6 +456,12 @@ export const defaultConfig: SiteConfig = {
       title: "Terms of Service",
       downloadUrl: "/Terms%20of%20Service.docx",
       bodyMdx: "",
+    },
+    consent: {
+      title: "Consent & Policies",
+      downloadUrl: "/Consent%20and%20Policies.docx",
+      bodyMdx: "",
+      requiredStatement: "I have read & I understand the contents of this document",
     },
   },
   clientCare: {
@@ -372,6 +491,13 @@ export const defaultConfig: SiteConfig = {
     paymentSupport: [
       { title: "Cards & wallets", detail: "Visa, Mastercard, AMEX, Apple Pay and Google Pay are accepted." },
       { title: "Invoices available", detail: "Detailed receipts can be provided for reimbursement claims." },
+    ],
+    paymentOptions: [
+      { id: "visa", label: "Visa", enabled: true, logoUrl: "" },
+      { id: "mastercard", label: "Mastercard", enabled: true, logoUrl: "" },
+      { id: "amex", label: "AMEX", enabled: true, logoUrl: "" },
+      { id: "apple-pay", label: "Apple Pay", enabled: true, logoUrl: "" },
+      { id: "google-pay", label: "Google Pay", enabled: true, logoUrl: "" },
     ],
     schedulerPoints: [
       "Fees shown above already include GST and reflect the exact session length.",
@@ -469,6 +595,340 @@ export const defaultConfig: SiteConfig = {
     enquiry: "",
     consent: "",
     intake: "",
+  },
+  formPages: {
+    enquiry: {
+      title: "Enquiry Form",
+      subtitle: "We’ll get back to you as soon as possible.",
+      action: "/api/enquiry",
+      submitLabel: "Send",
+      successMessage: "Thank you — your enquiry has been sent.",
+      errorMessageMissingRequired: "Please complete all required fields.",
+      steps: [
+        { label: "About you", completeWhenAllOf: ["firstName", "email", "phone"] },
+        { label: "Support focus", completeWhenAllOf: ["message"] },
+        { label: "Consent", completeWhenAllOf: ["consentAccepted"] },
+      ],
+      sections: [
+        {
+          title: "About you",
+          layout: "grid-2",
+          fields: [
+            { type: "text", name: "firstName", label: "First Name", required: true },
+            { type: "text", name: "lastName", label: "Last Name", required: false },
+            { type: "email", name: "email", label: "Email", required: true },
+            { type: "tel", name: "phone", label: "Mobile Phone Number", required: true },
+          ],
+        },
+        {
+          title: "Support focus",
+          layout: "stack",
+          fields: [
+            { type: "textarea", name: "message", label: "Message", required: true, rows: 6 },
+            {
+              type: "textarea",
+              name: "supportFocus",
+              label: "What feels most helpful to focus on?",
+              required: false,
+              rows: 4,
+              placeholder: "e.g. financial control in my relationship, rebuilding trust after separation…",
+            },
+            {
+              type: "select",
+              name: "preferredFormat",
+              label: "Preferred session format",
+              required: false,
+              options: [
+                { value: "", label: "Select" },
+                { value: "Telehealth", label: "Telehealth (Zoom)" },
+                { value: "In-person", label: "In-person (St Kilda Rd)" },
+                { value: "In-home", label: "In-home consultation" },
+                { value: "Walk & Discuss", label: "Walk & Discuss therapy" },
+                { value: "Not sure", label: "Not sure yet" },
+              ],
+            },
+          ],
+        },
+        {
+          title: "Consent",
+          layout: "stack",
+          fields: [
+            {
+              type: "checkbox",
+              name: "updatesOptIn",
+              label: "Send me the Financial Safety Check-in and occasional updates (you can unsubscribe anytime).",
+              required: false,
+              defaultChecked: false,
+            },
+            {
+              type: "checkbox",
+              name: "consentAccepted",
+              label: "I’ve read the consent & policies and understand urgent support is available in the Client Care Hub.",
+              required: true,
+              mustBeTrue: true,
+              defaultChecked: false,
+            },
+          ],
+        },
+      ],
+    },
+    intake: {
+      title: "Intake Form",
+      subtitle: "Please complete this form before your first appointment.",
+      action: "/api/intake",
+      submitLabel: "Send",
+      successMessage: "Thank you — your intake form has been sent.",
+      errorMessageMissingRequired: "Please complete all required fields.",
+      sections: [
+        {
+          title: "Contact",
+          layout: "grid-2",
+          fields: [
+            { type: "text", name: "firstName", label: "First Name", required: true },
+            { type: "text", name: "lastName", label: "Last Name", required: true },
+            { type: "email", name: "email", label: "Email", required: true },
+            { type: "tel", name: "phone", label: "Mobile Phone Number", required: true },
+          ],
+        },
+        {
+          title: "Address",
+          layout: "grid-2",
+          fields: [
+            {
+              type: "select",
+              name: "country",
+              label: "Country",
+              required: true,
+              options: [{ value: "Australia", label: "Australia" }],
+            },
+            { type: "text", name: "address1", label: "Address Line 1", required: true },
+            { type: "text", name: "address2", label: "Address Line 2", required: false },
+            { type: "text", name: "suburb", label: "Suburb", required: true },
+            {
+              type: "select",
+              name: "state",
+              label: "State",
+              required: true,
+              options: [
+                { value: "VIC", label: "VIC" },
+                { value: "NSW", label: "NSW" },
+                { value: "QLD", label: "QLD" },
+                { value: "SA", label: "SA" },
+                { value: "WA", label: "WA" },
+                { value: "TAS", label: "TAS" },
+                { value: "NT", label: "NT" },
+                { value: "ACT", label: "ACT" },
+              ],
+            },
+            { type: "text", name: "postcode", label: "Postcode", required: true },
+          ],
+        },
+        {
+          title: "Background",
+          layout: "grid-2",
+          fields: [
+            { type: "text", name: "date", label: "Date (dd/mm/yyyy)", required: true, placeholder: "dd/mm/yyyy" },
+            { type: "text", name: "occupation", label: "Occupation", required: false },
+            {
+              type: "select",
+              name: "relationshipStatus",
+              label: "Are you currently in any form of relationship?",
+              required: false,
+              options: [
+                { value: "", label: "Select" },
+                { value: "single", label: "Single" },
+                { value: "relationship", label: "In a relationship" },
+                { value: "married", label: "Married" },
+                { value: "separated", label: "Separated" },
+                { value: "divorced", label: "Divorced" },
+                { value: "widowed", label: "Widowed" },
+                { value: "prefer_not", label: "Prefer not to say" },
+              ],
+            },
+            {
+              type: "select",
+              name: "haveChildren",
+              label: "Do you have any children?",
+              required: false,
+              options: [
+                { value: "", label: "Select" },
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+                { value: "prefer_not", label: "Prefer not to say" },
+              ],
+            },
+            { type: "text", name: "nextOfKinName", label: "Next of Kin (In case of emergency)", required: false },
+            { type: "tel", name: "nextOfKinPhone", label: "Phone number for Next of Kin", required: false },
+          ],
+        },
+        {
+          title: "Health snapshot",
+          layout: "grid-2",
+          fields: [
+            { type: "slider", name: "generalHealth", label: "How would you consider your general health?", required: false, min: 1, max: 5, defaultValue: 3 },
+            {
+              type: "select",
+              name: "seenCounsellor",
+              label: "Have you previously seen a counsellor or psychologist?",
+              required: false,
+              options: [
+                { value: "", label: "Select" },
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+              ],
+            },
+            {
+              type: "select",
+              name: "onMedication",
+              label: "Are you on any medication from any previous issue?",
+              required: false,
+              options: [
+                { value: "", label: "Select" },
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+              ],
+            },
+            { type: "text", name: "medicationDetails", label: "If yes, medication details", required: false },
+            {
+              type: "select",
+              name: "experiencingDepression",
+              label: "Are you currently experiencing overwhelming sadness, grief or depression?",
+              required: false,
+              options: [
+                { value: "", label: "Select" },
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+              ],
+            },
+            {
+              type: "select",
+              name: "suicidalThoughts",
+              label: "Have you ever had any suicidal thoughts?",
+              required: false,
+              options: [
+                { value: "", label: "Select" },
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+              ],
+            },
+            {
+              type: "select",
+              name: "familyMentalHealthHistory",
+              label: "Has any family member identified with any mental health issue?",
+              required: false,
+              options: [
+                { value: "", label: "Select" },
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+                { value: "unsure", label: "Unsure" },
+              ],
+            },
+            { type: "slider", name: "sleepingHabits", label: "How would you consider your sleeping habits?", required: false, min: 1, max: 5, defaultValue: 3 },
+            { type: "slider", name: "physicalHealth", label: "How would you rate your current physical health?", required: false, min: 1, max: 5, defaultValue: 3 },
+            {
+              type: "select",
+              name: "exerciseFrequency",
+              label: "Do you do any form of exercise? If so, how often?",
+              required: false,
+              options: [
+                { value: "", label: "Select" },
+                { value: "none", label: "None" },
+                { value: "1-2_per_week", label: "1–2 times per week" },
+                { value: "3-4_per_week", label: "3–4 times per week" },
+                { value: "5+_per_week", label: "5+ times per week" },
+              ],
+            },
+            {
+              type: "select",
+              name: "chronicPain",
+              label: "Are you currently experiencing any form of chronic pain?",
+              required: false,
+              options: [
+                { value: "", label: "Select" },
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+              ],
+            },
+            {
+              type: "select",
+              name: "useAlcoholOrDrugsForPain",
+              label: "Are you currently using any alcohol or drugs for pain management?",
+              required: false,
+              options: [
+                { value: "", label: "Select" },
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+              ],
+            },
+            {
+              type: "select",
+              name: "recentRecreationalDrugUse",
+              label: "Have you recently used any recreational drugs?",
+              required: false,
+              options: [
+                { value: "", label: "Select" },
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+              ],
+            },
+          ],
+        },
+        {
+          title: "Goals",
+          layout: "stack",
+          fields: [
+            { type: "textarea", name: "mainReason", label: "What is the main reason/s you are seeking therapy?", required: false, rows: 6 },
+            { type: "textarea", name: "otherInformation", label: "Is there any other information you think might be important?", required: false, rows: 5 },
+          ],
+        },
+      ],
+    },
+    consent: {
+      title: "Consent Acknowledgement",
+      subtitle: "Complete the acknowledgement below.",
+      action: "/api/consent",
+      submitLabel: "Send",
+      successMessage: "Thank you — your consent has been recorded and sent.",
+      errorMessageMissingRequired: "Please complete all required fields.",
+      sections: [
+        {
+          title: "Acknowledgement",
+          layout: "stack",
+          fields: [
+            { type: "text", name: "statement", label: "Required statement", required: true },
+            { type: "text", name: "firstName", label: "First Name", required: true },
+            { type: "text", name: "lastName", label: "Last Name", required: true },
+            { type: "text", name: "date", label: "Date (dd/mm/yyyy)", required: true, placeholder: "dd/mm/yyyy" },
+            { type: "text", name: "fullName", label: "Print Full Name", required: true },
+          ],
+        },
+      ],
+    },
+    newsletter: {
+      title: "Download the 5-step Financial Safety Check-in",
+      subtitle: "Pop your details below and we'll send the grounding checklist, plus gentle updates you can opt-out of anytime.",
+      action: "/api/subscribe",
+      submitLabel: "Send it to me",
+      successMessage: "Check your inbox — thanks for subscribing — your resource is on the way.",
+      errorMessageMissingRequired: "Please complete all required fields.",
+      sections: [
+        {
+          title: "",
+          layout: "stack",
+          fields: [
+            { type: "text", name: "name", label: "First name", required: false, placeholder: "Sasha" },
+            { type: "email", name: "email", label: "Email", required: true, placeholder: "you@email.com" },
+            {
+              type: "checkbox",
+              name: "consent",
+              label: 'By subscribing you consent to receive updates from Dan Lobel. You can unsubscribe anytime. Read the privacy policy for details.',
+              required: false,
+              defaultChecked: false,
+            },
+          ],
+        },
+      ],
+    },
   },
   homepage: {
     sections: {
@@ -667,6 +1127,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
           legal: {
             privacy: { ...(defaultConfig.legal?.privacy ?? {}), ...(parsed.legal?.privacy ?? {}) },
             terms: { ...(defaultConfig.legal?.terms ?? {}), ...(parsed.legal?.terms ?? {}) },
+            consent: { ...(defaultConfig.legal?.consent ?? {}), ...(parsed.legal?.consent ?? {}) },
           },
           clientCare: {
             downloads: parsed.clientCare?.downloads ?? defaultConfig.clientCare?.downloads,
@@ -678,6 +1139,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
             ...(parsed.bookingCopy ?? {}),
             billingHighlights: parsed.bookingCopy?.billingHighlights ?? defaultConfig.bookingCopy?.billingHighlights,
             paymentSupport: parsed.bookingCopy?.paymentSupport ?? defaultConfig.bookingCopy?.paymentSupport,
+            paymentOptions: parsed.bookingCopy?.paymentOptions ?? defaultConfig.bookingCopy?.paymentOptions,
             schedulerPoints: parsed.bookingCopy?.schedulerPoints ?? defaultConfig.bookingCopy?.schedulerPoints,
             schedulerHelpText: parsed.bookingCopy?.schedulerHelpText ?? defaultConfig.bookingCopy?.schedulerHelpText,
           },
@@ -687,6 +1149,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
           consultations: parsed.consultations ?? defaultConfig.consultations,
           resources: normalizeCarouselResources(parsed.resources ?? defaultConfig.resources),
           forms: { ...(defaultConfig.forms ?? {}), ...(parsed.forms ?? {}) },
+          formPages: { ...(defaultConfig.formPages ?? {}), ...(parsed.formPages ?? {}) },
           homepage: (() => {
             const defaults = defaultConfig.homepage ?? {}
             const hp = (parsed.homepage ?? {}) as Partial<HomepageContent>
@@ -734,6 +1197,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       legal: {
         privacy: { ...(defaultConfig.legal?.privacy ?? {}), ...(parsed.legal?.privacy ?? {}) },
         terms: { ...(defaultConfig.legal?.terms ?? {}), ...(parsed.legal?.terms ?? {}) },
+        consent: { ...(defaultConfig.legal?.consent ?? {}), ...(parsed.legal?.consent ?? {}) },
       },
       clientCare: {
         downloads: parsed.clientCare?.downloads ?? defaultConfig.clientCare?.downloads,
@@ -745,6 +1209,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
         ...(parsed.bookingCopy ?? {}),
         billingHighlights: parsed.bookingCopy?.billingHighlights ?? defaultConfig.bookingCopy?.billingHighlights,
         paymentSupport: parsed.bookingCopy?.paymentSupport ?? defaultConfig.bookingCopy?.paymentSupport,
+        paymentOptions: parsed.bookingCopy?.paymentOptions ?? defaultConfig.bookingCopy?.paymentOptions,
         schedulerPoints: parsed.bookingCopy?.schedulerPoints ?? defaultConfig.bookingCopy?.schedulerPoints,
         schedulerHelpText: parsed.bookingCopy?.schedulerHelpText ?? defaultConfig.bookingCopy?.schedulerHelpText,
       },
@@ -754,6 +1219,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       consultations: parsed.consultations ?? defaultConfig.consultations,
       resources: normalizeCarouselResources(parsed.resources ?? defaultConfig.resources),
       forms: { ...(defaultConfig.forms ?? {}), ...(parsed.forms ?? {}) },
+      formPages: { ...(defaultConfig.formPages ?? {}), ...(parsed.formPages ?? {}) },
       homepage: (() => {
         const defaults = defaultConfig.homepage ?? {}
       const hp = (parsed.homepage ?? {}) as Partial<HomepageContent>
@@ -824,12 +1290,14 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
     legal: {
       privacy: { ...(defaultConfig.legal?.privacy ?? {}), ...(newConfig.legal?.privacy ?? {}) },
       terms: { ...(defaultConfig.legal?.terms ?? {}), ...(newConfig.legal?.terms ?? {}) },
+      consent: { ...(defaultConfig.legal?.consent ?? {}), ...(newConfig.legal?.consent ?? {}) },
     },
     bookingCopy: {
       ...(defaultConfig.bookingCopy ?? {}),
       ...(newConfig.bookingCopy ?? {}),
       billingHighlights: newConfig.bookingCopy?.billingHighlights ?? defaultConfig.bookingCopy?.billingHighlights,
       paymentSupport: newConfig.bookingCopy?.paymentSupport ?? defaultConfig.bookingCopy?.paymentSupport,
+      paymentOptions: newConfig.bookingCopy?.paymentOptions ?? defaultConfig.bookingCopy?.paymentOptions,
       schedulerPoints: newConfig.bookingCopy?.schedulerPoints ?? defaultConfig.bookingCopy?.schedulerPoints,
       schedulerHelpText: newConfig.bookingCopy?.schedulerHelpText ?? defaultConfig.bookingCopy?.schedulerHelpText,
     },
@@ -839,6 +1307,7 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
     consultations: newConfig.consultations ?? defaultConfig.consultations,
     resources: normalizeCarouselResources(newConfig.resources ?? defaultConfig.resources),
     forms: { ...(defaultConfig.forms ?? {}), ...(newConfig.forms ?? {}) },
+    formPages: { ...(defaultConfig.formPages ?? {}), ...(newConfig.formPages ?? {}) },
     homepage: (() => {
       const defaults = defaultConfig.homepage ?? {}
       const hp = (newConfig.homepage ?? {}) as Partial<HomepageContent>

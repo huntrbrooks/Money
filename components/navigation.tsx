@@ -17,94 +17,32 @@ export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cfg, setCfg] = useState<Config>({})
   const brandLogo = cfg.brand?.logoUrl || "/logo.png"
-  const postFallbackLog = (payload: Record<string, unknown>) => {
-    const base = { ...payload }
-    const fetchBody = JSON.stringify({ ...base, transport: "fetch" })
-    fetch("/api/debug-log", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: fetchBody,
-      keepalive: true,
-    }).catch(() => {})
-    if (typeof navigator !== "undefined" && navigator.sendBeacon) {
-      try {
-        const beaconBody = JSON.stringify({ ...base, transport: "beacon" })
-        const blob = new Blob([beaconBody], { type: "application/json" })
-        navigator.sendBeacon("/api/debug-log", blob)
-      } catch {
-        // ignore
-      }
-    }
-    try {
-      const img = new Image()
-      img.src = `/api/debug-log?p=${encodeURIComponent(JSON.stringify({ ...base, transport: "img" }))}`
-    } catch {
-      // ignore
-    }
-  }
+
+  // NOTE: Previously this component shipped "agent debug logging" that attempted to POST to a localhost ingest
+  // endpoint (and several /api/debug-log fallbacks). That creates noisy network errors in production and can leak
+  // private interaction data. If diagnostics are needed again, reintroduce via an explicit, opt-in flag.
+  const isDebugLoggingEnabled = false
   const closeMenu = () => {
     setIsMenuOpen(false)
-    // #region agent log
-    const payload = {
-      sessionId: "debug-session",
-      runId: "run1",
-      hypothesisId: "H2",
-      location: "components/navigation.tsx:20",
-      message: "closeMenu invoked",
-      data: { isMenuOpenAfter: false },
-      timestamp: Date.now(),
+    if (isDebugLoggingEnabled) {
+      // intentionally empty (kept as a placeholder)
     }
-    fetch("http://127.0.0.1:7242/ingest/404354d1-ef63-4efc-bc2d-65eee551a7b6", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }).catch(() => {})
-    postFallbackLog(payload)
-    // #endregion
   }
 
   const handleMenuToggle = () => {
     setIsMenuOpen((o) => {
       const next = !o
-      // #region agent log
-      const payload = {
-        sessionId: "debug-session",
-        runId: "run1",
-        hypothesisId: "H2",
-        location: "components/navigation.tsx:83",
-        message: "menu toggle clicked",
-        data: { nextState: next },
-        timestamp: Date.now(),
+      if (isDebugLoggingEnabled) {
+        // intentionally empty (kept as a placeholder)
       }
-      fetch("http://127.0.0.1:7242/ingest/404354d1-ef63-4efc-bc2d-65eee551a7b6", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      }).catch(() => {})
-      postFallbackLog(payload)
-      // #endregion
       return next
     })
   }
 
   useEffect(() => {
-    // #region agent log
-    const payload = {
-      sessionId: "debug-session",
-      runId: "run1",
-      hypothesisId: "H0",
-      location: "components/navigation.tsx:38",
-      message: "navigation mounted",
-      data: {},
-      timestamp: Date.now(),
+    if (isDebugLoggingEnabled) {
+      // intentionally empty (kept as a placeholder)
     }
-    fetch("http://127.0.0.1:7242/ingest/404354d1-ef63-4efc-bc2d-65eee551a7b6", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }).catch(() => {})
-    postFallbackLog(payload)
-    // #endregion
   }, [])
 
   useEffect(() => {
@@ -112,90 +50,32 @@ export function Navigation() {
       .then((r) => r.json())
       .then((d) => {
         setCfg(d)
-        // #region agent log
-        const payload = {
-          sessionId: "debug-session",
-          runId: "run1",
-          hypothesisId: "H1",
-          location: "components/navigation.tsx:24",
-          message: "site-config fetched",
-          data: {
-            navCount: Array.isArray(d?.navigation) ? d.navigation.length : null,
-            hasBrand: Boolean(d?.brand),
-            hasContact: Boolean(d?.contact),
-          },
-          timestamp: Date.now(),
+        if (isDebugLoggingEnabled) {
+          // intentionally empty (kept as a placeholder)
         }
-        fetch("http://127.0.0.1:7242/ingest/404354d1-ef63-4efc-bc2d-65eee551a7b6", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }).catch(() => {})
-        postFallbackLog(payload)
-        // #endregion
       })
       .catch((error) => {
-        // #region agent log
-        const payload = {
-          sessionId: "debug-session",
-          runId: "run1",
-          hypothesisId: "H1",
-          location: "components/navigation.tsx:27",
-          message: "site-config fetch failed",
-          data: { error: error ? String(error) : "unknown" },
-          timestamp: Date.now(),
+        if (isDebugLoggingEnabled) {
+          void error
+          // intentionally empty (kept as a placeholder)
         }
-        fetch("http://127.0.0.1:7242/ingest/404354d1-ef63-4efc-bc2d-65eee551a7b6", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }).catch(() => {})
-        postFallbackLog(payload)
-        // #endregion
       })
   }, [])
 
   useEffect(() => {
-    // #region agent log
-    const payload = {
-      sessionId: "debug-session",
-      runId: "run1",
-      hypothesisId: "H2",
-      location: "components/navigation.tsx:68",
-      message: "isMenuOpen changed",
-      data: { isMenuOpen },
-      timestamp: Date.now(),
+    if (isDebugLoggingEnabled) {
+      // intentionally empty (kept as a placeholder)
     }
-    fetch("http://127.0.0.1:7242/ingest/404354d1-ef63-4efc-bc2d-65eee551a7b6", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }).catch(() => {})
-    postFallbackLog(payload)
-    // #endregion
   }, [isMenuOpen])
 
   useEffect(() => {
     if (!isMenuOpen) return
     const originalOverflow = document.body.style.overflow
     document.body.style.overflow = "hidden"
-    // #region agent log
-    const payloadLock = {
-      sessionId: "debug-session",
-      runId: "run1",
-      hypothesisId: "H3",
-      location: "components/navigation.tsx:31",
-      message: "body scroll locked",
-      data: { originalOverflow },
-      timestamp: Date.now(),
+    if (isDebugLoggingEnabled) {
+      void originalOverflow
+      // intentionally empty (kept as a placeholder)
     }
-    fetch("http://127.0.0.1:7242/ingest/404354d1-ef63-4efc-bc2d-65eee551a7b6", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payloadLock),
-    }).catch(() => {})
-    postFallbackLog(payloadLock)
-    // #endregion
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsMenuOpen(false)
@@ -205,23 +85,9 @@ export function Navigation() {
     return () => {
       document.body.style.overflow = originalOverflow
       window.removeEventListener("keydown", handleKeyDown)
-      // #region agent log
-      const payloadRestore = {
-        sessionId: "debug-session",
-        runId: "run1",
-        hypothesisId: "H3",
-        location: "components/navigation.tsx:40",
-        message: "body scroll restored",
-        data: { restoredOverflow: originalOverflow },
-        timestamp: Date.now(),
+      if (isDebugLoggingEnabled) {
+        // intentionally empty (kept as a placeholder)
       }
-      fetch("http://127.0.0.1:7242/ingest/404354d1-ef63-4efc-bc2d-65eee551a7b6", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payloadRestore),
-      }).catch(() => {})
-      postFallbackLog(payloadRestore)
-      // #endregion
     }
   }, [isMenuOpen])
 
@@ -240,7 +106,7 @@ export function Navigation() {
   })
   const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
   const menuButtonClasses =
-    "flex items-center justify-center w-24 h-10 px-4 rounded-full border border-white/30 text-white text-sm font-serif tracking-[0.18em] uppercase bg-[#6ca4ac]/95 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.22)] transition-colors sm:w-32 sm:h-12 sm:px-6 sm:text-base sm:tracking-[0.2em]"
+    "flex items-center justify-center w-24 h-10 px-4 rounded-full border border-white/30 text-white text-sm font-serif tracking-[0.18em] uppercase bg-[#6ca4ac]/95 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.22)] hover:shadow-[0_18px_38px_rgba(32,56,91,0.30)] active:shadow-[0_10px_22px_rgba(32,56,91,0.20)] transition-[background-color,box-shadow,filter] hover:brightness-[1.02] active:brightness-[0.98] sm:w-32 sm:h-12 sm:px-6 sm:text-base sm:tracking-[0.2em]"
   // NOTE: global `a { color: var(--primary); text-decoration: underline; }` exists in `app/globals.css`.
   // For the full-screen menu we explicitly set link colors + remove underlines for legibility.
   const overlayBaseClasses =
@@ -249,8 +115,8 @@ export function Navigation() {
   const overlayClosedClasses = "opacity-0 pointer-events-none translate-y-2"
   const overlayStyle = {
     background:
-      // Match the site's header palette (teal → asparagus) and keep it fully opaque for readability.
-      "linear-gradient(180deg, var(--brand-teal) 0%, var(--brand-teal) 18%, var(--brand-asparagus) 100%)",
+      // Match the homepage hero gradient for visual continuity.
+      "linear-gradient(180deg, #d7e9ec 0%, rgba(215, 233, 236, 0.95) 20%, rgba(108, 164, 172, 0.85) 55%, rgba(108, 164, 172, 0.7) 72%, rgba(229, 238, 210, 0.9) 90%, #e5eed2 100%)",
   }
   const menuOverlayContent = (
     <>
@@ -272,7 +138,7 @@ export function Navigation() {
             key={l.href}
             href={l.href}
             onClick={closeMenu}
-            className="w-full max-w-sm text-center text-2xl md:text-3xl font-serif tracking-wide px-8 py-3 rounded-full border border-[#20385B]/35 bg-white/85 hover:bg-white/95 transition text-[#20385B] no-underline"
+            className="w-full max-w-sm text-center text-2xl md:text-3xl font-serif tracking-wide px-8 py-3 rounded-full border border-[#20385B]/35 bg-white/85 hover:bg-white/95 text-[#20385B] no-underline shadow-[0_18px_35px_rgba(32,56,91,0.14)] hover:shadow-[0_30px_60px_rgba(32,56,91,0.18)] active:shadow-[0_14px_26px_rgba(32,56,91,0.12)] transition-[transform,box-shadow,background-color,border-color] duration-200 hover:-translate-y-0.5 active:translate-y-0 will-change-transform"
           >
             {l.label}
           </Link>

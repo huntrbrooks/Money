@@ -2,21 +2,23 @@ function canonicalizeSiteUrl(input: string): string {
   try {
     const url = new URL(input)
     const host = url.hostname.toLowerCase()
-    // Canonical domain requirement: always use www.financialabusetherapist.com
+    // Canonical domain requirement: always use www.financialabusetherapist.com.au
     if (
+      host === "financialabusetherapist.com.au" ||
+      host === "www.financialabusetherapist.com.au" ||
       host === "financialabusetherapist.com" ||
       host === "www.financialabusetherapist.com" ||
       host === "money-three-hazel.vercel.app"
     ) {
-      return "https://www.financialabusetherapist.com"
+      return "https://www.financialabusetherapist.com.au"
     }
     return url.toString().replace(/\/$/, "")
   } catch {
-    return "https://www.financialabusetherapist.com"
+    return "https://www.financialabusetherapist.com.au"
   }
 }
 
-export const SITE_URL = canonicalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.financialabusetherapist.com")
+export const SITE_URL = canonicalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.financialabusetherapist.com.au")
 
 export function absoluteUrl(path = "/"): string {
   if (!path) return SITE_URL

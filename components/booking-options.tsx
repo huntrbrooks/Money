@@ -42,6 +42,14 @@ const defaultPaymentSupport = [
   },
 ]
 
+const defaultPaymentOptions = [
+  { id: "visa", label: "Visa", enabled: true, logoUrl: "" },
+  { id: "mastercard", label: "Mastercard", enabled: true, logoUrl: "" },
+  { id: "amex", label: "AMEX", enabled: true, logoUrl: "" },
+  { id: "apple-pay", label: "Apple Pay", enabled: true, logoUrl: "" },
+  { id: "google-pay", label: "Google Pay", enabled: true, logoUrl: "" },
+]
+
 function buildBookingUrl(typeId?: number) {
   if (!typeId) return OWNER_BOOKING_URL
   return `${OWNER_BOOKING_URL}&appointmentType=${typeId}`
@@ -69,6 +77,10 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
     ...item,
     icon: defaultPaymentSupport[idx]?.icon ?? CreditCard,
   }))
+  const paymentOptionsRaw = bookingCopy?.paymentOptions ?? defaultPaymentOptions
+  const paymentOptions = (Array.isArray(paymentOptionsRaw) ? paymentOptionsRaw : defaultPaymentOptions).filter(
+    (opt) => opt && (opt.enabled ?? true) && String(opt.label ?? "").trim().length > 0
+  )
 
   return (
     <div className="space-y-12">
@@ -219,30 +231,61 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
       </div>
 
       <div className="rounded-[32px] border border-dashed border-[#c8d4cf] bg-[#d7e9ec] p-5 sm:p-6 shadow-sm">
-        <div className="grid gap-4 sm:grid-cols-2">
-          {paymentSupport.map(({ title, detail, icon: Icon }) => (
-            <div key={title} className="flex gap-3">
-              <div className="h-10 w-10 rounded-2xl bg-[#7b8c45]/15 text-[#7b8c45]">
-                <Icon className="m-2 h-6 w-6" aria-hidden="true" />
+        <div className="mx-auto max-w-5xl space-y-6 text-center">
+          <div className="grid gap-6 sm:grid-cols-2 justify-items-center">
+            {paymentSupport.map(({ title, detail, icon: Icon }) => (
+              <div key={title} className="flex max-w-md flex-col items-center gap-2 text-center">
+                <div className="h-10 w-10 rounded-2xl bg-[#7b8c45]/15 text-[#7b8c45]">
+                  <Icon className="m-2 h-6 w-6" aria-hidden="true" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#1f2d38]">{title}</p>
+                  <p className="mt-1 text-sm text-[#4a5c63]">{detail}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-semibold text-[#1f2d38]">{title}</p>
-                <p className="text-sm text-[#4a5c63]">{detail}</p>
+            ))}
+          </div>
+
+          {paymentOptions.length > 0 && (
+            <div className="space-y-3">
+              <p className="text-xs uppercase tracking-[0.25em] text-[#4a5c63]">Accepted payments</p>
+              <div className="flex flex-wrap justify-center gap-3">
+                {paymentOptions.map((opt) => {
+                  const label = String(opt.label ?? "").trim()
+                  const logoUrl = String(opt.logoUrl ?? "").trim()
+                  return (
+                    <div
+                      key={opt.id ?? label}
+                      className="flex items-center justify-center rounded-full border border-[#c8d4cf] bg-white/35 px-4 py-2 shadow-sm"
+                    >
+                      {logoUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={logoUrl}
+                          alt={label}
+                          className="h-5 w-auto max-w-[140px] object-contain"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : (
+                        <span className="text-sm font-medium text-[#1f2d38]">{label}</span>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             </div>
-          ))}
-        </div>
-        <div className="mt-6 flex flex-col items-center gap-1 text-center">
-          <p className="text-xs uppercase tracking-[0.25em] text-[#4a5c63]">Billing enquiries</p>
-          <a
-            href={`mailto:${email}`}
-            className="text-sm font-semibold text-[#1f2d38] break-all"
-          >
-            {email}
-          </a>
-          <a href={`tel:${phone.replace(/\s+/g, "")}`} className="text-sm text-[#4a5c63]">
-            {phone}
-          </a>
+          )}
+
+          <div className="flex flex-col items-center gap-1 text-center">
+            <p className="text-xs uppercase tracking-[0.25em] text-[#4a5c63]">Billing enquiries</p>
+            <a href={`mailto:${email}`} className="text-sm font-semibold text-[#1f2d38] break-all">
+              {email}
+            </a>
+            <a href={`tel:${phone.replace(/\s+/g, "")}`} className="text-sm text-[#4a5c63]">
+              {phone}
+            </a>
+          </div>
         </div>
       </div>
     </div>

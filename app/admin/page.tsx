@@ -210,16 +210,22 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   const [legal, setLegal] = useState<NonNullable<SiteConfig["legal"]>>({
     privacy: { title: "Privacy Policy", bodyMdx: "", downloadUrl: "" },
     terms: { title: "Terms of Service", bodyMdx: "", downloadUrl: "" },
+    consent: { title: "Consent & Policies", bodyMdx: "", downloadUrl: "", requiredStatement: "" },
   })
   const [forms, setForms] = useState<NonNullable<SiteConfig["forms"]>>({
     enquiry: "/enquiry",
     consent: "/consent",
     intake: "/intake",
   })
+  const [formPages, setFormPages] = useState<SiteConfig["formPages"]>({})
+  const [formPagesEditor, setFormPagesEditor] = useState<{ enquiry: string; intake: string; newsletter: string }>({ enquiry: "", intake: "", newsletter: "" })
   const [clientCare, setClientCare] = useState<SiteConfig["clientCare"]>({ downloads: [] })
   const [bookingCopy, setBookingCopy] = useState<SiteConfig["bookingCopy"]>({
     billingHighlights: [],
     paymentSupport: [],
+    paymentOptions: [],
+    schedulerPoints: [],
+    schedulerHelpText: "",
   })
 
   const [postEditor, setPostEditor] = useState<{
@@ -231,6 +237,8 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     saving: boolean
     source: string | null
   }>({ open: false, slug: null, title: null, mdx: "", loading: false, saving: false, source: null })
+
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({})
 
   // Dirty tracking must be computed AFTER state initialisation (avoids TDZ crash in production bundles).
   const buildSaveBody = (): Omit<SiteConfig, "meta"> => ({
@@ -249,6 +257,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     homepage,
     legal,
     forms,
+    formPages,
     clientCare,
     bookingCopy,
   })
@@ -287,6 +296,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
         const nextResources = data.resources ?? []
        const nextLegal = data.legal ?? {}
        const nextForms = data.forms ?? {}
+       const nextFormPages = data.formPages ?? {}
        const nextClientCare = data.clientCare ?? {}
        const nextBookingCopy = data.bookingCopy ?? {}
         setAboutContent(nextAbout)
@@ -301,11 +311,24 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
         setLegal({
           privacy: { title: "Privacy Policy", bodyMdx: "", downloadUrl: "", ...(nextLegal.privacy ?? {}) },
           terms: { title: "Terms of Service", bodyMdx: "", downloadUrl: "", ...(nextLegal.terms ?? {}) },
+          consent: {
+            title: "Consent & Policies",
+            bodyMdx: "",
+            downloadUrl: "",
+            requiredStatement: "",
+            ...(nextLegal.consent ?? {}),
+          },
         })
         setForms({
           enquiry: nextForms.enquiry ?? "/enquiry",
           consent: nextForms.consent ?? "/consent",
           intake: nextForms.intake ?? "/intake",
+        })
+        setFormPages(nextFormPages)
+        setFormPagesEditor({
+          enquiry: JSON.stringify(nextFormPages?.enquiry ?? {}, null, 2),
+          intake: JSON.stringify(nextFormPages?.intake ?? {}, null, 2),
+          newsletter: JSON.stringify(nextFormPages?.newsletter ?? {}, null, 2),
         })
         setClientCare({
           downloads: Array.isArray(nextClientCare.downloads) ? nextClientCare.downloads : [],
@@ -315,6 +338,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
         setBookingCopy({
           billingHighlights: Array.isArray(nextBookingCopy.billingHighlights) ? nextBookingCopy.billingHighlights : [],
           paymentSupport: Array.isArray(nextBookingCopy.paymentSupport) ? nextBookingCopy.paymentSupport : [],
+          paymentOptions: Array.isArray(nextBookingCopy.paymentOptions) ? nextBookingCopy.paymentOptions : [],
           schedulerPoints: Array.isArray(nextBookingCopy.schedulerPoints) ? nextBookingCopy.schedulerPoints : [],
           schedulerHelpText: nextBookingCopy.schedulerHelpText ?? "",
         })
@@ -366,12 +390,20 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          legal: {
            privacy: { title: "Privacy Policy", bodyMdx: "", downloadUrl: "", ...(nextLegal.privacy ?? {}) },
            terms: { title: "Terms of Service", bodyMdx: "", downloadUrl: "", ...(nextLegal.terms ?? {}) },
+          consent: {
+            title: "Consent & Policies",
+            bodyMdx: "",
+            downloadUrl: "",
+            requiredStatement: "",
+            ...(nextLegal.consent ?? {}),
+          },
          },
          forms: {
            enquiry: nextForms.enquiry ?? "/enquiry",
            consent: nextForms.consent ?? "/consent",
            intake: nextForms.intake ?? "/intake",
          },
+        formPages: nextFormPages ?? {},
          clientCare: {
            downloads: Array.isArray(nextClientCare.downloads) ? nextClientCare.downloads : [],
            prepChecklist: Array.isArray(nextClientCare.prepChecklist) ? nextClientCare.prepChecklist : [],
@@ -380,6 +412,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          bookingCopy: {
            billingHighlights: Array.isArray(nextBookingCopy.billingHighlights) ? nextBookingCopy.billingHighlights : [],
            paymentSupport: Array.isArray(nextBookingCopy.paymentSupport) ? nextBookingCopy.paymentSupport : [],
+          paymentOptions: Array.isArray(nextBookingCopy.paymentOptions) ? nextBookingCopy.paymentOptions : [],
            schedulerPoints: Array.isArray(nextBookingCopy.schedulerPoints) ? nextBookingCopy.schedulerPoints : [],
            schedulerHelpText: nextBookingCopy.schedulerHelpText ?? "",
          },
@@ -401,6 +434,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          homepage: baseline.homepage,
          legal: baseline.legal,
          forms: baseline.forms,
+         formPages: baseline.formPages,
          clientCare: baseline.clientCare,
          bookingCopy: baseline.bookingCopy,
        }))
@@ -486,11 +520,24 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     setLegal({
       privacy: { title: "Privacy Policy", bodyMdx: "", downloadUrl: "", ...(loadedConfig.legal?.privacy ?? {}) },
       terms: { title: "Terms of Service", bodyMdx: "", downloadUrl: "", ...(loadedConfig.legal?.terms ?? {}) },
+      consent: {
+        title: "Consent & Policies",
+        bodyMdx: "",
+        downloadUrl: "",
+        requiredStatement: "",
+        ...(loadedConfig.legal?.consent ?? {}),
+      },
     })
     setForms({
       enquiry: loadedConfig.forms?.enquiry ?? "/enquiry",
       consent: loadedConfig.forms?.consent ?? "/consent",
       intake: loadedConfig.forms?.intake ?? "/intake",
+    })
+    setFormPages(loadedConfig.formPages ?? {})
+    setFormPagesEditor({
+      enquiry: JSON.stringify(loadedConfig.formPages?.enquiry ?? {}, null, 2),
+      intake: JSON.stringify(loadedConfig.formPages?.intake ?? {}, null, 2),
+      newsletter: JSON.stringify(loadedConfig.formPages?.newsletter ?? {}, null, 2),
     })
     setClientCare({
       downloads: loadedConfig.clientCare?.downloads ?? [],
@@ -500,6 +547,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     setBookingCopy({
       billingHighlights: loadedConfig.bookingCopy?.billingHighlights ?? [],
       paymentSupport: loadedConfig.bookingCopy?.paymentSupport ?? [],
+      paymentOptions: loadedConfig.bookingCopy?.paymentOptions ?? [],
       schedulerPoints: loadedConfig.bookingCopy?.schedulerPoints ?? [],
       schedulerHelpText: loadedConfig.bookingCopy?.schedulerHelpText ?? "",
     })
@@ -522,8 +570,14 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   async function uploadAsset(params: { path: string; accept?: string }) {
     const file = await pickFile(params.accept)
     if (!file) return null
+    const filename = String(file.name ?? "").trim()
+    const rawExt = filename.includes(".") ? filename.split(".").pop() ?? "" : ""
+    const safeExt = rawExt && /^[a-z0-9]{1,8}$/i.test(rawExt) ? `.${rawExt.toLowerCase()}` : ""
+    const pathWithExt = params.path.includes("{{ext}}")
+      ? params.path.replace("{{ext}}", safeExt || ".bin")
+      : params.path
     const body = new FormData()
-    body.set("path", params.path)
+    body.set("path", pathWithExt)
     body.set("file", file)
     const res = await fetch("/api/admin/upload", { method: "POST", body })
     if (res.status === 401) {
@@ -924,23 +978,28 @@ function CodeAgentBox() {
                 ? "images/header-banner"
                 : "images/og"
 
-      const url = await uploadAsset({ path: `${base}.png`, accept: "image/*" })
+      const url = await uploadAsset({ path: `${base}{{ext}}`, accept: "image/*" })
       if (!url) return
 
       if (section === "Profile Photo") {
         setHeroContent((prev) => ({ ...prev, imageUrl: url }))
+        setImageErrors((prev) => ({ ...prev, hero: false }))
       } else if (section === "Logo") {
         setBrand((prev) => ({ ...prev, logoUrl: url }))
+        setImageErrors((prev) => ({ ...prev, logo: false }))
       } else if (section === "Header Banner") {
         setBrand((prev) => ({ ...prev, headerBannerUrl: url }))
+        setImageErrors((prev) => ({ ...prev, banner: false }))
       } else if (section === "OG Image") {
         setSeo((prev) => ({ ...prev, ogImage: url }))
+        setImageErrors((prev) => ({ ...prev, og: false }))
       } else {
         // Background images aren't currently a first-class config field; store in brand headerBannerUrl as a safe default.
         setBrand((prev) => ({ ...prev, headerBannerUrl: url }))
+        setImageErrors((prev) => ({ ...prev, banner: false }))
       }
 
-      toast({ title: "Uploaded", description: `${section} updated. Remember to Save.` })
+      toast({ title: "Uploaded", description: `${section} updated. Click Save to apply changes.` })
     } catch (e: unknown) {
       toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
     }
@@ -966,15 +1025,33 @@ function CodeAgentBox() {
              </div>
              <div className="flex items-center gap-4">
               {!loading && (
-                <div className="hidden sm:flex items-center gap-2 rounded-full bg-black/10 px-3 py-1 text-xs">
-                  <span className={`inline-block h-2 w-2 rounded-full ${isDirty ? "bg-yellow-300" : "bg-green-300"}`} />
-                  <span className="opacity-90">{isDirty ? "Unsaved changes" : "All changes saved"}</span>
+                <div className="hidden sm:flex items-center gap-2 rounded-full px-3 py-1.5 text-xs border"
+                  style={{
+                    backgroundColor: isDirty ? "rgba(234, 179, 8, 0.1)" : "rgba(34, 197, 94, 0.1)",
+                    borderColor: isDirty ? "rgba(234, 179, 8, 0.3)" : "rgba(34, 197, 94, 0.3)",
+                  }}
+                >
+                  <span className={`inline-block h-2 w-2 rounded-full ${isDirty ? "bg-yellow-500" : "bg-green-500"}`} />
+                  <span className={isDirty ? "font-medium" : ""}>
+                    {isDirty ? "Unsaved changes" : "All changes saved"}
+                  </span>
                   {lastSavedAt && !isDirty && (
                     <span className="opacity-75">
                       · {new Date(lastSavedAt).toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" })}
                     </span>
                   )}
                 </div>
+              )}
+              {isDirty && (
+                <Button
+                  size="sm"
+                  onClick={() => saveAll()}
+                  disabled={saving !== null}
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save All
+                </Button>
               )}
               <Button
                 variant="ghost"
@@ -1010,24 +1087,75 @@ function CodeAgentBox() {
  
        <div className="container mx-auto px-4 py-8">
          <Tabs defaultValue="hero" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-[repeat(17,minmax(0,1fr))] gap-2 max-w-full">
-            <TabsTrigger value="hero">Hero Section</TabsTrigger>
-            <TabsTrigger value="about">About</TabsTrigger>
-            <TabsTrigger value="services">Services</TabsTrigger>
-            <TabsTrigger value="homepage">Homepage</TabsTrigger>
-            <TabsTrigger value="content">Content</TabsTrigger>
-            <TabsTrigger value="experiments">Experiments</TabsTrigger>
-            <TabsTrigger value="images">Images</TabsTrigger>
-            <TabsTrigger value="theme">Theme</TabsTrigger>
-           <TabsTrigger value="brand">Brand</TabsTrigger>
-           <TabsTrigger value="nav">Navigation</TabsTrigger>
-           <TabsTrigger value="contact">Contact</TabsTrigger>
-           <TabsTrigger value="seo">SEO</TabsTrigger>
-           <TabsTrigger value="documents">Documents</TabsTrigger>
-           <TabsTrigger value="consultations">Consultations</TabsTrigger>
-           <TabsTrigger value="resources">Resources</TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
-            <TabsTrigger value="assistant">Assistant</TabsTrigger>
+        <TabsList className="flex w-full flex-wrap gap-2 max-w-full overflow-x-auto pb-2">
+            <TabsTrigger value="hero" className="flex items-center gap-2">
+              <User className="w-4 h-4" />
+              <span className="hidden sm:inline">Hero</span>
+            </TabsTrigger>
+            <TabsTrigger value="about" className="flex items-center gap-2">
+              <Info className="w-4 h-4" />
+              <span className="hidden sm:inline">About</span>
+            </TabsTrigger>
+            <TabsTrigger value="services" className="flex items-center gap-2">
+              <Briefcase className="w-4 h-4" />
+              <span className="hidden sm:inline">Services</span>
+            </TabsTrigger>
+            <TabsTrigger value="homepage" className="flex items-center gap-2">
+              <Layout className="w-4 h-4" />
+              <span className="hidden sm:inline">Homepage</span>
+            </TabsTrigger>
+            <TabsTrigger value="content" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              <span className="hidden sm:inline">Content</span>
+            </TabsTrigger>
+            <TabsTrigger value="experiments" className="flex items-center gap-2">
+              <FlaskConical className="w-4 h-4" />
+              <span className="hidden sm:inline">Experiments</span>
+            </TabsTrigger>
+            <TabsTrigger value="images" className="flex items-center gap-2">
+              <ImageIcon className="w-4 h-4" />
+              <span className="hidden sm:inline">Images</span>
+            </TabsTrigger>
+            <TabsTrigger value="theme" className="flex items-center gap-2">
+              <Palette className="w-4 h-4" />
+              <span className="hidden sm:inline">Theme</span>
+            </TabsTrigger>
+           <TabsTrigger value="brand" className="flex items-center gap-2">
+             <Building2 className="w-4 h-4" />
+             <span className="hidden sm:inline">Brand</span>
+           </TabsTrigger>
+           <TabsTrigger value="nav" className="flex items-center gap-2">
+             <Menu className="w-4 h-4" />
+             <span className="hidden sm:inline">Navigation</span>
+           </TabsTrigger>
+           <TabsTrigger value="contact" className="flex items-center gap-2">
+             <Phone className="w-4 h-4" />
+             <span className="hidden sm:inline">Contact</span>
+           </TabsTrigger>
+           <TabsTrigger value="seo" className="flex items-center gap-2">
+             <Search className="w-4 h-4" />
+             <span className="hidden sm:inline">SEO</span>
+           </TabsTrigger>
+           <TabsTrigger value="documents" className="flex items-center gap-2">
+             <FileText className="w-4 h-4" />
+             <span className="hidden sm:inline">Documents</span>
+           </TabsTrigger>
+           <TabsTrigger value="consultations" className="flex items-center gap-2">
+             <Calendar className="w-4 h-4" />
+             <span className="hidden sm:inline">Consultations</span>
+           </TabsTrigger>
+           <TabsTrigger value="resources" className="flex items-center gap-2">
+             <BookOpen className="w-4 h-4" />
+             <span className="hidden sm:inline">Resources</span>
+           </TabsTrigger>
+            <TabsTrigger value="history" className="flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              <span className="hidden sm:inline">History</span>
+            </TabsTrigger>
+            <TabsTrigger value="assistant" className="flex items-center gap-2">
+              <Bot className="w-4 h-4" />
+              <span className="hidden sm:inline">Assistant</span>
+            </TabsTrigger>
           </TabsList>
  
            {/* Hero Section Tab */}
@@ -1035,7 +1163,7 @@ function CodeAgentBox() {
              <Card>
                <CardHeader>
                  <CardTitle className="flex items-center gap-2">
-                   <FileText className="w-5 h-5" />
+                   <User className="w-5 h-5" />
                    Edit Hero Section
                  </CardTitle>
                  <CardDescription>Update the main headline and description on your homepage</CardDescription>
@@ -1043,40 +1171,49 @@ function CodeAgentBox() {
                <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="hero-eyebrow">Eyebrow / Tagline</Label>
+                  <p className="text-xs text-muted-foreground">A short line that appears above the main title (optional)</p>
                   <Input
                     id="hero-eyebrow"
                     value={heroContent.eyebrow ?? ""}
                     onChange={(e) => setHeroContent((prev) => ({ ...prev, eyebrow: e.target.value }))}
+                    placeholder="e.g., Welcome, or Your Trusted Therapist"
                   />
                 </div>
                  <div className="space-y-2">
                    <Label htmlFor="hero-title">Main Title</Label>
+                   <p className="text-xs text-muted-foreground">This is the main headline visitors see first. Make it clear and compelling.</p>
                    <Input
                      id="hero-title"
                      value={heroContent.title}
                      onChange={(e) => setHeroContent({ ...heroContent, title: e.target.value })}
                      className="text-lg"
+                     placeholder="e.g., Healing from Financial Abuse"
                    />
                  </div>
                  <div className="space-y-2">
                    <Label htmlFor="hero-subtitle">Subtitle</Label>
+                   <p className="text-xs text-muted-foreground">A supporting line that appears below the main title (optional)</p>
                    <Input
                      id="hero-subtitle"
                      value={heroContent.subtitle}
                      onChange={(e) => setHeroContent({ ...heroContent, subtitle: e.target.value })}
+                     placeholder="e.g., Specialized therapy for financial trauma"
                    />
                  </div>
                  <div className="space-y-2">
                    <Label htmlFor="hero-description">Description</Label>
+                   <p className="text-xs text-muted-foreground">A longer description that explains your services. This appears below the title and subtitle.</p>
                    <Textarea
                      id="hero-description"
                      value={heroContent.description}
                      onChange={(e) => setHeroContent({ ...heroContent, description: e.target.value })}
                      rows={4}
+                     placeholder="Describe your approach, expertise, and how you help clients..."
                    />
                  </div>
                  <div className="space-y-2">
                    <Label htmlFor="hero-image">Hero Image URL</Label>
+                   <p className="text-xs text-muted-foreground">Upload an image in the Images tab, or paste a URL. Recommended size: 1200x800px.</p>
                    <Input
                      id="hero-image"
                      value={heroContent.imageUrl}
@@ -1086,6 +1223,7 @@ function CodeAgentBox() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="hero-primary-label">Primary CTA Label</Label>
+                    <p className="text-xs text-muted-foreground">Text for the main call-to-action button</p>
                     <Input
                       id="hero-primary-label"
                       value={heroContent.primaryCta?.label ?? ""}
@@ -1095,10 +1233,12 @@ function CodeAgentBox() {
                           primaryCta: { ...(prev.primaryCta ?? { label: "", href: "" }), label: e.target.value },
                         }))
                       }
+                      placeholder="e.g., Book Appointment"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="hero-primary-href">Primary CTA URL</Label>
+                    <p className="text-xs text-muted-foreground">Where the button links to (e.g., /bookings or /contact)</p>
                     <Input
                       id="hero-primary-href"
                       value={heroContent.primaryCta?.href ?? ""}
@@ -1108,12 +1248,14 @@ function CodeAgentBox() {
                           primaryCta: { ...(prev.primaryCta ?? { label: "", href: "" }), href: e.target.value },
                         }))
                       }
+                      placeholder="e.g., /bookings"
                     />
                   </div>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="hero-secondary-label">Secondary CTA Label</Label>
+                    <p className="text-xs text-muted-foreground">Text for the secondary button (optional)</p>
                     <Input
                       id="hero-secondary-label"
                       value={heroContent.secondaryCta?.label ?? ""}
@@ -1123,10 +1265,12 @@ function CodeAgentBox() {
                           secondaryCta: { ...(prev.secondaryCta ?? { label: "", href: "" }), label: e.target.value },
                         }))
                       }
+                      placeholder="e.g., Learn More"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="hero-secondary-href">Secondary CTA URL</Label>
+                    <p className="text-xs text-muted-foreground">Where the secondary button links to (optional)</p>
                     <Input
                       id="hero-secondary-href"
                       value={heroContent.secondaryCta?.href ?? ""}
@@ -1136,6 +1280,7 @@ function CodeAgentBox() {
                           secondaryCta: { ...(prev.secondaryCta ?? { label: "", href: "" }), href: e.target.value },
                         }))
                       }
+                      placeholder="e.g., /about"
                     />
                   </div>
                 </div>
@@ -1483,6 +1628,18 @@ function CodeAgentBox() {
                           setHomepage((prev) => ({
                             ...prev,
                             copy: { ...(prev.copy ?? {}), importantLinksHeading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Important links call button label</Label>
+                      <Input
+                        value={homepage.copy?.importantLinksCallCtaLabel ?? ""}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), importantLinksCallCtaLabel: e.target.value },
                           }))
                         }
                       />
@@ -2358,60 +2515,272 @@ function CodeAgentBox() {
                    <ImageIcon className="w-5 h-5" />
                    Manage Images
                  </CardTitle>
-                 <CardDescription>Upload and manage photos for your website</CardDescription>
+                 <CardDescription>Upload and manage photos for your website. Images are shown as thumbnails below.</CardDescription>
                </CardHeader>
                <CardContent className="space-y-6">
-                 <div className="space-y-4">
-                   <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
-                     <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-40" />
-                     <h3 className="text-lg font-medium mb-2">Profile Photo (Hero)</h3>
-                     <p className="text-sm text-muted-foreground mb-4">Current: {heroContent.imageUrl || "—"}</p>
-                     <Button
-                       onClick={() => handleImageUpload("Profile Photo")}
-                       variant="outline"
-                     >
-                       <Upload className="w-4 h-4 mr-2" />
-                       Upload New Photo
-                     </Button>
-                   </div>
- 
-                   <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
-                     <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-40" />
-                     <h3 className="text-lg font-medium mb-2">Logo</h3>
-                     <p className="text-sm text-muted-foreground mb-4">Current: {brand.logoUrl || "—"}</p>
-                     <Button
-                       onClick={() => handleImageUpload("Logo")}
-                       variant="outline"
-                     >
-                       <Upload className="w-4 h-4 mr-2" />
-                       Upload Logo
-                     </Button>
+                 <div className="grid gap-6 md:grid-cols-2">
+                   {/* Profile Photo (Hero) */}
+                   <div className="border rounded-lg p-4 space-y-4">
+                     <div>
+                       <h3 className="text-lg font-semibold mb-1">Profile Photo (Hero)</h3>
+                       <p className="text-sm text-muted-foreground">
+                         This appears in the hero section on your homepage. Recommended size: 1200x800px.
+                       </p>
+                     </div>
+                     {heroContent.imageUrl ? (
+                       <div className="space-y-3">
+                         <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden border border-border flex items-center justify-center">
+                           {imageErrors["hero"] ? (
+                             <div className="text-center text-muted-foreground">
+                               <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-40" />
+                               <p className="text-xs">Image not found</p>
+                             </div>
+                           ) : (
+                             <img
+                               src={heroContent.imageUrl}
+                               alt="Hero profile photo"
+                               className="w-full h-full object-contain"
+                               onError={() => setImageErrors((prev) => ({ ...prev, hero: true }))}
+                             />
+                           )}
+                         </div>
+                         <div className="flex gap-2">
+                           <Button
+                             onClick={() => handleImageUpload("Profile Photo")}
+                             variant="outline"
+                             className="flex-1"
+                           >
+                             <Upload className="w-4 h-4 mr-2" />
+                             Replace
+                           </Button>
+                           <Button
+                             onClick={() => {
+                               setHeroContent((prev) => ({ ...prev, imageUrl: "" }))
+                               setImageErrors((prev) => ({ ...prev, hero: false }))
+                               toast({ title: "Removed", description: "Profile photo cleared. Click Save to apply." })
+                             }}
+                             variant="outline"
+                             size="icon"
+                           >
+                             <X className="w-4 h-4" />
+                           </Button>
+                         </div>
+                         <p className="text-xs text-muted-foreground truncate" title={heroContent.imageUrl}>
+                           {heroContent.imageUrl}
+                         </p>
+                       </div>
+                     ) : (
+                       <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
+                         <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-40" />
+                         <Button
+                           onClick={() => handleImageUpload("Profile Photo")}
+                           variant="outline"
+                         >
+                           <Upload className="w-4 h-4 mr-2" />
+                           Upload Photo
+                         </Button>
+                       </div>
+                     )}
                    </div>
 
-                   <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
-                     <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-40" />
-                     <h3 className="text-lg font-medium mb-2">Header Banner</h3>
-                     <p className="text-sm text-muted-foreground mb-4">Current: {brand.headerBannerUrl || "—"}</p>
-                     <Button onClick={() => handleImageUpload("Header Banner")} variant="outline">
-                       <Upload className="w-4 h-4 mr-2" />
-                       Upload Banner
-                     </Button>
+                   {/* Logo */}
+                   <div className="border rounded-lg p-4 space-y-4">
+                     <div>
+                       <h3 className="text-lg font-semibold mb-1">Logo</h3>
+                       <p className="text-sm text-muted-foreground">
+                         Your brand logo appears in the header and footer. Recommended: transparent PNG, 200x60px.
+                       </p>
+                     </div>
+                     {brand.logoUrl ? (
+                       <div className="space-y-3">
+                         <div className="relative w-full h-32 bg-muted rounded-lg overflow-hidden border border-border flex items-center justify-center">
+                           {imageErrors["logo"] ? (
+                             <div className="text-center text-muted-foreground">
+                               <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-40" />
+                               <p className="text-xs">Image not found</p>
+                             </div>
+                           ) : (
+                             <img
+                               src={brand.logoUrl}
+                               alt="Logo"
+                               className="max-w-full max-h-full object-contain"
+                               onError={() => setImageErrors((prev) => ({ ...prev, logo: true }))}
+                             />
+                           )}
+                         </div>
+                         <div className="flex gap-2">
+                           <Button
+                             onClick={() => handleImageUpload("Logo")}
+                             variant="outline"
+                             className="flex-1"
+                           >
+                             <Upload className="w-4 h-4 mr-2" />
+                             Replace
+                           </Button>
+                           <Button
+                             onClick={() => {
+                               setBrand((prev) => ({ ...prev, logoUrl: "" }))
+                               setImageErrors((prev) => ({ ...prev, logo: false }))
+                               toast({ title: "Removed", description: "Logo cleared. Click Save to apply." })
+                             }}
+                             variant="outline"
+                             size="icon"
+                           >
+                             <X className="w-4 h-4" />
+                           </Button>
+                         </div>
+                         <p className="text-xs text-muted-foreground truncate" title={brand.logoUrl}>
+                           {brand.logoUrl}
+                         </p>
+                       </div>
+                     ) : (
+                       <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
+                         <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-40" />
+                         <Button
+                           onClick={() => handleImageUpload("Logo")}
+                           variant="outline"
+                         >
+                           <Upload className="w-4 h-4 mr-2" />
+                           Upload Logo
+                         </Button>
+                       </div>
+                     )}
                    </div>
 
-                   <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
-                     <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-40" />
-                     <h3 className="text-lg font-medium mb-2">Open Graph Image</h3>
-                     <p className="text-sm text-muted-foreground mb-4">Current: {seo.ogImage || "—"}</p>
-                     <Button onClick={() => handleImageUpload("OG Image")} variant="outline">
-                       <Upload className="w-4 h-4 mr-2" />
-                       Upload OG Image
-                     </Button>
+                   {/* Header Banner */}
+                   <div className="border rounded-lg p-4 space-y-4">
+                     <div>
+                       <h3 className="text-lg font-semibold mb-1">Header Banner</h3>
+                       <p className="text-sm text-muted-foreground">
+                         Optional banner image for the header area. Recommended: 1920x200px.
+                       </p>
+                     </div>
+                     {brand.headerBannerUrl ? (
+                       <div className="space-y-3">
+                         <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden border border-border flex items-center justify-center">
+                           {imageErrors["banner"] ? (
+                             <div className="text-center text-muted-foreground">
+                               <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-40" />
+                               <p className="text-xs">Image not found</p>
+                             </div>
+                           ) : (
+                             <img
+                               src={brand.headerBannerUrl}
+                               alt="Header banner"
+                               className="w-full h-full object-contain"
+                               onError={() => setImageErrors((prev) => ({ ...prev, banner: true }))}
+                             />
+                           )}
+                         </div>
+                         <div className="flex gap-2">
+                           <Button
+                             onClick={() => handleImageUpload("Header Banner")}
+                             variant="outline"
+                             className="flex-1"
+                           >
+                             <Upload className="w-4 h-4 mr-2" />
+                             Replace
+                           </Button>
+                           <Button
+                             onClick={() => {
+                               setBrand((prev) => ({ ...prev, headerBannerUrl: "" }))
+                               setImageErrors((prev) => ({ ...prev, banner: false }))
+                               toast({ title: "Removed", description: "Header banner cleared. Click Save to apply." })
+                             }}
+                             variant="outline"
+                             size="icon"
+                           >
+                             <X className="w-4 h-4" />
+                           </Button>
+                         </div>
+                         <p className="text-xs text-muted-foreground truncate" title={brand.headerBannerUrl}>
+                           {brand.headerBannerUrl}
+                         </p>
+                       </div>
+                     ) : (
+                       <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
+                         <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-40" />
+                         <Button
+                           onClick={() => handleImageUpload("Header Banner")}
+                           variant="outline"
+                         >
+                           <Upload className="w-4 h-4 mr-2" />
+                           Upload Banner
+                         </Button>
+                       </div>
+                     )}
+                   </div>
+
+                   {/* Open Graph Image */}
+                   <div className="border rounded-lg p-4 space-y-4">
+                     <div>
+                       <h3 className="text-lg font-semibold mb-1">Open Graph Image</h3>
+                       <p className="text-sm text-muted-foreground">
+                         Image shown when your site is shared on social media. Recommended: 1200x630px.
+                       </p>
+                     </div>
+                     {seo.ogImage ? (
+                       <div className="space-y-3">
+                         <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden border border-border flex items-center justify-center">
+                           {imageErrors["og"] ? (
+                             <div className="text-center text-muted-foreground">
+                               <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-40" />
+                               <p className="text-xs">Image not found</p>
+                             </div>
+                           ) : (
+                             <img
+                               src={seo.ogImage}
+                               alt="Open Graph image"
+                               className="w-full h-full object-contain"
+                               onError={() => setImageErrors((prev) => ({ ...prev, og: true }))}
+                             />
+                           )}
+                         </div>
+                         <div className="flex gap-2">
+                           <Button
+                             onClick={() => handleImageUpload("OG Image")}
+                             variant="outline"
+                             className="flex-1"
+                           >
+                             <Upload className="w-4 h-4 mr-2" />
+                             Replace
+                           </Button>
+                           <Button
+                             onClick={() => {
+                               setSeo((prev) => ({ ...prev, ogImage: "" }))
+                               setImageErrors((prev) => ({ ...prev, og: false }))
+                               toast({ title: "Removed", description: "OG image cleared. Click Save to apply." })
+                             }}
+                             variant="outline"
+                             size="icon"
+                           >
+                             <X className="w-4 h-4" />
+                           </Button>
+                         </div>
+                         <p className="text-xs text-muted-foreground truncate" title={seo.ogImage || ""}>
+                           {seo.ogImage}
+                         </p>
+                       </div>
+                     ) : (
+                       <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
+                         <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-40" />
+                         <Button
+                           onClick={() => handleImageUpload("OG Image")}
+                           variant="outline"
+                         >
+                           <Upload className="w-4 h-4 mr-2" />
+                           Upload OG Image
+                         </Button>
+                       </div>
+                     )}
                    </div>
                  </div>
-                 <Button onClick={() => saveAll("Images")} disabled={saving !== null}>
-                   <Save className="w-4 h-4 mr-2" />
-                   Save Images
-                 </Button>
+                 <div className="pt-4 border-t">
+                   <Button onClick={() => saveAll("Images")} disabled={saving !== null} className="w-full sm:w-auto">
+                     <Save className="w-4 h-4 mr-2" />
+                     Save Images
+                   </Button>
+                 </div>
                </CardContent>
              </Card>
            </TabsContent>
@@ -2510,15 +2879,18 @@ function CodeAgentBox() {
                <CardContent className="space-y-4">
                  <div className="space-y-2">
                    <Label>Site Name</Label>
-                   <Input value={brand.name} onChange={(e) => setBrand({ ...brand, name: e.target.value })} />
+                   <p className="text-xs text-muted-foreground">Your practice or business name as it appears throughout the site</p>
+                   <Input value={brand.name} onChange={(e) => setBrand({ ...brand, name: e.target.value })} placeholder="e.g., Financial Abuse Therapist" />
                  </div>
                  <div className="space-y-2">
                    <Label>Subtitle</Label>
-                   <Input value={brand.subtitle ?? ""} onChange={(e) => setBrand({ ...brand, subtitle: e.target.value })} />
+                   <p className="text-xs text-muted-foreground">A short line that appears below the site name (optional)</p>
+                   <Input value={brand.subtitle ?? ""} onChange={(e) => setBrand({ ...brand, subtitle: e.target.value })} placeholder="e.g., Specialized Therapy Services" />
                  </div>
                  <div className="space-y-2">
                    <Label>Tagline</Label>
-                   <Textarea value={brand.tagline ?? ""} onChange={(e) => setBrand({ ...brand, tagline: e.target.value })} rows={3} />
+                   <p className="text-xs text-muted-foreground">A longer tagline or mission statement (optional)</p>
+                   <Textarea value={brand.tagline ?? ""} onChange={(e) => setBrand({ ...brand, tagline: e.target.value })} rows={3} placeholder="Your practice mission or tagline..." />
                  </div>
                  <Button onClick={() => saveAll("Brand")} disabled={saving !== null}>
                    <Save className="w-4 h-4 mr-2" /> Save Brand
@@ -2586,27 +2958,33 @@ function CodeAgentBox() {
                <CardContent className="space-y-4">
                  <div className="space-y-2">
                    <Label>Phone</Label>
-                   <Input value={contact.phone ?? ""} onChange={(e) => setContact({ ...contact, phone: e.target.value })} />
+                   <p className="text-xs text-muted-foreground">Include country code if needed (e.g., +61 2 1234 5678)</p>
+                   <Input value={contact.phone ?? ""} onChange={(e) => setContact({ ...contact, phone: e.target.value })} placeholder="+61 2 1234 5678" />
                  </div>
                  <div className="space-y-2">
                    <Label>Email</Label>
-                   <Input value={contact.email ?? ""} onChange={(e) => setContact({ ...contact, email: e.target.value })} />
+                   <p className="text-xs text-muted-foreground">Primary contact email address</p>
+                   <Input value={contact.email ?? ""} onChange={(e) => setContact({ ...contact, email: e.target.value })} type="email" placeholder="dan@financialabusetherapist.com.au" />
                  </div>
                 <div className="space-y-2">
                   <Label>Alternate Email (optional)</Label>
-                  <Input value={contact.emailAlt ?? ""} onChange={(e) => setContact({ ...contact, emailAlt: e.target.value })} />
+                  <p className="text-xs text-muted-foreground">Secondary email address if needed</p>
+                  <Input value={contact.emailAlt ?? ""} onChange={(e) => setContact({ ...contact, emailAlt: e.target.value })} type="email" />
                 </div>
                  <div className="space-y-2">
                    <Label>Facebook URL</Label>
-                   <Input value={social.facebook ?? ""} onChange={(e) => setSocial((p) => ({ ...p, facebook: e.target.value }))} />
+                   <p className="text-xs text-muted-foreground">Full URL to your Facebook page (optional)</p>
+                   <Input value={social.facebook ?? ""} onChange={(e) => setSocial((p) => ({ ...p, facebook: e.target.value }))} placeholder="https://facebook.com/yourpage" />
                  </div>
                  <div className="space-y-2">
                    <Label>Instagram URL</Label>
-                   <Input value={social.instagram ?? ""} onChange={(e) => setSocial((p) => ({ ...p, instagram: e.target.value }))} />
+                   <p className="text-xs text-muted-foreground">Full URL to your Instagram profile (optional)</p>
+                   <Input value={social.instagram ?? ""} onChange={(e) => setSocial((p) => ({ ...p, instagram: e.target.value }))} placeholder="https://instagram.com/yourprofile" />
                  </div>
                  <div className="space-y-2">
                    <Label>LinkedIn URL</Label>
-                   <Input value={social.linkedin ?? ""} onChange={(e) => setSocial((p) => ({ ...p, linkedin: e.target.value }))} />
+                   <p className="text-xs text-muted-foreground">Full URL to your LinkedIn profile (optional)</p>
+                   <Input value={social.linkedin ?? ""} onChange={(e) => setSocial((p) => ({ ...p, linkedin: e.target.value }))} placeholder="https://linkedin.com/in/yourprofile" />
                  </div>
                  <Button onClick={() => saveAll("Contact")} disabled={saving !== null}>
                    <Save className="w-4 h-4 mr-2" /> Save Contact
@@ -2625,15 +3003,18 @@ function CodeAgentBox() {
                <CardContent className="space-y-4">
                  <div className="space-y-2">
                    <Label>Title</Label>
-                   <Input value={seo.title ?? ""} onChange={(e) => setSeo({ ...seo, title: e.target.value })} />
+                   <p className="text-xs text-muted-foreground">The main title shown in search results and browser tabs. Keep it under 60 characters.</p>
+                   <Input value={seo.title ?? ""} onChange={(e) => setSeo({ ...seo, title: e.target.value })} placeholder="e.g., Financial Abuse Therapy | Dan Lobel" />
                  </div>
                  <div className="space-y-2">
                    <Label>Description</Label>
-                   <Textarea value={seo.description ?? ""} onChange={(e) => setSeo({ ...seo, description: e.target.value })} rows={3} />
+                   <p className="text-xs text-muted-foreground">A brief description shown in search results. Aim for 150-160 characters.</p>
+                   <Textarea value={seo.description ?? ""} onChange={(e) => setSeo({ ...seo, description: e.target.value })} rows={3} placeholder="Describe your services and expertise..." />
                  </div>
                  <div className="space-y-2">
                    <Label>Open Graph Image URL</Label>
-                   <Input value={seo.ogImage ?? ""} onChange={(e) => setSeo({ ...seo, ogImage: e.target.value })} />
+                   <p className="text-xs text-muted-foreground">Image shown when your site is shared on social media. Upload in the Images tab. Recommended: 1200x630px.</p>
+                   <Input value={seo.ogImage ?? ""} onChange={(e) => setSeo({ ...seo, ogImage: e.target.value })} placeholder="/api/assets/images/og.jpg" />
                  </div>
                  <Button onClick={() => saveAll("SEO")} disabled={saving !== null}>
                    <Save className="w-4 h-4 mr-2" /> Save SEO
@@ -2647,10 +3028,10 @@ function CodeAgentBox() {
              <Card>
                <CardHeader>
                  <CardTitle>Legal pages</CardTitle>
-                 <CardDescription>Manage Privacy Policy and Terms of Service content and downloadable files.</CardDescription>
+                <CardDescription>Manage Privacy Policy, Terms of Service, and Consent &amp; Policies content and downloadable files.</CardDescription>
                </CardHeader>
                <CardContent className="space-y-8">
-                 <div className="grid gap-6 lg:grid-cols-2">
+                <div className="grid gap-6 lg:grid-cols-3">
                    <div className="space-y-3 rounded-lg border border-border/40 p-4">
                      <p className="font-semibold text-[var(--foreground)]">Privacy Policy</p>
                      <div className="space-y-2">
@@ -2674,7 +3055,7 @@ function CodeAgentBox() {
                            variant="outline"
                            onClick={async () => {
                              try {
-                               const url = await uploadAsset({ path: "docs/privacy-policy.docx", accept: ".docx,.pdf" })
+                              const url = await uploadAsset({ path: "docs/privacy-policy{{ext}}", accept: ".docx,.pdf" })
                                if (!url) return
                                setLegal((prev) => ({ ...prev, privacy: { ...(prev.privacy ?? {}), downloadUrl: url } }))
                                toast({ title: "Uploaded", description: "Privacy Policy document updated." })
@@ -2728,7 +3109,7 @@ function CodeAgentBox() {
                            variant="outline"
                            onClick={async () => {
                              try {
-                               const url = await uploadAsset({ path: "docs/terms-of-service.docx", accept: ".docx,.pdf" })
+                              const url = await uploadAsset({ path: "docs/terms-of-service{{ext}}", accept: ".docx,.pdf" })
                                if (!url) return
                                setLegal((prev) => ({ ...prev, terms: { ...(prev.terms ?? {}), downloadUrl: url } }))
                                toast({ title: "Uploaded", description: "Terms of Service document updated." })
@@ -2758,6 +3139,70 @@ function CodeAgentBox() {
                        />
                      </div>
                    </div>
+
+                  <div className="space-y-3 rounded-lg border border-border/40 p-4">
+                    <p className="font-semibold text-[var(--foreground)]">Consent &amp; Policies</p>
+                    <div className="space-y-2">
+                      <Label>Title</Label>
+                      <Input
+                        value={legal.consent?.title ?? ""}
+                        onChange={(e) => setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), title: e.target.value } }))}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Required statement (must be typed exactly)</Label>
+                      <Input
+                        value={legal.consent?.requiredStatement ?? ""}
+                        onChange={(e) =>
+                          setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), requiredStatement: e.target.value } }))
+                        }
+                        placeholder="I have read & I understand the contents of this document"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Download URL</Label>
+                      <Input
+                        value={legal.consent?.downloadUrl ?? ""}
+                        onChange={(e) =>
+                          setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), downloadUrl: e.target.value } }))
+                        }
+                      />
+                      <div className="flex flex-wrap gap-3">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={async () => {
+                            try {
+                              const url = await uploadAsset({ path: "docs/consent-and-policies{{ext}}", accept: ".docx,.pdf" })
+                              if (!url) return
+                              setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), downloadUrl: url } }))
+                              toast({ title: "Uploaded", description: "Consent & Policies document updated." })
+                            } catch (e: unknown) {
+                              toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+                            }
+                          }}
+                        >
+                          <Upload className="w-4 h-4 mr-2" />
+                          Replace file
+                        </Button>
+                        {legal.consent?.downloadUrl ? (
+                          <a className="text-sm underline text-[var(--accent)]" href={legal.consent.downloadUrl} target="_blank" rel="noreferrer noopener">
+                            View file
+                          </a>
+                        ) : null}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Body (MDX/Markdown)</Label>
+                      <Textarea
+                        rows={10}
+                        value={legal.consent?.bodyMdx ?? ""}
+                        onChange={(e) =>
+                          setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), bodyMdx: e.target.value } }))
+                        }
+                      />
+                    </div>
+                  </div>
                  </div>
                </CardContent>
              </Card>
@@ -2783,6 +3228,124 @@ function CodeAgentBox() {
                  <Button onClick={() => saveAll("Documents")} disabled={saving !== null}>
                    <Save className="w-4 h-4 mr-2" /> Save Documents
                  </Button>
+               </CardContent>
+             </Card>
+
+             <Card>
+               <CardHeader>
+                 <CardTitle>Form pages (advanced)</CardTitle>
+                 <CardDescription>
+                   Full control over form fields, labels, options, required rules, and section structure. Apply JSON changes, then Save Documents.
+                 </CardDescription>
+               </CardHeader>
+               <CardContent className="space-y-8">
+                 <div className="space-y-3">
+                   <p className="font-semibold text-[var(--foreground)]">Enquiry form schema (JSON)</p>
+                   <Textarea
+                     rows={14}
+                     value={formPagesEditor.enquiry}
+                     onChange={(e) => setFormPagesEditor((p) => ({ ...p, enquiry: e.target.value }))}
+                   />
+                   <div className="flex flex-wrap gap-3">
+                     <Button
+                       type="button"
+                       variant="outline"
+                       onClick={() => {
+                         try {
+                           const parsed = JSON.parse(formPagesEditor.enquiry || "{}")
+                           setFormPages((prev) => ({ ...(prev ?? {}), enquiry: parsed }))
+                           toast({ title: "Applied", description: "Enquiry form schema updated. Remember to Save Documents." })
+                         } catch (e: unknown) {
+                           toast({ title: "Invalid JSON", description: e instanceof Error ? e.message : "Unable to parse JSON", variant: "destructive" })
+                         }
+                       }}
+                     >
+                       Apply Enquiry JSON
+                     </Button>
+                     <Button
+                       type="button"
+                       variant="outline"
+                       onClick={() => setFormPagesEditor((p) => ({ ...p, enquiry: JSON.stringify(formPages?.enquiry ?? {}, null, 2) }))}
+                     >
+                       Reset from current
+                     </Button>
+                     <a className="text-sm underline text-[var(--accent)] self-center" href="/enquiry" target="_blank" rel="noreferrer noopener">
+                       Preview Enquiry
+                     </a>
+                   </div>
+                 </div>
+
+                 <div className="space-y-3">
+                   <p className="font-semibold text-[var(--foreground)]">Intake form schema (JSON)</p>
+                   <Textarea
+                     rows={14}
+                     value={formPagesEditor.intake}
+                     onChange={(e) => setFormPagesEditor((p) => ({ ...p, intake: e.target.value }))}
+                   />
+                   <div className="flex flex-wrap gap-3">
+                     <Button
+                       type="button"
+                       variant="outline"
+                       onClick={() => {
+                         try {
+                           const parsed = JSON.parse(formPagesEditor.intake || "{}")
+                           setFormPages((prev) => ({ ...(prev ?? {}), intake: parsed }))
+                           toast({ title: "Applied", description: "Intake form schema updated. Remember to Save Documents." })
+                         } catch (e: unknown) {
+                           toast({ title: "Invalid JSON", description: e instanceof Error ? e.message : "Unable to parse JSON", variant: "destructive" })
+                         }
+                       }}
+                     >
+                       Apply Intake JSON
+                     </Button>
+                     <Button
+                       type="button"
+                       variant="outline"
+                       onClick={() => setFormPagesEditor((p) => ({ ...p, intake: JSON.stringify(formPages?.intake ?? {}, null, 2) }))}
+                     >
+                       Reset from current
+                     </Button>
+                     <a className="text-sm underline text-[var(--accent)] self-center" href="/intake" target="_blank" rel="noreferrer noopener">
+                       Preview Intake
+                     </a>
+                   </div>
+                 </div>
+
+                 <div className="space-y-3">
+                   <p className="font-semibold text-[var(--foreground)]">Newsletter form schema (JSON)</p>
+                   <Textarea
+                     rows={14}
+                     value={formPagesEditor.newsletter}
+                     onChange={(e) => setFormPagesEditor((p) => ({ ...p, newsletter: e.target.value }))}
+                   />
+                   <div className="flex flex-wrap gap-3">
+                     <Button
+                       type="button"
+                       variant="outline"
+                       onClick={() => {
+                         try {
+                           const parsed = JSON.parse(formPagesEditor.newsletter || "{}")
+                           setFormPages((prev) => ({ ...(prev ?? {}), newsletter: parsed }))
+                           toast({ title: "Applied", description: "Newsletter form schema updated. Remember to Save Documents." })
+                         } catch (e: unknown) {
+                           toast({ title: "Invalid JSON", description: e instanceof Error ? e.message : "Unable to parse JSON", variant: "destructive" })
+                         }
+                       }}
+                     >
+                       Apply Newsletter JSON
+                     </Button>
+                     <Button
+                       type="button"
+                       variant="outline"
+                       onClick={() => setFormPagesEditor((p) => ({ ...p, newsletter: JSON.stringify(formPages?.newsletter ?? {}, null, 2) }))}
+                     >
+                       Reset from current
+                     </Button>
+                     <a className="text-sm underline text-[var(--accent)] self-center" href="/newsletter" target="_blank" rel="noreferrer noopener">
+                       Preview Newsletter
+                     </a>
+                   </div>
+                 </div>
                </CardContent>
              </Card>
 
@@ -2936,8 +3499,10 @@ function CodeAgentBox() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Payment methods copy (text only)</CardTitle>
-                <CardDescription>Controls the Apple Pay / Google Pay text and related booking highlights. No payment logic is changed.</CardDescription>
+                <CardTitle>Payment methods</CardTitle>
+                <CardDescription>
+                  Controls the payment method text, and the “Accepted payments” list (logos + toggles). No payment processing logic is changed.
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-3">
@@ -3016,6 +3581,148 @@ function CodeAgentBox() {
                       </div>
                     )
                   })}
+                </div>
+
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-[var(--foreground)]">Accepted payments (add as many as you like)</p>
+                  <p className="text-sm text-muted-foreground">Toggle each option on/off and upload a logo if you want it displayed.</p>
+                  {(bookingCopy?.paymentOptions ?? []).length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No payment options yet. Click “Add payment option”.</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {(bookingCopy?.paymentOptions ?? []).map((opt, idx) => {
+                        const enabled = (opt?.enabled ?? true) as boolean
+                        const safeKey = String(opt?.id || opt?.label || `option-${idx}`)
+                        return (
+                          <div key={safeKey} className="grid gap-3 rounded-lg border border-border/40 p-4">
+                            <div className="grid gap-3 sm:grid-cols-2">
+                              <div className="space-y-2">
+                                <Label>Label</Label>
+                                <Input
+                                  value={opt?.label ?? ""}
+                                  onChange={(e) =>
+                                    setBookingCopy((prev) => {
+                                      const next = [...(prev?.paymentOptions ?? [])]
+                                      next[idx] = {
+                                        id: opt?.id ?? `po-${Date.now()}`,
+                                        label: e.target.value,
+                                        enabled,
+                                        logoUrl: opt?.logoUrl ?? "",
+                                      }
+                                      return { ...(prev ?? {}), paymentOptions: next }
+                                    })
+                                  }
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Enabled</Label>
+                                <div className="flex items-center gap-3">
+                                  <Switch
+                                    checked={enabled}
+                                    onCheckedChange={(checked) =>
+                                      setBookingCopy((prev) => {
+                                        const next = [...(prev?.paymentOptions ?? [])]
+                                        next[idx] = {
+                                          id: opt?.id ?? `po-${Date.now()}`,
+                                          label: opt?.label ?? "",
+                                          enabled: checked,
+                                          logoUrl: opt?.logoUrl ?? "",
+                                        }
+                                        return { ...(prev ?? {}), paymentOptions: next }
+                                      })
+                                    }
+                                  />
+                                  <span className="text-sm text-muted-foreground">{enabled ? "On" : "Off"}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="grid gap-3 sm:grid-cols-2">
+                              <div className="space-y-2">
+                                <Label>Logo URL</Label>
+                                <Input
+                                  value={opt?.logoUrl ?? ""}
+                                  onChange={(e) =>
+                                    setBookingCopy((prev) => {
+                                      const next = [...(prev?.paymentOptions ?? [])]
+                                      next[idx] = {
+                                        id: opt?.id ?? `po-${Date.now()}`,
+                                        label: opt?.label ?? "",
+                                        enabled,
+                                        logoUrl: e.target.value,
+                                      }
+                                      return { ...(prev ?? {}), paymentOptions: next }
+                                    })
+                                  }
+                                  placeholder="/api/assets/payment-options/apple-pay.png"
+                                />
+                              </div>
+                              <div className="flex flex-wrap items-end gap-3">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={async () => {
+                                    try {
+                                      const base = String(opt?.label || opt?.id || `payment-option-${idx}`)
+                                        .toLowerCase()
+                                        .replace(/[^a-z0-9]+/g, "-")
+                                        .replace(/(^-|-$)+/g, "")
+                                      const url = await uploadAsset({ path: `payment-options/${base}{{ext}}`, accept: "image/*" })
+                                      if (!url) return
+                                      setBookingCopy((prev) => {
+                                        const next = [...(prev?.paymentOptions ?? [])]
+                                        next[idx] = {
+                                          id: opt?.id ?? `po-${Date.now()}`,
+                                          label: opt?.label ?? "",
+                                          enabled,
+                                          logoUrl: url,
+                                        }
+                                        return { ...(prev ?? {}), paymentOptions: next }
+                                      })
+                                      toast({ title: "Uploaded", description: "Payment logo updated. Remember to Save." })
+                                    } catch (e: unknown) {
+                                      toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+                                    }
+                                  }}
+                                >
+                                  <Upload className="w-4 h-4 mr-2" />
+                                  Upload logo
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={() =>
+                                    setBookingCopy((prev) => {
+                                      const next = [...(prev?.paymentOptions ?? [])]
+                                      next.splice(idx, 1)
+                                      return { ...(prev ?? {}), paymentOptions: next }
+                                    })
+                                  }
+                                >
+                                  Remove
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                  <div className="flex gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() =>
+                        setBookingCopy((prev) => {
+                          const next = [...(prev?.paymentOptions ?? [])]
+                          next.push({ id: `po-${Date.now()}`, label: "New payment method", enabled: true, logoUrl: "" })
+                          return { ...(prev ?? {}), paymentOptions: next }
+                        })
+                      }
+                    >
+                      Add payment option
+                    </Button>
+                  </div>
                 </div>
 
                 <Button onClick={() => saveAll("Payment copy")} disabled={saving !== null}>

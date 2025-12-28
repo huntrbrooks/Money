@@ -13,8 +13,6 @@ function sanitize(input: string): string {
   return input.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c] as string)).trim()
 }
 
-const REQUIRED_STATEMENT = "I have read & I understand the contents of this document"
-
 function compileSubject(data: ConsentPayload) {
   const name = data.fullName?.trim() || [data.firstName, data.lastName].filter(Boolean).join(" ").trim() || "Consent Submission"
   return `Consent Form — ${name}`
@@ -119,7 +117,9 @@ export async function POST(req: Request) {
   if (!firstName || !lastName || !fullName || !date || !statement) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
   }
-  if (statement.trim() !== REQUIRED_STATEMENT) {
+  const cfg = await readSiteConfig()
+  const requiredStatement = cfg.legal?.consent?.requiredStatement?.trim() || "I have read & I understand the contents of this document"
+  if (statement.trim() !== requiredStatement) {
     return NextResponse.json({ error: "Statement does not match required text" }, { status: 400 })
   }
   // dd/mm/yyyy simple validation
@@ -127,7 +127,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid date format (dd/mm/yyyy)" }, { status: 400 })
   }
 
-  const cfg = await readSiteConfig()
   const toAddress = cfg.contact?.email || process.env.FALLBACK_TO_EMAIL
   if (!toAddress) {
     return NextResponse.json({ error: "No destination email configured" }, { status: 500 })

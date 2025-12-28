@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
 import { AUTH_COOKIE_NAME, getEnvVar, verifyAuthToken } from "@/lib/auth"
 import { normalizeAssetPath, putAsset } from "@/lib/assets"
+import path from "path"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -21,6 +22,46 @@ function safeFilename(name: string): string {
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "")
     .slice(0, 120) || "file"
+}
+
+const MAX_UPLOAD_BYTES = 15 * 1024 * 1024 // 15MB
+
+function inferContentTypeFromExt(ext: string): string {
+  switch (ext) {
+    case ".png":
+      return "image/png"
+    case ".jpg":
+    case ".jpeg":
+      return "image/jpeg"
+    case ".webp":
+      return "image/webp"
+    case ".gif":
+      return "image/gif"
+    case ".svg":
+      return "image/svg+xml"
+    case ".pdf":
+      return "application/pdf"
+    case ".docx":
+      return "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    case ".doc":
+      return "application/msword"
+    default:
+      return "application/octet-stream"
+  }
+}
+
+function isAllowedUpload(ext: string): boolean {
+  return (
+    ext === ".png" ||
+    ext === ".jpg" ||
+    ext === ".jpeg" ||
+    ext === ".webp" ||
+    ext === ".gif" ||
+    ext === ".svg" ||
+    ext === ".pdf" ||
+    ext === ".doc" ||
+    ext === ".docx"
+  )
 }
 
 export async function POST(request: Request) {
@@ -47,8 +88,20 @@ export async function POST(request: Request) {
   const folder = folderRaw.trim().replace(/^\/+/, "").replace(/\/+$/, "")
   const filename = safeFilename(file.name)
   const objectPath = normalizeAssetPath(pathRaw || (folder ? `${folder}/${filename}` : filename))
-  const contentType = file.type || "application/octet-stream"
+  const ext = path.extname(objectPath).toLowerCase()
+  if (!isAllowedUpload(ext)) {
+    return NextResponse.json({ error: "Unsupported file type" }, { status: 400 })
+  }
   const bytes = new Uint8Array(await file.arrayBuffer())
+  if (bytes.byteLength > MAX_UPLOAD_BYTES) {
+    return NextResponse.json({ error: "File too large" }, { status: 413 })
+  }
+  const declaredType = (file.type || "").toLowerCase()
+  const inferredType = inferContentTypeFromExt(ext)
+  const contentType =
+    declaredType && declaredType !== "application/octet-stream"
+      ? declaredType
+      : inferredType
 
   try {
     await putAsset(objectPath, { bytes, contentType })

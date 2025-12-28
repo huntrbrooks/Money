@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { readSiteConfig } from "@/lib/config"
 import { sendLeadToCrm } from "@/lib/crm"
+import type { FormField, FormPage } from "@/lib/config"
 
 type EnquiryPayload = {
   firstName?: string
@@ -15,6 +16,32 @@ type EnquiryPayload = {
 
 function sanitize(input: string): string {
   return input.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c] as string)).trim()
+}
+
+function flattenFields(page?: FormPage | null): FormField[] {
+  if (!page?.sections) return []
+  const out: FormField[] = []
+  for (const s of page.sections) {
+    for (const f of s.fields) out.push(f)
+  }
+  return out
+}
+
+function coerceFieldValue(field: FormField, raw: unknown): string | number | boolean {
+  if (field.type === "checkbox") return Boolean(raw)
+  if (field.type === "slider") return typeof raw === "number" ? raw : Number(raw)
+  return sanitize(String(raw ?? ""))
+}
+
+function isRequired(field: FormField): boolean {
+  if (field.type === "checkbox" && field.mustBeTrue) return true
+  return Boolean((field as { required?: boolean }).required)
+}
+
+function isFilled(field: FormField, value: unknown): boolean {
+  if (field.type === "checkbox") return field.mustBeTrue ? value === true : typeof value === "boolean"
+  if (field.type === "slider") return typeof value === "number" && !Number.isNaN(value)
+  return String(value ?? "").trim().length > 0
 }
 
 function compileSubject(data: EnquiryPayload) {
@@ -119,37 +146,63 @@ function resolveErrorMessage(error: unknown, fallback: string) {
 }
 
 export async function POST(req: Request) {
-  const body = (await req.json().catch(() => null)) as EnquiryPayload | null
+  const body = (await req.json().catch(() => null)) as Record<string, unknown> | null
   if (!body) return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
 
-  const firstName = sanitize(String(body.firstName ?? "")).slice(0, 200)
-  const lastName = sanitize(String(body.lastName ?? "")).slice(0, 200)
-  const email = sanitize(String(body.email ?? "")).slice(0, 300)
-  const phone = sanitize(String(body.phone ?? "")).slice(0, 60)
-  const message = sanitize(String(body.message ?? "")).slice(0, 8000)
-  const supportFocus = sanitize(String(body.supportFocus ?? "")).slice(0, 800)
-  const preferredFormat = sanitize(String(body.preferredFormat ?? "")).slice(0, 120)
-  const updatesOptIn = Boolean(body.updatesOptIn)
+  const cfg = await readSiteConfig()
+  const page = cfg.formPages?.enquiry
+  const fields = flattenFields(page)
 
+  // Schema-driven extraction (allows Admin to add/remove/reorder fields safely)
+  const extracted: Record<string, string | number | boolean> = {}
+  for (const f of fields) {
+    const v = coerceFieldValue(f, body[f.name])
+    // Bound strings for safety
+    if (typeof v === "string") {
+      extracted[f.name] = v.slice(0, 8000)
+    } else {
+      extracted[f.name] = v
+    }
+  }
+
+  // Minimal fallback if config is missing
+  const firstName = sanitize(String(extracted.firstName ?? body.firstName ?? "")).slice(0, 200)
+  const lastName = sanitize(String(extracted.lastName ?? body.lastName ?? "")).slice(0, 200)
+  const email = sanitize(String(extracted.email ?? body.email ?? "")).slice(0, 300)
+  const phone = sanitize(String(extracted.phone ?? body.phone ?? "")).slice(0, 60)
+  const message = sanitize(String(extracted.message ?? body.message ?? "")).slice(0, 8000)
+
+  const required = fields.length ? fields.filter(isRequired) : []
+  for (const f of required) {
+    if (!isFilled(f, extracted[f.name])) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+    }
+  }
   if (!firstName || !email || !phone || !message) {
+    // extra guard (legacy behavior)
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ error: "Invalid email" }, { status: 400 })
   }
+  // checkbox mustBeTrue support
+  const mustBeTrue = fields.filter((f) => f.type === "checkbox" && f.mustBeTrue)
+  for (const f of mustBeTrue) {
+    if (extracted[f.name] !== true) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+    }
+  }
 
-  const cfg = await readSiteConfig()
   const toAddress = cfg.contact?.email || process.env.FALLBACK_TO_EMAIL
-
   const data: EnquiryPayload = {
     firstName,
     lastName,
     email,
     phone,
     message,
-    supportFocus,
-    preferredFormat,
-    updatesOptIn,
+    supportFocus: sanitize(String(extracted.supportFocus ?? body.supportFocus ?? "")).slice(0, 800),
+    preferredFormat: sanitize(String(extracted.preferredFormat ?? body.preferredFormat ?? "")).slice(0, 120),
+    updatesOptIn: Boolean(extracted.updatesOptIn ?? body.updatesOptIn),
   }
 
   // Try SMTP first if configured, otherwise fall back to Resend

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { readSiteConfig } from "@/lib/config"
 import { sendLeadToCrm } from "@/lib/crm"
+import type { FormField, FormPage, FormSection } from "@/lib/config"
 
 type IntakePayload = {
   firstName?: string
@@ -38,6 +39,96 @@ type IntakePayload = {
 
 function sanitize(input: string): string {
   return input.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c] as string)).trim()
+}
+
+function flattenFields(page?: FormPage | null): FormField[] {
+  if (!page?.sections) return []
+  const out: FormField[] = []
+  for (const s of page.sections) {
+    for (const f of s.fields) out.push(f)
+  }
+  return out
+}
+
+function coerceFieldValue(field: FormField, raw: unknown): string | number | boolean {
+  if (field.type === "checkbox") return Boolean(raw)
+  if (field.type === "slider") {
+    const n = typeof raw === "number" ? raw : Number(raw)
+    if (Number.isFinite(n)) {
+      return Math.max(field.min, Math.min(field.max, n))
+    }
+    return field.defaultValue ?? field.min
+  }
+  return sanitize(String(raw ?? ""))
+}
+
+function isRequired(field: FormField): boolean {
+  if (field.type === "checkbox" && field.mustBeTrue) return true
+  return Boolean((field as { required?: boolean }).required)
+}
+
+function isFilled(field: FormField, value: unknown): boolean {
+  if (field.type === "checkbox") return field.mustBeTrue ? value === true : typeof value === "boolean"
+  if (field.type === "slider") return typeof value === "number" && !Number.isNaN(value)
+  return String(value ?? "").trim().length > 0
+}
+
+function displayValue(field: FormField, rawValue: unknown): string {
+  if (field.type === "select") {
+    const v = String(rawValue ?? "")
+    const match = field.options?.find((o) => o.value === v)
+    return match?.label ?? (v || "-")
+  }
+  if (field.type === "checkbox") {
+    return rawValue ? "Yes" : "No"
+  }
+  if (field.type === "slider") {
+    return typeof rawValue === "number" ? String(rawValue) : "-"
+  }
+  const s = String(rawValue ?? "").trim()
+  return s.length ? s : "-"
+}
+
+function compileTextFromSchema(page: FormPage, values: Record<string, unknown>): string {
+  const lines: string[] = []
+  lines.push(`New intake form submission`)
+  lines.push("")
+  for (const section of page.sections) {
+    if (section.title) {
+      lines.push(section.title)
+      lines.push("-".repeat(Math.min(40, section.title.length)))
+    }
+    for (const field of section.fields) {
+      lines.push(`${field.label}: ${displayValue(field, values[field.name])}`)
+    }
+    lines.push("")
+  }
+  return lines.join("\n").trim()
+}
+
+function compileHtmlFromSchema(page: FormPage, values: Record<string, unknown>): string {
+  const esc = (v: string) => sanitize(v)
+  const rows = (section: FormSection) =>
+    section.fields
+      .map((field) => {
+        const v = displayValue(field, values[field.name])
+        return `<tr><td style="padding:6px 10px;border:1px solid #e5e7eb;vertical-align:top"><strong>${esc(
+          field.label,
+        )}</strong></td><td style="padding:6px 10px;border:1px solid #e5e7eb;vertical-align:top">${esc(v)}</td></tr>`
+      })
+      .join("")
+
+  return `
+    <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#222">
+      <h2>New intake form submission</h2>
+      ${page.sections
+        .map((section) => {
+          const title = section.title ? `<h3 style="margin-top:18px">${esc(section.title)}</h3>` : ""
+          return `${title}<table style="border-collapse:collapse;width:100%">${rows(section)}</table>`
+        })
+        .join("")}
+    </div>
+  `
 }
 
 function labelForRelationship(v?: string) {
@@ -238,45 +329,154 @@ function resolveErrorMessage(error: unknown, fallback: string) {
 }
 
 export async function POST(req: Request) {
-  const raw = (await req.json().catch(() => null)) as IntakePayload | null
+  const raw = (await req.json().catch(() => null)) as Record<string, unknown> | null
   if (!raw) return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
 
+  const cfg = await readSiteConfig()
+  const page = cfg.formPages?.intake
+
+  // Schema-driven mode (Admin can edit the form and the backend will adapt).
+  if (page) {
+    const fields = flattenFields(page)
+    const values: Record<string, unknown> = {}
+    for (const f of fields) {
+      const v = coerceFieldValue(f, raw[f.name])
+      values[f.name] = v
+    }
+
+    for (const f of fields.filter(isRequired)) {
+      if (!isFilled(f, values[f.name])) {
+        return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+      }
+    }
+
+    const email = sanitize(String(values.email ?? "")).slice(0, 300)
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: "Invalid email" }, { status: 400 })
+    }
+    const date = sanitize(String(values.date ?? "")).slice(0, 40)
+    if (date && !/^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/\d{4}$/.test(date)) {
+      return NextResponse.json({ error: "Invalid date format" }, { status: 400 })
+    }
+
+    const toAddress = cfg.contact?.email || process.env.FALLBACK_TO_EMAIL
+    if (!toAddress) return NextResponse.json({ error: "No destination email configured" }, { status: 500 })
+
+    const firstName = sanitize(String(values.firstName ?? "")).slice(0, 200)
+    const lastName = sanitize(String(values.lastName ?? "")).slice(0, 200)
+    const name = [firstName, lastName].filter(Boolean).join(" ").trim() || "New Intake"
+    const subject = `New Intake Form — ${name}`
+    const text = compileTextFromSchema(page, values)
+    const html = compileHtmlFromSchema(page, values)
+
+    // Try SMTP first if configured, otherwise fall back to Resend, otherwise log in dev
+    let result: { ok: true } | { ok: false; error: string } = { ok: false, error: "No email provider configured" }
+    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && toAddress) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const nodemailer = await import("nodemailer").catch(() => null)
+        if (!nodemailer) return NextResponse.json({ error: "nodemailer not installed" }, { status: 500 })
+        const transporter = nodemailer.createTransport({
+          host: process.env.SMTP_HOST,
+          port: process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 587,
+          secure: String(process.env.SMTP_SECURE || "").toLowerCase() === "true",
+          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+        })
+        await transporter.sendMail({
+          from: process.env.EMAIL_FROM || `Intake <${process.env.SMTP_USER ?? "no-reply@example.com"}>`,
+          to: toAddress,
+          subject,
+          text,
+          html,
+          replyTo: email || undefined,
+        })
+        result = { ok: true as const }
+      } catch (error) {
+        result = { ok: false as const, error: resolveErrorMessage(error, "SMTP error") }
+      }
+    } else if (process.env.RESEND_API_KEY && toAddress) {
+      try {
+        const apiKey = process.env.RESEND_API_KEY
+        const from = process.env.EMAIL_FROM || "Intake <onboarding@resend.dev>"
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            from,
+            to: [toAddress],
+            subject,
+            text,
+            html,
+            reply_to: email ? [email] : undefined,
+          }),
+        })
+        if (!res.ok) {
+          const detail = await res.text().catch(() => "")
+          result = { ok: false as const, error: `Resend error: ${detail || res.statusText}` }
+        } else {
+          result = { ok: true as const }
+        }
+      } catch (error) {
+        result = { ok: false as const, error: resolveErrorMessage(error, "Resend error") }
+      }
+    } else {
+      console.log("[intake] Dev mode - email not sent. Payload:", values)
+      return NextResponse.json({ ok: true, dev: true })
+    }
+
+    if (!result.ok) {
+      return NextResponse.json({ error: result.error }, { status: 500 })
+    }
+
+    void sendLeadToCrm({
+      type: "intake",
+      email: email || undefined,
+      name,
+      phone: typeof values.phone === "string" ? values.phone : undefined,
+      tags: ["intake"],
+      payload: values,
+    })
+    return NextResponse.json({ ok: true })
+  }
+
   // Sanitize and bound
+  const rawLegacy = raw as IntakePayload
   const s = (v?: string, max = 200) => sanitize(String(v ?? "")).slice(0, max)
   const sn = (v?: number) => (typeof v === "number" ? Math.max(1, Math.min(5, v)) : undefined)
 
   const data: IntakePayload = {
-    firstName: s(raw.firstName),
-    lastName: s(raw.lastName),
-    email: s(raw.email, 300),
-    phone: s(raw.phone, 60),
-    country: s(raw.country, 80),
-    address1: s(raw.address1, 300),
-    address2: s(raw.address2, 300),
-    suburb: s(raw.suburb, 120),
-    state: s(raw.state, 50),
-    postcode: s(raw.postcode, 20),
-    date: s(raw.date, 20),
-    occupation: s(raw.occupation, 200),
-    relationshipStatus: s(raw.relationshipStatus, 40),
-    haveChildren: s(raw.haveChildren, 40),
-    nextOfKinName: s(raw.nextOfKinName, 200),
-    nextOfKinPhone: s(raw.nextOfKinPhone, 60),
-    generalHealth: sn(raw.generalHealth),
-    seenCounsellor: s(raw.seenCounsellor, 10),
-    onMedication: s(raw.onMedication, 10),
-    medicationDetails: s(raw.medicationDetails, 2000),
-    experiencingDepression: s(raw.experiencingDepression, 10),
-    suicidalThoughts: s(raw.suicidalThoughts, 10),
-    otherInformation: s(raw.otherInformation, 8000),
-    familyMentalHealthHistory: s(raw.familyMentalHealthHistory, 20),
-    sleepingHabits: sn(raw.sleepingHabits),
-    physicalHealth: sn(raw.physicalHealth),
-    exerciseFrequency: s(raw.exerciseFrequency, 30),
-    chronicPain: s(raw.chronicPain, 10),
-    useAlcoholOrDrugsForPain: s(raw.useAlcoholOrDrugsForPain, 10),
-    recentRecreationalDrugUse: s(raw.recentRecreationalDrugUse, 10),
-    mainReason: s(raw.mainReason, 8000),
+    firstName: s(rawLegacy.firstName),
+    lastName: s(rawLegacy.lastName),
+    email: s(rawLegacy.email, 300),
+    phone: s(rawLegacy.phone, 60),
+    country: s(rawLegacy.country, 80),
+    address1: s(rawLegacy.address1, 300),
+    address2: s(rawLegacy.address2, 300),
+    suburb: s(rawLegacy.suburb, 120),
+    state: s(rawLegacy.state, 50),
+    postcode: s(rawLegacy.postcode, 20),
+    date: s(rawLegacy.date, 20),
+    occupation: s(rawLegacy.occupation, 200),
+    relationshipStatus: s(rawLegacy.relationshipStatus, 40),
+    haveChildren: s(rawLegacy.haveChildren, 40),
+    nextOfKinName: s(rawLegacy.nextOfKinName, 200),
+    nextOfKinPhone: s(rawLegacy.nextOfKinPhone, 60),
+    generalHealth: sn(rawLegacy.generalHealth),
+    seenCounsellor: s(rawLegacy.seenCounsellor, 10),
+    onMedication: s(rawLegacy.onMedication, 10),
+    medicationDetails: s(rawLegacy.medicationDetails, 2000),
+    experiencingDepression: s(rawLegacy.experiencingDepression, 10),
+    suicidalThoughts: s(rawLegacy.suicidalThoughts, 10),
+    otherInformation: s(rawLegacy.otherInformation, 8000),
+    familyMentalHealthHistory: s(rawLegacy.familyMentalHealthHistory, 20),
+    sleepingHabits: sn(rawLegacy.sleepingHabits),
+    physicalHealth: sn(rawLegacy.physicalHealth),
+    exerciseFrequency: s(rawLegacy.exerciseFrequency, 30),
+    chronicPain: s(rawLegacy.chronicPain, 10),
+    useAlcoholOrDrugsForPain: s(rawLegacy.useAlcoholOrDrugsForPain, 10),
+    recentRecreationalDrugUse: s(rawLegacy.recentRecreationalDrugUse, 10),
+    mainReason: s(rawLegacy.mainReason, 8000),
   }
 
   // Validate required
@@ -291,7 +491,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid date format" }, { status: 400 })
   }
 
-  const cfg = await readSiteConfig()
   const toAddress = cfg.contact?.email || process.env.FALLBACK_TO_EMAIL
 
   // Try SMTP first if configured, otherwise fall back to Resend, otherwise log in dev

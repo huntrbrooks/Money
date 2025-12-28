@@ -68,9 +68,6 @@ export default async function HomePage() {
 
   const otherAreas = homepageContent.otherAreas ?? []
   const importantSectionLinks = homepageContent.importantSectionLinks ?? []
-  const importantSectionLinksSansMonetaryPsychotherapy = importantSectionLinks.filter(
-    (link) => !String(link.label ?? "").toLowerCase().includes("monetary psychotherapy")
-  )
   const importantLinks = homepageContent.importantLinks ?? {}
   const blogLinks =
     importantLinks.blogLinks ?? [
@@ -89,6 +86,7 @@ export default async function HomePage() {
   const primaryCta = hero.primaryCta ?? { label: "Book a Session", href: "/#book" }
   const contactPhone = config.contact?.phone ?? ""
   const contactEmail = config.contact?.email ?? ""
+  // Format phone number for tel: links - remove all spaces for proper tel: protocol
   const callDanHref = contactPhone ? `tel:${contactPhone.replace(/\s+/g, "")}` : "tel:"
   const eyebrow = String(hero.eyebrow ?? "")
     .replace(/monetary psychotherapy/gi, "")
@@ -242,6 +240,7 @@ export default async function HomePage() {
                       <NewsletterModal
                         triggerLabel={copy.newsletterCtaLabel ?? "Email me the check-in"}
                         tags={copy.newsletterTags ?? ["newsletter", "safety-check-in"]}
+                        formPage={config.formPages?.newsletter}
                       />
                     </div>
                   </div>
@@ -256,6 +255,21 @@ export default async function HomePage() {
               content: (
                 <div className="container mx-auto px-4 sm:px-6 md:px-8">
                   <div className="max-w-5xl mx-auto space-y-8">
+                    {/* Feature CTA (call) */}
+                    {contactPhone ? (
+                      <div className="flex justify-center">
+                        <Button
+                          asChild
+                          size="lg"
+                          className="w-full sm:w-auto max-w-2xl rounded-full px-8 sm:px-10 h-14 sm:h-16 text-base sm:text-lg font-semibold bg-[color-mix(in_oklch,var(--accent)_38%,white)] text-[var(--foreground)] border border-[color-mix(in_oklch,var(--accent)_55%,transparent)] shadow-[0_22px_55px_rgba(32,56,91,0.18)] hover:shadow-[0_30px_70px_rgba(32,56,91,0.22)] hover:bg-[color-mix(in_oklch,var(--accent)_46%,white)] transition-[transform,box-shadow,background-color] hover:-translate-y-0.5 active:translate-y-0"
+                        >
+                          <a href={callDanHref} className="no-underline" aria-label="Call Dan">
+                            {copy.importantLinksCallCtaLabel ?? "Call Dan for a brief discussion of your situation"}
+                          </a>
+                        </Button>
+                      </div>
+                    ) : null}
+
                     <div className="text-center space-y-3">
                       <h2 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">
                         {copy.importantLinksHeading ?? "Important Links"}
@@ -313,7 +327,7 @@ export default async function HomePage() {
                       </div>
                       {/* Row 4 — internal section deep-dives */}
                       <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-                        {importantSectionLinksSansMonetaryPsychotherapy.map((link) => (
+                        {importantSectionLinks.map((link) => (
                           <Button
                             key={link.href}
                             asChild
