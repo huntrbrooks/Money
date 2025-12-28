@@ -11,7 +11,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { CrisisBanner } from "@/components/crisis-banner"
 import { ResourcesCarousel } from "@/components/resources-carousel"
 import { LeadMagnet } from "@/components/lead-magnet"
-import { NewsletterModal } from "@/components/newsletter-modal"
 import { FlowSection } from "@/components/flow-section"
 import {
   buildLocalBusinessSchema,
@@ -51,9 +50,8 @@ export default async function HomePage() {
   const hasTestimonials = testimonials.length > 0
   const leadMagnet = homepageContent.leadMagnet
   const showValueProps = sections.showValueProps !== false
-  const showNewsletter = sections.showNewsletter === true
   const showImportantLinks = sections.showImportantLinks !== false
-  const showImportantLinksCallButton = sections.showImportantLinksCallButton === true
+  const showImportantLinksCallButton = sections.showImportantLinksCallButton !== false
   const showTestimonials = sections.showTestimonials !== false
   const showOtherAreas = sections.showOtherAreas !== false
   const showBooking = sections.showBooking !== false
@@ -99,7 +97,6 @@ export default async function HomePage() {
   const bgForIndex = (idx: number) => (idx % 2 === 0 ? "var(--section-bg-2)" : "var(--section-bg-1)")
   const enabledFlowCount =
     (showValueProps && valueProps.length > 0 ? 1 : 0) +
-    (showNewsletter ? 1 : 0) +
     (showImportantLinks ? 1 : 0) +
     (showTestimonials && hasTestimonials ? 1 : 0) +
     (showOtherAreas ? 1 : 0) +
@@ -215,34 +212,6 @@ export default async function HomePage() {
                           <p className="text-[var(--primary)] mt-3 leading-relaxed">{item.description}</p>
                         </div>
                       ))}
-                    </div>
-                  </div>
-                </div>
-              ),
-            },
-            {
-              key: "newsletter",
-              enabled: showNewsletter,
-              className: "py-12 sm:py-16 md:py-24",
-              content: (
-                <div className="container mx-auto px-4 sm:px-6 md:px-8">
-                  <div className="max-w-3xl mx-auto text-center space-y-5">
-                    <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary)] font-semibold">
-                      {copy.newsletterEyebrow ?? "Between sessions"}
-                    </p>
-                    <h2 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">
-                      {copy.newsletterHeading ?? "Download the 5-step Financial Safety Check-in"}
-                    </h2>
-                    <p className="text-[var(--primary)]">
-                      {copy.newsletterBody ??
-                        "A gentle ritual used in session to settle your system before money admin — delivered straight to your inbox."}
-                    </p>
-                    <div className="flex justify-center">
-                      <NewsletterModal
-                        triggerLabel={copy.newsletterCtaLabel ?? "Email me the check-in"}
-                        tags={copy.newsletterTags ?? ["newsletter", "safety-check-in"]}
-                        formPage={config.formPages?.newsletter}
-                      />
                     </div>
                   </div>
                 </div>
