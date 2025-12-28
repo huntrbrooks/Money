@@ -163,6 +163,7 @@ export default async function MonetaryPsychotherapyPage() {
             </div>
           </div>
         </section>
+        )}
       </main>
       <Footer />
       <Script
