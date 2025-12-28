@@ -255,6 +255,15 @@ export default async function HomePage() {
               content: (
                 <div className="container mx-auto px-4 sm:px-6 md:px-8">
                   <div className="max-w-5xl mx-auto space-y-8">
+                    <div className="text-center space-y-3">
+                      <h2 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">
+                        {copy.importantLinksHeading ?? "Important Links"}
+                      </h2>
+                      <p className="text-[var(--primary)]">
+                        {copy.importantLinksSubheading ?? "Quick access to key information"}
+                      </p>
+                    </div>
+
                     {/* Feature CTA (call) */}
                     {contactPhone ? (
                       <div className="flex justify-center">
@@ -269,15 +278,6 @@ export default async function HomePage() {
                         </Button>
                       </div>
                     ) : null}
-
-                    <div className="text-center space-y-3">
-                      <h2 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">
-                        {copy.importantLinksHeading ?? "Important Links"}
-                      </h2>
-                      <p className="text-[var(--primary)]">
-                        {copy.importantLinksSubheading ?? "Quick access to key information"}
-                      </p>
-                    </div>
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                       {/* Row 1 — centered primary CTA */}
                       <div className="col-span-full flex justify-center">

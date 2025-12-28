@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Upload, Save, Eye, LogOut, ImageIcon, FileText, DollarSign, Palette } from "lucide-react"
+import { Upload, Save, Eye, LogOut, ImageIcon, FileText, DollarSign, Palette, Home, Info, Briefcase, Layout, FlaskConical, Building2, Menu, Phone, Search, Calendar, BookOpen, Clock, Bot, X } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import type { SiteConfig } from "@/lib/config"
@@ -1089,7 +1089,7 @@ function CodeAgentBox() {
          <Tabs defaultValue="hero" className="space-y-6">
         <TabsList className="flex w-full flex-wrap gap-2 max-w-full overflow-x-auto pb-2">
             <TabsTrigger value="hero" className="flex items-center gap-2">
-              <User className="w-4 h-4" />
+              <Home className="w-4 h-4" />
               <span className="hidden sm:inline">Hero</span>
             </TabsTrigger>
             <TabsTrigger value="about" className="flex items-center gap-2">
@@ -1163,7 +1163,7 @@ function CodeAgentBox() {
              <Card>
                <CardHeader>
                  <CardTitle className="flex items-center gap-2">
-                   <User className="w-5 h-5" />
+                   <Home className="w-5 h-5" />
                    Edit Hero Section
                  </CardTitle>
                  <CardDescription>Update the main headline and description on your homepage</CardDescription>

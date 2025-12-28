@@ -248,86 +248,88 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
     >
       {/* Main Footer */}
       <div className="container mx-auto px-6 md:px-8 py-16">
-        <div className="grid gap-12 md:grid-cols-3 max-w-6xl mx-auto">
+        <div className="grid gap-12 md:gap-16 lg:gap-20 md:grid-cols-3 max-w-6xl mx-auto">
           {/* Brand */}
-          <div className="space-y-4">
-            <h3 className="font-serif text-3xl font-light">{cfg.brand?.name ?? "The Financial Therapist"}</h3>
-            <p className="text-[var(--primary)]/80 leading-relaxed">
+          <div className="flex flex-col space-y-5">
+            <h3 className="font-serif text-2xl md:text-3xl font-light leading-tight">{cfg.brand?.name ?? "The Financial Therapist"}</h3>
+            <p className="text-[var(--primary)]/80 leading-relaxed text-sm md:text-base">
               {cfg.brand?.tagline ??
                 "Trauma‑informed counselling specialising in financial trauma and monetary psychotherapy. A safe, gender‑aware and inclusive space."}
             </p>
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
-            <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Quick Links</h4>
-            <div className="flex flex-col gap-3">
+          <div className="flex flex-col space-y-5">
+            <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)] mb-1">Quick Links</h4>
+            <nav className="flex flex-col gap-2.5">
               {links.map((l) => (
-                <Link key={l.href} href={l.href} className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
+                <Link key={l.href} href={l.href} className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors text-sm md:text-base underline decoration-[var(--primary)]/30 hover:decoration-[var(--primary)]">
                   {l.label}
                 </Link>
               ))}
-              <Link href="/#book" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
+              <Link href="/#book" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors text-sm md:text-base underline decoration-[var(--primary)]/30 hover:decoration-[var(--primary)]">
                 Book Appointment
               </Link>
-              <Link href="/privacy" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
+              <Link href="/privacy" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors text-sm md:text-base underline decoration-[var(--primary)]/30 hover:decoration-[var(--primary)]">
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors">
+              <Link href="/terms" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors text-sm md:text-base underline decoration-[var(--primary)]/30 hover:decoration-[var(--primary)]">
                 Terms of Service
               </Link>
-            </div>
+            </nav>
           </div>
 
           {/* Contact */}
-          <div className="space-y-4">
-            <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Contact</h4>
-            <div className="space-y-3">
-              {cfg.contact?.phone && (
-                <a
-                  href={`tel:${cfg.contact.phone.replace(/\s+/g, "")}`}
-                  className="flex items-center gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
-                >
-                  <div className="w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Phone className="w-4 h-4 text-white" />
-                  </div>
-                  <span>{cfg.contact.phone}</span>
-                </a>
-              )}
-              {cfg.contact?.email && (
-                <a
-                  href={`mailto:${cfg.contact.email}`}
-                  className="flex items-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
-                >
-                  <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                    <Mail className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="break-all pt-2">{cfg.contact.email}</span>
-                </a>
-              )}
-              {cfg.contact?.emailAlt && cfg.contact.emailAlt !== cfg.contact.email && (
-                <a
-                  href={`mailto:${cfg.contact.emailAlt}`}
-                  className="flex items-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
-                >
-                  <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                    <Mail className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="break-all pt-2">{cfg.contact.emailAlt}</span>
-                </a>
-              )}
+          <div className="flex flex-col space-y-6">
+            <div className="space-y-5">
+              <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)] mb-1">Contact</h4>
+              <div className="space-y-4">
+                {cfg.contact?.phone && (
+                  <a
+                    href={`tel:${cfg.contact.phone.replace(/\s+/g, "")}`}
+                    className="flex items-center gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                  >
+                    <div className="w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                      <Phone className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-sm md:text-base underline decoration-[var(--primary)]/30 group-hover:decoration-[var(--primary)]">{cfg.contact.phone}</span>
+                  </a>
+                )}
+                {cfg.contact?.email && (
+                  <a
+                    href={`mailto:${cfg.contact.email}`}
+                    className="flex items-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                  >
+                    <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform mt-0.5">
+                      <Mail className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="break-all text-sm md:text-base underline decoration-[var(--primary)]/30 group-hover:decoration-[var(--primary)] pt-1">{cfg.contact.email}</span>
+                  </a>
+                )}
+                {cfg.contact?.emailAlt && cfg.contact.emailAlt !== cfg.contact.email && (
+                  <a
+                    href={`mailto:${cfg.contact.emailAlt}`}
+                    className="flex items-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
+                  >
+                    <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform mt-0.5">
+                      <Mail className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="break-all text-sm md:text-base underline decoration-[var(--primary)]/30 group-hover:decoration-[var(--primary)] pt-1">{cfg.contact.emailAlt}</span>
+                  </a>
+                )}
+              </div>
             </div>
 
             {/* Social */}
             <div className="space-y-4">
-              <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)]">Follow Dan</h4>
-              <div className="flex items-center gap-4">
+              <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)] mb-1">Follow Dan</h4>
+              <div className="flex items-center gap-3">
                 <a
                   href={cfg.social?.facebook || "https://www.facebook.com/the.melbourne.counsellor/"}
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label="Facebook"
-                  className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition"
+                  className="p-2.5 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition-all hover:scale-110"
                 >
                   <Facebook className="w-5 h-5 text-[var(--primary)]" />
                 </a>
@@ -336,7 +338,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label="Instagram"
-                  className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition"
+                  className="p-2.5 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition-all hover:scale-110"
                 >
                   <Instagram className="w-5 h-5 text-[var(--primary)]" />
                 </a>
@@ -345,7 +347,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label="LinkedIn"
-                  className="p-2 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition"
+                  className="p-2.5 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition-all hover:scale-110"
                 >
                   <Linkedin className="w-5 h-5 text-[var(--primary)]" />
                 </a>
