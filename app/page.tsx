@@ -66,20 +66,12 @@ export default async function HomePage() {
   const showLeadMagnet = config.experiments?.showLeadMagnet ?? sections.showLeadMagnet ?? false
 
   const otherAreas = homepageContent.otherAreas ?? []
-  const importantSectionLinks = homepageContent.importantSectionLinks ?? []
-  const importantLinks = homepageContent.importantLinks ?? {}
-  const blogLinks =
-    importantLinks.blogLinks ?? [
-      { label: "Why Money Triggers Anxiety", href: "/blog/why-money-triggers-anxiety" },
-      { label: "Financial Abuse and Emotional Healing", href: "/blog/financial-abuse-and-emotional-healing" },
-      { label: "The Psychology Behind Spending Habits", href: "/blog/the-psychology-behind-spending-habits" },
-    ]
-  const specialistLinks =
-    importantLinks.specialistLinks ?? [
-      { label: "Financial Abuse", href: "/financial-abuse" },
-      { label: "Financial Abuse Therapy", href: "/financial-abuse-therapy" },
-      { label: "Financial Abuse Therapist", href: "/financial-abuse-therapist" },
-    ]
+  const contentSections = config.contentSections ?? []
+  // Convert content sections to nav links for display
+  const allContentSectionLinks = contentSections.map((section) => ({
+    label: section.title,
+    href: `/content-sections/${section.slug}`,
+  }))
   const consultationOptions = config.consultations ?? []
   const bookingCopy = config.bookingCopy
   const primaryCta = hero.primaryCta ?? { label: "Book a Session", href: "/#book" }
@@ -281,37 +273,9 @@ export default async function HomePage() {
                         </Button>
                       </div>
 
-                      {/* Row 3 — three navy buttons */}
+                      {/* Row 3-5 — all 9 content sections in navy buttons */}
                       <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-                        {blogLinks.slice(0, 3).map((link) => (
-                          <Button
-                            key={link.href}
-                            asChild
-                            className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
-                          >
-                            <Link href={link.href} className="no-underline">
-                              {link.label}
-                            </Link>
-                          </Button>
-                        ))}
-                      </div>
-                      {/* Row 4 — internal section deep-dives */}
-                      <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-                        {importantSectionLinks.map((link) => (
-                          <Button
-                            key={link.href}
-                            asChild
-                            className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
-                          >
-                            <Link href={link.href} className="no-underline">
-                              {link.label}
-                            </Link>
-                          </Button>
-                        ))}
-                      </div>
-                      {/* Row 5 — specialist landing pages */}
-                      <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-                        {specialistLinks.slice(0, 3).map((link) => (
+                        {allContentSectionLinks.map((link) => (
                           <Button
                             key={link.href}
                             asChild
@@ -520,7 +484,7 @@ export default async function HomePage() {
                           </a>
 
                           <a
-                            href={contactEmail ? `mailto:${contactEmail}` : "mailto:"}
+                            href={contactEmail ? `mailto:${contactEmail}?subject=Contact%20Request` : "mailto:?subject=Contact%20Request"}
                             className="flex flex-col items-center md:items-start gap-4 p-6 bg-transparent rounded-lg hover:shadow-lg transition-all group border border-transparent hover:border-[var(--accent)] sm:flex-row sm:items-center"
                           >
                             <div className="size-14 bg-[var(--accent)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">

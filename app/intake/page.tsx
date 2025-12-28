@@ -25,7 +25,7 @@ export default async function IntakePage() {
           <h1 className="font-serif text-4xl text-[var(--foreground)] font-light">Intake</h1>
           <p className="text-[var(--primary)] mt-2">
             The intake form is temporarily unavailable. Please email{" "}
-            <a className="underline" href={`mailto:${config.contact?.email ?? "dan@financialabusetherapist.com.au"}`}>
+            <a className="underline" href={`mailto:${config.contact?.email ?? "dan@financialabusetherapist.com.au"}?subject=Intake%20Form%20Inquiry`}>
               {config.contact?.email ?? "dan@financialabusetherapist.com.au"}
             </a>
             .

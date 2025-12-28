@@ -221,6 +221,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   const [formPages, setFormPages] = useState<SiteConfig["formPages"]>({})
   const [formPagesEditor, setFormPagesEditor] = useState<{ enquiry: string; intake: string; newsletter: string }>({ enquiry: "", intake: "", newsletter: "" })
   const [clientCare, setClientCare] = useState<SiteConfig["clientCare"]>({ downloads: [] })
+  const [contentSections, setContentSections] = useState<SiteConfig["contentSections"]>([])
   const [bookingCopy, setBookingCopy] = useState<SiteConfig["bookingCopy"]>({
     billingHighlights: [],
     paymentSupport: [],
@@ -260,6 +261,8 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     forms,
     formPages,
     clientCare,
+    contentSections,
+    footer,
     bookingCopy,
   })
 
@@ -299,6 +302,8 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
        const nextForms = data.forms ?? {}
        const nextFormPages = data.formPages ?? {}
        const nextClientCare = data.clientCare ?? {}
+       const nextContentSections = data.contentSections ?? []
+       const nextFooter = data.footer ?? {}
        const nextBookingCopy = data.bookingCopy ?? {}
         setAboutContent(nextAbout)
         setServices(nextServices)
@@ -335,6 +340,13 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
           downloads: Array.isArray(nextClientCare.downloads) ? nextClientCare.downloads : [],
           prepChecklist: Array.isArray(nextClientCare.prepChecklist) ? nextClientCare.prepChecklist : [],
           aftercareChecklist: Array.isArray(nextClientCare.aftercareChecklist) ? nextClientCare.aftercareChecklist : [],
+        })
+        setContentSections(Array.isArray(nextContentSections) ? nextContentSections : [])
+        setFooter({
+          copyrightText: nextFooter.copyrightText ?? "",
+          companyName: nextFooter.companyName ?? "",
+          acknowledgementText: nextFooter.acknowledgementText ?? "",
+          quickLinks: Array.isArray(nextFooter.quickLinks) ? nextFooter.quickLinks : [],
         })
         setBookingCopy({
           billingHighlights: Array.isArray(nextBookingCopy.billingHighlights) ? nextBookingCopy.billingHighlights : [],
@@ -410,6 +422,13 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
            prepChecklist: Array.isArray(nextClientCare.prepChecklist) ? nextClientCare.prepChecklist : [],
            aftercareChecklist: Array.isArray(nextClientCare.aftercareChecklist) ? nextClientCare.aftercareChecklist : [],
          },
+         contentSections: Array.isArray(nextContentSections) ? nextContentSections : [],
+         footer: {
+           copyrightText: nextFooter.copyrightText ?? "",
+           companyName: nextFooter.companyName ?? "",
+           acknowledgementText: nextFooter.acknowledgementText ?? "",
+           quickLinks: Array.isArray(nextFooter.quickLinks) ? nextFooter.quickLinks : [],
+         },
          bookingCopy: {
            billingHighlights: Array.isArray(nextBookingCopy.billingHighlights) ? nextBookingCopy.billingHighlights : [],
            paymentSupport: Array.isArray(nextBookingCopy.paymentSupport) ? nextBookingCopy.paymentSupport : [],
@@ -437,6 +456,8 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          forms: baseline.forms,
          formPages: baseline.formPages,
          clientCare: baseline.clientCare,
+         contentSections: baseline.contentSections,
+         footer: baseline.footer,
          bookingCopy: baseline.bookingCopy,
        }))
        setLastSavedAt(baseline.meta?.updatedAt ?? null)
@@ -1148,6 +1169,14 @@ function CodeAgentBox() {
            <TabsTrigger value="resources" className="flex items-center gap-2">
              <BookOpen className="w-4 h-4" />
              <span className="hidden sm:inline">Resources</span>
+           </TabsTrigger>
+           <TabsTrigger value="content-sections" className="flex items-center gap-2">
+             <FileText className="w-4 h-4" />
+             <span className="hidden sm:inline">Content Sections</span>
+           </TabsTrigger>
+           <TabsTrigger value="footer" className="flex items-center gap-2">
+             <Layout className="w-4 h-4" />
+             <span className="hidden sm:inline">Footer</span>
            </TabsTrigger>
             <TabsTrigger value="history" className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
@@ -3397,47 +3426,157 @@ function CodeAgentBox() {
                    ))}
                  </div>
 
-                 <div className="space-y-3">
-                   <p className="text-sm font-semibold text-[var(--foreground)]">Downloads & forms (4)</p>
-                   {Array.from({ length: 4 }).map((_, idx) => {
-                     const link = clientCare?.downloads?.[idx] ?? { label: "", href: "" }
-                     return (
-                       <div key={`dl-${idx}`} className="grid gap-3 sm:grid-cols-2 rounded-lg border border-border/40 p-4">
-                         <div className="space-y-2">
-                           <Label>Label</Label>
-                           <Input
-                             value={link.label}
-                             onChange={(e) =>
-                               setClientCare((prev) => {
-                                 const next = [...(prev?.downloads ?? [])]
-                                 while (next.length < 4) next.push({ label: "", href: "" })
-                                 next[idx] = { ...next[idx], label: e.target.value }
-                                 return { ...(prev ?? {}), downloads: next }
-                               })
-                             }
-                           />
-                         </div>
-                         <div className="space-y-2">
-                           <Label>Href</Label>
-                           <Input
-                             value={link.href}
-                             onChange={(e) =>
-                               setClientCare((prev) => {
-                                 const next = [...(prev?.downloads ?? [])]
-                                 while (next.length < 4) next.push({ label: "", href: "" })
-                                 next[idx] = { ...next[idx], href: e.target.value }
-                                 return { ...(prev ?? {}), downloads: next }
-                               })
-                             }
-                           />
-                         </div>
-                       </div>
-                     )
-                   })}
-                 </div>
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-[var(--foreground)]">Downloads & forms (Note: Page shows Inquiry Form, Intake Form, Privacy Policy, and Terms of Service as fixed buttons)</p>
+                  <p className="text-xs text-[var(--primary)]/70">The downloads array is kept for backwards compatibility but the page displays fixed buttons.</p>
+                  {Array.from({ length: 2 }).map((_, idx) => {
+                    const link = clientCare?.downloads?.[idx] ?? { label: "", href: "" }
+                    return (
+                      <div key={`dl-${idx}`} className="grid gap-3 sm:grid-cols-2 rounded-lg border border-border/40 p-4">
+                        <div className="space-y-2">
+                          <Label>Label</Label>
+                          <Input
+                            value={link.label}
+                            onChange={(e) =>
+                              setClientCare((prev) => {
+                                const next = [...(prev?.downloads ?? [])]
+                                while (next.length < 2) next.push({ label: "", href: "" })
+                                next[idx] = { ...next[idx], label: e.target.value }
+                                return { ...(prev ?? {}), downloads: next }
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Href</Label>
+                          <Input
+                            value={link.href}
+                            onChange={(e) =>
+                              setClientCare((prev) => {
+                                const next = [...(prev?.downloads ?? [])]
+                                while (next.length < 2) next.push({ label: "", href: "" })
+                                next[idx] = { ...next[idx], href: e.target.value }
+                                return { ...(prev ?? {}), downloads: next }
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
 
                  <Button onClick={() => saveAll("Client care")} disabled={saving !== null}>
                    <Save className="w-4 h-4 mr-2" /> Save Client Care
+                 </Button>
+               </CardContent>
+             </Card>
+           </TabsContent>
+
+           {/* Content Sections Tab */}
+           <TabsContent value="content-sections" className="space-y-6">
+             <Card>
+               <CardHeader>
+                 <CardTitle>Content Sections</CardTitle>
+                 <CardDescription>Manage the 9 content sections shown on the homepage (navy buttons).</CardDescription>
+               </CardHeader>
+               <CardContent className="space-y-6">
+                 {Array.from({ length: 9 }).map((_, idx) => {
+                   const section = contentSections?.[idx] ?? { title: "", slug: "", content: "", pdfUrl: "" }
+                   return (
+                     <div key={idx} className="space-y-4 rounded-lg border border-border/40 p-4">
+                       <p className="text-sm font-semibold text-[var(--foreground)]">Section {idx + 1}</p>
+                       <div className="grid gap-4 sm:grid-cols-2">
+                         <div className="space-y-2">
+                           <Label>Title</Label>
+                           <Input
+                             value={section.title}
+                             onChange={(e) => {
+                               const next = [...(contentSections ?? [])]
+                               while (next.length < 9) next.push({ title: "", slug: "", content: "", pdfUrl: "" })
+                               next[idx] = { ...next[idx], title: e.target.value }
+                               setContentSections(next)
+                             }}
+                           />
+                         </div>
+                         <div className="space-y-2">
+                           <Label>Slug (URL-friendly identifier)</Label>
+                           <Input
+                             value={section.slug}
+                             onChange={(e) => {
+                               const next = [...(contentSections ?? [])]
+                               while (next.length < 9) next.push({ title: "", slug: "", content: "", pdfUrl: "" })
+                               next[idx] = { ...next[idx], slug: e.target.value }
+                               setContentSections(next)
+                             }}
+                           />
+                         </div>
+                       </div>
+                       <div className="space-y-2">
+                         <Label>Content (Markdown or plain text)</Label>
+                         <Textarea
+                           rows={8}
+                           value={section.content}
+                           onChange={(e) => {
+                             const next = [...(contentSections ?? [])]
+                             while (next.length < 9) next.push({ title: "", slug: "", content: "", pdfUrl: "" })
+                             next[idx] = { ...next[idx], content: e.target.value }
+                             setContentSections(next)
+                           }}
+                         />
+                       </div>
+                       <div className="space-y-2">
+                         <Label>PDF Document URL</Label>
+                         <div className="flex gap-3">
+                           <Input
+                             value={section.pdfUrl ?? ""}
+                             onChange={(e) => {
+                               const next = [...(contentSections ?? [])]
+                               while (next.length < 9) next.push({ title: "", slug: "", content: "", pdfUrl: "" })
+                               next[idx] = { ...next[idx], pdfUrl: e.target.value }
+                               setContentSections(next)
+                             }}
+                             placeholder="PDF URL or leave empty"
+                           />
+                           <Button
+                             type="button"
+                             variant="outline"
+                             onClick={async () => {
+                               try {
+                                 const url = await uploadAsset({ path: `docs/content-section-${idx + 1}{{ext}}`, accept: ".pdf" })
+                                 if (!url) return
+                                 const next = [...(contentSections ?? [])]
+                                 while (next.length < 9) next.push({ title: "", slug: "", content: "", pdfUrl: "" })
+                                 next[idx] = { ...next[idx], pdfUrl: url }
+                                 setContentSections(next)
+                                 toast({ title: "Uploaded", description: `PDF uploaded for section ${idx + 1}.` })
+                               } catch (e: unknown) {
+                                 toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+                               }
+                             }}
+                           >
+                             <Upload className="w-4 h-4 mr-2" />
+                             Upload PDF
+                           </Button>
+                         </div>
+                         {section.pdfUrl ? (
+                           <a className="text-sm underline text-[var(--accent)]" href={section.pdfUrl} target="_blank" rel="noopener noreferrer">
+                             View PDF
+                           </a>
+                         ) : null}
+                       </div>
+                       {section.slug ? (
+                         <div>
+                           <Link href={`/content-sections/${section.slug}`} target="_blank" className="text-sm underline text-[var(--accent)]">
+                             View page →
+                           </Link>
+                         </div>
+                       ) : null}
+                     </div>
+                   )
+                 })}
+                 <Button onClick={() => saveAll("Content sections")} disabled={saving !== null}>
+                   <Save className="w-4 h-4 mr-2" /> Save Content Sections
                  </Button>
                </CardContent>
              </Card>

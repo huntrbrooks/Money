@@ -33,7 +33,13 @@ function isFilled(field: FormField, value: FieldValue | undefined): boolean {
   if (field.type === "slider") {
     return typeof value === "number" && !Number.isNaN(value)
   }
-  return String(value ?? "").trim().length > 0
+  if (field.type === "select") {
+    // Select fields with empty string value are not filled
+    const str = String(value ?? "")
+    return str.trim().length > 0
+  }
+  const str = String(value ?? "").trim()
+  return str.length > 0
 }
 
 function getLayoutClasses(layout: FormSection["layout"]): string {

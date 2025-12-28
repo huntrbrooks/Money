@@ -13,7 +13,6 @@ export default async function ClientCarePage() {
   const config = await readSiteConfig()
   const prepChecklist = config.clientCare?.prepChecklist ?? []
   const aftercare = config.clientCare?.aftercareChecklist ?? []
-  const downloads = config.clientCare?.downloads ?? []
   return (
     <div className="min-h-screen bg-muted">
       <Navigation />
@@ -68,15 +67,38 @@ export default async function ClientCarePage() {
                 Downloads & forms
               </h2>
               <div className="grid gap-4 sm:grid-cols-2">
-                {downloads.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="rounded-2xl border border-[var(--secondary)] bg-[var(--section-bg-1)] p-4 text-[var(--primary)] hover:shadow-md"
-                  >
-                    {item.label}
+                <Button
+                  asChild
+                  className="w-full h-12 font-medium bg-[var(--section-bg-2)] text-[var(--foreground)] border-transparent hover:opacity-90 shadow-sm rounded-lg"
+                >
+                  <Link href="/enquiry" className="no-underline">
+                    Inquiry Form
                   </Link>
-                ))}
+                </Button>
+                <Button
+                  asChild
+                  className="w-full h-12 font-medium bg-[var(--section-bg-2)] text-[var(--foreground)] border-transparent hover:opacity-90 shadow-sm rounded-lg"
+                >
+                  <Link href="/intake" className="no-underline">
+                    Intake Form
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  className="w-full h-12 font-medium bg-[var(--section-bg-2)] text-[var(--foreground)] border-transparent hover:opacity-90 shadow-sm rounded-lg"
+                >
+                  <Link href="/privacy" className="no-underline">
+                    Privacy Policy
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  className="w-full h-12 font-medium bg-[var(--section-bg-2)] text-[var(--foreground)] border-transparent hover:opacity-90 shadow-sm rounded-lg"
+                >
+                  <Link href="/terms" className="no-underline">
+                    Terms of Service
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>

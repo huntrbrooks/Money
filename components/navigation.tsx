@@ -10,6 +10,12 @@ type Config = {
   navigation?: NavLink[]
   contact?: { phone?: string; email?: string; emailAlt?: string }
   social?: { facebook?: string; instagram?: string; linkedin?: string }
+  footer?: {
+    copyrightText?: string
+    companyName?: string
+    acknowledgementText?: string
+    quickLinks?: NavLink[]
+  }
 }
 
 export function Navigation() {
@@ -239,7 +245,16 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
       .then((d) => setCfg(d))
       .catch(() => {})
   }, [])
-  const links = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
+  const navigationLinks = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
+  const footerQuickLinks = cfg.footer?.quickLinks ?? []
+  // Combine navigation links and footer quick links, avoiding duplicates
+  const allQuickLinks = [
+    ...navigationLinks,
+    ...footerQuickLinks.filter((fl) => !navigationLinks.some((nl) => nl.href === fl.href)),
+    { label: "Book Appointment", href: "/#book" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
+  ]
 
   return (
     <footer
@@ -262,20 +277,11 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
           <div className="flex flex-col space-y-5 text-center md:text-left">
             <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)] mb-1">Quick Links</h4>
             <nav className="flex flex-col gap-2.5">
-              {links.map((l) => (
+              {allQuickLinks.map((l) => (
                 <Link key={l.href} href={l.href} className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors text-sm md:text-base underline decoration-[var(--primary)]/30 hover:decoration-[var(--primary)]">
                   {l.label}
                 </Link>
               ))}
-              <Link href="/#book" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors text-sm md:text-base underline decoration-[var(--primary)]/30 hover:decoration-[var(--primary)]">
-                Book Appointment
-              </Link>
-              <Link href="/privacy" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors text-sm md:text-base underline decoration-[var(--primary)]/30 hover:decoration-[var(--primary)]">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors text-sm md:text-base underline decoration-[var(--primary)]/30 hover:decoration-[var(--primary)]">
-                Terms of Service
-              </Link>
             </nav>
           </div>
 
@@ -297,7 +303,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
                 )}
                 {cfg.contact?.email && (
                   <a
-                    href={`mailto:${cfg.contact.email}`}
+                    href={`mailto:${cfg.contact.email}?subject=Contact%20Request`}
                     className="flex items-start justify-center md:justify-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
                   >
                     <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform mt-0.5">
@@ -308,7 +314,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
                 )}
                 {cfg.contact?.emailAlt && cfg.contact.emailAlt !== cfg.contact.email && (
                   <a
-                    href={`mailto:${cfg.contact.emailAlt}`}
+                    href={`mailto:${cfg.contact.emailAlt}?subject=Contact%20Request`}
                     className="flex items-start justify-center md:justify-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group"
                   >
                     <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform mt-0.5">
@@ -361,12 +367,9 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
       <div className="border-t border-[var(--secondary)]" style={{ backgroundColor, backgroundImage: "none" }}>
         <div className="container mx-auto px-6 md:px-8 py-8">
           <div className="text-center space-y-3 text-sm text-[var(--primary)]/70 max-w-4xl mx-auto">
-            <p>© 2025 The Financial Therapist. All rights reserved.</p>
-            <p>The Financial Therapist Pty. Ltd. atf The Financial Therapist Trust.</p>
-            <p className="leading-relaxed">
-              The Financial Therapist acknowledges the Wurundjeri people who are the Traditional Custodians of the land
-              on which we work. We pay our respects to Elders past, present and emerging.
-            </p>
+            {cfg.footer?.copyrightText && <p>{cfg.footer.copyrightText}</p>}
+            {cfg.footer?.companyName && <p>{cfg.footer.companyName}</p>}
+            {cfg.footer?.acknowledgementText && <p className="leading-relaxed">{cfg.footer.acknowledgementText}</p>}
             <p className="space-x-4">
               <Link href="/privacy" className="hover:text-[var(--foreground)]">Privacy Policy</Link>
               <Link href="/terms" className="hover:text-[var(--foreground)]">Terms of Service</Link>

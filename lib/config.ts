@@ -65,6 +65,20 @@ export type ClientCareConfig = {
   aftercareChecklist?: string[]
 }
 
+export type ContentSectionConfig = {
+  title: string
+  slug: string
+  content: string
+  pdfUrl?: string
+}
+
+export type FooterConfig = {
+  copyrightText?: string
+  companyName?: string
+  acknowledgementText?: string
+  quickLinks?: NavLink[]
+}
+
 export type BookingCopyItem = {
   title: string
   detail: string
@@ -398,6 +412,8 @@ export type SiteConfig = {
   social?: SocialLinks
   legal?: LegalConfig
   clientCare?: ClientCareConfig
+  contentSections?: ContentSectionConfig[]
+  footer?: FooterConfig
   bookingCopy?: BookingCopy
 }
 
@@ -467,10 +483,8 @@ export const defaultConfig: SiteConfig = {
   },
   clientCare: {
     downloads: [
-      { label: "Consent & Policies", href: "/consent" },
       { label: "Enquiry Form", href: "/enquiry" },
       { label: "Intake Form", href: "/intake" },
-      { label: "Financial Safety Check-in", href: "/newsletter" },
     ],
     prepChecklist: [
       "Find a private, comfortable space and something grounding to hold.",
@@ -480,9 +494,20 @@ export const defaultConfig: SiteConfig = {
     aftercareChecklist: [
       "Give yourself at least 10 minutes before diving into work or caretaking.",
       "Drink water, have a snack, and if possible step outside for fresh air.",
-      "Note one insight or feeling you’d like to revisit next session.",
+      "Note one insight or feeling you'd like to revisit next session.",
     ],
   },
+  contentSections: [
+    { title: "Why money triggers anxiety", slug: "why-money-triggers-anxiety", content: "", pdfUrl: "" },
+    { title: "What is Financial Abuse", slug: "what-is-financial-abuse", content: "", pdfUrl: "" },
+    { title: "Elderly/Disabled Financial Abuse", slug: "elderly-disabled-financial-abuse", content: "", pdfUrl: "" },
+    { title: "Monetary Psychotherapy", slug: "monetary-psychotherapy", content: "", pdfUrl: "" },
+    { title: "Financial Trauma", slug: "financial-trauma", content: "", pdfUrl: "" },
+    { title: "Family Financial Assistance. Inheritance.", slug: "family-financial-assistance-inheritance", content: "", pdfUrl: "" },
+    { title: "Estrangement", slug: "estrangement", content: "", pdfUrl: "" },
+    { title: "Financial Abuse Therapy", slug: "financial-abuse-therapy", content: "", pdfUrl: "" },
+    { title: "About Dan", slug: "about-dan", content: "", pdfUrl: "" },
+  ],
   bookingCopy: {
     billingHighlights: [
       { title: "Transparent billing", detail: "Fees listed are inclusive of GST with no surprise surcharges." },
@@ -1136,6 +1161,8 @@ export async function readSiteConfig(): Promise<SiteConfig> {
             prepChecklist: parsed.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
             aftercareChecklist: parsed.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
           },
+          contentSections: parsed.contentSections ?? defaultConfig.contentSections,
+          footer: { ...defaultConfig.footer, ...(parsed.footer ?? {}) },
           bookingCopy: {
             ...(defaultConfig.bookingCopy ?? {}),
             ...(parsed.bookingCopy ?? {}),
@@ -1206,6 +1233,8 @@ export async function readSiteConfig(): Promise<SiteConfig> {
         prepChecklist: parsed.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
         aftercareChecklist: parsed.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
       },
+      contentSections: parsed.contentSections ?? defaultConfig.contentSections,
+      footer: { ...defaultConfig.footer, ...(parsed.footer ?? {}) },
       bookingCopy: {
         ...(defaultConfig.bookingCopy ?? {}),
         ...(parsed.bookingCopy ?? {}),
@@ -1294,6 +1323,8 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
       terms: { ...(defaultConfig.legal?.terms ?? {}), ...(newConfig.legal?.terms ?? {}) },
       consent: { ...(defaultConfig.legal?.consent ?? {}), ...(newConfig.legal?.consent ?? {}) },
     },
+    contentSections: newConfig.contentSections ?? defaultConfig.contentSections,
+    footer: { ...defaultConfig.footer, ...(newConfig.footer ?? {}) },
     bookingCopy: {
       ...(defaultConfig.bookingCopy ?? {}),
       ...(newConfig.bookingCopy ?? {}),

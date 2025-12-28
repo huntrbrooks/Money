@@ -26,7 +26,7 @@ export default async function EnquiryPage() {
           <h1 className="font-serif text-4xl text-[var(--foreground)] font-light">Enquiry</h1>
           <p className="text-[var(--primary)] mt-2">
             The enquiry form is temporarily unavailable. Please email{" "}
-            <a className="underline" href={`mailto:${config.contact?.email ?? "dan@financialabusetherapist.com.au"}`}>
+            <a className="underline" href={`mailto:${config.contact?.email ?? "dan@financialabusetherapist.com.au"}?subject=Enquiry`}>
               {config.contact?.email ?? "dan@financialabusetherapist.com.au"}
             </a>
             .

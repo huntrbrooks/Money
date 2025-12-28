@@ -278,7 +278,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
 
           <div className="flex flex-col items-center gap-1 text-center">
             <p className="text-xs uppercase tracking-[0.25em] text-[#4a5c63]">Billing enquiries</p>
-            <a href={`mailto:${email}`} className="text-sm font-semibold text-[#1f2d38] break-all">
+            <a href={`mailto:${email}?subject=Billing%20Inquiry`} className="text-sm font-semibold text-[#1f2d38] break-all">
               {email}
             </a>
             <a href={`tel:${phone.replace(/\s+/g, "")}`} className="text-sm text-[#4a5c63]">

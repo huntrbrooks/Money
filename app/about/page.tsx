@@ -78,7 +78,7 @@ export default async function AboutPage() {
                   <p className="text-sm text-[var(--primary)]/90">📍 Based in Melbourne | Online &amp; In-Person Sessions</p>
                   <div className="flex flex-wrap gap-2">
                     <a
-                      href={`mailto:${email}`}
+                      href={`mailto:${email}?subject=Contact%20Request`}
                       aria-label={`Email Dan at ${email}`}
                       className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--primary)]/20 bg-[var(--section-bg-1)] text-[var(--primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
                     >
@@ -87,7 +87,7 @@ export default async function AboutPage() {
                     </a>
                     {emailAlt && emailAlt !== email ? (
                       <a
-                        href={`mailto:${emailAlt}`}
+                        href={`mailto:${emailAlt}?subject=Contact%20Request`}
                         aria-label={`Email Dan at ${emailAlt}`}
                         className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--primary)]/20 bg-[var(--section-bg-1)] text-[var(--primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
                       >
