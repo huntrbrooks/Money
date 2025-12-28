@@ -129,7 +129,7 @@
       "number": "13 11 14",
       "website": "https://www.lifeline.org.au",
       "description": "24/7 crisis support and suicide prevention services across Australia.",
-      "logoUrl": "/Lifeline.webp",
+      "logoUrl": "/logos/Lifeline.webp",
       "logoHeight": 80
     },
     {
@@ -137,35 +137,35 @@
       "number": "1300 659 467",
       "website": "https://www.suicidecallbackservice.org.au",
       "description": "24/7 nationwide service offering free professional phone and online counselling for people affected by suicide.",
-      "logoUrl": "/suicide%20services%20call%20back.webp"
+      "logoUrl": "/logos/suicide%20services%20call%20back.webp"
     },
     {
       "name": "Beyond Blue",
       "number": "1300 22 4636",
       "website": "https://www.beyondblue.org.au",
       "description": "Support, advice and action for anxiety, depression and suicide prevention.",
-      "logoUrl": "/beyond%20blue.webp"
+      "logoUrl": "/logos/beyond%20blue.webp"
     },
     {
       "name": "MensLine Australia",
       "number": "1300 78 99 78",
       "website": "https://mensline.org.au",
       "description": "24/7 counselling, information and referrals for men with family and relationship concerns.",
-      "logoUrl": "/mensline.webp"
+      "logoUrl": "/logos/mensline.webp"
     },
     {
       "name": "Kids Helpline",
       "number": "1800 55 1800",
       "website": "https://kidshelpline.com.au",
       "description": "24/7 phone and online counselling for young people aged 5–25.",
-      "logoUrl": "/Kids%20helpline.webp"
+      "logoUrl": "/logos/Kids%20helpline.webp"
     },
     {
       "name": "QLife",
       "number": "1800 184 527",
       "website": "https://qlife.org.au",
       "description": "Australia‑wide anonymous LGBTIQ+ peer support and referral service.",
-      "logoUrl": "/Qlife.webp"
+      "logoUrl": "/logos/Qlife.webp"
     }
   ],
   "forms": {

@@ -261,7 +261,7 @@ export default async function HomePage() {
                         <Button
                           asChild
                           size="lg"
-                          className="w-full sm:w-auto max-w-2xl rounded-full px-8 sm:px-10 h-14 sm:h-16 text-base sm:text-lg font-semibold bg-[color-mix(in_oklch,var(--accent)_38%,white)] text-[var(--foreground)] border border-[color-mix(in_oklch,var(--accent)_55%,transparent)] shadow-[0_22px_55px_rgba(32,56,91,0.25)] hover:shadow-[0_30px_70px_rgba(32,56,91,0.3)] hover:bg-[color-mix(in_oklch,var(--accent)_46%,white)] transition-[transform,box-shadow,background-color] hover:-translate-y-0.5 active:translate-y-0"
+                          className="w-full sm:w-auto max-w-2xl rounded-full px-8 sm:px-10 h-14 sm:h-16 text-base sm:text-lg font-semibold bg-[#F5F5DC] text-[var(--foreground)] border border-transparent shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.15)] hover:bg-[#F0F0D8] transition-[transform,box-shadow,background-color] hover:-translate-y-0.5 active:translate-y-0"
                         >
                           <a href={callDanHref} className="no-underline" aria-label="Call Dan">
                             {copy.importantLinksCallCtaLabel ?? "Call Dan for a brief discussion of your situation"}
