@@ -46,9 +46,16 @@ export default async function HomePage() {
   try {
     config = await readSiteConfig()
   } catch (error) {
-    // Fallback to default config if readSiteConfig fails
-    console.error("Failed to load site config in HomePage:", error)
-    config = defaultConfig
+    // During static generation, DYNAMIC_SERVER_USAGE errors are expected and can be ignored
+    // They just mean the route will be dynamically rendered (which is correct)
+    if (error && typeof error === 'object' && 'digest' in error && error.digest === 'DYNAMIC_SERVER_USAGE') {
+      // This is expected during build - route will be dynamic, use default config
+      config = defaultConfig
+    } else {
+      // Real error - log it
+      console.error("Failed to load site config in HomePage:", error)
+      config = defaultConfig
+    }
   }
   const hero = config.hero
   const homepageContent = config.homepage ?? {}
