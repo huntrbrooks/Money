@@ -48,12 +48,14 @@ export default async function AboutPage() {
           <div className="container mx-auto px-6 md:px-8">
             <div className="max-w-6xl mx-auto grid gap-16 lg:grid-cols-5 items-start">
               <div className="lg:col-span-2 space-y-6">
-                <p className="text-xs uppercase tracking-[0.15em] text-[var(--primary)] font-bold">About Dan</p>
+                <p className="text-xs uppercase tracking-[0.15em] text-[var(--foreground)]/80 sm:text-[var(--primary)] font-bold">
+                  About Dan
+                </p>
                 <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[var(--foreground)] leading-[1.1] font-light">
                   Dan Lobel, D.Couns., B.Couns., MCouns&Psych
                 </h1>
-                <p className="text-[var(--primary)]/90">The Financial Therapist</p>
-                <ul className="space-y-2 text-[var(--primary)]">
+                <p className="text-[var(--foreground)]/80 sm:text-[var(--primary)]/90">The Financial Therapist</p>
+                <ul className="space-y-2 text-[var(--foreground)]/80 sm:text-[var(--primary)]">
                   {credentials.map((item) => (
                     <li key={item} className="flex items-center gap-2">
                       <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
@@ -62,7 +64,7 @@ export default async function AboutPage() {
                   ))}
                 </ul>
               </div>
-              <div className="lg:col-span-3 space-y-6 text-lg leading-relaxed text-[var(--primary)]">
+              <div className="lg:col-span-3 space-y-6 text-lg leading-relaxed text-[var(--foreground)]/80 sm:text-[var(--primary)]">
                 <p className="text-xl text-[var(--foreground)] font-medium">
                   Dan is a warm, empathic counsellor with a deep understanding of human behaviour and emotional complexity.
                   He combines contemporary integrative counselling with behavioural psychology to help clients understand
@@ -78,7 +80,9 @@ export default async function AboutPage() {
                   nervous system and honours personal boundaries.
                 </p>
                 <div className="grid gap-3 md:grid-cols-2 pt-2">
-                  <p className="text-sm text-[var(--primary)]/90">📍 Based in Melbourne | Online &amp; In-Person Sessions</p>
+                  <p className="text-sm text-[var(--foreground)]/80 sm:text-[var(--primary)]/90">
+                    📍 Based in Melbourne | Online &amp; In-Person Sessions
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     <EmailLink
                       email={email}

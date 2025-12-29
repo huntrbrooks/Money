@@ -1266,6 +1266,70 @@ export const defaultConfig: SiteConfig = {
   },
 }
 
+function slugify(input: string): string {
+  return String(input ?? "")
+    .toLowerCase()
+    .trim()
+    .replace(/['"]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+}
+
+function normalizeContentSectionsFixedLength(
+  stored: SiteConfig["contentSections"] | undefined,
+  defaults: SiteConfig["contentSections"] | undefined,
+): SiteConfig["contentSections"] {
+  const storedArr = Array.isArray(stored) ? stored : []
+  const defaultsArr = Array.isArray(defaults) ? defaults : []
+
+  // If we have no defaults to anchor to, just return the stored value (or empty).
+  if (defaultsArr.length === 0) {
+    return storedArr
+      .map((s) => ({
+        title: String(s?.title ?? "").trim(),
+        slug: String(s?.slug ?? "").trim(),
+        content: String(s?.content ?? ""),
+        pdfUrl: s?.pdfUrl ? String(s.pdfUrl) : "",
+      }))
+      .filter((s) => s.title || s.slug || s.content || s.pdfUrl)
+  }
+
+  const out: ContentSectionConfig[] = []
+  const usedSlugs = new Set<string>()
+
+  for (let i = 0; i < defaultsArr.length; i++) {
+    const def = defaultsArr[i] ?? { title: "", slug: "", content: "", pdfUrl: "" }
+    const raw = storedArr[i] ?? {}
+    const merged: ContentSectionConfig = {
+      title: String((raw as ContentSectionConfig).title ?? def.title ?? "").trim(),
+      slug: String((raw as ContentSectionConfig).slug ?? def.slug ?? "").trim(),
+      content: String((raw as ContentSectionConfig).content ?? def.content ?? ""),
+      pdfUrl: String((raw as ContentSectionConfig).pdfUrl ?? def.pdfUrl ?? "").trim() || "",
+    }
+
+    if (!merged.title && def.title) merged.title = def.title
+
+    // Ensure we always have a usable slug for routing.
+    if (!merged.slug) {
+      merged.slug = def.slug || slugify(merged.title) || `section-${i + 1}`
+    }
+
+    // Make sure slugs are unique (avoid broken lookups/links).
+    let candidate = merged.slug
+    let n = 2
+    while (usedSlugs.has(candidate)) {
+      candidate = `${merged.slug}-${n}`
+      n += 1
+    }
+    merged.slug = candidate
+    usedSlugs.add(merged.slug)
+
+    out.push(merged)
+  }
+
+  return out
+}
+
 async function ensureDir(filePath: string) {
   const dir = path.dirname(filePath)
   try {
@@ -1303,7 +1367,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
               prepChecklist: parsed.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
               aftercareChecklist: parsed.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
             },
-            contentSections: mergeContentSections(parsed.contentSections, defaultConfig.contentSections),
+            contentSections: normalizeContentSectionsFixedLength(parsed.contentSections, defaultConfig.contentSections),
             footer: { ...defaultConfig.footer, ...(parsed.footer ?? {}) },
             financialAbusePage: parsed.financialAbusePage ?? defaultConfig.financialAbusePage,
             monetaryPsychotherapyPage: parsed.monetaryPsychotherapyPage ?? defaultConfig.monetaryPsychotherapyPage,
@@ -1387,7 +1451,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
         prepChecklist: parsed.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
         aftercareChecklist: parsed.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
       },
-      contentSections: mergeContentSections(parsed.contentSections, defaultConfig.contentSections),
+      contentSections: normalizeContentSectionsFixedLength(parsed.contentSections, defaultConfig.contentSections),
       footer: { ...defaultConfig.footer, ...(parsed.footer ?? {}) },
       financialAbusePage: parsed.financialAbusePage ?? defaultConfig.financialAbusePage,
       monetaryPsychotherapyPage: parsed.monetaryPsychotherapyPage ?? defaultConfig.monetaryPsychotherapyPage,
@@ -1480,7 +1544,7 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
       terms: { ...(defaultConfig.legal?.terms ?? {}), ...(newConfig.legal?.terms ?? {}) },
       consent: { ...(defaultConfig.legal?.consent ?? {}), ...(newConfig.legal?.consent ?? {}) },
     },
-    contentSections: mergeContentSections(newConfig.contentSections, defaultConfig.contentSections),
+    contentSections: normalizeContentSectionsFixedLength(newConfig.contentSections, defaultConfig.contentSections),
     footer: { ...defaultConfig.footer, ...(newConfig.footer ?? {}) },
     bookingCopy: {
       ...(defaultConfig.bookingCopy ?? {}),

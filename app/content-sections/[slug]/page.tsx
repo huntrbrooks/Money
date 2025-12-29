@@ -7,14 +7,10 @@ import { readSiteConfig } from "@/lib/config"
 import { buildPageMetadata } from "@/lib/seo"
 import { ArrowRight, Download } from "lucide-react"
 
+export const dynamic = "force-dynamic"
+
 type ContentSectionPageProps = {
   params: { slug: string }
-}
-
-export async function generateStaticParams() {
-  const config = await readSiteConfig()
-  const sections = config.contentSections ?? []
-  return sections.map((section) => ({ slug: section.slug }))
 }
 
 export async function generateMetadata({ params }: ContentSectionPageProps): Promise<Metadata> {

@@ -83,18 +83,8 @@ export default async function HomePage() {
   const showLeadMagnet = config.experiments?.showLeadMagnet ?? sections.showLeadMagnet ?? false
 
   const otherAreas = homepageContent.otherAreas ?? []
-  const mergeContentSectionsBySlug = (
-    stored: typeof config.contentSections,
-    defaults: typeof defaultConfig.contentSections,
-  ) => {
-    const storedArr = Array.isArray(stored) ? stored : []
-    const defaultsArr = Array.isArray(defaults) ? defaults : []
-    const existing = new Set(storedArr.map((s) => s?.slug).filter(Boolean))
-    const missingDefaults = defaultsArr.filter((d) => d?.slug && !existing.has(d.slug))
-    return [...storedArr, ...missingDefaults]
-  }
-
-  const contentSections = mergeContentSectionsBySlug(config.contentSections, defaultConfig.contentSections)
+  // `readSiteConfig()` normalizes `contentSections` to a fixed list (9) so the homepage buttons are always present.
+  const contentSections = (config.contentSections ?? []).slice(0, 9)
   // Map content sections to their correct routes (dedicated pages take priority)
   const contentSectionRouteMap: Record<string, string> = {
     "why-money-triggers-anxiety": "/blog/why-money-triggers-anxiety",
