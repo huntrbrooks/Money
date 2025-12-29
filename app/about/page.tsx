@@ -7,6 +7,8 @@ import { readSiteConfig } from "@/lib/config"
 import { buildPageMetadata } from "@/lib/seo"
 import { EmailLink } from "@/components/email-link"
 
+export const dynamic = 'force-dynamic'
+
 const PAGE_DESCRIPTION =
   "Meet Dan Lobel — a warm, trauma-informed counsellor specialising in monetary psychotherapy, financial trauma, and self-worth. Learn about his approach, credentials, and how sessions feel."
 

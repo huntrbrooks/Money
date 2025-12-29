@@ -20,6 +20,8 @@ import {
   buildServiceSchema,
 } from "@/lib/seo"
 
+export const dynamic = 'force-dynamic'
+
 const HOME_TITLE = "Financial Abuse Therapist | Financial Trauma — Dan Lobel"
 const HOME_DESCRIPTION =
   "Trauma-informed counselling in Melbourne focused on financial abuse recovery, financial trauma, money anxiety and safe, gender-aware and inclusive care."
