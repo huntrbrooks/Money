@@ -83,7 +83,18 @@ export default async function HomePage() {
   const showLeadMagnet = config.experiments?.showLeadMagnet ?? sections.showLeadMagnet ?? false
 
   const otherAreas = homepageContent.otherAreas ?? []
-  const contentSections = config.contentSections ?? []
+  const mergeContentSectionsBySlug = (
+    stored: typeof config.contentSections,
+    defaults: typeof defaultConfig.contentSections,
+  ) => {
+    const storedArr = Array.isArray(stored) ? stored : []
+    const defaultsArr = Array.isArray(defaults) ? defaults : []
+    const existing = new Set(storedArr.map((s) => s?.slug).filter(Boolean))
+    const missingDefaults = defaultsArr.filter((d) => d?.slug && !existing.has(d.slug))
+    return [...storedArr, ...missingDefaults]
+  }
+
+  const contentSections = mergeContentSectionsBySlug(config.contentSections, defaultConfig.contentSections)
   // Map content sections to their correct routes (dedicated pages take priority)
   const contentSectionRouteMap: Record<string, string> = {
     "why-money-triggers-anxiety": "/blog/why-money-triggers-anxiety",
@@ -573,8 +584,12 @@ export default async function HomePage() {
             return (
               <div
                 aria-hidden
-                className="h-[var(--section-fade-height)]"
-                style={{ backgroundImage: `linear-gradient(to bottom, ${HERO_END_BG}, ${footerBg})` }}
+                className={[
+                  "h-[var(--section-fade-height)]",
+                  footerBg === "var(--section-bg-1)"
+                    ? "bg-[var(--section-bg-1)]"
+                    : "[background-image:linear-gradient(to_bottom,var(--section-bg-1),var(--section-bg-2))]",
+                ].join(" ")}
               />
             )
           }
