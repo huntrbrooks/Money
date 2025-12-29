@@ -2,7 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
-import { readSiteConfig } from "@/lib/config"
+import { readSiteConfig, defaultConfig } from "@/lib/config"
 import { SITE_URL } from "@/lib/urls"
 import { AnalyticsScripts } from "@/components/analytics-scripts"
 
@@ -70,7 +70,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const config = await readSiteConfig()
+  let config
+  try {
+    config = await readSiteConfig()
+  } catch (error) {
+    // Fallback to default config if readSiteConfig fails
+    console.error("Failed to load site config:", error)
+    config = defaultConfig
+  }
   const themeCss = `
     :root {
       --primary: ${config.theme.primary};
