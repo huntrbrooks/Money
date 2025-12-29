@@ -42,11 +42,16 @@ async function sbFetch(url: string, init?: RequestInit): Promise<Response> {
 
 export async function sbGetSiteConfigJson(): Promise<Json | null> {
   if (!hasSupabase()) return null
-  const url = `${restUrl("site_config")}?id=eq.1&select=data`
-  const res = await sbFetch(url, { method: "GET" })
-  if (!res.ok) return null
-  const rows = (await res.json().catch(() => null)) as Array<{ data: Json }> | null
-  return rows?.[0]?.data ?? null
+  try {
+    const url = `${restUrl("site_config")}?id=eq.1&select=data`
+    const res = await sbFetch(url, { method: "GET" })
+    if (!res.ok) return null
+    const rows = (await res.json().catch(() => null)) as Array<{ data: Json }> | null
+    return rows?.[0]?.data ?? null
+  } catch {
+    // Network errors, timeouts, etc. - return null to allow fallback
+    return null
+  }
 }
 
 export async function sbUpsertSiteConfigJson(data: Json): Promise<void> {

@@ -1269,82 +1269,92 @@ export async function readSiteConfig(): Promise<SiteConfig> {
   noStore()
   try {
     if (hasSupabase()) {
-      const sbData = await sbGetSiteConfigJson()
-      if (sbData) {
-        const parsed = sbData as Record<string, unknown>
-        return {
-          ...defaultConfig,
-          ...parsed,
-          theme: { ...defaultConfig.theme, ...(parsed.theme ?? {}) },
-          seo: { ...defaultConfig.seo, ...(parsed.seo ?? {}) },
-          brand: { ...defaultConfig.brand, ...(parsed.brand ?? {}) },
-          navigation: parsed.navigation ?? defaultConfig.navigation,
-          contact: { ...defaultConfig.contact, ...(parsed.contact ?? {}) },
-          social: { ...(defaultConfig.social ?? {}), ...(parsed.social ?? {}) },
-          legal: {
-            privacy: { ...(defaultConfig.legal?.privacy ?? {}), ...(parsed.legal?.privacy ?? {}) },
-            terms: { ...(defaultConfig.legal?.terms ?? {}), ...(parsed.legal?.terms ?? {}) },
-            consent: { ...(defaultConfig.legal?.consent ?? {}), ...(parsed.legal?.consent ?? {}) },
-          },
-          clientCare: {
-            downloads: parsed.clientCare?.downloads ?? defaultConfig.clientCare?.downloads,
-            prepChecklist: parsed.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
-            aftercareChecklist: parsed.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
-          },
-          contentSections: parsed.contentSections ?? defaultConfig.contentSections,
-          footer: { ...defaultConfig.footer, ...(parsed.footer ?? {}) },
-          financialAbusePage: parsed.financialAbusePage ?? defaultConfig.financialAbusePage,
-          monetaryPsychotherapyPage: parsed.monetaryPsychotherapyPage ?? defaultConfig.monetaryPsychotherapyPage,
-          financialAbuseTherapyPage: parsed.financialAbuseTherapyPage ?? defaultConfig.financialAbuseTherapyPage,
-          bookingCopy: {
-            ...(defaultConfig.bookingCopy ?? {}),
-            ...(parsed.bookingCopy ?? {}),
-            billingHighlights: parsed.bookingCopy?.billingHighlights ?? defaultConfig.bookingCopy?.billingHighlights,
-            paymentSupport: parsed.bookingCopy?.paymentSupport ?? defaultConfig.bookingCopy?.paymentSupport,
-            paymentOptions: parsed.bookingCopy?.paymentOptions ?? defaultConfig.bookingCopy?.paymentOptions,
-            schedulerPoints: parsed.bookingCopy?.schedulerPoints ?? defaultConfig.bookingCopy?.schedulerPoints,
-            schedulerHelpText: parsed.bookingCopy?.schedulerHelpText ?? defaultConfig.bookingCopy?.schedulerHelpText,
-          },
-          hero: { ...defaultConfig.hero, ...(parsed.hero ?? {}) },
-          about: { ...defaultConfig.about, ...(parsed.about ?? {}) },
-          services: parsed.services ?? defaultConfig.services,
-          consultations: parsed.consultations ?? defaultConfig.consultations,
-          resources: normalizeCarouselResources(parsed.resources ?? defaultConfig.resources),
-          forms: { ...(defaultConfig.forms ?? {}), ...(parsed.forms ?? {}) },
-          formPages: { ...(defaultConfig.formPages ?? {}), ...(parsed.formPages ?? {}) },
-          homepage: (() => {
-            const defaults = defaultConfig.homepage ?? {}
-            const hp = (parsed.homepage ?? {}) as Partial<HomepageContent>
-            const leadMagnetDefaults = defaults.leadMagnet ?? {
-              heading: "",
-              body: "",
-              ctaLabel: "",
-              ctaHref: "",
-            }
-            return {
-              ...defaults,
-              ...hp,
-              sections: { ...(defaults.sections ?? {}), ...(hp.sections ?? {}) },
-              copy: { ...(defaults.copy ?? {}), ...(hp.copy ?? {}) },
-              importantLinks: {
-                ...(defaults.importantLinks ?? {}),
-                ...(hp.importantLinks ?? {}),
-                blogLinks: hp.importantLinks?.blogLinks ?? defaults.importantLinks?.blogLinks,
-                specialistLinks: hp.importantLinks?.specialistLinks ?? defaults.importantLinks?.specialistLinks,
-              },
-              importantSectionLinks: hp.importantSectionLinks ?? defaults.importantSectionLinks,
-              otherAreas: hp.otherAreas ?? defaults.otherAreas,
-              valueProps: hp.valueProps ?? defaults.valueProps,
-              testimonials: hp.testimonials ?? defaults.testimonials,
-              faqs: hp.faqs ?? defaults.faqs,
-              leadMagnet: { ...leadMagnetDefaults, ...(hp.leadMagnet ?? {}) },
-            }
-          })(),
-          meta: { ...(defaultConfig.meta ?? { version: 1, updatedAt: new Date().toISOString() }), ...(parsed.meta ?? {}) },
-          experiments: { ...defaultConfig.experiments, ...(parsed.experiments ?? {}) },
+      try {
+        const sbData = await sbGetSiteConfigJson()
+        if (sbData) {
+          const parsed = sbData as Record<string, unknown>
+          return {
+            ...defaultConfig,
+            ...parsed,
+            theme: { ...defaultConfig.theme, ...(parsed.theme ?? {}) },
+            seo: { ...defaultConfig.seo, ...(parsed.seo ?? {}) },
+            brand: { ...defaultConfig.brand, ...(parsed.brand ?? {}) },
+            navigation: parsed.navigation ?? defaultConfig.navigation,
+            contact: { ...defaultConfig.contact, ...(parsed.contact ?? {}) },
+            social: { ...(defaultConfig.social ?? {}), ...(parsed.social ?? {}) },
+            legal: {
+              privacy: { ...(defaultConfig.legal?.privacy ?? {}), ...(parsed.legal?.privacy ?? {}) },
+              terms: { ...(defaultConfig.legal?.terms ?? {}), ...(parsed.legal?.terms ?? {}) },
+              consent: { ...(defaultConfig.legal?.consent ?? {}), ...(parsed.legal?.consent ?? {}) },
+            },
+            clientCare: {
+              downloads: parsed.clientCare?.downloads ?? defaultConfig.clientCare?.downloads,
+              prepChecklist: parsed.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
+              aftercareChecklist: parsed.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
+            },
+            contentSections: parsed.contentSections ?? defaultConfig.contentSections,
+            footer: { ...defaultConfig.footer, ...(parsed.footer ?? {}) },
+            financialAbusePage: parsed.financialAbusePage ?? defaultConfig.financialAbusePage,
+            monetaryPsychotherapyPage: parsed.monetaryPsychotherapyPage ?? defaultConfig.monetaryPsychotherapyPage,
+            financialAbuseTherapyPage: parsed.financialAbuseTherapyPage ?? defaultConfig.financialAbuseTherapyPage,
+            bookingCopy: {
+              ...(defaultConfig.bookingCopy ?? {}),
+              ...(parsed.bookingCopy ?? {}),
+              billingHighlights: parsed.bookingCopy?.billingHighlights ?? defaultConfig.bookingCopy?.billingHighlights,
+              paymentSupport: parsed.bookingCopy?.paymentSupport ?? defaultConfig.bookingCopy?.paymentSupport,
+              paymentOptions: parsed.bookingCopy?.paymentOptions ?? defaultConfig.bookingCopy?.paymentOptions,
+              schedulerPoints: parsed.bookingCopy?.schedulerPoints ?? defaultConfig.bookingCopy?.schedulerPoints,
+              schedulerHelpText: parsed.bookingCopy?.schedulerHelpText ?? defaultConfig.bookingCopy?.schedulerHelpText,
+            },
+            hero: { ...defaultConfig.hero, ...(parsed.hero ?? {}) },
+            about: { ...defaultConfig.about, ...(parsed.about ?? {}) },
+            services: parsed.services ?? defaultConfig.services,
+            consultations: parsed.consultations ?? defaultConfig.consultations,
+            resources: normalizeCarouselResources(parsed.resources ?? defaultConfig.resources),
+            forms: { ...(defaultConfig.forms ?? {}), ...(parsed.forms ?? {}) },
+            formPages: { ...(defaultConfig.formPages ?? {}), ...(parsed.formPages ?? {}) },
+            homepage: (() => {
+              const defaults = defaultConfig.homepage ?? {}
+              const hp = (parsed.homepage ?? {}) as Partial<HomepageContent>
+              const leadMagnetDefaults = defaults.leadMagnet ?? {
+                heading: "",
+                body: "",
+                ctaLabel: "",
+                ctaHref: "",
+              }
+              return {
+                ...defaults,
+                ...hp,
+                sections: { ...(defaults.sections ?? {}), ...(hp.sections ?? {}) },
+                copy: { ...(defaults.copy ?? {}), ...(hp.copy ?? {}) },
+                importantLinks: {
+                  ...(defaults.importantLinks ?? {}),
+                  ...(hp.importantLinks ?? {}),
+                  blogLinks: hp.importantLinks?.blogLinks ?? defaults.importantLinks?.blogLinks,
+                  specialistLinks: hp.importantLinks?.specialistLinks ?? defaults.importantLinks?.specialistLinks,
+                },
+                importantSectionLinks: hp.importantSectionLinks ?? defaults.importantSectionLinks,
+                otherAreas: hp.otherAreas ?? defaults.otherAreas,
+                valueProps: hp.valueProps ?? defaults.valueProps,
+                testimonials: hp.testimonials ?? defaults.testimonials,
+                faqs: hp.faqs ?? defaults.faqs,
+                leadMagnet: { ...leadMagnetDefaults, ...(hp.leadMagnet ?? {}) },
+              }
+            })(),
+            meta: { ...(defaultConfig.meta ?? { version: 1, updatedAt: new Date().toISOString() }), ...(parsed.meta ?? {}) },
+            experiments: { ...defaultConfig.experiments, ...(parsed.experiments ?? {}) },
+          }
+        }
+      } catch (sbError) {
+        // If Supabase fetch fails (network error, timeout, etc.), fall through to file system or defaults
+        // Don't throw - gracefully degrade to file system or default config
+        // In production, if Supabase is configured, skip file system read (it's read-only anyway)
+        if (process.env.NODE_ENV === "production") {
+          return defaultConfig
         }
       }
     }
+    // Only try file system read if not in production or if Supabase is not configured
     const raw = await fs.readFile(CONFIG_FILE_PATH, "utf8")
     const parsed = JSON.parse(raw)
     return {
