@@ -6,7 +6,7 @@ import { Phone, Mail, ArrowRight } from "lucide-react"
 import { Navigation, Footer } from "@/components/navigation"
 import { BookingOptions } from "@/components/booking-options"
 import { BookingScheduler } from "@/components/booking-scheduler"
-import { readSiteConfig } from "@/lib/config"
+import { readSiteConfig, defaultConfig } from "@/lib/config"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { CrisisBanner } from "@/components/crisis-banner"
 import { ResourcesCarousel } from "@/components/resources-carousel"
@@ -40,7 +40,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const config = await readSiteConfig()
+  let config
+  try {
+    config = await readSiteConfig()
+  } catch (error) {
+    // Fallback to default config if readSiteConfig fails
+    console.error("Failed to load site config in HomePage:", error)
+    config = defaultConfig
+  }
   const hero = config.hero
   const homepageContent = config.homepage ?? {}
   const sections = homepageContent.sections ?? {}
