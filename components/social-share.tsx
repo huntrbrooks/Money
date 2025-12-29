@@ -55,8 +55,8 @@ export function SocialShare({ url, title, summary }: SocialShareProps) {
             <a
               key={target.name}
               href={target.href}
-              target="_blank"
-              rel="noopener noreferrer"
+              target={target.href.startsWith("http") ? "_blank" : undefined}
+              rel={target.href.startsWith("http") ? "noopener noreferrer" : undefined}
               className="inline-flex items-center gap-1.5 rounded-full border border-[var(--secondary)] px-3 py-1 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--section-bg-2)]"
             >
               <target.icon className="h-4 w-4" aria-hidden="true" />

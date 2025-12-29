@@ -180,11 +180,7 @@ export default function ConsentFormClient({
         {email ? (
           <a 
             className="text-sm underline text-[var(--accent)] break-all cursor-pointer" 
-            href={`mailto:${email}?subject=Consent%20Form%20Inquiry`}
-            onClick={(e) => {
-              e.preventDefault()
-              window.location.href = `mailto:${email}?subject=Consent%20Form%20Inquiry`
-            }}
+            href={`mailto:${String(email).trim().replace(/^mailto:\s*/i, "")}?subject=Consent%20Form%20Inquiry`}
           >
             {email}
           </a>

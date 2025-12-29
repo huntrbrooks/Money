@@ -11,15 +11,16 @@ type EmailLinkProps = {
 }
 
 export function EmailLink({ email, subject = "Contact Request", className = "", children, ariaLabel }: EmailLinkProps) {
-  const mailtoUrl = `mailto:${email}${subject ? `?subject=${encodeURIComponent(subject)}` : ""}`
+  // Normalize because admin/content can sometimes include leading "mailto:" or whitespace.
+  const normalizedEmail = String(email ?? "")
+    .trim()
+    .replace(/^mailto:\s*/i, "")
+
+  const mailtoUrl = `mailto:${normalizedEmail}${subject ? `?subject=${encodeURIComponent(subject)}` : ""}`
   
   return (
     <a
       href={mailtoUrl}
-      onClick={(e) => {
-        e.preventDefault()
-        window.location.href = mailtoUrl
-      }}
       className={className}
       aria-label={ariaLabel}
     >

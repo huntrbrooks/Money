@@ -456,6 +456,17 @@ export type SiteConfig = {
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), "data", "site.json")
 
+function mergeContentSections(
+  stored: SiteConfig["contentSections"] | undefined,
+  defaults: SiteConfig["contentSections"] | undefined,
+): SiteConfig["contentSections"] {
+  const storedArr = Array.isArray(stored) ? stored : []
+  const defaultsArr = Array.isArray(defaults) ? defaults : []
+  const existingSlugs = new Set(storedArr.map((s) => s?.slug).filter(Boolean))
+  const missingDefaults = defaultsArr.filter((d) => d?.slug && !existingSlugs.has(d.slug))
+  return [...storedArr, ...missingDefaults]
+}
+
 export const defaultConfig: SiteConfig = {
   meta: {
     version: 1,
@@ -1292,7 +1303,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
               prepChecklist: parsed.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
               aftercareChecklist: parsed.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
             },
-            contentSections: parsed.contentSections ?? defaultConfig.contentSections,
+            contentSections: mergeContentSections(parsed.contentSections, defaultConfig.contentSections),
             footer: { ...defaultConfig.footer, ...(parsed.footer ?? {}) },
             financialAbusePage: parsed.financialAbusePage ?? defaultConfig.financialAbusePage,
             monetaryPsychotherapyPage: parsed.monetaryPsychotherapyPage ?? defaultConfig.monetaryPsychotherapyPage,
@@ -1376,7 +1387,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
         prepChecklist: parsed.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
         aftercareChecklist: parsed.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
       },
-      contentSections: parsed.contentSections ?? defaultConfig.contentSections,
+      contentSections: mergeContentSections(parsed.contentSections, defaultConfig.contentSections),
       footer: { ...defaultConfig.footer, ...(parsed.footer ?? {}) },
       financialAbusePage: parsed.financialAbusePage ?? defaultConfig.financialAbusePage,
       monetaryPsychotherapyPage: parsed.monetaryPsychotherapyPage ?? defaultConfig.monetaryPsychotherapyPage,
@@ -1469,7 +1480,7 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
       terms: { ...(defaultConfig.legal?.terms ?? {}), ...(newConfig.legal?.terms ?? {}) },
       consent: { ...(defaultConfig.legal?.consent ?? {}), ...(newConfig.legal?.consent ?? {}) },
     },
-    contentSections: newConfig.contentSections ?? defaultConfig.contentSections,
+    contentSections: mergeContentSections(newConfig.contentSections, defaultConfig.contentSections),
     footer: { ...defaultConfig.footer, ...(newConfig.footer ?? {}) },
     bookingCopy: {
       ...(defaultConfig.bookingCopy ?? {}),
