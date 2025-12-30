@@ -18,10 +18,13 @@ type ContentSectionPageProps = {
 
 export async function generateMetadata({ params }: ContentSectionPageProps): Promise<Metadata> {
   const config = await readSiteConfig()
-  const page = (config.contentSectionPages ?? []).find((p) => p.slug === params.slug)
+  const requested = normalizeSlug(params.slug)
+  const pages = Array.isArray(config.contentSectionPages) ? config.contentSectionPages : []
+  const sections = Array.isArray(config.contentSections) ? config.contentSections : []
+  const page = pages.find((p) => normalizeSlug(p.slug) === requested) ?? null
   if (!page) {
     // Fallback to legacy contentSections if present.
-    const section = config.contentSections?.find((s) => s.slug === params.slug)
+    const section = sections.find((s) => normalizeSlug(s.slug) === requested) ?? null
     if (!section) {
       return buildPageMetadata({
         title: "Section not found",
@@ -30,9 +33,11 @@ export async function generateMetadata({ params }: ContentSectionPageProps): Pro
         noIndex: true,
       })
     }
+    const sectionTitle = String(section.title ?? "").trim() || "Content"
+    const sectionDesc = String((section as { content?: string } | null)?.content ?? "")
     return buildPageMetadata({
-      title: `${section.title} | Financial Abuse Therapist`,
-      description: section.content.slice(0, 160) || `Learn about ${section.title}`,
+      title: `${sectionTitle} | Financial Abuse Therapist`,
+      description: sectionDesc.slice(0, 160) || `Learn about ${sectionTitle}`,
       path: `/content-sections/${section.slug}`,
     })
   }
