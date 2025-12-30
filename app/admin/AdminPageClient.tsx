@@ -3903,27 +3903,71 @@ function CodeAgentBox() {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   {postsMeta.length === 0 && <p className="text-sm text-muted-foreground">No articles yet.</p>}
-                  {postsMeta.map((post) => (
-                    <div key={post.slug} className="flex flex-col gap-2 rounded-lg border border-border/40 p-3 sm:flex-row sm:items-center sm:justify-between">
-                      <div>
-                        <p className="font-semibold text-[var(--foreground)]">{post.title}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(post.date).toLocaleDateString("en-AU", { dateStyle: "medium" })} · /blog/{post.slug}
-                        </p>
+                  {postsMeta.map((post) => {
+                    const isNewsletter = post.slug === "why-money-triggers-anxiety" || 
+                                       post.slug === "the-psychology-behind-spending-habits" || 
+                                       post.slug === "financial-abuse-and-emotional-healing"
+                    const blogLinks = homepage.importantLinks?.blogLinks ?? []
+                    const isInNewsletterBand = blogLinks.some(link => link.href === `/blog/${post.slug}`)
+                    
+                    return (
+                      <div key={post.slug} className="flex flex-col gap-2 rounded-lg border border-border/40 p-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex-1">
+                          <p className="font-semibold text-[var(--foreground)]">{post.title}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(post.date).toLocaleDateString("en-AU", { dateStyle: "medium" })} · /blog/{post.slug}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap gap-3 items-center">
+                          {isNewsletter && (
+                            <div className="flex items-center gap-2">
+                              <Label htmlFor={`newsletter-toggle-${post.slug}`} className="text-sm text-muted-foreground">
+                                Show in newsletter band
+                              </Label>
+                              <Switch
+                                id={`newsletter-toggle-${post.slug}`}
+                                checked={isInNewsletterBand}
+                                onCheckedChange={(checked) => {
+                                  setHomepage((prev) => {
+                                    let currentLinks = [...(prev.importantLinks?.blogLinks ?? [])]
+                                    
+                                    if (checked) {
+                                      // Add to newsletter band if not already there
+                                      if (!currentLinks.some(link => link.href === `/blog/${post.slug}`)) {
+                                        // Find first empty slot or add to end
+                                        const emptyIndex = currentLinks.findIndex(link => !link.label && !link.href)
+                                        if (emptyIndex >= 0) {
+                                          currentLinks[emptyIndex] = { label: post.title, href: `/blog/${post.slug}` }
+                                        } else if (currentLinks.length < 3) {
+                                          currentLinks.push({ label: post.title, href: `/blog/${post.slug}` })
+                                        } else {
+                                          // Replace the last one if all slots are filled
+                                          currentLinks[2] = { label: post.title, href: `/blog/${post.slug}` }
+                                        }
+                                      }
+                                    } else {
+                                      // Remove from newsletter band
+                                      currentLinks = currentLinks.filter(link => link.href !== `/blog/${post.slug}`)
+                                    }
+                                    
+                                    // Ensure we have exactly 3 items (pad with empty ones if needed)
+                                    while (currentLinks.length < 3) {
+                                      currentLinks.push({ label: "", href: "" })
+                                    }
+                                    
+                                    return { ...prev, importantLinks: { ...(prev.importantLinks ?? {}), blogLinks: currentLinks.slice(0, 3) } }
+                                  })
+                                }}
+                              />
+                            </div>
+                          )}
+                          <Button type="button" variant="outline" onClick={() => openPostEditor(post)}>
+                            Edit
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex flex-wrap gap-3">
-                        <Button type="button" variant="outline" onClick={() => openPostEditor(post)}>
-                          Edit
-                        </Button>
-                        <Link href={`/blog/${post.slug}`} target="_blank" className="text-sm font-semibold text-[var(--accent)] underline">
-                          View
-                        </Link>
-                        <Link href={`/newsletters/${post.slug}.html`} target="_blank" className="text-sm font-semibold text-[var(--accent)] underline">
-                          Newsletter
-                        </Link>
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
                 <div className="grid gap-3">
                   <Input
