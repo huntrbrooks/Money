@@ -5,11 +5,13 @@ export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
 type Params = {
-  params: { path: string[] }
+  // In newer Next.js versions, `params` can be a Promise in route handlers.
+  params: { path?: string[] } | Promise<{ path?: string[] }>
 }
 
 export async function GET(_req: Request, { params }: Params) {
-  const objectPath = (params.path ?? []).join("/")
+  const resolved = await params
+  const objectPath = (resolved.path ?? []).join("/")
   try {
     const asset = await getAsset(objectPath)
     if (!asset) {
