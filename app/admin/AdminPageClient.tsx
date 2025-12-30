@@ -3663,7 +3663,8 @@ function CodeAgentBox() {
                              try {
                               const url = await uploadAsset({ path: "docs/privacy-policy{{ext}}", accept: ".docx,.pdf" })
                                if (!url) return
-                               setLegal((prev) => ({ ...prev, privacy: { ...(prev.privacy ?? {}), downloadUrl: url } }))
+                              const versionedUrl = `${url}${url.includes("?") ? "&" : "?"}v=${Date.now()}`
+                              setLegal((prev) => ({ ...prev, privacy: { ...(prev.privacy ?? {}), downloadUrl: versionedUrl } }))
                                toast({ title: "Uploaded", description: "Privacy Policy document updated." })
                              } catch (e: unknown) {
                                toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
@@ -3717,7 +3718,8 @@ function CodeAgentBox() {
                              try {
                               const url = await uploadAsset({ path: "docs/terms-of-service{{ext}}", accept: ".docx,.pdf" })
                                if (!url) return
-                               setLegal((prev) => ({ ...prev, terms: { ...(prev.terms ?? {}), downloadUrl: url } }))
+                              const versionedUrl = `${url}${url.includes("?") ? "&" : "?"}v=${Date.now()}`
+                              setLegal((prev) => ({ ...prev, terms: { ...(prev.terms ?? {}), downloadUrl: versionedUrl } }))
                                toast({ title: "Uploaded", description: "Terms of Service document updated." })
                              } catch (e: unknown) {
                                toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
@@ -3781,7 +3783,8 @@ function CodeAgentBox() {
                             try {
                               const url = await uploadAsset({ path: "docs/consent-and-policies{{ext}}", accept: ".docx,.pdf" })
                               if (!url) return
-                              setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), downloadUrl: url } }))
+                              const versionedUrl = `${url}${url.includes("?") ? "&" : "?"}v=${Date.now()}`
+                              setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), downloadUrl: versionedUrl } }))
                               toast({ title: "Uploaded", description: "Consent & Policies document updated." })
                             } catch (e: unknown) {
                               toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
