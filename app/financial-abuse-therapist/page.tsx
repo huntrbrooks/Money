@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import Script from "next/script"
-import { readSiteConfig } from "@/lib/config"
+import { defaultConfig, readSiteConfig, type SiteConfig } from "@/lib/config"
 import { buildPageMetadata, buildPersonSchema } from "@/lib/seo"
 
 const PAGE_TITLE = "Financial Abuse Therapist | The Financial Therapist — Dan Lobel"
@@ -23,17 +23,18 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function FinancialAbuseTherapistPage() {
-  let config
+  let config: SiteConfig
   try {
     config = await readSiteConfig()
   } catch (error) {
     console.error("Error reading site config:", error)
-    // Fallback to minimal config
+    // Fallback to default config with minimal overrides (keeps types + avoids `any`)
     config = {
-      brand: { subtitle: "Dan Lobel" },
-      hero: { imageUrl: "/Dan.png" },
-      contact: { phone: undefined },
-    } as any
+      ...defaultConfig,
+      brand: { ...(defaultConfig.brand ?? { name: "" }), subtitle: "Dan Lobel" },
+      hero: { ...defaultConfig.hero, imageUrl: "/Dan.png" },
+      contact: { ...(defaultConfig.contact ?? {}), phone: undefined },
+    }
   }
   const personJsonLd = buildPersonSchema(config, {
     name: config.brand?.subtitle ?? "Dan Lobel",

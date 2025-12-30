@@ -456,17 +456,6 @@ export type SiteConfig = {
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), "data", "site.json")
 
-function mergeContentSections(
-  stored: SiteConfig["contentSections"] | undefined,
-  defaults: SiteConfig["contentSections"] | undefined,
-): SiteConfig["contentSections"] {
-  const storedArr = Array.isArray(stored) ? stored : []
-  const defaultsArr = Array.isArray(defaults) ? defaults : []
-  const existingSlugs = new Set(storedArr.map((s) => s?.slug).filter(Boolean))
-  const missingDefaults = defaultsArr.filter((d) => d?.slug && !existingSlugs.has(d.slug))
-  return [...storedArr, ...missingDefaults]
-}
-
 export const defaultConfig: SiteConfig = {
   meta: {
     version: 1,
@@ -1294,17 +1283,55 @@ function normalizeContentSectionsFixedLength(
       .filter((s) => s.title || s.slug || s.content || s.pdfUrl)
   }
 
+  /**
+   * IMPORTANT:
+   * Historically, `contentSections` is treated as a fixed-length list (9 buttons on the homepage).
+   * If the stored config ever drops an item (especially in the middle), index-based merging causes
+   * the remaining items to "shift" and one default to disappear. That can remove the intended
+   * homepage button (e.g. "Monetary Psychotherapy").
+   *
+   * Strategy:
+   * - If lengths match, keep index-based merging (preserves any intentional re-ordering).
+   * - If lengths differ, anchor to defaults order and merge by slug/title to restore missing defaults.
+   */
   const out: ContentSectionConfig[] = []
   const usedSlugs = new Set<string>()
 
+  const safeStored: ContentSectionConfig[] = storedArr
+    .map((s) => ({
+      title: String((s as ContentSectionConfig | null | undefined)?.title ?? "").trim(),
+      slug: String((s as ContentSectionConfig | null | undefined)?.slug ?? "").trim(),
+      content: String((s as ContentSectionConfig | null | undefined)?.content ?? ""),
+      pdfUrl: String((s as ContentSectionConfig | null | undefined)?.pdfUrl ?? "").trim() || "",
+    }))
+    .filter((s) => s.title || s.slug || s.content || s.pdfUrl)
+
+  const sameLength = safeStored.length === defaultsArr.length
+
+  const bySlug = new Map<string, ContentSectionConfig>()
+  const byTitle = new Map<string, ContentSectionConfig>()
+  if (!sameLength) {
+    for (const s of safeStored) {
+      if (s.slug) bySlug.set(normalizeKey(s.slug), s)
+      if (s.title) byTitle.set(normalizeKey(s.title), s)
+    }
+  }
+
   for (let i = 0; i < defaultsArr.length; i++) {
     const def = defaultsArr[i] ?? { title: "", slug: "", content: "", pdfUrl: "" }
-    const raw = storedArr[i] ?? {}
+
+    const raw: ContentSectionConfig | undefined = sameLength
+      ? safeStored[i]
+      : bySlug.get(normalizeKey(def.slug)) ??
+        byTitle.get(normalizeKey(def.title)) ??
+        // If a stored item has a blank slug but a slugified title that matches the default slug, accept it.
+        (def.slug ? safeStored.find((s) => !s.slug && normalizeKey(slugify(s.title)) === normalizeKey(def.slug)) : undefined)
+
     const merged: ContentSectionConfig = {
-      title: String((raw as ContentSectionConfig).title ?? def.title ?? "").trim(),
-      slug: String((raw as ContentSectionConfig).slug ?? def.slug ?? "").trim(),
-      content: String((raw as ContentSectionConfig).content ?? def.content ?? ""),
-      pdfUrl: String((raw as ContentSectionConfig).pdfUrl ?? def.pdfUrl ?? "").trim() || "",
+      title: String(raw?.title ?? def.title ?? "").trim(),
+      slug: String(raw?.slug ?? def.slug ?? "").trim(),
+      content: String(raw?.content ?? def.content ?? ""),
+      pdfUrl: String(raw?.pdfUrl ?? def.pdfUrl ?? "").trim() || "",
     }
 
     if (!merged.title && def.title) merged.title = def.title
@@ -1420,7 +1447,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
             experiments: { ...defaultConfig.experiments, ...(parsed.experiments ?? {}) },
           }
         }
-      } catch (sbError) {
+      } catch {
         // If Supabase fetch fails (network error, timeout, etc.), fall through to file system or defaults
         // Don't throw - gracefully degrade to file system or default config
         // In production, if Supabase is configured, skip file system read (it's read-only anyway)

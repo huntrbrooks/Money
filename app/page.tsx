@@ -87,7 +87,8 @@ export default async function HomePage() {
   const contentSections = (config.contentSections ?? []).slice(0, 9)
   // Map content sections to their correct routes (dedicated pages take priority)
   const contentSectionRouteMap: Record<string, string> = {
-    "why-money-triggers-anxiety": "/blog/why-money-triggers-anxiety",
+    // This route will either show the legacy article (so it’s never blank) or redirect to the admin-editable Content Section when filled.
+    "why-money-triggers-anxiety": "/why-money-triggers-anxiety",
     "what-is-financial-abuse": "/financial-abuse",
     "monetary-psychotherapy": "/monetary-psychotherapy",
     "financial-abuse-therapy": "/financial-abuse-therapy",
