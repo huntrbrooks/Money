@@ -226,6 +226,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   const [contentSectionPages, setContentSectionPages] = useState<SiteConfig["contentSectionPages"]>([])
   const pages = Array.isArray(contentSectionPages) && contentSectionPages.length ? contentSectionPages : []
   const defaultSlug = pages[0]?.slug ?? "why-money-triggers-anxiety"
+  const [pagesEditorKey, setPagesEditorKey] = useState<string>("")
   const [footer, setFooter] = useState<SiteConfig["footer"]>({
     copyrightText: "",
     companyName: "",
@@ -337,6 +338,15 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
 
   const currentSnapshot = stableStringify(buildSaveBody())
   const isDirty = Boolean(loadedSnapshot && loadedSnapshot !== currentSnapshot)
+
+  useEffect(() => {
+    if (pagesEditorKey) return
+    if (pages.length) {
+      setPagesEditorKey(`content-section:${defaultSlug}`)
+      return
+    }
+    setPagesEditorKey("standalone:financial-abuse")
+  }, [pagesEditorKey, pages.length, defaultSlug])
  
    useEffect(() => {
      async function load() {
@@ -1706,17 +1716,51 @@ function CodeAgentBox() {
                  <CardDescription>Edit the key standalone pages (grouped for easier navigation)</CardDescription>
                </CardHeader>
                <CardContent className="space-y-6">
-                  {pages.length ? (
-                    <Tabs defaultValue={defaultSlug} className="space-y-6">
-                      <TabsList className="flex w-full flex-wrap gap-2">
+                 <div className="grid gap-2 max-w-2xl">
+                   <Label>Choose a page to edit</Label>
+                   <select
+                     className="w-full rounded-md border border-input bg-[var(--section-bg-1)] px-3 py-2 text-sm text-[var(--foreground)]"
+                     aria-label="Choose a page to edit"
+                     value={pagesEditorKey}
+                     onChange={(e) => setPagesEditorKey(e.target.value)}
+                   >
+                     <optgroup label="Homepage button pages (editable)">
+                       {pages.map((p) => (
+                         <option key={`content-section:${p.slug}`} value={`content-section:${p.slug}`}>
+                           {p.title || p.slug} — /content-sections/{p.slug}
+                         </option>
+                       ))}
+                     </optgroup>
+                     <optgroup label="Standalone pages">
+                       <option value="standalone:financial-abuse">Financial Abuse — /financial-abuse</option>
+                       <option value="standalone:monetary-psychotherapy">Monetary Psychotherapy — /monetary-psychotherapy</option>
+                       <option value="standalone:financial-abuse-therapy">Financial Abuse Therapy — /financial-abuse-therapy</option>
+                       <option value="standalone:family-financial-assistance-inheritance">
+                         Family Financial Assistance — /family-financial-assistance-inheritance
+                       </option>
+                       <option value="standalone:financial-trauma">Financial Trauma — /financial-trauma</option>
+                     </optgroup>
+                   </select>
+                   <p className="text-xs text-muted-foreground">Only one editor is shown at a time.</p>
+                 </div>
+
+                 {pagesEditorKey.startsWith("content-section:") ? (
+                  pages.length ? (
+                    <Tabs value={pagesEditorKey.replace("content-section:", "")} className="space-y-6">
+                   <TabsList className="flex w-full flex-wrap gap-2">
                         {pages.map((p) => (
-                          <TabsTrigger key={p.slug} value={p.slug} className="flex items-center gap-2">
-                            <FileText className="w-4 h-4" />
+                          <TabsTrigger
+                            key={p.slug}
+                            value={p.slug}
+                            className="flex items-center gap-2"
+                            onClick={() => setPagesEditorKey(`content-section:${p.slug}`)}
+                          >
+                       <FileText className="w-4 h-4" />
                             <span>{p.title || p.slug}</span>
                             <span className="text-xs text-muted-foreground hidden md:inline">{`/content-sections/${p.slug}`}</span>
-                          </TabsTrigger>
+                     </TabsTrigger>
                         ))}
-                      </TabsList>
+                   </TabsList>
 
                       {pages.map((p, idx) => (
                         <TabsContent key={`page-${p.slug}`} value={p.slug} className="space-y-6">
@@ -1937,8 +1981,10 @@ function CodeAgentBox() {
                       ))}
                     </Tabs>
                   ) : (
-                    <div className="text-sm text-muted-foreground">No content-section pages found.</div>
-                  )}
+                    <div className="text-sm text-muted-foreground">No homepage button pages found.</div>
+                  )
+                 ) : null}
+                     {pagesEditorKey === "standalone:financial-abuse" ? (
                      <Card>
                        <CardHeader>
                          <CardTitle className="flex items-center gap-2">
@@ -2058,7 +2104,9 @@ function CodeAgentBox() {
                          </Button>
                        </CardContent>
                      </Card>
+                     ) : null}
 
+                  {pagesEditorKey === "standalone:monetary-psychotherapy" ? (
                    <TabsContent value="monetary-psychotherapy" className="space-y-6">
                      <Card>
                        <CardHeader>
@@ -2196,6 +2244,7 @@ function CodeAgentBox() {
                      </Card>
                    </TabsContent>
 
+                  {pagesEditorKey === "standalone:financial-abuse-therapy" ? (
                    <TabsContent value="financial-abuse-therapy" className="space-y-6">
                      <Card>
                        <CardHeader>
@@ -2360,6 +2409,7 @@ function CodeAgentBox() {
                      </Card>
                    </TabsContent>
 
+                  {pagesEditorKey === "standalone:family-financial-assistance-inheritance" ? (
                   <TabsContent value="family-financial-assistance-inheritance" className="space-y-6">
                     <Card>
                       <CardHeader>
@@ -2580,7 +2630,11 @@ function CodeAgentBox() {
                       </CardContent>
                     </Card>
                   </TabsContent>
+                  ) : null}
+                  ) : null}
+                  ) : null}
 
+                  {pagesEditorKey === "standalone:financial-trauma" ? (
                   <TabsContent value="financial-trauma" className="space-y-6">
                     <Card>
                       <CardHeader>
@@ -2762,6 +2816,7 @@ function CodeAgentBox() {
                       </CardContent>
                     </Card>
                   </TabsContent>
+                  ) : null}
                </CardContent>
              </Card>
            </TabsContent>
@@ -4407,7 +4462,7 @@ function CodeAgentBox() {
                              try {
                               const url = await uploadAsset({ path: "docs/privacy-policy{{ext}}", accept: ".docx,.pdf" })
                                if (!url) return
-                              setLegal((prev) => ({ ...prev, privacy: { ...(prev.privacy ?? {}), downloadUrl: url } }))
+                               setLegal((prev) => ({ ...prev, privacy: { ...(prev.privacy ?? {}), downloadUrl: url } }))
                                toast({ title: "Uploaded", description: "Privacy Policy document updated." })
                              } catch (e: unknown) {
                                toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
@@ -4461,7 +4516,7 @@ function CodeAgentBox() {
                              try {
                               const url = await uploadAsset({ path: "docs/terms-of-service{{ext}}", accept: ".docx,.pdf" })
                                if (!url) return
-                              setLegal((prev) => ({ ...prev, terms: { ...(prev.terms ?? {}), downloadUrl: url } }))
+                               setLegal((prev) => ({ ...prev, terms: { ...(prev.terms ?? {}), downloadUrl: url } }))
                                toast({ title: "Uploaded", description: "Terms of Service document updated." })
                              } catch (e: unknown) {
                                toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
