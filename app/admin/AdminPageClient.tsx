@@ -678,11 +678,56 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
       const input = document.createElement("input")
       input.type = "file"
       if (accept) input.accept = accept
-      input.onchange = () => {
-        const file = input.files?.[0] ?? null
+      // Some browsers can fail to fire `change` reliably if the input isn't attached to the DOM.
+      // Also, if the user closes the dialog without selecting, we should resolve `null` instead of hanging.
+      input.style.position = "fixed"
+      input.style.left = "-9999px"
+      input.style.top = "-9999px"
+      input.style.width = "1px"
+      input.style.height = "1px"
+      input.style.opacity = "0"
+
+      let settled = false
+      const settle = (file: File | null) => {
+        if (settled) return
+        settled = true
+        try {
+          window.removeEventListener("focus", onFocus, true)
+        } catch {
+          // ignore
+        }
+        try {
+          input.remove()
+        } catch {
+          // ignore
+        }
         resolve(file)
       }
+
+      const onFocus = () => {
+        // When the file dialog closes, the window regains focus.
+        // If `change` didn't fire, resolve with whatever we have (often null).
+        setTimeout(() => {
+          settle(input.files?.[0] ?? null)
+        }, 0)
+      }
+
+      input.addEventListener(
+        "change",
+        () => {
+          settle(input.files?.[0] ?? null)
+        },
+        { once: true },
+      )
+
+      window.addEventListener("focus", onFocus, true)
+      document.body.appendChild(input)
       input.click()
+
+      // Failsafe: never hang forever.
+      setTimeout(() => {
+        settle(input.files?.[0] ?? null)
+      }, 60_000)
     })
   }
 
