@@ -227,7 +227,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   const pages = Array.isArray(contentSectionPages) && contentSectionPages.length ? contentSectionPages : []
   const defaultSlug = pages[0]?.slug ?? "why-money-triggers-anxiety"
   const [pagesEditorKey, setPagesEditorKey] = useState<string>("")
-  const [footer, setFooter] = useState<SiteConfig["footer"]>({
+  const [footer, setFooter] = useState<NonNullable<SiteConfig["footer"]>>({
     copyrightText: "",
     companyName: "",
     acknowledgementText: "",
@@ -4403,6 +4403,236 @@ function CodeAgentBox() {
                </CardContent>
              </Card>
            </TabsContent>
+
+          {/* Footer Tab */}
+          <TabsContent value="footer" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Footer</CardTitle>
+                <CardDescription>Edit all content displayed in the site footer</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Brand name</Label>
+                    <p className="text-xs text-muted-foreground">Shown in the footer Brand column</p>
+                    <Input value={brand.name} onChange={(e) => setBrand({ ...brand, name: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Tagline</Label>
+                    <p className="text-xs text-muted-foreground">Shown under the brand name in the footer</p>
+                    <Textarea value={brand.tagline ?? ""} onChange={(e) => setBrand({ ...brand, tagline: e.target.value })} rows={3} />
+                  </div>
+                </div>
+
+                <div className="border-t pt-6 space-y-4">
+                  <div className="space-y-2">
+                    <Label>Quick Links (Navigation)</Label>
+                    <p className="text-xs text-muted-foreground">
+                      These links are shared across the header and the footer Quick Links column.
+                    </p>
+                  </div>
+
+                  {navigation.map((link, idx) => (
+                    <div key={idx} className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 items-end bg-muted p-3 rounded-md">
+                      <div className="space-y-2">
+                        <Label>Label</Label>
+                        <Input
+                          value={link.label}
+                          onChange={(e) => {
+                            const next = [...navigation]
+                            next[idx] = { ...next[idx], label: e.target.value }
+                            setNavigation(next)
+                          }}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Href</Label>
+                        <Input
+                          value={link.href}
+                          onChange={(e) => {
+                            const next = [...navigation]
+                            next[idx] = { ...next[idx], href: e.target.value }
+                            setNavigation(next)
+                          }}
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          const next = [...navigation]
+                          next.splice(idx, 1)
+                          setNavigation(next)
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
+
+                  <div className="flex flex-wrap gap-3">
+                    <Button type="button" variant="outline" onClick={() => setNavigation((prev) => [...prev, { label: "New Link", href: "/" }])}>
+                      Add Navigation Link
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="border-t pt-6 space-y-4">
+                  <div className="space-y-2">
+                    <Label>Quick Links (Footer additions)</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Extra links added to the footer Quick Links column (in addition to Navigation links).
+                    </p>
+                  </div>
+
+                  {(footer.quickLinks ?? []).map((link, idx) => (
+                    <div key={idx} className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 items-end bg-muted p-3 rounded-md">
+                      <div className="space-y-2">
+                        <Label>Label</Label>
+                        <Input
+                          value={link.label}
+                          onChange={(e) => {
+                            const next = [...(footer.quickLinks ?? [])]
+                            next[idx] = { ...next[idx], label: e.target.value }
+                            setFooter((prev) => ({ ...prev, quickLinks: next }))
+                          }}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Href</Label>
+                        <Input
+                          value={link.href}
+                          onChange={(e) => {
+                            const next = [...(footer.quickLinks ?? [])]
+                            next[idx] = { ...next[idx], href: e.target.value }
+                            setFooter((prev) => ({ ...prev, quickLinks: next }))
+                          }}
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          const next = [...(footer.quickLinks ?? [])]
+                          next.splice(idx, 1)
+                          setFooter((prev) => ({ ...prev, quickLinks: next }))
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
+
+                  <div className="flex flex-wrap gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() =>
+                        setFooter((prev) => ({
+                          ...prev,
+                          quickLinks: [...(prev.quickLinks ?? []), { label: "New Link", href: "/" }],
+                        }))
+                      }
+                    >
+                      Add Footer Link
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="border-t pt-6 space-y-4">
+                  <div className="space-y-2">
+                    <Label>Contact</Label>
+                    <p className="text-xs text-muted-foreground">Shown in the footer Contact column</p>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Phone</Label>
+                      <Input value={contact.phone ?? ""} onChange={(e) => setContact({ ...contact, phone: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Email</Label>
+                      <Input value={contact.email ?? ""} onChange={(e) => setContact({ ...contact, email: e.target.value })} type="email" />
+                    </div>
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label>Alternate Email (optional)</Label>
+                      <Input value={contact.emailAlt ?? ""} onChange={(e) => setContact({ ...contact, emailAlt: e.target.value })} type="email" />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    <div className="space-y-2">
+                      <Label>Facebook URL</Label>
+                      <Input value={social.facebook ?? ""} onChange={(e) => setSocial((p) => ({ ...p, facebook: e.target.value }))} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Instagram URL</Label>
+                      <Input value={social.instagram ?? ""} onChange={(e) => setSocial((p) => ({ ...p, instagram: e.target.value }))} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>LinkedIn URL</Label>
+                      <Input value={social.linkedin ?? ""} onChange={(e) => setSocial((p) => ({ ...p, linkedin: e.target.value }))} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t pt-6 space-y-4">
+                  <div className="space-y-2">
+                    <Label>Legal link labels</Label>
+                    <p className="text-xs text-muted-foreground">These labels are used by footer links to /privacy and /terms</p>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Privacy page label</Label>
+                      <Input
+                        value={legal.privacy?.title ?? ""}
+                        onChange={(e) => setLegal((prev) => ({ ...prev, privacy: { ...(prev.privacy ?? {}), title: e.target.value } }))}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Terms page label</Label>
+                      <Input
+                        value={legal.terms?.title ?? ""}
+                        onChange={(e) => setLegal((prev) => ({ ...prev, terms: { ...(prev.terms ?? {}), title: e.target.value } }))}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t pt-6 space-y-4">
+                  <div className="space-y-2">
+                    <Label>Bottom bar text</Label>
+                    <p className="text-xs text-muted-foreground">Text shown in the footer bottom bar (under the main columns)</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Copyright</Label>
+                    <Input value={footer.copyrightText ?? ""} onChange={(e) => setFooter((prev) => ({ ...prev, copyrightText: e.target.value }))} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Company / entity name</Label>
+                    <Input value={footer.companyName ?? ""} onChange={(e) => setFooter((prev) => ({ ...prev, companyName: e.target.value }))} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Acknowledgement</Label>
+                    <Textarea
+                      value={footer.acknowledgementText ?? ""}
+                      onChange={(e) => setFooter((prev) => ({ ...prev, acknowledgementText: e.target.value }))}
+                      rows={4}
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t">
+                  <Button onClick={() => saveAll("Footer")} disabled={saving !== null} className="w-full sm:w-auto">
+                    <Save className="w-4 h-4 mr-2" /> Save Footer
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
            {/* Documents Tab */}
            <TabsContent value="documents" className="space-y-6">

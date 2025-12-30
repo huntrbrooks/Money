@@ -26,13 +26,28 @@ function requireEnv(name: string): string {
 // - we can support local-dev persistence without Supabase
 export const SITE_ASSETS_BUCKET = "site-assets"
 
+function supabaseBaseUrl(): string {
+  // Match `lib/supabase-rest.ts` env var compatibility so assets work in all deployments.
+  const base =
+    env("SUPABASE_URL") ??
+    env("supabase_URL") ??
+    env("NEXT_PUBLIC_SUPABASE_URL") ??
+    env("Financialabusetherapist_SUPABASE_URL") ??
+    env("NEXT_PUBLIC_Financialabusetherapist_SUPABASE_URL")
+  if (!base) throw new Error("SUPABASE_URL missing")
+  return base
+}
+
 function supabaseStorageUrl(objectPath: string): string {
-  const base = requireEnv("SUPABASE_URL")
+  const base = supabaseBaseUrl()
   return `${base.replace(/\/$/, "")}/storage/v1/object/${SITE_ASSETS_BUCKET}/${objectPath.replace(/^\/+/, "")}`
 }
 
 async function sbFetch(url: string, init?: RequestInit): Promise<Response> {
-  const key = env("SUPABASE_SERVICE_ROLE_KEY") ?? env("Financialabusetherapist_SUPABASE_SERVICE_ROLE_KEY")
+  const key =
+    env("SUPABASE_SERVICE_ROLE_KEY") ??
+    env("supabase_SERVICE_ROLE_KEY") ??
+    env("Financialabusetherapist_SUPABASE_SERVICE_ROLE_KEY")
   if (!key) throw new Error("SUPABASE_SERVICE_ROLE_KEY missing")
   const headers = new Headers(init?.headers)
   headers.set("apikey", key)

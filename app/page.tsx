@@ -255,15 +255,14 @@ export default async function HomePage() {
                       {/* All 9 content sections in navy buttons */}
                       <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
                         {allContentSectionLinks.map((link) => (
-                          <Button
+                          <Link
                             key={link.href}
-                            asChild
-                            className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
+                            href={link.href}
+                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 px-4 py-2 has-[>svg]:px-3 w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm no-underline"
+                            data-slot="button"
                           >
-                            <Link href={link.href} className="no-underline">
-                              {link.label}
-                            </Link>
-                          </Button>
+                            {link.label}
+                          </Link>
                         ))}
                       </div>
 

@@ -12,6 +12,10 @@ type Config = {
   navigation?: NavLink[]
   contact?: { phone?: string; email?: string; emailAlt?: string }
   social?: { facebook?: string; instagram?: string; linkedin?: string }
+  legal?: {
+    privacy?: { title?: string }
+    terms?: { title?: string }
+  }
   footer?: {
     copyrightText?: string
     companyName?: string
@@ -253,14 +257,22 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
 
   const navigationLinks = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
   const footerQuickLinks = cfg.footer?.quickLinks ?? []
-  // Combine navigation links and footer quick links, avoiding duplicates
+  const privacyLabel = String(cfg.legal?.privacy?.title ?? "").trim() || "Privacy Policy"
+  const termsLabel = String(cfg.legal?.terms?.title ?? "").trim() || "Terms of Service"
+
+  const hasBookLink = [...navigationLinks, ...footerQuickLinks].some((l) => l.href === "/#book" || l.href === "/bookings")
+  const hasPrivacyLink = [...navigationLinks, ...footerQuickLinks].some((l) => l.href === "/privacy")
+  const hasTermsLink = [...navigationLinks, ...footerQuickLinks].some((l) => l.href === "/terms")
+
+  // Combine navigation + footer links, then add standard links only if they don't already exist.
+  // Deduplicate by href (first occurrence wins) so custom footer links can override defaults.
   const allQuickLinks = [
     ...navigationLinks,
-    ...footerQuickLinks.filter((fl) => !navigationLinks.some((nl) => nl.href === fl.href)),
-    { label: "Book Appointment", href: "/#book" },
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Terms of Service", href: "/terms" },
-  ]
+    ...footerQuickLinks,
+    ...(hasBookLink ? [] : [{ label: "Book Appointment", href: "/#book" }]),
+    ...(hasPrivacyLink ? [] : [{ label: privacyLabel, href: "/privacy" }]),
+    ...(hasTermsLink ? [] : [{ label: termsLabel, href: "/terms" }]),
+  ].filter((l, idx, arr) => arr.findIndex((x) => x.href === l.href) === idx)
 
   return (
     <footer
@@ -383,8 +395,8 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
             {cfg.footer?.companyName && <p>{cfg.footer.companyName}</p>}
             {cfg.footer?.acknowledgementText && <p className="leading-relaxed">{cfg.footer.acknowledgementText}</p>}
             <p className="space-x-4">
-              <Link href="/privacy" className="hover:text-[var(--foreground)]">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-[var(--foreground)]">Terms of Service</Link>
+              <Link href="/privacy" className="hover:text-[var(--foreground)]">{privacyLabel}</Link>
+              <Link href="/terms" className="hover:text-[var(--foreground)]">{termsLabel}</Link>
             </p>
           </div>
         </div>

@@ -10,13 +10,18 @@ function env(name: string): string | undefined {
 // Prefer unprefixed names, but also accept the Vercel/Supabase integration names you pasted.
 const SUPABASE_URL =
   env("SUPABASE_URL") ??
+  // Some environments may have been configured with non-standard casing; be forgiving.
+  env("supabase_URL") ??
   env("NEXT_PUBLIC_SUPABASE_URL") ??
   env("Financialabusetherapist_SUPABASE_URL") ??
   env("NEXT_PUBLIC_Financialabusetherapist_SUPABASE_URL")
 
 // IMPORTANT: use Service Role key server-side only (never expose to the browser)
 const SUPABASE_SERVICE_ROLE_KEY =
-  env("SUPABASE_SERVICE_ROLE_KEY") ?? env("Financialabusetherapist_SUPABASE_SERVICE_ROLE_KEY")
+  env("SUPABASE_SERVICE_ROLE_KEY") ??
+  // Some environments may have been configured with non-standard casing; be forgiving.
+  env("supabase_SERVICE_ROLE_KEY") ??
+  env("Financialabusetherapist_SUPABASE_SERVICE_ROLE_KEY")
 
 export function hasSupabase(): boolean {
   return Boolean(SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY)
