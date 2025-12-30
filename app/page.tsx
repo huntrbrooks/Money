@@ -101,7 +101,10 @@ export default async function HomePage() {
   // Convert content sections to nav links for display
   const allContentSectionLinks = contentSections.map((section) => ({
     label: section.title,
-    href: contentSectionRouteMap[section.slug] ?? `/content-sections/${section.slug}`,
+    href: String(section.pdfUrl ?? "").trim()
+      ? String(section.pdfUrl ?? "").trim()
+      : (contentSectionRouteMap[section.slug] ?? `/content-sections/${section.slug}`),
+    external: Boolean(String(section.pdfUrl ?? "").trim()),
   }))
   const consultationOptions = config.consultations ?? []
   const bookingCopy = config.bookingCopy
@@ -266,9 +269,15 @@ export default async function HomePage() {
                             asChild
                             className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
                           >
-                            <Link href={link.href} className="no-underline">
-                              {link.label}
-                            </Link>
+                            {link.external ? (
+                              <a href={link.href} target="_blank" rel="noopener noreferrer" className="no-underline">
+                                {link.label}
+                              </a>
+                            ) : (
+                              <Link href={link.href} className="no-underline">
+                                {link.label}
+                              </Link>
+                            )}
                           </Button>
                         ))}
                       </div>

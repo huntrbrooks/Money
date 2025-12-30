@@ -760,6 +760,15 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     return `${data.url}${data.url.includes("?") ? "&" : "?"}v=${Date.now()}`
   }
 
+  function slugifyAdmin(input: string): string {
+    return String(input ?? "")
+      .toLowerCase()
+      .trim()
+      .replace(/['"]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+  }
+
   async function openPostEditor(post: PostMeta) {
     setPostEditor({ open: true, slug: post.slug, title: post.title, mdx: "", loading: true, saving: false, source: null })
     try {
@@ -4165,13 +4174,21 @@ function CodeAgentBox() {
                              variant="outline"
                              onClick={async () => {
                                try {
-                                 const url = await uploadAsset({ path: `docs/content-section-${idx + 1}{{ext}}`, accept: ".pdf" })
+                                 const rawSlug = String(section.slug ?? "").trim()
+                                 const slugKey = slugifyAdmin(rawSlug) || slugifyAdmin(String(section.title ?? "")) || `section-${idx + 1}`
+                                 // Store PDFs at a stable slug-based path so replacements overwrite the canonical file.
+                                 const url = await uploadAsset({ path: `docs/content-sections/${slugKey}.pdf`, accept: ".pdf" })
                                  if (!url) return
                                  const next = [...(contentSections ?? [])]
                                  while (next.length < 9) next.push({ title: "", slug: "", content: "", pdfUrl: "" })
-                                 next[idx] = { ...next[idx], pdfUrl: url }
+                                 // Ensure slug is URL-safe so the public button routes correctly.
+                                 next[idx] = { ...next[idx], slug: slugKey, pdfUrl: url }
                                  setContentSections(next)
                                  toast({ title: "Uploaded", description: `PDF uploaded for section ${idx + 1}.` })
+                                 // Persist immediately so uploads never get "lost" if user forgets to click Save.
+                                 // Wait a tick so dirty tracking sees the updated state.
+                                 await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+                                 void saveAll("Content sections")
                                } catch (e: unknown) {
                                  toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
                                }
