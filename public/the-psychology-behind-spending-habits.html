@@ -1,0 +1,1034 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Psychology Behind Spending Habits | Interactive Newsletter</title>
+  <meta name="description" content="An interactive, factual and educational newsletter on the psychology behind spending habits, including quizzes, triggers, habit loops, and practical tools." />
+
+  <style>
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --muted2:#64748b;
+      --line: #e2e8f0;
+      --brand:#1d4ed8;
+      --brand2:#0ea5e9;
+      --good:#16a34a;
+      --warn:#f59e0b;
+      --bad:#dc2626;
+      --shadow: 0 10px 30px rgba(2,6,23,.08);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 20% 0%, rgba(14,165,233,.12), transparent 55%),
+        radial-gradient(1000px 600px at 85% 10%, rgba(245,158,11,.10), transparent 55%),
+        var(--bg);
+      line-height: 1.45;
+    }
+    a{color:var(--brand); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .container{max-width: 1100px; margin: 0 auto; padding: 22px}
+    .topbar{
+      position: sticky; top: 0; z-index: 5;
+      background: rgba(246,247,251,.86);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-inner{
+      display:flex; align-items:center; gap:14px; justify-content:space-between;
+      max-width: 1100px; margin:0 auto; padding: 12px 22px;
+    }
+    .brand{display:flex; align-items:center; gap:10px; font-weight: 900; letter-spacing: .2px}
+    .pill{
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,.7);
+    }
+    .progress{display:flex; align-items:center; gap:10px; min-width: 280px}
+    .bar{
+      flex:1;
+      height: 8px;
+      background: #e8eef9;
+      border-radius: 99px;
+      overflow:hidden;
+      border: 1px solid rgba(29,78,216,.12);
+    }
+    .bar > span{
+      display:block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--brand2), var(--brand));
+      border-radius: 99px;
+      transition: width .2s ease;
+    }
+    .barlabel{font-size: 12px; color: var(--muted2); white-space:nowrap}
+    .btn{
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 900;
+      cursor:pointer;
+      display:inline-flex; align-items:center; gap:10px;
+      transition: transform .06s ease, box-shadow .15s ease;
+    }
+    .btn:hover{box-shadow: 0 10px 24px rgba(2,6,23,.08)}
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{
+      background: linear-gradient(90deg, var(--brand2), var(--brand));
+      color: #fff;
+      border: 0;
+    }
+    .btn.small{padding: 8px 10px; font-size: 13px; border-radius: 10px}
+    .icon{width: 18px; height: 18px; display:inline-block}
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 18px;
+    }
+    @media (max-width: 900px){
+      .hero{grid-template-columns: 1fr}
+      .progress{display:none}
+    }
+    .hero-left{padding: 22px}
+    .hero-right{padding: 18px; display:flex; flex-direction:column; gap:12px}
+    h1{
+      margin: 0 0 10px;
+      font-size: clamp(28px, 3.2vw, 42px);
+      line-height: 1.1;
+      letter-spacing: -.6px;
+    }
+    .sub{margin: 0 0 16px; color: var(--muted); font-size: 16px; max-width: 72ch}
+    .chips{display:flex; flex-wrap:wrap; gap:10px}
+    .chip{
+      border:1px solid rgba(29,78,216,.18);
+      background: rgba(29,78,216,.06);
+      color: #1e3a8a;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .cta-row{display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px}
+    .section{margin-top: 18px; padding: 18px}
+    .grid{display:grid; grid-template-columns: 1fr 1fr; gap: 16px}
+    @media (max-width: 900px){.grid{grid-template-columns:1fr}}
+    h2{margin: 0 0 10px; font-size: 20px; letter-spacing: -.2px}
+    p{margin: 0 0 10px; color: var(--muted)}
+    .kicker{
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      margin-bottom: 10px;
+    }
+    .list{margin: 10px 0 0; padding-left: 18px; color: var(--muted)}
+    .callout{
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(14,165,233,.25);
+      background: rgba(14,165,233,.06);
+      color: var(--muted);
+    }
+    .callout strong{color: var(--ink)}
+    details{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 12px 14px;
+    }
+    details + details{margin-top: 10px}
+    summary{
+      cursor:pointer;
+      font-weight: 900;
+      color: var(--ink);
+      list-style:none;
+    }
+    summary::-webkit-details-marker{display:none}
+    .tabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .tab{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.7);
+      cursor:pointer;
+      font-weight: 900;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .tab.active{
+      background: rgba(29,78,216,.08);
+      border-color: rgba(29,78,216,.22);
+      color: #1e3a8a;
+    }
+    .panel{display:none}
+    .panel.active{display:block}
+    label{font-size: 13px; font-weight: 900; color: var(--muted2)}
+    input[type="text"], input[type="number"], textarea, select{
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      font-size: 14px;
+      outline: none;
+      background:#fff;
+    }
+    textarea{min-height: 92px; resize: vertical}
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    @media (max-width: 700px){.row{grid-template-columns: 1fr}}
+    .mini{font-size: 12px; color: var(--muted2)}
+    .meter{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.7);
+    }
+    .badge{
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background:#fff;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .badge.good{border-color: rgba(22,163,74,.25); background: rgba(22,163,74,.06); color:#166534}
+    .badge.warn{border-color: rgba(245,158,11,.28); background: rgba(245,158,11,.08); color:#92400e}
+    .badge.bad{border-color: rgba(220,38,38,.25); background: rgba(220,38,38,.08); color:#991b1b}
+    .divider{height: 1px; background: var(--line); margin: 12px 0}
+    .hint{
+      display:flex; gap:10px; align-items:flex-start;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px dashed rgba(29,78,216,.25);
+      background: rgba(29,78,216,.04);
+      color: var(--muted);
+    }
+    .hint b{color: var(--ink)}
+    .print{
+      white-space: pre-wrap;
+      background: #0b1220;
+      color: #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      border: 1px solid rgba(226,232,240,.12);
+    }
+    .footer{
+      margin: 18px 0 26px;
+      padding: 16px 18px;
+      color: var(--muted2);
+      font-size: 13px;
+    }
+    .scoreline{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.75);
+    }
+    .scoreline .left{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+    .scoreline .right{font-family: var(--mono); font-weight: 900}
+    .bar2{
+      height: 10px;
+      background: #e8eef9;
+      border-radius: 99px;
+      overflow:hidden;
+      border: 1px solid rgba(29,78,216,.12);
+      margin-top: 8px;
+    }
+    .bar2 span{
+      display:block;
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--brand2), var(--brand));
+      border-radius: 99px;
+      transition: width .25s ease;
+    }
+    @media print{
+      .topbar, .cta-row, .btn, .tabs { display:none !important; }
+      body{ background:#fff; }
+      .card{ box-shadow:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span aria-hidden="true" class="pill">Interactive Newsletter</span>
+        <span>Spending Psychology</span>
+      </div>
+
+      <div class="progress" aria-label="Reading progress">
+        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span id="progressFill"></span>
+        </div>
+        <div class="barlabel" id="progressLabel">0% read</div>
+      </div>
+
+      <button class="btn small" id="printPage" type="button" title="Print">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 9V3h12v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 18h12v3H6v-3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M6 14h12v4H6v-4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M6 10H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M18 10h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Print
+      </button>
+    </div>
+  </div>
+
+  <main class="container" id="page">
+    <section class="hero">
+      <div class="card hero-left">
+        <div class="kicker">Issue</div>
+        <h1>The Psychology Behind Spending Habits</h1>
+        <p class="sub">
+          Spending is rarely about logic alone. It is habit loops, emotions, identity, social pressure, and friction.
+          Once you understand the mechanics, you can design spending that matches your values instead of your impulses.
+        </p>
+
+        <div class="chips" aria-label="What you will learn">
+          <span class="chip">Habit loops and triggers</span>
+          <span class="chip">Dopamine and short term relief</span>
+          <span class="chip">Cognitive biases that hijack spending</span>
+          <span class="chip">Interactive tools to change behaviour</span>
+        </div>
+
+        <div class="cta-row">
+          <button class="btn primary" type="button" id="jumpTools">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Start the tools
+          </button>
+          <button class="btn" type="button" id="saveState">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7a2 2 0 0 1 2-2h10l4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M8 5v6h8V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Save
+          </button>
+          <button class="btn" type="button" id="loadState">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Load
+          </button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="hint">
+          <div aria-hidden="true">🧠</div>
+          <div>
+            <b>Hard truth:</b> Willpower is the backup generator. Design is the power grid.
+            If you want different spending, change the environment and the loop.
+          </div>
+        </div>
+      </div>
+
+      <aside class="card hero-right" aria-label="Quick actions">
+        <div class="callout">
+          <strong>Two big levers</strong><br />
+          Reduce triggers, increase friction for bad purchases, decrease friction for good choices.
+        </div>
+
+        <div class="card" style="padding:14px; box-shadow:none">
+          <div class="kicker">1 minute quiz</div>
+          <p style="margin-bottom:10px">Your most common spending style is:</p>
+          <div class="tool">
+            <label><input type="radio" name="style" value="soothe"> Soothe: I buy to calm stress or mood</label>
+            <label><input type="radio" name="style" value="reward"> Reward: I buy after effort or pain</label>
+            <label><input type="radio" name="style" value="identity"> Identity: I buy to feel like "me"</label>
+            <label><input type="radio" name="style" value="social"> Social: I buy to keep up or belong</label>
+            <label><input type="radio" name="style" value="optimism"> Optimism: I assume future me will handle it</label>
+            <button class="btn small" type="button" id="styleResult">Explain my style</button>
+            <div class="mini" id="styleOutput" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Goal</strong><br />
+          Keep what spending gives you, remove the damage. You are not trying to become a robot.
+        </div>
+      </aside>
+    </section>
+
+    <section class="card section" id="learn">
+      <div class="kicker">The mechanics</div>
+
+      <div class="tabs" role="tablist" aria-label="Learning tabs">
+        <button class="tab active" type="button" role="tab" aria-selected="true" aria-controls="p1" data-tab="p1">1) Habit loop</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="p2" data-tab="p2">2) Triggers</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="p3" data-tab="p3">3) Biases</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="p4" data-tab="p4">4) Fixes</button>
+      </div>
+
+      <div id="p1" class="panel active" role="tabpanel">
+        <h2>Spending is a habit loop, not a moral failing</h2>
+        <p>
+          A habit is a loop: trigger, behaviour, reward.
+          If spending reduces discomfort, boosts identity, or creates excitement, your brain learns to repeat it.
+        </p>
+        <div class="grid">
+          <div class="callout">
+            <strong>Trigger</strong>
+            <ul class="list">
+              <li>Stress, boredom, loneliness</li>
+              <li>Payday, ads, notifications</li>
+              <li>Walking past a store</li>
+            </ul>
+          </div>
+          <div class="callout">
+            <strong>Reward</strong>
+            <ul class="list">
+              <li>Relief, excitement, belonging</li>
+              <li>Sense of control</li>
+              <li>Identity boost</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="p2" class="panel" role="tabpanel">
+        <h2>Triggers are predictable, and that is good news</h2>
+        <p>
+          Most people have the same top triggers: stress, boredom, social comparison, and convenience.
+          If you can predict the trigger, you can build a replacement behaviour.
+        </p>
+        <details>
+          <summary>Common trigger categories</summary>
+          <ul class="list">
+            <li><strong>Emotion:</strong> anxious, sad, angry, numb</li>
+            <li><strong>Social:</strong> friends spending, influencers, lifestyle pressure</li>
+            <li><strong>Time:</strong> late night, weekends, payday</li>
+            <li><strong>Place:</strong> shopping apps, certain streets, bars, cafes</li>
+            <li><strong>Body:</strong> hungry, tired, overstimulated</li>
+          </ul>
+        </details>
+      </div>
+
+      <div id="p3" class="panel" role="tabpanel">
+        <h2>Biases that push you to spend</h2>
+        <div class="grid">
+          <div class="callout">
+            <strong>Now bias</strong>
+            <p>Immediate rewards feel bigger than future costs.</p>
+          </div>
+          <div class="callout">
+            <strong>Anchoring</strong>
+            <p>The first price you see shapes what "good value" feels like.</p>
+          </div>
+          <div class="callout">
+            <strong>Scarcity and urgency</strong>
+            <p>Limited time offers trigger fear of missing out.</p>
+          </div>
+          <div class="callout">
+            <strong>Sunk cost</strong>
+            <p>You keep spending because you already spent.</p>
+          </div>
+        </div>
+
+        <details style="margin-top:10px">
+          <summary>Marketing tricks that exploit these biases</summary>
+          <ul class="list">
+            <li>Countdown timers and "only 2 left"</li>
+            <li>Bundles that inflate value perception</li>
+            <li>Afterpay style smoothing of pain</li>
+            <li>Free shipping thresholds that push extra items</li>
+          </ul>
+        </details>
+      </div>
+
+      <div id="p4" class="panel" role="tabpanel">
+        <h2>The fix is design, not self hate</h2>
+        <ol class="list">
+          <li><strong>Reduce triggers:</strong> unsubscribe, block, remove saved cards.</li>
+          <li><strong>Add friction:</strong> 24 hour rule, wishlist, delete shopping apps.</li>
+          <li><strong>Replace reward:</strong> find a different way to get relief, excitement, or identity.</li>
+          <li><strong>Automate:</strong> pay yourself first, auto bills, separate accounts.</li>
+          <li><strong>Track patterns:</strong> log the loop, not every cent.</li>
+        </ol>
+        <div class="callout" style="margin-top:12px">
+          <strong>Best move:</strong> make the right choice the easy choice.
+        </div>
+      </div>
+    </section>
+
+    <section class="card section" id="tools">
+      <div class="kicker">Interactive tools</div>
+
+      <div class="grid">
+        <div class="card" style="padding:16px; box-shadow:none">
+          <h2>Tool 1: Spending trigger profiler</h2>
+          <p>Answer 6 quick questions. It will score your top triggers and suggest changes.</p>
+
+          <div class="tool">
+            <label for="qStress">When stressed, I tend to shop (0-10)</label>
+            <input id="qStress" type="number" min="0" max="10" value="5" />
+
+            <label for="qBored">When bored, I browse and buy (0-10)</label>
+            <input id="qBored" type="number" min="0" max="10" value="4" />
+
+            <label for="qSocial">Social comparison pushes my spending (0-10)</label>
+            <input id="qSocial" type="number" min="0" max="10" value="4" />
+
+            <label for="qConven">Convenience spending hits me (0-10)</label>
+            <input id="qConven" type="number" min="0" max="10" value="6" />
+
+            <label for="qPayday">Payday makes me loosen discipline (0-10)</label>
+            <input id="qPayday" type="number" min="0" max="10" value="5" />
+
+            <label for="qTired">When tired or hungry, I make worse purchases (0-10)</label>
+            <input id="qTired" type="number" min="0" max="10" value="6" />
+
+            <button class="btn primary" type="button" id="scoreTriggers">Score my triggers</button>
+
+            <div class="meter" aria-live="polite" style="margin-top:10px">
+              <span class="badge" id="topTrigger">Top trigger: unknown</span>
+              <span class="badge" id="riskLevel">Level: unknown</span>
+            </div>
+
+            <div class="callout" id="triggerAdvice" style="display:none"></div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:16px; box-shadow:none">
+          <h2>Tool 2: The friction builder</h2>
+          <p>Create a simple rule set that blocks impulse spending while keeping life practical.</p>
+
+          <div class="tool">
+            <label for="category">Category you overspend on</label>
+            <select id="category">
+              <option value="food">Food and delivery</option>
+              <option value="clothes">Clothes and appearance</option>
+              <option value="tech">Tech and subscriptions</option>
+              <option value="nights">Nights out and drinks</option>
+              <option value="random">Random small buys</option>
+            </select>
+
+            <label for="rule">Choose your friction rule</label>
+            <select id="rule">
+              <option value="24h">24 hour rule (wishlist first)</option>
+              <option value="cash">Cash only (or separate debit card)</option>
+              <option value="cap">Weekly cap with one planned spend</option>
+              <option value="delay">Delay rule: wait 20 minutes and do a replacement first</option>
+              <option value="remove">Remove triggers: delete apps, unsubscribe, remove saved cards</option>
+            </select>
+
+            <label for="replacement">Replacement behaviour (what will you do instead)</label>
+            <input id="replacement" type="text" placeholder="Example: 10 min walk, shower, call a mate, gym set" />
+
+            <button class="btn primary" type="button" id="buildFriction">Generate my rule set</button>
+            <button class="btn" type="button" id="copyFriction">Copy</button>
+
+            <div class="callout" id="frictionOut" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="grid">
+        <div class="card" style="padding:16px; box-shadow:none">
+          <h2>Tool 3: The purchase decision filter</h2>
+          <p>This is the brutal checklist that stops most stupid buys.</p>
+
+          <div class="tool">
+            <label for="item">What are you thinking of buying</label>
+            <input id="item" type="text" placeholder="Example: new shoes, Uber Eats, subscription" />
+
+            <div class="row">
+              <div>
+                <label for="cost">Cost</label>
+                <input id="cost" type="number" min="0" value="0" />
+              </div>
+              <div>
+                <label for="budget">Budget available for this category (this week)</label>
+                <input id="budget" type="number" min="0" value="0" />
+              </div>
+            </div>
+
+            <label for="why">Why do you want it, right now</label>
+            <select id="why">
+              <option value="need">Real need, solves a problem</option>
+              <option value="relief">I want relief or comfort</option>
+              <option value="reward">I want a reward</option>
+              <option value="identity">Identity boost, look, status</option>
+              <option value="fomo">FOMO or urgency</option>
+            </select>
+
+            <label for="sleep">Did you sleep well and eat properly today</label>
+            <select id="sleep">
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+
+            <button class="btn primary" type="button" id="decide">Run the filter</button>
+
+            <div class="meter" aria-live="polite">
+              <span class="badge" id="decisionBadge">Decision: unknown</span>
+              <span class="badge" id="reasonBadge">Reason: none</span>
+            </div>
+
+            <div class="callout" id="decisionText" style="display:none"></div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:16px; box-shadow:none">
+          <h2>Tool 4: Habit loop journal (10 entries max)</h2>
+          <p>Log the loop. Patterns will punch you in the face within a week.</p>
+
+          <div class="tool">
+            <div class="row">
+              <div>
+                <label for="tTrigger">Trigger</label>
+                <input id="tTrigger" type="text" placeholder="Example: bored at night" />
+              </div>
+              <div>
+                <label for="tEmotion">Emotion</label>
+                <input id="tEmotion" type="text" placeholder="Example: lonely, stressed" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="tAction">Action</label>
+                <input id="tAction" type="text" placeholder="Example: ordered delivery" />
+              </div>
+              <div>
+                <label for="tReward">Reward</label>
+                <input id="tReward" type="text" placeholder="Example: relief, excitement" />
+              </div>
+            </div>
+
+            <label for="tReplace">Better replacement next time</label>
+            <input id="tReplace" type="text" placeholder="Example: protein meal prepped, 10 min walk, call friend" />
+
+            <button class="btn primary" type="button" id="addLoop">Add entry</button>
+            <button class="btn" type="button" id="clearLoops">Clear</button>
+
+            <div class="mini" id="loopCount">0 entries</div>
+            <div class="print" id="loopOut" aria-live="polite">Your entries will appear here.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section" id="takeaways">
+      <div class="kicker">Make it stick</div>
+
+      <div class="grid">
+        <div class="callout">
+          <strong>Three rules that work</strong>
+          <ul class="list">
+            <li>Delay purchases when emotional or tired</li>
+            <li>Remove triggers, add friction</li>
+            <li>Replace the reward with something healthier</li>
+          </ul>
+        </div>
+        <div class="callout">
+          <strong>Your one sentence plan</strong>
+          <p>Write it, copy it, then follow it for 7 days.</p>
+          <input id="oneLine" type="text" placeholder="Example: If I want to buy impulsively, I wait 24 hours and do a replacement first." />
+          <div class="cta-row">
+            <button class="btn primary" type="button" id="copyOneLine">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <details>
+        <summary>Optional: a simple weekly review</summary>
+        <ul class="list">
+          <li>What was my top trigger this week</li>
+          <li>What replacement worked best</li>
+          <li>What environment change would make next week easier</li>
+          <li>What is one planned spend I will allow guilt free</li>
+        </ul>
+      </details>
+    </section>
+
+    <footer class="footer">
+      <div>
+        <strong>Reminder:</strong> Spending habits change fastest when you stop treating them as character flaws.
+        Track the loop, then redesign the loop.
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    (function(){
+      const $ = (sel, root=document) => root.querySelector(sel);
+      const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+      // Reading progress
+      const progressFill = $("#progressFill");
+      const progressLabel = $("#progressLabel");
+      const progressBar = $(".bar");
+      function updateProgress(){
+        const doc = document.documentElement;
+        const scrollTop = doc.scrollTop || document.body.scrollTop;
+        const scrollHeight = doc.scrollHeight || document.body.scrollHeight;
+        const clientHeight = doc.clientHeight;
+        const total = Math.max(1, scrollHeight - clientHeight);
+        const pct = Math.min(100, Math.max(0, Math.round((scrollTop / total) * 100)));
+        progressFill.style.width = pct + "%";
+        progressLabel.textContent = pct + "% read";
+        progressBar.setAttribute("aria-valuenow", String(pct));
+      }
+      window.addEventListener("scroll", updateProgress, {passive:true});
+      updateProgress();
+
+      // Print
+      $("#printPage").addEventListener("click", () => window.print());
+
+      // Tabs
+      const tabs = $$(".tab");
+      const panels = $$(".panel");
+      tabs.forEach(t => {
+        t.addEventListener("click", () => {
+          tabs.forEach(x => x.classList.remove("active"));
+          panels.forEach(p => p.classList.remove("active"));
+          t.classList.add("active");
+          const id = t.dataset.tab;
+          $("#" + id).classList.add("active");
+          tabs.forEach(x => x.setAttribute("aria-selected", x === t ? "true" : "false"));
+        });
+      });
+
+      // Jump tools
+      $("#jumpTools").addEventListener("click", () => {
+        $("#tools").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      // Style quiz
+      $("#styleResult").addEventListener("click", () => {
+        const chosen = document.querySelector('input[name="style"]:checked');
+        const out = $("#styleOutput");
+        if(!chosen){
+          out.textContent = "Pick one option first.";
+          return;
+        }
+        const map = {
+          soothe: "Soothe spenders buy relief. Fix: replace the relief, add a delay rule, and reduce triggers when stressed.",
+          reward: "Reward spenders buy after effort. Fix: plan one guilt free reward and block impulse rewards.",
+          identity: "Identity spenders buy to feel like themselves. Fix: define identity in behaviours, not purchases.",
+          social: "Social spenders buy belonging. Fix: curate feeds, set event budgets, and suggest cheaper hangouts.",
+          optimism: "Optimism spenders assume future them will cope. Fix: automate saving and force real constraints now."
+        };
+        out.textContent = map[chosen.value] || "Not sure, try again.";
+      });
+
+      // Trigger scoring
+      const topTrigger = $("#topTrigger");
+      const riskLevel = $("#riskLevel");
+      const triggerAdvice = $("#triggerAdvice");
+      function badge(el, cls, text){
+        el.className = "badge " + cls;
+        el.textContent = text;
+      }
+
+      $("#scoreTriggers").addEventListener("click", () => {
+        const scores = [
+          ["Stress", Number($("#qStress").value || 0)],
+          ["Boredom", Number($("#qBored").value || 0)],
+          ["Social", Number($("#qSocial").value || 0)],
+          ["Convenience", Number($("#qConven").value || 0)],
+          ["Payday", Number($("#qPayday").value || 0)],
+          ["Tired or hungry", Number($("#qTired").value || 0)]
+        ].map(([k,v]) => [k, Math.max(0, Math.min(10, v))]);
+
+        scores.sort((a,b) => b[1]-a[1]);
+        const [name, val] = scores[0];
+
+        let levelCls = "good";
+        let levelText = "Level: mild";
+        if(val >= 7){ levelCls = "bad"; levelText = "Level: strong"; }
+        else if(val >= 5){ levelCls = "warn"; levelText = "Level: moderate"; }
+
+        badge(topTrigger, levelCls === "good" ? "warn" : levelCls, "Top trigger: " + name);
+        badge(riskLevel, levelCls, levelText);
+
+        const adviceMap = {
+          "Stress": "When stress is high, your brain buys relief. Fix: 20 minute delay rule plus a replacement (walk, shower, breathing, gym set). Remove saved cards from the phone.",
+          "Boredom": "Boredom seeks stimulation. Fix: create a short boredom menu: 3 fast activities that give dopamine without spending.",
+          "Social": "Comparison triggers identity spending. Fix: unfollow triggers, limit shopping content, set an event budget and stick to it.",
+          "Convenience": "Convenience spending is friction vs hunger. Fix: meal prep, keep quick foods, and set a weekly delivery cap.",
+          "Payday": "Payday spending is permission. Fix: automate transfers first, then allow a planned fun amount.",
+          "Tired or hungry": "Low energy equals worse decisions. Fix: do not shop when hungry, keep snacks, and delay purchases after 9pm."
+        };
+
+        triggerAdvice.style.display = "block";
+        triggerAdvice.innerHTML =
+          "<strong>Your top trigger is " + name + "</strong><br/>" +
+          (adviceMap[name] || "Pick one environment change that reduces this trigger.");
+
+      });
+
+      // Friction builder
+      const frictionOut = $("#frictionOut");
+      $("#buildFriction").addEventListener("click", () => {
+        const cat = $("#category").value;
+        const rule = $("#rule").value;
+        const rep = $("#replacement").value.trim() || "Do a 10 minute replacement first";
+
+        const catText = {
+          food: "Food and delivery",
+          clothes: "Clothes and appearance",
+          tech: "Tech and subscriptions",
+          nights: "Nights out and drinks",
+          random: "Random small buys"
+        }[cat] || "This category";
+
+        const ruleText = {
+          "24h": "Delay rule: add to wishlist, wait 24 hours, then decide.",
+          cash: "Constraint rule: only use a separate debit card or cash for this category.",
+          cap: "Cap rule: set a weekly cap and allow one planned spend.",
+          delay: "Pause rule: wait 20 minutes, do the replacement, then reassess.",
+          remove: "Trigger removal rule: delete shopping apps, unsubscribe, remove saved cards, and block promo emails."
+        }[rule] || "Use a delay and a cap.";
+
+        const set =
+          "Rule set for: " + catText + "\n\n" +
+          "1) " + ruleText + "\n" +
+          "2) Replacement: " + rep + "\n" +
+          "3) Environment change: remove saved cards, disable notifications for shopping and food apps.\n" +
+          "4) Win condition: I follow the rule, even if I still buy later.";
+
+        frictionOut.textContent = set;
+      });
+
+      $("#copyFriction").addEventListener("click", async () => {
+        const t = frictionOut.textContent.trim();
+        if(!t){
+          frictionOut.textContent = "Generate a rule set first.";
+          return;
+        }
+        try{
+          await navigator.clipboard.writeText(t);
+          frictionOut.textContent = t + "\n\nCopied.";
+        }catch(e){
+          frictionOut.textContent = t + "\n\nCopy failed. Select and copy manually.";
+        }
+      });
+
+      // Decision filter
+      const decisionBadge = $("#decisionBadge");
+      const reasonBadge = $("#reasonBadge");
+      const decisionText = $("#decisionText");
+
+      $("#decide").addEventListener("click", () => {
+        const item = $("#item").value.trim() || "this purchase";
+        const cost = Math.max(0, Number($("#cost").value || 0));
+        const budget = Math.max(0, Number($("#budget").value || 0));
+        const why = $("#why").value;
+        const sleep = $("#sleep").value;
+
+        let decision = "Wait";
+        let dCls = "warn";
+        let reason = "Default to delay";
+        let text = "If you are not sure, delay. Most impulse spending disappears after a pause.";
+
+        if(cost <= budget && budget > 0){
+          decision = "Possible";
+          dCls = "good";
+          reason = "Within budget";
+          text = "It fits the budget. Still check your motive and energy state before buying.";
+        } else if(budget === 0 && cost > 0){
+          decision = "No";
+          dCls = "bad";
+          reason = "No budget set";
+          text = "If you cannot name a budget for it, it is probably impulse. Set a cap, then revisit.";
+        } else if(cost > budget && budget > 0){
+          decision = "No";
+          dCls = "bad";
+          reason = "Over budget";
+          text = "It breaks the budget. Either reduce the item, delay, or swap it for something planned.";
+        }
+
+        if(sleep === "no" && decision !== "No"){
+          decision = "Wait";
+          dCls = "warn";
+          reason = "Low energy state";
+          text = "Do not buy when tired or hungry. Your brain buys relief. Eat, rest, then reassess tomorrow.";
+        }
+
+        if(why === "fomo"){
+          decision = "Wait";
+          dCls = "warn";
+          reason = "FOMO trigger";
+          text = "Urgency is a sales tactic. Put it on a list, wait 24 hours, and see if you still care.";
+        }
+
+        if(why === "relief" || why === "reward"){
+          text += " Because your motive is emotional, do a replacement first, then decide with a calmer brain.";
+        }
+
+        decisionBadge.className = "badge " + dCls;
+        decisionBadge.textContent = "Decision: " + decision;
+        reasonBadge.className = "badge " + (dCls === "good" ? "warn" : dCls);
+        reasonBadge.textContent = "Reason: " + reason;
+        decisionText.style.display = "block";
+        decisionText.innerHTML = "<strong>For " + item + ":</strong><br/>" + text;
+      });
+
+      // Habit loop journal
+      let loops = [];
+      const loopOut = $("#loopOut");
+      const loopCount = $("#loopCount");
+
+      function renderLoops(){
+        loopCount.textContent = loops.length + " entries";
+        if(loops.length === 0){
+          loopOut.textContent = "Your entries will appear here.";
+          return;
+        }
+        const lines = loops.map((x, i) => {
+          return (
+            "#"+(i+1) + "\n" +
+            "Trigger: " + x.trigger + "\n" +
+            "Emotion: " + x.emotion + "\n" +
+            "Action: " + x.action + "\n" +
+            "Reward: " + x.reward + "\n" +
+            "Replacement: " + x.replace + "\n"
+          );
+        }).join("\n");
+        loopOut.textContent = lines;
+      }
+
+      $("#addLoop").addEventListener("click", () => {
+        const entry = {
+          trigger: $("#tTrigger").value.trim() || "(not set)",
+          emotion: $("#tEmotion").value.trim() || "(not set)",
+          action: $("#tAction").value.trim() || "(not set)",
+          reward: $("#tReward").value.trim() || "(not set)",
+          replace: $("#tReplace").value.trim() || "(not set)"
+        };
+        loops.unshift(entry);
+        loops = loops.slice(0, 10);
+        renderLoops();
+      });
+
+      $("#clearLoops").addEventListener("click", () => {
+        loops = [];
+        renderLoops();
+      });
+
+      // One line plan copy
+      $("#copyOneLine").addEventListener("click", async () => {
+        const el = $("#oneLine");
+        if(!el.value.trim()){
+          el.value = "If I want to buy impulsively, I wait 24 hours and do a replacement first.";
+        }
+        try{ await navigator.clipboard.writeText(el.value); }catch(e){}
+      });
+
+      // Save / load state
+      function getState(){
+        const style = (document.querySelector('input[name="style"]:checked') || {}).value || "";
+        return {
+          style,
+          qStress: $("#qStress").value, qBored: $("#qBored").value, qSocial: $("#qSocial").value,
+          qConven: $("#qConven").value, qPayday: $("#qPayday").value, qTired: $("#qTired").value,
+          category: $("#category").value, rule: $("#rule").value, replacement: $("#replacement").value,
+          item: $("#item").value, cost: $("#cost").value, budget: $("#budget").value, why: $("#why").value, sleep: $("#sleep").value,
+          oneLine: $("#oneLine").value,
+          loops
+        };
+      }
+
+      function setState(s){
+        if(!s) return;
+        if(s.qStress != null) $("#qStress").value = s.qStress;
+        if(s.qBored != null) $("#qBored").value = s.qBored;
+        if(s.qSocial != null) $("#qSocial").value = s.qSocial;
+        if(s.qConven != null) $("#qConven").value = s.qConven;
+        if(s.qPayday != null) $("#qPayday").value = s.qPayday;
+        if(s.qTired != null) $("#qTired").value = s.qTired;
+
+        if(s.category) $("#category").value = s.category;
+        if(s.rule) $("#rule").value = s.rule;
+        if(s.replacement != null) $("#replacement").value = s.replacement;
+
+        if(s.item != null) $("#item").value = s.item;
+        if(s.cost != null) $("#cost").value = s.cost;
+        if(s.budget != null) $("#budget").value = s.budget;
+        if(s.why) $("#why").value = s.why;
+        if(s.sleep) $("#sleep").value = s.sleep;
+
+        if(s.oneLine != null) $("#oneLine").value = s.oneLine;
+
+        if(Array.isArray(s.loops)) loops = s.loops;
+        renderLoops();
+
+        if(s.style){
+          const el = document.querySelector('input[name="style"][value="'+s.style+'"]');
+          if(el) el.checked = true;
+        }
+      }
+
+      $("#saveState").addEventListener("click", () => {
+        const s = getState();
+        localStorage.setItem("spending_psychology_state_v1", JSON.stringify(s));
+        alert("Saved. This stays in this browser.");
+      });
+
+      $("#loadState").addEventListener("click", () => {
+        const raw = localStorage.getItem("spending_psychology_state_v1");
+        if(!raw){
+          alert("No saved data found.");
+          return;
+        }
+        try{
+          setState(JSON.parse(raw));
+          alert("Loaded.");
+        }catch(e){
+          alert("Could not load saved data.");
+        }
+      });
+
+      // Auto load
+      try{
+        const raw = localStorage.getItem("spending_psychology_state_v1");
+        if(raw) setState(JSON.parse(raw));
+      }catch(e){}
+    })();
+  </script>
+</body>
+</html>

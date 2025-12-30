@@ -7,6 +7,7 @@ import rehypeSlug from "rehype-slug"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import { hasSupabase, sbGetContent, sbListContent } from "@/lib/supabase-rest"
 import { unstable_noStore as noStore } from "next/cache"
+import Newsletter from "@/components/Newsletter"
 
 const CONTENT_DIR = path.join(process.cwd(), "content")
 const POSTS_DIR = path.join(CONTENT_DIR, "posts")
@@ -117,6 +118,9 @@ export async function getPostBySlug(slug: string) {
               rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: "wrap" }]],
             },
           },
+          components: {
+            Newsletter,
+          },
         })
         return {
           content,
@@ -142,6 +146,9 @@ export async function getPostBySlug(slug: string) {
           remarkPlugins: [remarkGfm],
           rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: "wrap" }]],
         },
+      },
+      components: {
+        Newsletter,
       },
     })
     return {

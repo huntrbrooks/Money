@@ -1,0 +1,1136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Why Money Triggers Anxiety | Interactive Newsletter</title>
+  <meta name="description" content="An interactive, educational newsletter explaining why money triggers anxiety, plus practical tools you can use today." />
+
+  <style>
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --muted2:#64748b;
+      --line: #e2e8f0;
+      --brand:#1d4ed8;
+      --brand2:#0ea5e9;
+      --good:#16a34a;
+      --warn:#f59e0b;
+      --bad:#dc2626;
+      --shadow: 0 10px 30px rgba(2,6,23,.08);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color:var(--ink);
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(14,165,233,.14), transparent 55%),
+                  radial-gradient(1000px 600px at 90% 10%, rgba(29,78,216,.12), transparent 55%),
+                  var(--bg);
+      line-height: 1.45;
+    }
+    a{color:var(--brand); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .container{max-width: 1100px; margin: 0 auto; padding: 22px}
+    .topbar{
+      position: sticky; top: 0; z-index: 5;
+      background: rgba(246,247,251,.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-inner{
+      display:flex; align-items:center; gap:14px; justify-content:space-between;
+      max-width: 1100px; margin:0 auto; padding: 12px 22px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+    .pill{
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,.7);
+    }
+    .progress{
+      display:flex; align-items:center; gap:10px;
+      min-width: 280px;
+    }
+    .bar{
+      flex:1;
+      height: 8px;
+      background: #e8eef9;
+      border-radius: 99px;
+      overflow:hidden;
+      border: 1px solid rgba(29,78,216,.12);
+    }
+    .bar > span{
+      display:block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--brand2), var(--brand));
+      border-radius: 99px;
+      transition: width .2s ease;
+    }
+    .barlabel{font-size: 12px; color: var(--muted2); white-space:nowrap}
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 18px;
+    }
+    @media (max-width: 900px){
+      .hero{grid-template-columns: 1fr}
+      .progress{display:none}
+    }
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero-left{padding: 22px}
+    .hero-right{padding: 18px; display:flex; flex-direction:column; gap:12px}
+    h1{
+      margin: 0 0 10px;
+      font-size: clamp(28px, 3.2vw, 42px);
+      line-height: 1.1;
+      letter-spacing: -.6px;
+    }
+    .sub{
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 64ch;
+    }
+    .chips{display:flex; flex-wrap:wrap; gap:10px}
+    .chip{
+      border:1px solid rgba(29,78,216,.18);
+      background: rgba(29,78,216,.06);
+      color: #1e3a8a;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .cta-row{display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px}
+    .btn{
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor:pointer;
+      display:inline-flex; align-items:center; gap:10px;
+      transition: transform .06s ease, box-shadow .15s ease;
+    }
+    .btn:hover{box-shadow: 0 10px 24px rgba(2,6,23,.08)}
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{
+      background: linear-gradient(90deg, var(--brand2), var(--brand));
+      color: #fff;
+      border: 0;
+    }
+    .btn.small{padding: 8px 10px; font-size: 13px; border-radius: 10px}
+    .btn.danger{background: rgba(220,38,38,.08); border:1px solid rgba(220,38,38,.25); color:#991b1b}
+    .icon{
+      width: 18px; height: 18px; display:inline-block;
+    }
+    .section{
+      margin-top: 18px;
+      padding: 18px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns: 1fr}
+    }
+    h2{
+      margin: 0 0 10px;
+      font-size: 20px;
+      letter-spacing: -.2px;
+    }
+    p{margin: 0 0 10px; color: var(--muted)}
+    .kicker{
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      margin-bottom: 10px;
+    }
+    .list{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+    .callout{
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(14,165,233,.25);
+      background: rgba(14,165,233,.06);
+      color: var(--muted);
+    }
+    .callout strong{color: var(--ink)}
+    details{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 12px 14px;
+    }
+    details + details{margin-top: 10px}
+    summary{
+      cursor:pointer;
+      font-weight: 800;
+      color: var(--ink);
+      list-style:none;
+    }
+    summary::-webkit-details-marker{display:none}
+    .muted{color: var(--muted)}
+    .tabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .tab{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.7);
+      cursor:pointer;
+      font-weight: 800;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .tab.active{
+      background: rgba(29,78,216,.08);
+      border-color: rgba(29,78,216,.22);
+      color: #1e3a8a;
+    }
+    .panel{display:none}
+    .panel.active{display:block}
+    .tool{
+      display:flex; flex-direction:column; gap:10px;
+    }
+    label{
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted2);
+    }
+    input[type="text"], input[type="number"], textarea, select{
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      font-size: 14px;
+      outline: none;
+      background:#fff;
+    }
+    textarea{min-height: 92px; resize: vertical}
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    @media (max-width: 700px){.row{grid-template-columns: 1fr}}
+    .mini{
+      font-size: 12px;
+      color: var(--muted2);
+    }
+    .meter{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.7);
+    }
+    .badge{
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background:#fff;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .badge.good{border-color: rgba(22,163,74,.25); background: rgba(22,163,74,.06); color:#166534}
+    .badge.warn{border-color: rgba(245,158,11,.28); background: rgba(245,158,11,.08); color:#92400e}
+    .badge.bad{border-color: rgba(220,38,38,.25); background: rgba(220,38,38,.08); color:#991b1b}
+    .breath{
+      display:grid; grid-template-columns: 1fr 1fr; gap:12px;
+      align-items:center;
+    }
+    @media (max-width: 900px){.breath{grid-template-columns:1fr}}
+    .orb{
+      width: 180px; height: 180px;
+      margin: 10px auto;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(14,165,233,.35), rgba(29,78,216,.25), rgba(2,6,23,.02));
+      border: 1px solid rgba(29,78,216,.18);
+      box-shadow: 0 18px 40px rgba(2,6,23,.08);
+      transform: scale(1);
+      transition: transform 1s linear;
+    }
+    .orb.inhale{transform: scale(1.18)}
+    .orb.exhale{transform: scale(.92)}
+    .footer{
+      margin: 18px 0 26px;
+      padding: 16px 18px;
+      color: var(--muted2);
+      font-size: 13px;
+    }
+    .print{
+      white-space: pre-wrap;
+      background: #0b1220;
+      color: #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      border: 1px solid rgba(226,232,240,.12);
+    }
+    .divider{
+      height: 1px;
+      background: var(--line);
+      margin: 12px 0;
+    }
+    .hint{
+      display:flex; gap:10px; align-items:flex-start;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px dashed rgba(29,78,216,.25);
+      background: rgba(29,78,216,.04);
+      color: var(--muted);
+    }
+    .hint b{color: var(--ink)}
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span aria-hidden="true" class="pill">Interactive Newsletter</span>
+        <span>Money + Anxiety</span>
+      </div>
+
+      <div class="progress" aria-label="Reading progress">
+        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span id="progressFill"></span>
+        </div>
+        <div class="barlabel" id="progressLabel">0% read</div>
+      </div>
+
+      <button class="btn small" id="toggleMode" type="button" aria-pressed="false" title="Toggle focus mode">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 7V5a2 2 0 0 1 2-2h2M20 7V5a2 2 0 0 0-2-2h-2M4 17v2a2 2 0 0 0 2 2h2M20 17v2a2 2 0 0 1-2 2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Focus
+      </button>
+    </div>
+  </div>
+
+  <main class="container" id="page">
+    <section class="hero">
+      <div class="card hero-left">
+        <div class="kicker">Issue</div>
+        <h1>Why Money Triggers Anxiety</h1>
+        <p class="sub">
+          Money is not just maths. It is meaning, safety, identity, power, autonomy, and future plans all bundled into one.
+          When money feels uncertain, your brain often treats it like a threat.
+        </p>
+
+        <div class="chips" aria-label="What you will learn">
+          <span class="chip">How your threat system gets activated</span>
+          <span class="chip">Money scripts and conditioning</span>
+          <span class="chip">Practical tools for calm decisions</span>
+          <span class="chip">Interactive self check and tracker</span>
+        </div>
+
+        <div class="cta-row">
+          <button class="btn primary" type="button" id="jumpTools">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Start the tools
+          </button>
+          <button class="btn" type="button" id="saveState">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7a2 2 0 0 1 2-2h10l4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M8 5v6h8V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Save progress
+          </button>
+          <button class="btn" type="button" id="loadState">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Load
+          </button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="hint">
+          <div aria-hidden="true">🧠</div>
+          <div>
+            <b>Fast reality check:</b> Anxiety is often your brain trying to protect you.
+            The goal is not to bully it into silence, it is to give it better data and safer options.
+          </div>
+        </div>
+      </div>
+
+      <aside class="card hero-right" aria-label="Quick actions">
+        <div class="callout">
+          <strong>Use this like a newsletter</strong><br />
+          Read a section, do one tool, keep what works, ignore the rest.
+        </div>
+
+        <div class="card" style="padding:14px; box-shadow:none">
+          <div class="kicker">Mini quiz</div>
+          <p style="margin-bottom:10px">What kind of money anxiety shows up most for you?</p>
+          <div class="tool">
+            <label><input type="radio" name="mini" value="uncertainty"> Uncertainty and future fear</label>
+            <label><input type="radio" name="mini" value="scarcity"> Scarcity and never enough</label>
+            <label><input type="radio" name="mini" value="conflict"> Conflict, shame, or control</label>
+            <label><input type="radio" name="mini" value="avoidance"> Avoidance, procrastination, numb scrolling</label>
+            <button class="btn small" type="button" id="miniResult">Show me what that usually means</button>
+            <div class="mini" id="miniOutput" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="callout" style="border-color: rgba(245,158,11,.25); background: rgba(245,158,11,.08)">
+          <strong>Important</strong><br />
+          This is educational, not medical or financial advice. If you feel unsafe or at risk of harm, contact local emergency services.
+        </div>
+      </aside>
+    </section>
+
+    <section class="card section" id="learn">
+      <div class="kicker">The science, without the fluff</div>
+
+      <div class="tabs" role="tablist" aria-label="Learning tabs">
+        <button class="tab active" type="button" role="tab" aria-selected="true" aria-controls="p1" data-tab="p1">1) Threat system</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="p2" data-tab="p2">2) Conditioning</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="p3" data-tab="p3">3) Control loop</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="p4" data-tab="p4">4) Repair plan</button>
+      </div>
+
+      <div id="p1" class="panel active" role="tabpanel">
+        <h2>Money can look like a physical threat to your brain</h2>
+        <p>
+          Your nervous system is built to keep you alive, not to keep you calm.
+          When money feels unpredictable, your threat detection system often treats it like danger because it is tied to shelter, food,
+          social status, and your future.
+        </p>
+        <ul class="list">
+          <li><strong>Uncertainty</strong> increases stress. Even if the numbers are not catastrophic, unpredictability can push your body into vigilance.</li>
+          <li><strong>Loss</strong> tends to hurt more than gain feels good. That loss sensitivity can drive overchecking, avoidance, or panic decisions.</li>
+          <li><strong>Shame</strong> activates threat too. If money equals worth in your history, budget talk can feel like a character attack.</li>
+        </ul>
+        <div class="callout" style="margin-top:12px">
+          <strong>Translation:</strong> if money talk makes your chest tight, it is not weakness, it is wiring plus learning.
+        </div>
+      </div>
+
+      <div id="p2" class="panel" role="tabpanel">
+        <h2>Money scripts are learned, then they run your behaviour</h2>
+        <p>
+          A money script is a belief like: "If I do not have enough, I am not safe," or "If I need help, I am failing."
+          Scripts form from family messages, cultural pressure, relationship dynamics, and lived experiences.
+        </p>
+        <details>
+          <summary>Common money scripts (click to expand)</summary>
+          <ul class="list">
+            <li><strong>Scarcity script:</strong> "There will never be enough, I must hoard or panic spend."</li>
+            <li><strong>Worth script:</strong> "My income proves my value, if I struggle I am lesser."</li>
+            <li><strong>Control script:</strong> "If I do not control every dollar, I will be harmed."</li>
+            <li><strong>Avoidance script:</strong> "Money is stressful, so I will not look at it until it explodes."</li>
+          </ul>
+          <p class="muted">Scripts are not facts. They are old predictions.</p>
+        </details>
+        <details>
+          <summary>What changes a script</summary>
+          <p class="muted">
+            You do not change a belief by yelling at it.
+            You change it by collecting repeated evidence that a new approach is safer and more effective.
+          </p>
+          <ul class="list">
+            <li>Small exposures with support</li>
+            <li>Clear boundaries and systems</li>
+            <li>Repairing shame through compassion and accountability</li>
+          </ul>
+        </details>
+      </div>
+
+      <div id="p3" class="panel" role="tabpanel">
+        <h2>The control loop: how anxiety turns into money behaviour</h2>
+        <p>
+          Anxiety pushes you to do something now.
+          The relief you get from that action teaches your brain to repeat it.
+          That is how checking, overthinking, impulse spending, and avoidance become sticky habits.
+        </p>
+
+        <div class="grid">
+          <div class="callout">
+            <strong>Short term relief behaviours</strong>
+            <ul class="list">
+              <li>Compulsive checking: accounts, bills, prices</li>
+              <li>Impulse spending: quick dopamine</li>
+              <li>Avoidance: no emails, no statements, no conversations</li>
+              <li>Control: micro managing a partner or family spending</li>
+            </ul>
+          </div>
+          <div class="callout" style="border-color: rgba(220,38,38,.22); background: rgba(220,38,38,.06)">
+            <strong>Long term cost</strong>
+            <ul class="list">
+              <li>More uncertainty because you avoid the data</li>
+              <li>More shame because the situation worsens</li>
+              <li>More conflict because money talk becomes reactive</li>
+              <li>More stress because your body stays on alert</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="p4" class="panel" role="tabpanel">
+        <h2>Repair plan: calm body, clean data, then decisions</h2>
+        <p>
+          You cannot logic your way out of a nervous system threat response.
+          Sequence matters.
+        </p>
+        <ol class="list">
+          <li><strong>Regulate:</strong> settle your body first so the threat system quiets down.</li>
+          <li><strong>Clarify:</strong> collect the smallest useful money data, not all the data.</li>
+          <li><strong>Choose:</strong> pick a decision that reduces uncertainty, even if it is not perfect.</li>
+          <li><strong>Repeat:</strong> repetition teaches your brain that money can be handled safely.</li>
+        </ol>
+        <div class="callout" style="margin-top:12px">
+          <strong>Rule:</strong> If your stress is above 7 out of 10, do not make money decisions, do a tool first.
+        </div>
+      </div>
+    </section>
+
+    <section class="card section" id="tools">
+      <div class="kicker">Interactive tools</div>
+
+      <div class="grid">
+        <div class="card" style="padding:16px; box-shadow:none">
+          <h2>Tool 1: 90 second calm down</h2>
+          <p>Use this before you open bank apps, email, or have the money conversation.</p>
+
+          <div class="breath">
+            <div>
+              <div class="meter">
+                <span class="badge" id="breathPhase">Ready</span>
+                <span class="badge" id="breathTimer">0:00</span>
+                <span class="badge" id="breathCycles">Cycles: 0</span>
+              </div>
+              <div class="cta-row" style="margin-top:10px">
+                <button class="btn primary" type="button" id="breathStart">Start breathing</button>
+                <button class="btn" type="button" id="breathStop">Stop</button>
+              </div>
+              <p class="mini">Pattern: inhale 4, hold 2, exhale 6, hold 2. Adjust if dizzy.</p>
+            </div>
+            <div>
+              <div class="orb" id="orb" aria-hidden="true"></div>
+              <div class="mini" id="breathCue" aria-live="polite">When you start, follow the cue.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:16px; box-shadow:none">
+          <h2>Tool 2: Money anxiety self check</h2>
+          <p>Answer honestly. This generates your next best move, not a diagnosis.</p>
+
+          <div class="tool">
+            <label for="stress">Current stress (0 to 10)</label>
+            <input id="stress" type="number" min="0" max="10" value="5" />
+
+            <label for="trigger">Trigger type</label>
+            <select id="trigger">
+              <option value="bill">Bills or debt</option>
+              <option value="income">Income uncertainty</option>
+              <option value="relationship">Conflict, control, or secrecy</option>
+              <option value="shame">Shame or self worth</option>
+              <option value="future">Future planning and big decisions</option>
+            </select>
+
+            <label for="pattern">My pattern when triggered</label>
+            <select id="pattern">
+              <option value="check">Compulsive checking</option>
+              <option value="avoid">Avoidance</option>
+              <option value="spend">Impulse spending</option>
+              <option value="control">Control or policing others</option>
+              <option value="freeze">Freeze, brain fog, shutdown</option>
+            </select>
+
+            <button class="btn primary" type="button" id="generatePlan">Generate my next move</button>
+
+            <div class="meter" aria-live="polite">
+              <span class="badge" id="riskBadge">Status: unknown</span>
+              <span class="badge" id="planBadge">Next move: none</span>
+            </div>
+
+            <div class="callout" id="planText" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="grid">
+        <div class="card" style="padding:16px; box-shadow:none">
+          <h2>Tool 3: Trigger tracker + pattern map</h2>
+          <p>Log one money trigger. This turns chaos into a simple loop you can change.</p>
+
+          <div class="tool">
+            <div class="row">
+              <div>
+                <label for="event">What happened</label>
+                <input id="event" type="text" placeholder="Example: credit card bill email arrived" />
+              </div>
+              <div>
+                <label for="body">Body sensation</label>
+                <input id="body" type="text" placeholder="Example: tight chest, jaw clench" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="thought">Automatic thought</label>
+                <input id="thought" type="text" placeholder="Example: I am failing, it will never end" />
+              </div>
+              <div>
+                <label for="action">Action I took</label>
+                <input id="action" type="text" placeholder="Example: avoided, doom scrolled, bought stuff" />
+              </div>
+            </div>
+
+            <label for="alt">One better action next time</label>
+            <input id="alt" type="text" placeholder="Example: breathe, open bill with a timer, write one plan step" />
+
+            <button class="btn primary" type="button" id="addLog">Add to my log</button>
+            <button class="btn" type="button" id="clearLog">Clear log</button>
+
+            <div class="mini" id="logCount">0 entries</div>
+            <div class="print" id="logOutput" aria-live="polite">Your entries will appear here.</div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:16px; box-shadow:none">
+          <h2>Tool 4: Money boundary script generator</h2>
+          <p>Use this if money talks turn into pressure, shame, or conflict.</p>
+
+          <div class="tool">
+            <label for="who">Who is this with</label>
+            <select id="who">
+              <option value="partner">Partner</option>
+              <option value="family">Family</option>
+              <option value="friend">Friend</option>
+              <option value="work">Work or client</option>
+            </select>
+
+            <label for="topic">Topic</label>
+            <select id="topic">
+              <option value="budget">Budget, bills, or spending</option>
+              <option value="debt">Debt and repayments</option>
+              <option value="help">Asking for help</option>
+              <option value="privacy">Privacy and access</option>
+              <option value="pressure">Pressure to spend or lend</option>
+            </select>
+
+            <label for="tone">Tone</label>
+            <select id="tone">
+              <option value="calm">Calm and firm</option>
+              <option value="soft">Soft and supportive</option>
+              <option value="direct">Direct and no excuses</option>
+            </select>
+
+            <button class="btn primary" type="button" id="makeScript">Generate script</button>
+            <button class="btn" type="button" id="copyScript">Copy</button>
+
+            <div class="callout" id="scriptBox" aria-live="polite"></div>
+
+            <details>
+              <summary>Red flags worth taking seriously</summary>
+              <ul class="list">
+                <li>Someone controls your access to money, accounts, or documents</li>
+                <li>Someone monitors spending to punish you</li>
+                <li>Debt is created in your name without consent</li>
+                <li>You are pressured, threatened, or isolated around money decisions</li>
+              </ul>
+              <p class="muted">If any of this fits, consider getting professional support.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section" id="takeaways">
+      <div class="kicker">Takeaways</div>
+      <div class="grid">
+        <div class="callout">
+          <strong>What is happening</strong>
+          <ul class="list">
+            <li>Money triggers the threat system because it is linked to survival and identity</li>
+            <li>Old money scripts turn stress into predictable behaviour</li>
+            <li>Short term relief behaviours increase long term stress</li>
+          </ul>
+        </div>
+        <div class="callout">
+          <strong>What to do next</strong>
+          <ul class="list">
+            <li>Regulate first, then look at the numbers</li>
+            <li>Collect small data that reduces uncertainty</li>
+            <li>Make one decision that moves you toward safety</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="tool">
+        <h2>Your one sentence plan</h2>
+        <p>Type it, then copy it. Keep it stupidly simple.</p>
+        <input id="oneLine" type="text" placeholder="Example: I will breathe for 90 seconds, open the bill with a 10 minute timer, and write one next step." />
+        <div class="cta-row">
+          <button class="btn primary" type="button" id="copyOneLine">Copy plan</button>
+          <button class="btn" type="button" id="printPage">Print</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>
+        <strong>Notes:</strong> If money anxiety is tied to trauma, coercion, or control in relationships, support from a qualified professional can be life changing.
+        You deserve safety, clarity, and options.
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    (function(){
+      const $ = (sel, root=document) => root.querySelector(sel);
+      const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+      // Reading progress
+      const progressFill = $("#progressFill");
+      const progressLabel = $("#progressLabel");
+      const progressBar = $(".bar");
+      function updateProgress(){
+        const doc = document.documentElement;
+        const scrollTop = doc.scrollTop || document.body.scrollTop;
+        const scrollHeight = doc.scrollHeight || document.body.scrollHeight;
+        const clientHeight = doc.clientHeight;
+        const total = Math.max(1, scrollHeight - clientHeight);
+        const pct = Math.min(100, Math.max(0, Math.round((scrollTop / total) * 100)));
+        progressFill.style.width = pct + "%";
+        progressLabel.textContent = pct + "% read";
+        progressBar.setAttribute("aria-valuenow", String(pct));
+      }
+      window.addEventListener("scroll", updateProgress, {passive:true});
+      updateProgress();
+
+      // Focus mode
+      const toggleMode = $("#toggleMode");
+      let focusOn = false;
+      toggleMode.addEventListener("click", () => {
+        focusOn = !focusOn;
+        toggleMode.setAttribute("aria-pressed", focusOn ? "true" : "false");
+        document.body.style.background = focusOn ? "#f8fafc" : "";
+        const cards = $$(".card");
+        cards.forEach(c => c.style.boxShadow = focusOn ? "none" : "");
+        toggleMode.textContent = focusOn ? "Normal" : "Focus";
+      });
+
+      // Jump tools
+      $("#jumpTools").addEventListener("click", () => {
+        $("#tools").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      // Tabs
+      const tabs = $$(".tab");
+      const panels = $$(".panel");
+      tabs.forEach(t => {
+        t.addEventListener("click", () => {
+          tabs.forEach(x => x.classList.remove("active"));
+          panels.forEach(p => p.classList.remove("active"));
+          t.classList.add("active");
+          const id = t.dataset.tab;
+          $("#" + id).classList.add("active");
+          tabs.forEach(x => x.setAttribute("aria-selected", x === t ? "true" : "false"));
+        });
+      });
+
+      // Mini quiz
+      $("#miniResult").addEventListener("click", () => {
+        const chosen = document.querySelector('input[name="mini"]:checked');
+        const out = $("#miniOutput");
+        if(!chosen){
+          out.textContent = "Pick one option first.";
+          return;
+        }
+        const map = {
+          uncertainty: "Uncertainty anxiety usually wants reassurance. Give it structure: a simple weekly money check-in, one spreadsheet, one plan step.",
+          scarcity: "Scarcity anxiety often comes from past instability. Focus on a safety buffer goal and spend rules that reduce decision fatigue.",
+          conflict: "Conflict anxiety can mean money equals power or shame. You likely need boundaries, transparency, and safer conversation rules.",
+          avoidance: "Avoidance anxiety means money feels like threat, so your brain escapes. Use tiny timed exposures and reward completion, not perfection."
+        };
+        out.textContent = map[chosen.value] || "Not sure, try again.";
+      });
+
+      // Breathing tool
+      const orb = $("#orb");
+      const breathPhase = $("#breathPhase");
+      const breathTimer = $("#breathTimer");
+      const breathCycles = $("#breathCycles");
+      const breathCue = $("#breathCue");
+      let breathInterval = null;
+      let phaseIndex = 0;
+      let phaseTimeLeft = 0;
+      let elapsed = 0;
+      let cycles = 0;
+
+      const phases = [
+        {name:"Inhale", seconds:4, orbClass:"inhale"},
+        {name:"Hold", seconds:2, orbClass:"inhale"},
+        {name:"Exhale", seconds:6, orbClass:"exhale"},
+        {name:"Hold", seconds:2, orbClass:"exhale"}
+      ];
+
+      function fmtTime(s){
+        const m = Math.floor(s/60);
+        const r = s%60;
+        return m + ":" + String(r).padStart(2,"0");
+      }
+
+      function setPhase(i){
+        const ph = phases[i];
+        breathPhase.textContent = ph.name;
+        breathCue.textContent = ph.name + " for " + ph.seconds + " seconds.";
+        orb.classList.remove("inhale","exhale");
+        orb.classList.add(ph.orbClass);
+        phaseTimeLeft = ph.seconds;
+      }
+
+      function stopBreathing(){
+        if(breathInterval) clearInterval(breathInterval);
+        breathInterval = null;
+        orb.classList.remove("inhale","exhale");
+        breathPhase.textContent = "Ready";
+        breathCue.textContent = "Stopped. If you still feel spiky, run it again.";
+        elapsed = 0;
+        phaseIndex = 0;
+        phaseTimeLeft = 0;
+        cycles = 0;
+        breathTimer.textContent = "0:00";
+        breathCycles.textContent = "Cycles: 0";
+      }
+
+      $("#breathStart").addEventListener("click", () => {
+        if(breathInterval) return;
+
+        elapsed = 0;
+        cycles = 0;
+        phaseIndex = 0;
+        setPhase(phaseIndex);
+
+        const target = 90; // seconds
+        breathInterval = setInterval(() => {
+          elapsed += 1;
+          phaseTimeLeft -= 1;
+
+          breathTimer.textContent = fmtTime(elapsed);
+          breathCycles.textContent = "Cycles: " + cycles;
+
+          if(phaseTimeLeft <= 0){
+            phaseIndex = (phaseIndex + 1) % phases.length;
+            if(phaseIndex === 0) cycles += 1;
+            setPhase(phaseIndex);
+          }
+
+          if(elapsed >= target){
+            clearInterval(breathInterval);
+            breathInterval = null;
+            orb.classList.remove("inhale","exhale");
+            breathPhase.textContent = "Done";
+            breathCue.textContent = "Nice. Now do the smallest money step, not the biggest.";
+          }
+        }, 1000);
+      });
+
+      $("#breathStop").addEventListener("click", stopBreathing);
+
+      // Plan generator
+      const stress = $("#stress");
+      const trigger = $("#trigger");
+      const pattern = $("#pattern");
+      const planText = $("#planText");
+      const riskBadge = $("#riskBadge");
+      const planBadge = $("#planBadge");
+
+      function badgeForStress(n){
+        if(n <= 3) return {cls:"good", txt:"Status: calm enough to act"};
+        if(n <= 7) return {cls:"warn", txt:"Status: manageable, do one tool first"};
+        return {cls:"bad", txt:"Status: high activation, regulate first"};
+      }
+
+      $("#generatePlan").addEventListener("click", () => {
+        const s = Math.max(0, Math.min(10, Number(stress.value || 0)));
+        const trig = trigger.value;
+        const pat = pattern.value;
+
+        const b = badgeForStress(s);
+        riskBadge.className = "badge " + b.cls;
+        riskBadge.textContent = b.txt;
+
+        let next = "Do Tool 1, then pick a 10 minute task.";
+        let body = "Start with breathing for 90 seconds, then choose one small step that reduces uncertainty.";
+
+        if(s >= 8){
+          next = "Regulate, then delay decisions";
+          body = "Do Tool 1. Drink water. Walk for 5 minutes. Then do a tiny admin action like opening one email, or writing the next step. No big decisions while your body is in threat mode.";
+        } else {
+          if(pat === "avoid"){
+            next = "Timed exposure";
+            body = "Set a 10 minute timer. Open the thing you avoid. Only one item. When the timer ends, write the next step and stop. Your goal is completion, not perfection.";
+          } else if(pat === "check"){
+            next = "Limit checking";
+            body = "Choose one check-in window today, 10 minutes max. Write down the one number you need and one action. Close the apps after.";
+          } else if(pat === "spend"){
+            next = "Pause before purchase";
+            body = "Add a 24 hour pause rule for non essentials. If you still want it tomorrow, revisit. Right now, do a replacement: water, walk, message someone, or do Tool 1.";
+          } else if(pat === "control"){
+            next = "Boundary plus clarity";
+            body = "Write what you need in one sentence and propose a time to talk when calm. Focus on shared goals and clear rules, not policing. Use Tool 4 if needed.";
+          } else if(pat === "freeze"){
+            next = "Shrink the task";
+            body = "Pick the smallest step that is still real, like finding one login, opening one statement, or writing one question for a professional. Tiny steps beat shutdown.";
+          }
+        }
+
+        if(trig === "relationship"){
+          body += " If money dynamics feel coercive or unsafe, prioritise support and boundaries.";
+        } else if(trig === "bill"){
+          body += " Your next best step is to reduce uncertainty with one clear number and one repayment option.";
+        } else if(trig === "income"){
+          body += " Build a short runway plan: what must be paid, what can be paused, and one income action today.";
+        } else if(trig === "shame"){
+          body += " Shame is not a plan. Separate worth from numbers, then choose one repair action.";
+        } else if(trig === "future"){
+          body += " Big decisions become safer when you break them into smaller decisions with dates and criteria.";
+        }
+
+        planBadge.className = "badge " + (s >= 8 ? "bad" : (s >= 4 ? "warn" : "good"));
+        planBadge.textContent = "Next move: " + next;
+
+        planText.style.display = "block";
+        planText.innerHTML = "<strong>" + next + "</strong><br/>" + body;
+      });
+
+      // Trigger log
+      let log = [];
+      const logOutput = $("#logOutput");
+      const logCount = $("#logCount");
+
+      function renderLog(){
+        logCount.textContent = log.length + " entries";
+        if(log.length === 0){
+          logOutput.textContent = "Your entries will appear here.";
+          return;
+        }
+        const lines = log.map((x, i) => {
+          return (
+            "#"+(i+1) + "\n" +
+            "Event: " + x.event + "\n" +
+            "Body: " + x.body + "\n" +
+            "Thought: " + x.thought + "\n" +
+            "Action: " + x.action + "\n" +
+            "Better next time: " + x.alt + "\n"
+          );
+        }).join("\n");
+        logOutput.textContent = lines;
+      }
+
+      $("#addLog").addEventListener("click", () => {
+        const entry = {
+          event: $("#event").value.trim() || "(not set)",
+          body: $("#body").value.trim() || "(not set)",
+          thought: $("#thought").value.trim() || "(not set)",
+          action: $("#action").value.trim() || "(not set)",
+          alt: $("#alt").value.trim() || "(not set)"
+        };
+        log.unshift(entry);
+        log = log.slice(0, 10);
+        renderLog();
+      });
+
+      $("#clearLog").addEventListener("click", () => {
+        log = [];
+        renderLog();
+      });
+
+      // Script generator
+      const scriptBox = $("#scriptBox");
+      $("#makeScript").addEventListener("click", () => {
+        const who = $("#who").value;
+        const topic = $("#topic").value;
+        const tone = $("#tone").value;
+
+        const whoWord = {
+          partner: "you",
+          family: "you",
+          friend: "you",
+          work: "you"
+        }[who] || "you";
+
+        const topicLine = {
+          budget: "our spending and bills",
+          debt: "repayments and debt conversations",
+          help: "asking for support with money",
+          privacy: "privacy and account access",
+          pressure: "pressure to spend or lend"
+        }[topic] || "money";
+
+        let open = "I want to talk about " + topicLine + " in a way that is respectful and clear.";
+        let boundary = "I am not available for arguing, blaming, or pressure in the moment.";
+        let ask = "Can we set a time to talk when we are both calm, and stick to facts plus next steps?";
+        let close = "If the conversation turns heated, I will pause and come back later.";
+
+        if(tone === "soft"){
+          open = "I care about us, and I want money conversations to feel safer for both of us.";
+          boundary = "When things get intense, my anxiety spikes and I stop thinking clearly.";
+          ask = "Could we slow down, use one list of facts, and decide one next step at a time?";
+          close = "If we cannot stay respectful, I will take a break and return when we are calmer.";
+        } else if(tone === "direct"){
+          open = "We need a clean money conversation.";
+          boundary = "I will not do shame, threats, or pressure.";
+          ask = "Here is what I need: facts, options, and one decision today.";
+          close = "If that cannot happen, I am ending the conversation and rescheduling.";
+        }
+
+        const extra = (topic === "privacy")
+          ? "\n\nBoundary: I will not share passwords or give access as a way to prove trust. We can agree on transparency that still respects autonomy."
+          : (topic === "pressure")
+            ? "\n\nBoundary: I am not lending or spending under pressure. If it is urgent, we will put it in writing, review options, and decide after a pause."
+            : "";
+
+        const script =
+          open + "\n\n" +
+          boundary + "\n" +
+          ask + "\n" +
+          close + extra;
+
+        scriptBox.textContent = script;
+      });
+
+      $("#copyScript").addEventListener("click", async () => {
+        const text = scriptBox.textContent.trim();
+        if(!text){
+          scriptBox.textContent = "Generate a script first.";
+          return;
+        }
+        try{
+          await navigator.clipboard.writeText(text);
+          scriptBox.textContent = text + "\n\nCopied.";
+        }catch(e){
+          scriptBox.textContent = text + "\n\nCopy failed. Select and copy manually.";
+        }
+      });
+
+      // One sentence plan copy
+      $("#copyOneLine").addEventListener("click", async () => {
+        const t = $("#oneLine").value.trim();
+        if(!t){
+          $("#oneLine").value = "I will breathe for 90 seconds, then do one 10 minute money task, then stop.";
+        }
+        try{
+          await navigator.clipboard.writeText($("#oneLine").value);
+        }catch(e){}
+      });
+
+      // Print
+      $("#printPage").addEventListener("click", () => window.print());
+
+      // Save and load state
+      function getState(){
+        const mini = (document.querySelector('input[name="mini"]:checked') || {}).value || "";
+        return {
+          stress: $("#stress").value,
+          trigger: $("#trigger").value,
+          pattern: $("#pattern").value,
+          event: $("#event").value,
+          body: $("#body").value,
+          thought: $("#thought").value,
+          action: $("#action").value,
+          alt: $("#alt").value,
+          log,
+          oneLine: $("#oneLine").value,
+          mini
+        };
+      }
+      function setState(s){
+        if(!s) return;
+        $("#stress").value = s.stress ?? 5;
+        $("#trigger").value = s.trigger ?? "bill";
+        $("#pattern").value = s.pattern ?? "avoid";
+        $("#event").value = s.event ?? "";
+        $("#body").value = s.body ?? "";
+        $("#thought").value = s.thought ?? "";
+        $("#action").value = s.action ?? "";
+        $("#alt").value = s.alt ?? "";
+        $("#oneLine").value = s.oneLine ?? "";
+        if(Array.isArray(s.log)) log = s.log;
+        renderLog();
+
+        if(s.mini){
+          const el = document.querySelector('input[name="mini"][value="'+s.mini+'"]');
+          if(el) el.checked = true;
+        }
+      }
+
+      $("#saveState").addEventListener("click", () => {
+        const s = getState();
+        localStorage.setItem("money_anxiety_newsletter_state_v1", JSON.stringify(s));
+        alert("Saved. This stays in this browser.");
+      });
+
+      $("#loadState").addEventListener("click", () => {
+        const raw = localStorage.getItem("money_anxiety_newsletter_state_v1");
+        if(!raw){
+          alert("No saved data found.");
+          return;
+        }
+        try{
+          setState(JSON.parse(raw));
+          alert("Loaded.");
+        }catch(e){
+          alert("Could not load saved data.");
+        }
+      });
+
+      // Load automatically if present
+      try{
+        const raw = localStorage.getItem("money_anxiety_newsletter_state_v1");
+        if(raw) setState(JSON.parse(raw));
+      }catch(e){}
+
+    })();
+  </script>
+</body>
+</html>

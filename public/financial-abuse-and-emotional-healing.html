@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Financial Abuse and Emotional Healing | Interactive Newsletter</title>
+  <meta name="description" content="An interactive, factual and educational newsletter on financial abuse and emotional healing, including safety planning prompts and recovery tools." />
+
+  <style>
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --muted2:#64748b;
+      --line: #e2e8f0;
+      --brand:#1d4ed8;
+      --brand2:#0ea5e9;
+      --good:#16a34a;
+      --warn:#f59e0b;
+      --bad:#dc2626;
+      --shadow: 0 10px 30px rgba(2,6,23,.08);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 15% 0%, rgba(220,38,38,.10), transparent 55%),
+        radial-gradient(1000px 600px at 90% 10%, rgba(29,78,216,.10), transparent 55%),
+        var(--bg);
+      line-height: 1.45;
+    }
+    a{color:var(--brand); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .container{max-width: 1100px; margin: 0 auto; padding: 22px}
+    .topbar{
+      position: sticky; top: 0; z-index: 5;
+      background: rgba(246,247,251,.86);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-inner{
+      display:flex; align-items:center; gap:14px; justify-content:space-between;
+      max-width: 1100px; margin:0 auto; padding: 12px 22px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+    .pill{
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,.7);
+    }
+    .progress{
+      display:flex; align-items:center; gap:10px;
+      min-width: 280px;
+    }
+    .bar{
+      flex:1;
+      height: 8px;
+      background: #e8eef9;
+      border-radius: 99px;
+      overflow:hidden;
+      border: 1px solid rgba(29,78,216,.12);
+    }
+    .bar > span{
+      display:block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--brand2), var(--brand));
+      border-radius: 99px;
+      transition: width .2s ease;
+    }
+    .barlabel{font-size: 12px; color: var(--muted2); white-space:nowrap}
+    .btn{
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 800;
+      cursor:pointer;
+      display:inline-flex; align-items:center; gap:10px;
+      transition: transform .06s ease, box-shadow .15s ease;
+    }
+    .btn:hover{box-shadow: 0 10px 24px rgba(2,6,23,.08)}
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{
+      background: linear-gradient(90deg, var(--brand2), var(--brand));
+      color: #fff;
+      border: 0;
+    }
+    .btn.small{padding: 8px 10px; font-size: 13px; border-radius: 10px}
+    .btn.danger{background: rgba(220,38,38,.08); border:1px solid rgba(220,38,38,.25); color:#991b1b}
+    .icon{width: 18px; height: 18px; display:inline-block}
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 18px;
+    }
+    @media (max-width: 900px){
+      .hero{grid-template-columns: 1fr}
+      .progress{display:none}
+    }
+    .hero-left{padding: 22px}
+    .hero-right{padding: 18px; display:flex; flex-direction:column; gap:12px}
+    h1{
+      margin: 0 0 10px;
+      font-size: clamp(28px, 3.2vw, 42px);
+      line-height: 1.1;
+      letter-spacing: -.6px;
+    }
+    .sub{
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 70ch;
+    }
+    .chips{display:flex; flex-wrap:wrap; gap:10px}
+    .chip{
+      border:1px solid rgba(29,78,216,.18);
+      background: rgba(29,78,216,.06);
+      color: #1e3a8a;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .cta-row{display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px}
+    .section{margin-top: 18px; padding: 18px}
+    .grid{display:grid; grid-template-columns: 1fr 1fr; gap: 16px}
+    @media (max-width: 900px){.grid{grid-template-columns:1fr}}
+    h2{margin: 0 0 10px; font-size: 20px; letter-spacing: -.2px}
+    p{margin: 0 0 10px; color: var(--muted)}
+    .kicker{
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      margin-bottom: 10px;
+    }
+    .list{margin: 10px 0 0; padding-left: 18px; color: var(--muted)}
+    .callout{
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(14,165,233,.25);
+      background: rgba(14,165,233,.06);
+      color: var(--muted);
+    }
+    .callout strong{color: var(--ink)}
+    .callout.danger{
+      border-color: rgba(220,38,38,.22);
+      background: rgba(220,38,38,.06);
+    }
+    details{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 12px 14px;
+    }
+    details + details{margin-top: 10px}
+    summary{
+      cursor:pointer;
+      font-weight: 900;
+      color: var(--ink);
+      list-style:none;
+    }
+    summary::-webkit-details-marker{display:none}
+    .tabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .tab{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.7);
+      cursor:pointer;
+      font-weight: 900;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .tab.active{
+      background: rgba(29,78,216,.08);
+      border-color: rgba(29,78,216,.22);
+      color: #1e3a8a;
+    }
+    .panel{display:none}
+    .panel.active{display:block}
+    label{font-size: 13px; font-weight: 900; color: var(--muted2)}
+    input[type="text"], input[type="number"], textarea, select{
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      font-size: 14px;
+      outline: none;
+      background:#fff;
+    }
+    textarea{min-height: 92px; resize: vertical}
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    @media (max-width: 700px){.row{grid-template-columns: 1fr}}
+    .mini{font-size: 12px; color: var(--muted2)}
+    .meter{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.7);
+    }
+    .badge{
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background:#fff;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .badge.good{border-color: rgba(22,163,74,.25); background: rgba(22,163,74,.06); color:#166534}
+    .badge.warn{border-color: rgba(245,158,11,.28); background: rgba(245,158,11,.08); color:#92400e}
+    .badge.bad{border-color: rgba(220,38,38,.25); background: rgba(220,38,38,.08); color:#991b1b}
+    .divider{height: 1px; background: var(--line); margin: 12px 0}
+    .hint{
+      display:flex; gap:10px; align-items:flex-start;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px dashed rgba(29,78,216,.25);
+      background: rgba(29,78,216,.04);
+      color: var(--muted);
+    }
+    .hint b{color: var(--ink)}
+    .print{
+      white-space: pre-wrap;
+      background: #0b1220;
+      color: #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      border: 1px solid rgba(226,232,240,.12);
+    }
+    .footer{
+      margin: 18px 0 26px;
+      padding: 16px 18px;
+      color: var(--muted2);
+      font-size: 13px;
+    }
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+    @media print{
+      .topbar, .cta-row, .btn, .tabs { display:none !important; }
+      body{ background:#fff; }
+      .card{ box-shadow:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span aria-hidden="true" class="pill">Interactive Newsletter</span>
+        <span>Financial Abuse + Healing</span>
+      </div>
+
+      <div class="progress" aria-label="Reading progress">
+        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span id="progressFill"></span>
+        </div>
+        <div class="barlabel" id="progressLabel">0% read</div>
+      </div>
+
+      <button class="btn small" id="printPage" type="button" title="Print">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 9V3h12v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 18h12v3H6v-3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M6 14h12v4H6v-4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M6 10H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M18 10h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Print
+      </button>
+    </div>
+  </div>
+
+  <main class="container" id="page">
+    <section class="hero">
+      <div class="card hero-left">
+        <div class="kicker">Issue</div>
+        <h1>Financial Abuse and Emotional Healing</h1>
+        <p class="sub">
+          Financial abuse is a pattern of controlling a person through money and resources.
+          It can happen in intimate relationships, families, caregiving situations, or even workplaces.
+          The emotional fallout is real, and recovery is possible.
+        </p>
+
+        <div class="chips" aria-label="What you will learn">
+          <span class="chip">What financial abuse looks like</span>
+          <span class="chip">How it impacts the nervous system</span>
+          <span class="chip">Safety and support planning prompts</span>
+          <span class="chip">Interactive recovery tools</span>
+        </div>
+
+        <div class="cta-row">
+          <button class="btn primary" type="button" id="jumpTools">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Start the tools
+          </button>
+          <button class="btn" type="button" id="saveState">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7a2 2 0 0 1 2-2h10l4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M8 5v6h8V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Save progress
+          </button>
+          <button class="btn" type="button" id="loadState">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Load
+          </button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="hint">
+          <div aria-hidden="true">🧩</div>
+          <div>
+            <b>Key point:</b> Abuse is about patterns and power, not a one-off mistake.
+            If you are currently in danger, prioritize safety over solving the finances.
+          </div>
+        </div>
+      </div>
+
+      <aside class="card hero-right" aria-label="Quick actions">
+        <div class="callout danger">
+          <strong>Safety note</strong><br />
+          This is educational. If you are in immediate danger, call local emergency services.
+          If you are worried someone is monitoring your device, consider using a safer device or private browsing.
+        </div>
+
+        <div class="card" style="padding:14px; box-shadow:none">
+          <div class="kicker">Quick check</div>
+          <p style="margin-bottom:10px">Which pattern sounds closest?</p>
+          <div class="tool">
+            <label><input type="radio" name="mini" value="access"> Access is restricted, I cannot use my own money</label>
+            <label><input type="radio" name="mini" value="debt"> Debt or bills were created in my name</label>
+            <label><input type="radio" name="mini" value="monitor"> Spending is monitored, punished, or interrogated</label>
+            <label><input type="radio" name="mini" value="work"> Income is taken, controlled, or withheld</label>
+            <button class="btn small" type="button" id="miniResult">Show what this usually indicates</button>
+            <div class="mini" id="miniOutput" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>What healing usually needs</strong><br />
+          Safety, support, autonomy, and a slow rebuild of trust in your own decision making.
+        </div>
+      </aside>
+    </section>
+
+    <section class="card section" id="learn">
+      <div class="kicker">What it is, and how it impacts you</div>
+
+      <div class="tabs" role="tablist" aria-label="Learning tabs">
+        <button class="tab active" type="button" role="tab" aria-selected="true" aria-controls="p1" data-tab="p1">1) Definition</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="p2" data-tab="p2">2) Tactics</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="p3" data-tab="p3">3) Emotional impact</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="p4" data-tab="p4">4) Recovery map</button>
+      </div>
+
+      <div id="p1" class="panel active" role="tabpanel">
+        <h2>Financial abuse is control through money and resources</h2>
+        <p>
+          Financial abuse happens when someone uses money, work, or access to resources to restrict your freedom and choices.
+          It can include taking your income, stopping you from working, controlling bank accounts, forcing debt, or using money as a reward and punishment system.
+        </p>
+        <div class="callout">
+          <strong>Core feature:</strong> it reduces your autonomy.
+        </div>
+        <details style="margin-top:10px">
+          <summary>Where it shows up</summary>
+          <ul class="list">
+            <li>Intimate partner relationships</li>
+            <li>Family systems, inheritance, and caregiving</li>
+            <li>Elder abuse and disability exploitation</li>
+            <li>Workplace coercion or wage theft dynamics</li>
+          </ul>
+        </details>
+      </div>
+
+      <div id="p2" class="panel" role="tabpanel">
+        <h2>Common tactics and warning signs</h2>
+        <div class="grid">
+          <div class="callout">
+            <strong>Control and restriction</strong>
+            <ul class="list">
+              <li>Limiting access to bank cards, accounts, or cash</li>
+              <li>Forcing you to ask for money or explain spending</li>
+              <li>Monitoring purchases, messages, or banking</li>
+              <li>Stopping you from working or studying</li>
+            </ul>
+          </div>
+          <div class="callout danger">
+            <strong>Exploitation and sabotage</strong>
+            <ul class="list">
+              <li>Debt created in your name</li>
+              <li>Withholding or taking your income</li>
+              <li>Coercing loans, contracts, or asset transfers</li>
+              <li>Ruining credit to limit your options</li>
+            </ul>
+          </div>
+        </div>
+
+        <details style="margin-top:10px">
+          <summary>What makes it hard to spot</summary>
+          <ul class="list">
+            <li>It is often packaged as "being responsible" or "helping you manage"</li>
+            <li>It can escalate slowly, so you normalize it</li>
+            <li>Shame keeps people silent</li>
+            <li>Leaving can be financially risky, which is the point</li>
+          </ul>
+        </details>
+      </div>
+
+      <div id="p3" class="panel" role="tabpanel">
+        <h2>Emotional impact, and why you might feel stuck</h2>
+        <p>
+          Financial abuse can wire your nervous system for threat.
+          When money equals danger, your body learns to react quickly, freeze, or submit to reduce conflict.
+          That can look like anxiety, numbness, guilt, self doubt, or panic when making normal money decisions.
+        </p>
+        <div class="grid">
+          <div class="callout">
+            <strong>Common emotional effects</strong>
+            <ul class="list">
+              <li>Hypervigilance and constant worry</li>
+              <li>Decision paralysis</li>
+              <li>Shame and self blame</li>
+              <li>Fear of asking for help</li>
+            </ul>
+          </div>
+          <div class="callout">
+            <strong>Common behavioural effects</strong>
+            <ul class="list">
+              <li>Avoiding bank accounts or bills</li>
+              <li>Hiding spending to avoid punishment</li>
+              <li>Overexplaining and people pleasing</li>
+              <li>Giving up control to "keep the peace"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="p4" class="panel" role="tabpanel">
+        <h2>Recovery map: safety first, then rebuild autonomy</h2>
+        <ol class="list">
+          <li><strong>Safety:</strong> reduce monitoring and coercion risks.</li>
+          <li><strong>Support:</strong> tell one safe person, connect with a professional.</li>
+          <li><strong>Stabilise:</strong> secure access to money, documents, and housing options.</li>
+          <li><strong>Repair:</strong> rebuild trust in your decisions with small wins.</li>
+          <li><strong>Grow:</strong> longer-term financial confidence, boundaries, future plans.</li>
+        </ol>
+        <div class="callout" style="margin-top:12px">
+          <strong>Non negotiable:</strong> you heal faster when you are not being actively controlled.
+        </div>
+      </div>
+    </section>
+
+    <section class="card section" id="tools">
+      <div class="kicker">Interactive tools</div>
+
+      <div class="grid">
+        <div class="card" style="padding:16px; box-shadow:none">
+          <h2>Tool 1: Pattern and risk indicator</h2>
+          <p>This helps you label what is happening. Labeling reduces confusion and self blame.</p>
+
+          <div class="tool">
+            <label for="freq">How often is this happening</label>
+            <select id="freq">
+              <option value="rare">Occasional</option>
+              <option value="monthly">Monthly</option>
+              <option value="weekly">Weekly</option>
+              <option value="daily">Daily or near daily</option>
+            </select>
+
+            <label for="severity">Impact on your autonomy (0 to 10)</label>
+            <input id="severity" type="number" min="0" max="10" value="6" />
+
+            <label for="monitoring">Is there monitoring, threats, or punishment linked to money</label>
+            <select id="monitoring">
+              <option value="no">No</option>
+              <option value="maybe">Maybe or unsure</option>
+              <option value="yes">Yes</option>
+            </select>
+
+            <button class="btn primary" type="button" id="calcRisk">Generate indicator</button>
+
+            <div class="meter" aria-live="polite">
+              <span class="badge" id="riskBadge">Indicator: unknown</span>
+              <span class="badge" id="nextBadge">Next: none</span>
+            </div>
+
+            <div class="callout" id="riskText" style="display:none"></div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:16px; box-shadow:none">
+          <h2>Tool 2: Safer next steps planner</h2>
+          <p>Pick one next step you can do in the next 24 hours that increases safety or autonomy.</p>
+
+          <div class="tool">
+            <label for="goal">What do you want most right now</label>
+            <select id="goal">
+              <option value="access">Regain access to money</option>
+              <option value="documents">Secure documents and accounts</option>
+              <option value="housing">Build a housing and exit option</option>
+              <option value="support">Tell a safe person and get support</option>
+              <option value="clarity">Understand the financial damage</option>
+            </select>
+
+            <label for="constraints">What is the main constraint</label>
+            <select id="constraints">
+              <option value="monitor">Device or account monitoring</option>
+              <option value="fear">Fear of escalation</option>
+              <option value="shame">Shame and isolation</option>
+              <option value="money">No money to act</option>
+              <option value="time">No time or privacy</option>
+            </select>
+
+            <button class="btn primary" type="button" id="makePlan">Generate a 24 hour plan</button>
+            <div class="callout" id="planText" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="grid">
+        <div class="card" style="padding:16px; box-shadow:none">
+          <h2>Tool 3: Conversation boundary script builder</h2>
+          <p>Use if you need to say no, delay, or stop a coercive money conversation.</p>
+
+          <div class="tool">
+            <label for="tone">Tone</label>
+            <select id="tone">
+              <option value="calm">Calm and firm</option>
+              <option value="direct">Direct and hard boundary</option>
+              <option value="minimal">Minimal words, exit fast</option>
+            </select>
+
+            <label for="scenario">Scenario</label>
+            <select id="scenario">
+              <option value="interrogate">Interrogated about spending</option>
+              <option value="demand">Demand to hand over money or passwords</option>
+              <option value="debt">Pressured to sign something or take debt</option>
+              <option value="work">Blocked from working or income controlled</option>
+              <option value="shame">Shamed or threatened around money</option>
+            </select>
+
+            <button class="btn primary" type="button" id="genScript">Generate script</button>
+            <button class="btn" type="button" id="copyScript">Copy</button>
+
+            <div class="callout" id="scriptBox" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:16px; box-shadow:none">
+          <h2>Tool 4: Recovery log, rebuild self trust</h2>
+          <p>Financial abuse erodes confidence. This log helps you rebuild it with proof.</p>
+
+          <div class="tool">
+            <div class="row">
+              <div>
+                <label for="win">One small win</label>
+                <input id="win" type="text" placeholder="Example: I checked one account statement" />
+              </div>
+              <div>
+                <label for="cost">What it cost emotionally (0 to 10)</label>
+                <input id="cost" type="number" min="0" max="10" value="4" />
+              </div>
+            </div>
+
+            <label for="support">Support used</label>
+            <input id="support" type="text" placeholder="Example: texted a friend, talked to counsellor" />
+
+            <label for="next">Next small step</label>
+            <input id="next" type="text" placeholder="Example: reset one password, gather documents" />
+
+            <button class="btn primary" type="button" id="addLog">Add entry</button>
+            <button class="btn" type="button" id="clearLog">Clear log</button>
+
+            <div class="mini" id="logCount">0 entries</div>
+            <div class="print" id="logOutput" aria-live="polite">Your entries will appear here.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <details>
+        <summary>Safety planning prompts (private reflection)</summary>
+        <p class="mini">
+          Only write what is safe to write. If you are concerned about monitoring, do this on paper, or on a safer device.
+        </p>
+        <ul class="list">
+          <li>Who is one person I can tell who will not escalate risk</li>
+          <li>What documents would I need if I had to leave quickly</li>
+          <li>Where could I go for one night if needed</li>
+          <li>What small step would increase my autonomy this week</li>
+        </ul>
+      </details>
+    </section>
+
+    <section class="card section" id="takeaways">
+      <div class="kicker">Takeaways</div>
+
+      <div class="grid">
+        <div class="callout">
+          <strong>What this is</strong>
+          <ul class="list">
+            <li>Patterns of control and restriction through money</li>
+            <li>Often hidden behind "helping" or "being responsible"</li>
+            <li>Designed to reduce your options and independence</li>
+          </ul>
+        </div>
+        <div class="callout">
+          <strong>What helps</strong>
+          <ul class="list">
+            <li>Safety and support first</li>
+            <li>Small actions that rebuild autonomy</li>
+            <li>Boundaries that reduce coercion</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="tool">
+        <h2>Your one sentence next step</h2>
+        <p>Keep it simple, specific, and safe.</p>
+        <input id="oneLine" type="text" placeholder="Example: Today I will do one safe step to increase my autonomy, and tell one safe person." />
+        <div class="cta-row">
+          <button class="btn primary" type="button" id="copyOneLine">Copy</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>
+        <strong>Reminder:</strong> if you are actively being controlled, it makes sense that thinking clearly is hard.
+        Your job is not to be perfect, it is to be safer and more supported.
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    (function(){
+      const $ = (sel, root=document) => root.querySelector(sel);
+      const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+      // Reading progress
+      const progressFill = $("#progressFill");
+      const progressLabel = $("#progressLabel");
+      const progressBar = $(".bar");
+      function updateProgress(){
+        const doc = document.documentElement;
+        const scrollTop = doc.scrollTop || document.body.scrollTop;
+        const scrollHeight = doc.scrollHeight || document.body.scrollHeight;
+        const clientHeight = doc.clientHeight;
+        const total = Math.max(1, scrollHeight - clientHeight);
+        const pct = Math.min(100, Math.max(0, Math.round((scrollTop / total) * 100)));
+        progressFill.style.width = pct + "%";
+        progressLabel.textContent = pct + "% read";
+        progressBar.setAttribute("aria-valuenow", String(pct));
+      }
+      window.addEventListener("scroll", updateProgress, {passive:true});
+      updateProgress();
+
+      // Print
+      $("#printPage").addEventListener("click", () => window.print());
+
+      // Tabs
+      const tabs = $$(".tab");
+      const panels = $$(".panel");
+      tabs.forEach(t => {
+        t.addEventListener("click", () => {
+          tabs.forEach(x => x.classList.remove("active"));
+          panels.forEach(p => p.classList.remove("active"));
+          t.classList.add("active");
+          const id = t.dataset.tab;
+          $("#" + id).classList.add("active");
+          tabs.forEach(x => x.setAttribute("aria-selected", x === t ? "true" : "false"));
+        });
+      });
+
+      // Jump tools
+      $("#jumpTools").addEventListener("click", () => {
+        $("#tools").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      // Mini quiz
+      $("#miniResult").addEventListener("click", () => {
+        const chosen = document.querySelector('input[name="mini"]:checked');
+        const out = $("#miniOutput");
+        if(!chosen){
+          out.textContent = "Pick one option first.";
+          return;
+        }
+        const map = {
+          access: "Restricted access often signals control dynamics. A safer next step is documenting what you can, and planning how to regain access without escalating risk.",
+          debt: "Debt in your name can be exploitation. A safer next step is gathering paperwork, checking credit, and getting advice from a trusted support service.",
+          monitor: "Monitoring and punishment increases risk and reduces autonomy. Consider device safety, private conversations, and external support.",
+          work: "Income control and blocking work is a core tactic to limit options. Support plus a plan to build independent income channels matters."
+        };
+        out.textContent = map[chosen.value] || "Not sure, try again.";
+      });
+
+      // Risk indicator
+      const riskBadge = $("#riskBadge");
+      const nextBadge = $("#nextBadge");
+      const riskText = $("#riskText");
+
+      function setBadge(el, cls, txt){
+        el.className = "badge " + cls;
+        el.textContent = txt;
+      }
+
+      $("#calcRisk").addEventListener("click", () => {
+        const freq = $("#freq").value;
+        const sev = Math.max(0, Math.min(10, Number($("#severity").value || 0)));
+        const mon = $("#monitoring").value;
+
+        let score = sev;
+        if(freq === "monthly") score += 1;
+        if(freq === "weekly") score += 2;
+        if(freq === "daily") score += 3;
+        if(mon === "maybe") score += 1;
+        if(mon === "yes") score += 3;
+
+        let cls = "good";
+        let label = "Indicator: lower concern";
+        let next = "Next: build clarity and support";
+        let text = "This does not mean nothing is happening. It means focus on support, documentation, and small autonomy wins.";
+
+        if(score >= 10){
+          cls = "bad";
+          label = "Indicator: higher concern";
+          next = "Next: prioritise safety planning";
+          text = "Your responses suggest a stronger pattern of control and impact. Prioritise safety, reduce monitoring risk, and seek professional support. Focus on safe, incremental steps that increase autonomy.";
+        } else if(score >= 7){
+          cls = "warn";
+          label = "Indicator: moderate concern";
+          next = "Next: plan one safe autonomy step";
+          text = "This looks like a meaningful pattern. Choose one safe action in the next 24 hours that increases autonomy, like securing documents or speaking to a trusted support person.";
+        }
+
+        setBadge(riskBadge, cls, label);
+        setBadge(nextBadge, cls === "good" ? "warn" : cls, next);
+        riskText.style.display = "block";
+        riskText.innerHTML = "<strong>" + label + "</strong><br/>" + text;
+      });
+
+      // 24 hour plan generator
+      const planText = $("#planText");
+      $("#makePlan").addEventListener("click", () => {
+        const goal = $("#goal").value;
+        const c = $("#constraints").value;
+
+        const base = {
+          access: [
+            "Identify one safe account you can access, and the fastest way to create an independent payment method.",
+            "If safe, open a new account with separate credentials and recovery email.",
+            "Set a small buffer goal, even if it is tiny."
+          ],
+          documents: [
+            "List the documents you need: ID, bank details, contracts, bills, payslips.",
+            "Secure copies in a safe place: cloud storage with new password, or physical folder stored with a trusted person.",
+            "Change one password on a safer device if possible."
+          ],
+          housing: [
+            "Write one realistic place you could go for 1 night and 1 week if needed.",
+            "Set a small step toward independence: inspect listings, speak to a friend, or contact a support service.",
+            "Identify what cash amount would reduce immediate risk."
+          ],
+          support: [
+            "Tell one safe person what is happening in one paragraph.",
+            "Ask for a practical help, like a lift, a place to store documents, or sitting with you while you do admin.",
+            "Book one professional appointment if possible."
+          ],
+          clarity: [
+            "Gather the smallest set of facts: one bank statement, one bill, one debt letter.",
+            "Write what is known and unknown. Unknown is not failure, it is next steps.",
+            "Decide the first question you need answered."
+          ]
+        }[goal];
+
+        const constraintAdd = {
+          monitor: "If device monitoring is possible, use a safer device, private browsing, or do this offline on paper.",
+          fear: "If escalation risk is high, avoid confrontation. Focus on quiet preparation and outside support.",
+          shame: "Shame thrives in secrecy. Choose one safe person and tell the truth without overexplaining.",
+          money: "If money is tight, prioritise free actions: documentation, support calls, and planning.",
+          time: "If you have no privacy, keep steps tiny and portable, like one password reset or one copied document."
+        }[c];
+
+        const steps = base.map((s,i) => (i+1) + ") " + s).join("<br/>");
+        planText.style.display = "block";
+        planText.innerHTML = "<strong>24 hour plan</strong><br/>" + steps + "<br/><br/><strong>Safety note:</strong> " + constraintAdd;
+      });
+
+      // Script generator
+      const scriptBox = $("#scriptBox");
+      $("#genScript").addEventListener("click", () => {
+        const tone = $("#tone").value;
+        const sc = $("#scenario").value;
+
+        const scenarioLine = {
+          interrogate: "I am not going to justify every purchase.",
+          demand: "I will not share passwords or hand over money on demand.",
+          debt: "I am not signing anything right now.",
+          work: "I am making choices about my work and income.",
+          shame: "I am not staying in a conversation where I am being shamed or threatened."
+        }[sc] || "I am not continuing this conversation.";
+
+        let script = "";
+        if(tone === "calm"){
+          script =
+            "I am willing to talk about money when it is respectful and calm.\n" +
+            scenarioLine + "\n" +
+            "If we cannot keep this respectful, I am taking a break and we can revisit later.";
+        } else if(tone === "direct"){
+          script =
+            "Stop.\n" +
+            scenarioLine + "\n" +
+            "This conversation is over. I am leaving now and we can communicate later in writing if needed.";
+        } else {
+          script =
+            "No.\n" +
+            "I am not discussing this right now.\n" +
+            "I am leaving.";
+        }
+
+        scriptBox.textContent = script;
+      });
+
+      $("#copyScript").addEventListener("click", async () => {
+        const text = scriptBox.textContent.trim();
+        if(!text){
+          scriptBox.textContent = "Generate a script first.";
+          return;
+        }
+        try{
+          await navigator.clipboard.writeText(text);
+          scriptBox.textContent = text + "\n\nCopied.";
+        }catch(e){
+          scriptBox.textContent = text + "\n\nCopy failed. Select and copy manually.";
+        }
+      });
+
+      // Recovery log
+      let log = [];
+      const logOutput = $("#logOutput");
+      const logCount = $("#logCount");
+
+      function renderLog(){
+        logCount.textContent = log.length + " entries";
+        if(log.length === 0){
+          logOutput.textContent = "Your entries will appear here.";
+          return;
+        }
+        const lines = log.map((x, i) => {
+          return (
+            "#"+(i+1) + "\n" +
+            "Win: " + x.win + "\n" +
+            "Emotional cost: " + x.cost + "/10\n" +
+            "Support: " + x.support + "\n" +
+            "Next step: " + x.next + "\n"
+          );
+        }).join("\n");
+        logOutput.textContent = lines;
+      }
+
+      $("#addLog").addEventListener("click", () => {
+        const entry = {
+          win: $("#win").value.trim() || "(not set)",
+          cost: String(Math.max(0, Math.min(10, Number($("#cost").value || 0)))),
+          support: $("#support").value.trim() || "(not set)",
+          next: $("#next").value.trim() || "(not set)"
+        };
+        log.unshift(entry);
+        log = log.slice(0, 12);
+        renderLog();
+      });
+
+      $("#clearLog").addEventListener("click", () => {
+        log = [];
+        renderLog();
+      });
+
+      // One sentence plan copy
+      $("#copyOneLine").addEventListener("click", async () => {
+        const el = $("#oneLine");
+        if(!el.value.trim()){
+          el.value = "Today I will do one safe step to increase my autonomy, and I will not negotiate my safety.";
+        }
+        try{ await navigator.clipboard.writeText(el.value); }catch(e){}
+      });
+
+      // Save / load state
+      function getState(){
+        const mini = (document.querySelector('input[name="mini"]:checked') || {}).value || "";
+        return {
+          freq: $("#freq").value,
+          severity: $("#severity").value,
+          monitoring: $("#monitoring").value,
+          goal: $("#goal").value,
+          constraints: $("#constraints").value,
+          tone: $("#tone").value,
+          scenario: $("#scenario").value,
+          oneLine: $("#oneLine").value,
+          mini,
+          log
+        };
+      }
+
+      function setState(s){
+        if(!s) return;
+        if(s.freq) $("#freq").value = s.freq;
+        if(s.severity != null) $("#severity").value = s.severity;
+        if(s.monitoring) $("#monitoring").value = s.monitoring;
+        if(s.goal) $("#goal").value = s.goal;
+        if(s.constraints) $("#constraints").value = s.constraints;
+        if(s.tone) $("#tone").value = s.tone;
+        if(s.scenario) $("#scenario").value = s.scenario;
+        if(s.oneLine != null) $("#oneLine").value = s.oneLine;
+        if(Array.isArray(s.log)) log = s.log;
+        renderLog();
+        if(s.mini){
+          const el = document.querySelector('input[name="mini"][value="'+s.mini+'"]');
+          if(el) el.checked = true;
+        }
+      }
+
+      $("#saveState").addEventListener("click", () => {
+        const s = getState();
+        localStorage.setItem("financial_abuse_healing_state_v1", JSON.stringify(s));
+        alert("Saved. This stays in this browser.");
+      });
+
+      $("#loadState").addEventListener("click", () => {
+        const raw = localStorage.getItem("financial_abuse_healing_state_v1");
+        if(!raw){
+          alert("No saved data found.");
+          return;
+        }
+        try{
+          setState(JSON.parse(raw));
+          alert("Loaded.");
+        }catch(e){
+          alert("Could not load saved data.");
+        }
+      });
+
+      // Auto load if present
+      try{
+        const raw = localStorage.getItem("financial_abuse_healing_state_v1");
+        if(raw) setState(JSON.parse(raw));
+      }catch(e){}
+    })();
+  </script>
+</body>
+</html>
