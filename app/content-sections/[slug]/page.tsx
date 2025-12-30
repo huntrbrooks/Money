@@ -12,15 +12,17 @@ export const dynamic = "force-dynamic"
 export const runtime = "nodejs"
 
 type ContentSectionPageProps = {
-  params: { slug: string }
+  params: { slug: string } | Promise<{ slug: string }>
   searchParams?: Record<string, string | string[] | undefined>
 }
 
 export async function generateMetadata({ params }: ContentSectionPageProps): Promise<Metadata> {
-  const path = `/content-sections/${params.slug}`
+  const paramsObj = typeof (params as any)?.then === "function" ? await (params as any) : (params as any)
+  const slug = String(paramsObj?.slug ?? "")
+  const path = `/content-sections/${slug}`
   try {
     const config = await readSiteConfig()
-    const requested = normalizeSlug(params.slug)
+    const requested = normalizeSlug(slug)
     const pages = Array.isArray(config.contentSectionPages) ? config.contentSectionPages : []
     const sections = Array.isArray(config.contentSections) ? config.contentSections : []
     const page = pages.find((p) => normalizeSlug(p.slug) === requested) ?? null
@@ -64,8 +66,10 @@ function normalizeSlug(input: string): string {
 }
 
 export default async function ContentSectionPage({ params, searchParams }: ContentSectionPageProps) {
+  const paramsObj = typeof (params as any)?.then === "function" ? await (params as any) : (params as any)
+  const slug = String(paramsObj?.slug ?? "")
   const config = await readSiteConfig()
-  const requested = normalizeSlug(params.slug)
+  const requested = normalizeSlug(slug)
   const pages = Array.isArray(config.contentSectionPages) ? config.contentSectionPages : []
   const sections = Array.isArray(config.contentSections) ? config.contentSections : []
   const page = pages.find((p) => normalizeSlug(p.slug) === requested) ?? null
@@ -73,8 +77,12 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
 
   const debug = String(searchParams?.debug ?? "") === "1"
   const debugPayload = {
-    requested: params.slug,
+    requested: slug,
     normalizedRequested: requested,
+    paramsShape: {
+      isThenable: typeof (params as any)?.then === "function",
+      keys: params && typeof params === "object" ? Object.keys(params as any) : [],
+    },
     matched: { page: Boolean(page), section: Boolean(section) },
     contentSectionPages: { count: pages.length, slugs: pages.map((p) => p.slug) },
     contentSections: { count: sections.length, slugs: sections.map((s) => s.slug) },
