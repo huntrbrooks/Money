@@ -7,6 +7,7 @@ import { readSiteConfig } from "@/lib/config"
 import { buildFaqSchema, buildPageMetadata, buildServiceSchema } from "@/lib/seo"
 import Script from "next/script"
 import { ArrowRight } from "lucide-react"
+import { CONTENT_SECTION_PAGE_DEFAULTS, applyContentSectionDefaults } from "@/lib/content-section-defaults"
 
 export const dynamic = "force-dynamic"
 export const runtime = "nodejs"
@@ -25,7 +26,8 @@ export async function generateMetadata({ params }: ContentSectionPageProps): Pro
     const requested = normalizeSlug(slug)
     const pages = Array.isArray(config.contentSectionPages) ? config.contentSectionPages : []
     const sections = Array.isArray(config.contentSections) ? config.contentSections : []
-    const page = pages.find((p) => normalizeSlug(p.slug) === requested) ?? null
+    const foundPage = pages.find((p) => normalizeSlug(p.slug) === requested) ?? null
+    const page = foundPage ? applyContentSectionDefaults(foundPage, CONTENT_SECTION_PAGE_DEFAULTS[requested]) : null
     if (!page) {
       // Fallback to legacy contentSections if present.
       const section = sections.find((s) => normalizeSlug(s.slug) === requested) ?? null
@@ -72,8 +74,9 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
   const requested = normalizeSlug(slug)
   const pages = Array.isArray(config.contentSectionPages) ? config.contentSectionPages : []
   const sections = Array.isArray(config.contentSections) ? config.contentSections : []
-  const page = pages.find((p) => normalizeSlug(p.slug) === requested) ?? null
+  const foundPage = pages.find((p) => normalizeSlug(p.slug) === requested) ?? null
   const section = sections.find((s) => normalizeSlug(s.slug) === requested) ?? null
+  const page = foundPage ? applyContentSectionDefaults(foundPage, CONTENT_SECTION_PAGE_DEFAULTS[requested]) : null
 
   const debug = String(searchParams?.debug ?? "") === "1"
   const debugPayload = {
@@ -107,35 +110,7 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
       </div>
     )
   }
-  // IMPORTANT: do not hard-404 here. In production this page was returning an HTTP 404 fallback even when
-  // config contained the slug. Render a safe fallback to keep links usable and allow diagnosis.
-  const missing = !page && !section
-  if (missing) {
-    return (
-      <div className="min-h-screen bg-muted">
-        <Navigation />
-        <main className="container mx-auto px-4 py-16">
-          <div className="max-w-3xl mx-auto space-y-6">
-            <Link
-              href="/"
-              className="text-sm text-[var(--primary)]/80 hover:text-[var(--primary)] underline inline-flex items-center gap-2"
-            >
-              ← Back to Home
-            </Link>
-            <h1 className="font-serif text-4xl text-[var(--foreground)] font-light">Section not available</h1>
-            <p className="text-[var(--primary)]">
-              This page is still being set up. Please check back soon.
-            </p>
-            <div className="rounded-lg border border-border/40 bg-background/70 p-4 text-sm">
-              <p className="text-muted-foreground mb-2">Diagnostics (temporary)</p>
-              <pre className="whitespace-pre-wrap break-words">{JSON.stringify(debugPayload, null, 2)}</pre>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    )
-  }
+  if (!page && !section) notFound()
 
   const faqJsonLd = buildFaqSchema(page?.faqs ?? [])
   const serviceJsonLd = buildServiceSchema(config, {

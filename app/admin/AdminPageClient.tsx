@@ -18,6 +18,7 @@ import type { PostMeta, VideoMeta } from "@/lib/mdx"
 import { Switch } from "@/components/ui/switch"
 import { Progress } from "@/components/ui/progress"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { CONTENT_SECTION_PAGE_DEFAULTS, applyContentSectionDefaults } from "@/lib/content-section-defaults"
  
 type ThemeState = {
   mode: "light" | "dark"
@@ -1269,6 +1270,26 @@ function CodeAgentBox() {
       toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
     }
   }
+
+  const populateHomepageButtonPages = () => {
+    if (!pages.length) {
+      toast({ title: "Nothing to populate", description: "No homepage button pages found." })
+      return
+    }
+    setContentSectionPages((prev) => {
+      const current = Array.isArray(prev) && prev.length ? prev : pages
+      const next = [...current]
+      for (let i = 0; i < Math.min(9, next.length); i++) {
+        const slug = String(next[i]?.slug ?? "").trim()
+        const defaults = CONTENT_SECTION_PAGE_DEFAULTS[slug]
+        if (!defaults) continue
+        next[i] = applyContentSectionDefaults(next[i], defaults)
+      }
+      return next
+    })
+    toast({ title: "Populated", description: "Filled empty fields for homepage button pages. Saving…" })
+    setAutoSaveRequest("Pages")
+  }
  
    return (
      <div className="min-h-screen bg-muted">
@@ -1718,6 +1739,11 @@ function CodeAgentBox() {
                 <CardDescription>Edit the 9 homepage button pages (linked from the homepage “Important Links” section).</CardDescription>
                </CardHeader>
                <CardContent className="space-y-6">
+                <div className="flex flex-wrap gap-3">
+                  <Button type="button" variant="outline" onClick={populateHomepageButtonPages} disabled={saving !== null}>
+                    Populate pages (fill empty fields)
+                  </Button>
+                </div>
                  <div className="grid gap-2 max-w-2xl">
                    <Label>Choose a page to edit</Label>
                    <select
