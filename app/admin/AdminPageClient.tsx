@@ -2243,6 +2243,7 @@ function CodeAgentBox() {
                        </CardContent>
                      </Card>
                    </TabsContent>
+                  ) : null}
 
                   {pagesEditorKey === "standalone:financial-abuse-therapy" ? (
                    <TabsContent value="financial-abuse-therapy" className="space-y-6">
@@ -2408,6 +2409,7 @@ function CodeAgentBox() {
                        </CardContent>
                      </Card>
                    </TabsContent>
+                  ) : null}
 
                   {pagesEditorKey === "standalone:family-financial-assistance-inheritance" ? (
                   <TabsContent value="family-financial-assistance-inheritance" className="space-y-6">
@@ -2630,8 +2632,6 @@ function CodeAgentBox() {
                       </CardContent>
                     </Card>
                   </TabsContent>
-                  ) : null}
-                  ) : null}
                   ) : null}
 
                   {pagesEditorKey === "standalone:financial-trauma" ? (
