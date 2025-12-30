@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { readSiteConfig } from "@/lib/config"
-import { SITE_URL } from "@/lib/urls"
 import { compileMDX } from "next-mdx-remote/rsc"
 import remarkGfm from "remark-gfm"
 import rehypeSlug from "rehype-slug"
@@ -23,8 +22,7 @@ export default async function ConsentPage() {
   const consent = config?.legal?.consent
   const title = consent?.title?.trim() || "Consent & Policies"
   const downloadUrl = consent?.downloadUrl?.trim() || "/Consent%20and%20Policies.docx"
-  const fileUrl = `${SITE_URL.replace(/\/$/, "")}${downloadUrl}`
-  const viewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fileUrl)}`
+  const isPdf = downloadUrl.toLowerCase().split("?")[0].endsWith(".pdf")
   const requiredStatement = consent?.requiredStatement?.trim() || "I have read & I understand the contents of this document"
   const source = consent?.bodyMdx?.trim() || ""
 
@@ -69,10 +67,18 @@ export default async function ConsentPage() {
               <div className="bg-[var(--section-bg-2)] border border-[var(--secondary)] rounded-xl p-6 md:p-10 space-y-6">
                 {mdx ? (
                   <div className="mdx-content space-y-4 text-[var(--primary)] leading-relaxed">{mdx.content}</div>
-                ) : (
+                ) : isPdf ? (
                   <div className="w-full overflow-hidden rounded-md border border-[var(--secondary)] bg-[var(--section-bg-1)]">
-                    <iframe title={title} src={viewerUrl} className="w-full" style={{ minHeight: "700px" }} />
+                    <iframe title={title} src={downloadUrl} className="w-full" style={{ minHeight: "700px" }} />
                   </div>
+                ) : (
+                  <p className="text-[var(--primary)] text-sm">
+                    This document is currently available as a download only.{" "}
+                    <a href={downloadUrl} className="underline" target="_blank" rel="noopener noreferrer">
+                      Open it in a new tab
+                    </a>
+                    .
+                  </p>
                 )}
 
                 <ConsentFormClient requiredStatement={requiredStatement} contactEmail={contactEmail} contactPhone={contactPhone} />

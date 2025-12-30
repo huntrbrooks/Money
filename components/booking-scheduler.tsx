@@ -1,5 +1,6 @@
 import Script from "next/script"
 import { Button } from "@/components/ui/button"
+import { EmailLink, normalizeEmailAddress } from "@/components/email-link"
 
 const SCHEDULER_URL = "https://app.acuityscheduling.com/schedule.php?owner=32223024"
 const SCHEDULER_EMBED_URL = `${SCHEDULER_URL}&ref=embedded_csp`
@@ -23,6 +24,8 @@ export function BookingScheduler({
   email = "dan@financialabusetherapist.com.au",
   phone = "0467 477 786",
 }: BookingSchedulerProps) {
+  const normalizedEmail = normalizeEmailAddress(email)
+
   return (
     <div className="space-y-8 rounded-[40px] border border-[#d3dcd9] bg-[var(--section-bg-1)]/85 p-5 sm:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
       <div className="grid gap-8 lg:gap-10 lg:grid-cols-[1.1fr_0.9fr]">
@@ -47,7 +50,7 @@ export function BookingScheduler({
           <div className="space-y-4 text-[#33444b]">
             <p className="text-sm leading-relaxed">
               {helpText}{" "}
-              <span className="break-words">{email}</span>
+              <span className="break-words">{normalizedEmail || String(email ?? "").trim()}</span>
               {phone ? <span> or call {phone}</span> : null}
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -64,9 +67,9 @@ export function BookingScheduler({
                 variant="outline"
                 className="flex-1 rounded-full border-[#c8d4cf] bg-[var(--section-bg-1)] text-[#3f4f57] hover:bg-[var(--section-bg-1)]/90"
               >
-                <a href={`mailto:${email}?subject=Booking%20Inquiry`}>
+                <EmailLink email={email} subject="Booking Inquiry">
                   Email Dan instead
-                </a>
+                </EmailLink>
               </Button>
             </div>
             <p className="text-xs text-[#4a5c63]">

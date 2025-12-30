@@ -9,11 +9,11 @@ import { AnalyticsScripts } from "@/components/analytics-scripts"
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Financial Abuse Therapist | Financial Trauma & Monetary Psychotherapy — Dan Lobel",
+    default: "Financial Abuse Counselling Melbourne | Dan Lobel",
     template: "%s | Financial Abuse Therapist",
   },
   description:
-    "Trauma‑informed counselling in Melbourne focused on financial abuse recovery, financial trauma, money anxiety and monetary psychotherapy. Safe, gender‑aware and inclusive care.",
+    "Trauma-informed counselling for financial abuse and money anxiety. Confidential support in Melbourne plus telehealth. Book a consultation with Dan Lobel.",
   keywords: [
     "financial abuse",
     "financial abuse therapy",
@@ -28,18 +28,18 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: SITE_URL,
-    title: "Financial Abuse Therapist | Financial Trauma & Monetary Psychotherapy — Dan Lobel",
+    title: "Financial Abuse Counselling Melbourne | Dan Lobel",
     description:
-      "Trauma‑informed counselling in Melbourne focused on financial abuse recovery, financial trauma, money anxiety and monetary psychotherapy.",
+      "Trauma-informed counselling for financial abuse and money anxiety. Confidential support in Melbourne plus telehealth. Book a consultation with Dan Lobel.",
     siteName: "The Financial Therapist",
     locale: "en_AU",
     images: [{ url: "/og.jpg" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Financial Abuse Therapist | Financial Trauma & Monetary Psychotherapy",
+    title: "Financial Abuse Counselling Melbourne | Dan Lobel",
     description:
-      "Trauma‑informed counselling for financial abuse, economic abuse recovery, and money anxiety.",
+      "Trauma-informed counselling for financial abuse and money anxiety. Confidential support in Melbourne plus telehealth. Book a consultation with Dan Lobel.",
     images: ["/og.jpg"],
   },
   robots: {

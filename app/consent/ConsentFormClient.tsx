@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { EmailLink, normalizeEmailAddress } from "@/components/email-link"
 
 type ConsentFormState = {
   firstName: string
@@ -178,12 +179,13 @@ export default function ConsentFormClient({
           {submitting ? "Sending…" : "Send"}
         </Button>
         {email ? (
-          <a 
-            className="text-sm underline text-[var(--accent)] break-all cursor-pointer" 
-            href={`mailto:${String(email).trim().replace(/^mailto:\s*/i, "")}?subject=Consent%20Form%20Inquiry`}
+          <EmailLink
+            email={email}
+            subject="Consent Form Inquiry"
+            className="text-sm underline text-[var(--accent)] break-all cursor-pointer"
           >
-            {email}
-          </a>
+            {normalizeEmailAddress(email) || email}
+          </EmailLink>
         ) : null}
         {phone ? (
           <a className="text-sm underline text-[var(--accent)]" href={`tel:${phone.replace(/\s+/g, "")}`}>

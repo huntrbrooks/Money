@@ -22,9 +22,9 @@ import {
 
 export const dynamic = 'force-dynamic'
 
-const HOME_TITLE = "Financial Abuse Therapist | Financial Trauma — Dan Lobel"
+const HOME_TITLE = "Financial Abuse Counselling Melbourne | Dan Lobel"
 const HOME_DESCRIPTION =
-  "Trauma-informed counselling in Melbourne focused on financial abuse recovery, financial trauma, money anxiety and safe, gender-aware and inclusive care."
+  "Trauma-informed counselling for financial abuse and money anxiety. Confidential support in Melbourne plus telehealth. Book a consultation with Dan Lobel."
 const HOME_KEYWORDS = [
   "financial therapy Melbourne",
   "financial abuse counselling",
@@ -33,12 +33,17 @@ const HOME_KEYWORDS = [
 ]
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildPageMetadata({
+  const metadata = await buildPageMetadata({
     title: HOME_TITLE,
     description: HOME_DESCRIPTION,
     path: "/",
     keywords: HOME_KEYWORDS,
   })
+  // Ensure the homepage title is exact (not affected by any parent title templates).
+  return {
+    ...metadata,
+    title: { absolute: HOME_TITLE },
+  }
 }
 
 export default async function HomePage() {
@@ -68,7 +73,6 @@ export default async function HomePage() {
   const leadMagnet = homepageContent.leadMagnet
   const showValueProps = sections.showValueProps !== false
   const showImportantLinks = sections.showImportantLinks !== false
-  const showImportantLinksCallButton = sections.showImportantLinksCallButton !== false
   const showTestimonials = sections.showTestimonials !== false
   const showOtherAreas = sections.showOtherAreas !== false
   const showBooking = sections.showBooking !== false
@@ -253,54 +257,8 @@ export default async function HomePage() {
                       </p>
                     </div>
 
-                    {/* Feature CTA (call) */}
-                    {showImportantLinksCallButton && contactPhone ? (
-                      <div className="flex justify-center">
-                        <Button
-                          asChild
-                          size="lg"
-                          className="w-full sm:w-auto max-w-2xl rounded-full px-8 sm:px-10 h-14 sm:h-16 text-base sm:text-lg font-semibold bg-[#F5F5DC] text-[var(--foreground)] border border-transparent shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.15)] hover:bg-[#F0F0D8] transition-[transform,box-shadow,background-color] hover:-translate-y-0.5 active:translate-y-0"
-                        >
-                          <a href={callDanHref} className="no-underline" aria-label="Call Dan">
-                            {copy.importantLinksCallCtaLabel ?? "Call Dan for a brief discussion of your situation"}
-                          </a>
-                        </Button>
-                      </div>
-                    ) : null}
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {/* Row 1 — centered primary CTA */}
-                      <div className="col-span-full flex justify-center">
-                        <Button
-                          asChild
-                          className="w-full sm:w-auto bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-lg"
-                        >
-                          <Link href="/#book" className="no-underline" data-analytics-id="important-links-book">
-                            Book a Session
-                          </Link>
-                        </Button>
-                      </div>
-
-                      {/* Row 2 — two beige buttons */}
-                      <div className="col-span-full grid gap-4 sm:grid-cols-2 place-items-stretch">
-                        <Button
-                          asChild
-                          className="w-full h-12 font-medium bg-[var(--section-bg-2)] text-[var(--foreground)] border-transparent hover:opacity-90 shadow-sm rounded-lg"
-                        >
-                          <Link href="/privacy" className="no-underline">
-                            Privacy Policy
-                          </Link>
-                        </Button>
-                        <Button
-                          asChild
-                          className="w-full h-12 font-medium bg-[var(--section-bg-2)] text-[var(--foreground)] border-transparent hover:opacity-90 shadow-sm rounded-lg"
-                        >
-                          <Link href="/terms" className="no-underline">
-                            Terms of Service
-                          </Link>
-                        </Button>
-                      </div>
-
-                      {/* Row 3-5 — all 9 content sections in navy buttons */}
+                      {/* All 9 content sections in navy buttons */}
                       <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
                         {allContentSectionLinks.map((link) => (
                           <Button
@@ -313,6 +271,18 @@ export default async function HomePage() {
                             </Link>
                           </Button>
                         ))}
+                      </div>
+
+                      {/* Book a Session (under the 9 navy buttons) */}
+                      <div className="col-span-full flex justify-center pt-2">
+                        <Button
+                          asChild
+                          className="w-full sm:w-auto bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-lg"
+                        >
+                          <Link href="/#book" className="no-underline" data-analytics-id="important-links-book">
+                            Book a Session
+                          </Link>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -393,15 +363,17 @@ export default async function HomePage() {
                           <AccordionContent className="relative z-10 pb-6 text-[var(--primary)] text-left sm:text-center max-w-3xl mx-auto leading-relaxed space-y-2">
                             <p>{a.summary}</p>
                             <p className="text-[var(--primary)]/90">{a.more}</p>
-                            <div className="pt-4 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                              <Button asChild variant="outline" className="h-11 px-6 w-full sm:w-auto">
-                                <Link href="/#book">Schedule a session to begin healing</Link>
-                              </Button>
-                            </div>
                           </AccordionContent>
                         </AccordionItem>
                       ))}
                     </Accordion>
+                    <div className="flex justify-center pt-6">
+                      <Button asChild className="bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-lg">
+                        <Link href="/#book" className="no-underline" data-analytics-id="other-areas-book">
+                          Book a Session
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ),

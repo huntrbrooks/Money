@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Phone, Mail, Facebook, Instagram, Linkedin } from "lucide-react"
+import { EmailLink, normalizeEmailAddress } from "@/components/email-link"
 
 type NavLink = { label: string; href: string }
 type Config = {
@@ -245,6 +246,10 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
       .then((d) => setCfg(d))
       .catch(() => {})
   }, [])
+
+  const normalizedContactEmail = normalizeEmailAddress(cfg.contact?.email)
+  const normalizedContactEmailAlt = normalizeEmailAddress(cfg.contact?.emailAlt)
+
   const navigationLinks = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
   const footerQuickLinks = cfg.footer?.quickLinks ?? []
   // Combine navigation links and footer quick links, avoiding duplicates
@@ -302,26 +307,32 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
                   </a>
                 )}
                 {cfg.contact?.email && (
-                  <a
-                    href={`mailto:${cfg.contact.email}?subject=Contact%20Request`}
+                  <EmailLink
+                    email={cfg.contact.email}
+                    subject="Contact Request"
                     className="flex items-start justify-center md:justify-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group cursor-pointer"
                   >
                     <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform mt-0.5">
                       <Mail className="w-4 h-4 text-white" />
                     </div>
-                    <span className="break-all text-sm md:text-base underline decoration-[var(--primary)]/30 group-hover:decoration-[var(--primary)] pt-1">{cfg.contact.email}</span>
-                  </a>
+                    <span className="break-all text-sm md:text-base underline decoration-[var(--primary)]/30 group-hover:decoration-[var(--primary)] pt-1">
+                      {normalizedContactEmail || cfg.contact.email}
+                    </span>
+                  </EmailLink>
                 )}
-                {cfg.contact?.emailAlt && cfg.contact.emailAlt !== cfg.contact.email && (
-                  <a
-                    href={`mailto:${cfg.contact.emailAlt}?subject=Contact%20Request`}
+                {cfg.contact?.emailAlt && normalizedContactEmailAlt !== normalizedContactEmail && (
+                  <EmailLink
+                    email={cfg.contact.emailAlt}
+                    subject="Contact Request"
                     className="flex items-start justify-center md:justify-start gap-3 text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors group cursor-pointer"
                   >
                     <div className="w-10 h-10 bg-[var(--accent)] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform mt-0.5">
                       <Mail className="w-4 h-4 text-white" />
                     </div>
-                    <span className="break-all text-sm md:text-base underline decoration-[var(--primary)]/30 group-hover:decoration-[var(--primary)] pt-1">{cfg.contact.emailAlt}</span>
-                  </a>
+                    <span className="break-all text-sm md:text-base underline decoration-[var(--primary)]/30 group-hover:decoration-[var(--primary)] pt-1">
+                      {normalizedContactEmailAlt || cfg.contact.emailAlt}
+                    </span>
+                  </EmailLink>
                 )}
               </div>
             </div>

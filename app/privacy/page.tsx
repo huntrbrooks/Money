@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { buildPageMetadata } from "@/lib/seo"
 import { readSiteConfig } from "@/lib/config"
-import { SITE_URL } from "@/lib/urls"
 import { compileMDX } from "next-mdx-remote/rsc"
 import remarkGfm from "remark-gfm"
 import rehypeSlug from "rehype-slug"
@@ -25,8 +24,7 @@ export default async function PrivacyPage() {
   const privacy = legal?.privacy
   const title = privacy?.title?.trim() || "Privacy Policy"
   const downloadUrl = privacy?.downloadUrl?.trim() || "/Privacy%20Policy.docx"
-  const fileUrl = `${SITE_URL.replace(/\/$/, "")}${downloadUrl}`
-  const viewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fileUrl)}`
+  const isPdf = downloadUrl.toLowerCase().split("?")[0].endsWith(".pdf")
   const source = privacy?.bodyMdx?.trim() || ""
   let mdx: Awaited<ReturnType<typeof compileMDX>> | null = null
   if (source) {
@@ -60,15 +58,25 @@ export default async function PrivacyPage() {
           <div className="rounded-md border border-[var(--secondary)] bg-[var(--section-bg-1)] p-6">
             <div className="mdx-content space-y-4 text-[var(--primary)] leading-relaxed">{mdx.content}</div>
           </div>
-        ) : (
+        ) : isPdf ? (
           <>
             <div className="w-full overflow-hidden rounded-md border border-[var(--secondary)] bg-[var(--section-bg-1)]">
-              <iframe title="Privacy Policy" src={viewerUrl} className="w-full" style={{ minHeight: "900px" }} />
+              <iframe title="Privacy Policy" src={downloadUrl} className="w-full" style={{ minHeight: "900px" }} />
             </div>
             <p className="text-[var(--primary)] text-sm">
-              If the embedded viewer does not load,{" "}
-              <a href={viewerUrl} className="underline" target="_blank" rel="noopener noreferrer">
-                open the Privacy Policy in a new tab
+              If the embedded PDF does not load,{" "}
+              <a href={downloadUrl} className="underline" target="_blank" rel="noopener noreferrer">
+                open it in a new tab
+              </a>
+              .
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="text-[var(--primary)] text-sm">
+              This document is currently available as a download only.{" "}
+              <a href={downloadUrl} className="underline" target="_blank" rel="noopener noreferrer">
+                Open it in a new tab
               </a>
               .
             </p>

@@ -503,12 +503,12 @@ export const defaultConfig: SiteConfig = {
   legal: {
     privacy: {
       title: "Privacy Policy",
-      downloadUrl: "/Privacy%20Policy.docx",
+      downloadUrl: "/Privacy%20Policy.pdf",
       bodyMdx: "",
     },
     terms: {
       title: "Terms of Service",
-      downloadUrl: "/Terms%20of%20Service.docx",
+      downloadUrl: "/Terms%20of%20Service.pdf",
       bodyMdx: "",
     },
     consent: {
