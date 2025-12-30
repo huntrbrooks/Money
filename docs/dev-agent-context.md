@@ -247,7 +247,7 @@ Treat these as **high-risk for duplicates/canonical/route-precedence issues** du
 - **Email**: `RESEND_API_KEY` or `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_SECURE`, plus `EMAIL_FROM`
 - **CRM**: `CRM_WEBHOOK_URL`, `CRM_WEBHOOK_TOKEN`
 - **GitHub Code Agent**: `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO`
-- **Analytics**: `NEXT_PUBLIC_GA_ID`, `NEXT_PUBLIC_META_PIXEL_ID`, `NEXT_PUBLIC_LINKEDIN_TAG_ID`
+- **Analytics**: `NEXT_PUBLIC_GA_ID`, `NEXT_PUBLIC_GOOGLE_ADS_ID`, `NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL`, `NEXT_PUBLIC_META_PIXEL_ID`, `NEXT_PUBLIC_LINKEDIN_TAG_ID`
 - **Site URL**: `NEXT_PUBLIC_SITE_URL`
 
 ## Related docs

@@ -3,14 +3,20 @@ import { getAnalyticsConfig } from "@/lib/analytics"
 
 export function AnalyticsScripts() {
   const config = getAnalyticsConfig()
-  if (!config.gaId && !config.metaPixelId && !config.linkedinId) {
+  if (!config.gaId && !config.metaPixelId && !config.linkedinId && !config.googleAdsId) {
     return null
   }
+  
+  // Google Ads uses the same gtag.js, so we need to load it if either GA or Google Ads is present
+  const needsGtag = config.gaId || config.googleAdsId
+  // Load gtag.js with Google Ads ID if present (it can track both), otherwise use GA ID
+  const gtagId = config.googleAdsId || config.gaId
+  
   return (
     <>
-      {config.gaId && (
+      {needsGtag && gtagId && (
         <>
-          <Script src={`https://www.googletagmanager.com/gtag/js?id=${config.gaId}`} strategy="afterInteractive" />
+          <Script src={`https://www.googletagmanager.com/gtag/js?id=${gtagId}`} strategy="afterInteractive" />
           <Script
             id="ga-inline"
             strategy="afterInteractive"
@@ -19,7 +25,8 @@ export function AnalyticsScripts() {
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', '${config.gaId}');
+              ${config.googleAdsId ? `gtag('config', '${config.googleAdsId}');` : ''}
+              ${config.gaId && config.gaId !== config.googleAdsId ? `gtag('config', '${config.gaId}');` : ''}
             `,
             }}
           />

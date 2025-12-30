@@ -138,6 +138,7 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null)
   const [versions, setVersions] = useState<Array<{ id: number; version: number; updated_at: string }>>([])
   const [versionsLoading, setVersionsLoading] = useState(false)
+  const [storageStatus, setStorageStatus] = useState<{ storage: string; bucket?: string } | null>(null)
 
   const showSaveBar = saveUi.phase !== "idle"
 
@@ -240,6 +241,14 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     paymentOptions: [],
     schedulerPoints: [],
     schedulerHelpText: "",
+    schedulerEyebrow: "",
+    schedulerTitle: "",
+    schedulerIntro: "",
+    schedulerButtonLabel: "",
+    schedulerEmailButtonLabel: "",
+    schedulerReceiptNote: "",
+    schedulerEmbedToggleLabel: "",
+    schedulerEmbedFallbackText: "",
   })
   const [financialAbusePage, setFinancialAbusePage] = useState<SiteConfig["financialAbusePage"]>({
     title: "",
@@ -490,6 +499,14 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
           paymentOptions: Array.isArray(nextBookingCopy.paymentOptions) ? nextBookingCopy.paymentOptions : [],
           schedulerPoints: Array.isArray(nextBookingCopy.schedulerPoints) ? nextBookingCopy.schedulerPoints : [],
           schedulerHelpText: nextBookingCopy.schedulerHelpText ?? "",
+          schedulerEyebrow: nextBookingCopy.schedulerEyebrow ?? "",
+          schedulerTitle: nextBookingCopy.schedulerTitle ?? "",
+          schedulerIntro: nextBookingCopy.schedulerIntro ?? "",
+          schedulerButtonLabel: nextBookingCopy.schedulerButtonLabel ?? "",
+          schedulerEmailButtonLabel: nextBookingCopy.schedulerEmailButtonLabel ?? "",
+          schedulerReceiptNote: nextBookingCopy.schedulerReceiptNote ?? "",
+          schedulerEmbedToggleLabel: nextBookingCopy.schedulerEmbedToggleLabel ?? "",
+          schedulerEmbedFallbackText: nextBookingCopy.schedulerEmbedFallbackText ?? "",
         })
        const homepageDefaults = createEmptyHomepage()
        const nextHomepage = {
@@ -609,6 +626,17 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
      }
      load()
     loadContent()
+    // Load storage status
+    fetch("/api/admin/storage-status", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d && typeof d.storage === "string") {
+          setStorageStatus({ storage: d.storage, bucket: d.bucket })
+        }
+      })
+      .catch(() => {
+        setStorageStatus({ storage: "unknown" })
+      })
    }, [toast, router])
 
   async function loadVersions() {
@@ -760,6 +788,14 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
       paymentOptions: loadedConfig.bookingCopy?.paymentOptions ?? [],
       schedulerPoints: loadedConfig.bookingCopy?.schedulerPoints ?? [],
       schedulerHelpText: loadedConfig.bookingCopy?.schedulerHelpText ?? "",
+      schedulerEyebrow: loadedConfig.bookingCopy?.schedulerEyebrow ?? "",
+      schedulerTitle: loadedConfig.bookingCopy?.schedulerTitle ?? "",
+      schedulerIntro: loadedConfig.bookingCopy?.schedulerIntro ?? "",
+      schedulerButtonLabel: loadedConfig.bookingCopy?.schedulerButtonLabel ?? "",
+      schedulerEmailButtonLabel: loadedConfig.bookingCopy?.schedulerEmailButtonLabel ?? "",
+      schedulerReceiptNote: loadedConfig.bookingCopy?.schedulerReceiptNote ?? "",
+      schedulerEmbedToggleLabel: loadedConfig.bookingCopy?.schedulerEmbedToggleLabel ?? "",
+      schedulerEmbedFallbackText: loadedConfig.bookingCopy?.schedulerEmbedFallbackText ?? "",
     })
     toast({ title: "Reverted", description: "Changes reverted to last loaded state." })
   }
@@ -1383,6 +1419,40 @@ function CodeAgentBox() {
            </div>
          </div>
        </header>
+
+       {/* Storage Status Banner */}
+       {storageStatus && (
+         <div className={`border-b px-4 py-2 text-sm ${
+           storageStatus.storage === "supabase"
+             ? "bg-green-50 border-green-200 text-green-800"
+             : storageStatus.storage === "local"
+               ? "bg-yellow-50 border-yellow-200 text-yellow-800"
+               : "bg-red-50 border-red-200 text-red-800"
+         }`}>
+           <div className="container mx-auto flex items-center justify-between gap-4">
+             <div className="flex items-center gap-2">
+               <span className={`inline-block h-2 w-2 rounded-full ${
+                 storageStatus.storage === "supabase"
+                   ? "bg-green-500"
+                   : storageStatus.storage === "local"
+                     ? "bg-yellow-500"
+                     : "bg-red-500"
+               }`} />
+               <span>
+                 Storage: <strong>{storageStatus.storage === "supabase" ? "Supabase" : storageStatus.storage === "local" ? "Local (dev only)" : "Unknown"}</strong>
+                 {storageStatus.bucket && ` · Bucket: ${storageStatus.bucket}`}
+               </span>
+             </div>
+             {storageStatus.storage !== "supabase" && (
+               <span className="text-xs">
+                 {storageStatus.storage === "local"
+                   ? "⚠️ Changes won't persist in production. Configure Supabase for persistence."
+                   : "⚠️ Storage not configured. See docs/supabase-setup.md"}
+               </span>
+             )}
+           </div>
+         </div>
+       )}
  
        <div className="container mx-auto px-4 py-8">
          <Tabs defaultValue="hero" className="space-y-6">
@@ -5384,10 +5454,39 @@ function CodeAgentBox() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Scheduler helper copy</CardTitle>
-                <CardDescription>Controls the “Secure checkout” bullet points and help text (text only).</CardDescription>
+                <CardTitle>Secure checkout section</CardTitle>
+                <CardDescription>Edit all text in the “Secure checkout” section on the bookings page.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label>Eyebrow text</Label>
+                  <Input
+                    value={bookingCopy?.schedulerEyebrow ?? ""}
+                    onChange={(e) => setBookingCopy((prev) => ({ ...(prev ?? {}), schedulerEyebrow: e.target.value }))}
+                    placeholder="Secure checkout"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Title</Label>
+                  <Input
+                    value={bookingCopy?.schedulerTitle ?? ""}
+                    onChange={(e) => setBookingCopy((prev) => ({ ...(prev ?? {}), schedulerTitle: e.target.value }))}
+                    placeholder="Confirm your appointment in one place"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Intro paragraph</Label>
+                  <Textarea
+                    value={bookingCopy?.schedulerIntro ?? ""}
+                    onChange={(e) => setBookingCopy((prev) => ({ ...(prev ?? {}), schedulerIntro: e.target.value }))}
+                    rows={3}
+                    placeholder="Choosing *Launch secure scheduler* opens Acuity..."
+                  />
+                  <p className="text-xs text-muted-foreground">Use *text* for italic emphasis</p>
+                </div>
+
                 <div className="space-y-3">
                   <p className="text-sm font-semibold text-[var(--foreground)]">Bullet points (3)</p>
                   {Array.from({ length: 3 }).map((_, idx) => (
@@ -5413,6 +5512,54 @@ function CodeAgentBox() {
                   <Input
                     value={bookingCopy?.schedulerHelpText ?? ""}
                     onChange={(e) => setBookingCopy((prev) => ({ ...(prev ?? {}), schedulerHelpText: e.target.value }))}
+                    placeholder="Need help deciding on a format? Email or call..."
+                  />
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>Primary button label</Label>
+                    <Input
+                      value={bookingCopy?.schedulerButtonLabel ?? ""}
+                      onChange={(e) => setBookingCopy((prev) => ({ ...(prev ?? {}), schedulerButtonLabel: e.target.value }))}
+                      placeholder="Launch secure scheduler"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Email button label</Label>
+                    <Input
+                      value={bookingCopy?.schedulerEmailButtonLabel ?? ""}
+                      onChange={(e) => setBookingCopy((prev) => ({ ...(prev ?? {}), schedulerEmailButtonLabel: e.target.value }))}
+                      placeholder="Email Dan instead"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Receipt note (fine print)</Label>
+                  <Textarea
+                    value={bookingCopy?.schedulerReceiptNote ?? ""}
+                    onChange={(e) => setBookingCopy((prev) => ({ ...(prev ?? {}), schedulerReceiptNote: e.target.value }))}
+                    rows={2}
+                    placeholder="Receipts are issued automatically..."
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Embed toggle label</Label>
+                  <Input
+                    value={bookingCopy?.schedulerEmbedToggleLabel ?? ""}
+                    onChange={(e) => setBookingCopy((prev) => ({ ...(prev ?? {}), schedulerEmbedToggleLabel: e.target.value }))}
+                    placeholder="Prefer to stay on this page? Use the embedded scheduler"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Embed fallback text</Label>
+                  <Input
+                    value={bookingCopy?.schedulerEmbedFallbackText ?? ""}
+                    onChange={(e) => setBookingCopy((prev) => ({ ...(prev ?? {}), schedulerEmbedFallbackText: e.target.value }))}
+                    placeholder="If the scheduler does not load..."
                   />
                 </div>
 

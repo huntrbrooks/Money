@@ -141,6 +141,14 @@ export type BookingCopy = {
   paymentOptions?: PaymentOption[]
   schedulerPoints?: string[]
   schedulerHelpText?: string
+  schedulerEyebrow?: string
+  schedulerTitle?: string
+  schedulerIntro?: string
+  schedulerButtonLabel?: string
+  schedulerEmailButtonLabel?: string
+  schedulerReceiptNote?: string
+  schedulerEmbedToggleLabel?: string
+  schedulerEmbedFallbackText?: string
 }
 
 export type CrisisResource = {
@@ -579,9 +587,17 @@ export const defaultConfig: SiteConfig = {
     schedulerPoints: [
       "Fees shown above already include GST and reflect the exact session length.",
       "Payments are captured through Square inside the secure Acuity portal.",
-      "Need to reschedule? Reach out with 72 hours notice and we’ll arrange a new time.",
+      "Need to reschedule? Reach out with 72 hours notice and we'll arrange a new time.",
     ],
     schedulerHelpText: "Need help deciding on a format? Email or call — a personal reply is guaranteed.",
+    schedulerEyebrow: "Secure checkout",
+    schedulerTitle: "Confirm your appointment in one place",
+    schedulerIntro: "Choosing *Launch secure scheduler* opens Acuity in a new tab so you can pick an exact time, complete billing, and receive immediate confirmation.",
+    schedulerButtonLabel: "Launch secure scheduler",
+    schedulerEmailButtonLabel: "Email Dan instead",
+    schedulerReceiptNote: "Receipts are issued automatically after payment, and you can reply to the confirmation email for any adjustments.",
+    schedulerEmbedToggleLabel: "Prefer to stay on this page? Use the embedded scheduler",
+    schedulerEmbedFallbackText: "If the scheduler does not load, please use the launch button above or email Dan for assistance.",
   },
   financialAbusePage: {
     title: "Financial Abuse — Signs, Safety, and Support",
@@ -765,7 +781,7 @@ export const defaultConfig: SiteConfig = {
       "D.Couns., B.Couns., MCouns&Psych",
     imageUrl:
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_1469a-0Ivt3omzLN4pdHB0y2lffT6PoXhJwA.webp",
-    primaryCta: { label: "Book a Session", href: "/#book" },
+    primaryCta: { label: "Book a consultation", href: "/#book" },
     secondaryCta: { label: "Learn More", href: "/monetary-psychotherapy" },
     stats: [
       { label: "Sessions held", value: "1,200+" },
@@ -1670,6 +1686,14 @@ export async function readSiteConfig(): Promise<SiteConfig> {
               paymentOptions: parsed.bookingCopy?.paymentOptions ?? defaultConfig.bookingCopy?.paymentOptions,
               schedulerPoints: parsed.bookingCopy?.schedulerPoints ?? defaultConfig.bookingCopy?.schedulerPoints,
               schedulerHelpText: parsed.bookingCopy?.schedulerHelpText ?? defaultConfig.bookingCopy?.schedulerHelpText,
+              schedulerEyebrow: parsed.bookingCopy?.schedulerEyebrow ?? defaultConfig.bookingCopy?.schedulerEyebrow,
+              schedulerTitle: parsed.bookingCopy?.schedulerTitle ?? defaultConfig.bookingCopy?.schedulerTitle,
+              schedulerIntro: parsed.bookingCopy?.schedulerIntro ?? defaultConfig.bookingCopy?.schedulerIntro,
+              schedulerButtonLabel: parsed.bookingCopy?.schedulerButtonLabel ?? defaultConfig.bookingCopy?.schedulerButtonLabel,
+              schedulerEmailButtonLabel: parsed.bookingCopy?.schedulerEmailButtonLabel ?? defaultConfig.bookingCopy?.schedulerEmailButtonLabel,
+              schedulerReceiptNote: parsed.bookingCopy?.schedulerReceiptNote ?? defaultConfig.bookingCopy?.schedulerReceiptNote,
+              schedulerEmbedToggleLabel: parsed.bookingCopy?.schedulerEmbedToggleLabel ?? defaultConfig.bookingCopy?.schedulerEmbedToggleLabel,
+              schedulerEmbedFallbackText: parsed.bookingCopy?.schedulerEmbedFallbackText ?? defaultConfig.bookingCopy?.schedulerEmbedFallbackText,
             },
             hero: { ...defaultConfig.hero, ...(parsed.hero ?? {}) },
             about: { ...defaultConfig.about, ...(parsed.about ?? {}) },
@@ -1758,6 +1782,14 @@ export async function readSiteConfig(): Promise<SiteConfig> {
         paymentOptions: parsed.bookingCopy?.paymentOptions ?? defaultConfig.bookingCopy?.paymentOptions,
         schedulerPoints: parsed.bookingCopy?.schedulerPoints ?? defaultConfig.bookingCopy?.schedulerPoints,
         schedulerHelpText: parsed.bookingCopy?.schedulerHelpText ?? defaultConfig.bookingCopy?.schedulerHelpText,
+        schedulerEyebrow: parsed.bookingCopy?.schedulerEyebrow ?? defaultConfig.bookingCopy?.schedulerEyebrow,
+        schedulerTitle: parsed.bookingCopy?.schedulerTitle ?? defaultConfig.bookingCopy?.schedulerTitle,
+        schedulerIntro: parsed.bookingCopy?.schedulerIntro ?? defaultConfig.bookingCopy?.schedulerIntro,
+        schedulerButtonLabel: parsed.bookingCopy?.schedulerButtonLabel ?? defaultConfig.bookingCopy?.schedulerButtonLabel,
+        schedulerEmailButtonLabel: parsed.bookingCopy?.schedulerEmailButtonLabel ?? defaultConfig.bookingCopy?.schedulerEmailButtonLabel,
+        schedulerReceiptNote: parsed.bookingCopy?.schedulerReceiptNote ?? defaultConfig.bookingCopy?.schedulerReceiptNote,
+        schedulerEmbedToggleLabel: parsed.bookingCopy?.schedulerEmbedToggleLabel ?? defaultConfig.bookingCopy?.schedulerEmbedToggleLabel,
+        schedulerEmbedFallbackText: parsed.bookingCopy?.schedulerEmbedFallbackText ?? defaultConfig.bookingCopy?.schedulerEmbedFallbackText,
       },
       hero: { ...defaultConfig.hero, ...(parsed.hero ?? {}) },
       about: { ...defaultConfig.about, ...(parsed.about ?? {}) },
@@ -1849,6 +1881,14 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
       paymentOptions: newConfig.bookingCopy?.paymentOptions ?? defaultConfig.bookingCopy?.paymentOptions,
       schedulerPoints: newConfig.bookingCopy?.schedulerPoints ?? defaultConfig.bookingCopy?.schedulerPoints,
       schedulerHelpText: newConfig.bookingCopy?.schedulerHelpText ?? defaultConfig.bookingCopy?.schedulerHelpText,
+      schedulerEyebrow: newConfig.bookingCopy?.schedulerEyebrow ?? defaultConfig.bookingCopy?.schedulerEyebrow,
+      schedulerTitle: newConfig.bookingCopy?.schedulerTitle ?? defaultConfig.bookingCopy?.schedulerTitle,
+      schedulerIntro: newConfig.bookingCopy?.schedulerIntro ?? defaultConfig.bookingCopy?.schedulerIntro,
+      schedulerButtonLabel: newConfig.bookingCopy?.schedulerButtonLabel ?? defaultConfig.bookingCopy?.schedulerButtonLabel,
+      schedulerEmailButtonLabel: newConfig.bookingCopy?.schedulerEmailButtonLabel ?? defaultConfig.bookingCopy?.schedulerEmailButtonLabel,
+      schedulerReceiptNote: newConfig.bookingCopy?.schedulerReceiptNote ?? defaultConfig.bookingCopy?.schedulerReceiptNote,
+      schedulerEmbedToggleLabel: newConfig.bookingCopy?.schedulerEmbedToggleLabel ?? defaultConfig.bookingCopy?.schedulerEmbedToggleLabel,
+      schedulerEmbedFallbackText: newConfig.bookingCopy?.schedulerEmbedFallbackText ?? defaultConfig.bookingCopy?.schedulerEmbedFallbackText,
     },
     hero: { ...defaultConfig.hero, ...newConfig.hero },
     about: { ...defaultConfig.about, ...newConfig.about },

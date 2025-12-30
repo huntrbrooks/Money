@@ -57,7 +57,7 @@ export default async function MonetaryPsychotherapyPage() {
               <div className="flex flex-wrap gap-4 pt-4">
                 <Button asChild className="bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 shadow-md">
                   <Link href="/bookings">
-                    Book a Session
+                    Book a consultation
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Link>
                 </Button>

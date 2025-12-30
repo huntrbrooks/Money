@@ -22,6 +22,8 @@
 | Variable | Purpose |
 | --- | --- |
 | `NEXT_PUBLIC_GA_ID` | Google Analytics 4 (optional). |
+| `NEXT_PUBLIC_GOOGLE_ADS_ID` | Google Ads conversion ID (AW-XXXXXXXXX format, optional). |
+| `NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL` | Google Ads conversion label (optional, provided when setting up conversion action). |
 | `NEXT_PUBLIC_META_PIXEL_ID` | Meta Pixel ID (optional). |
 | `NEXT_PUBLIC_LINKEDIN_TAG_ID` | LinkedIn Insight tag (optional). |
 | `RESEND_API_KEY` or `SMTP_*` | Email delivery for enquiry/intake forms. |

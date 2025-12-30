@@ -14,6 +14,7 @@ import { LeadMagnet } from "@/components/lead-magnet"
 import { FlowSection } from "@/components/flow-section"
 import { EmailLink } from "@/components/email-link"
 import {
+  buildFaqSchema,
   buildLocalBusinessSchema,
   buildOrganizationSchema,
   buildPageMetadata,
@@ -99,7 +100,7 @@ export default async function HomePage() {
   }))
   const consultationOptions = config.consultations ?? []
   const bookingCopy = config.bookingCopy
-  const primaryCta = hero.primaryCta ?? { label: "Book a Session", href: "/#book" }
+  const primaryCta = hero.primaryCta ?? { label: "Book a consultation", href: "/#book" }
   const contactPhone = config.contact?.phone ?? ""
   const contactEmail = config.contact?.email ?? ""
   // Format phone number for tel: links - remove all spaces for proper tel: protocol
@@ -273,7 +274,7 @@ export default async function HomePage() {
                           className="w-full sm:w-auto bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-lg"
                         >
                           <Link href="/#book" className="no-underline" data-analytics-id="important-links-book">
-                            Book a Session
+                            Book a consultation
                           </Link>
                         </Button>
                       </div>
@@ -395,8 +396,7 @@ export default async function HomePage() {
                       contactPhone={contactPhone || undefined}
                     />
                     <BookingScheduler
-                      schedulerPoints={bookingCopy?.schedulerPoints}
-                      helpText={bookingCopy?.schedulerHelpText}
+                      bookingCopy={bookingCopy}
                       email={contactEmail || undefined}
                       phone={contactPhone || undefined}
                     />
@@ -586,6 +586,14 @@ export default async function HomePage() {
           }),
         },
         { id: "localbusiness-jsonld", data: buildLocalBusinessSchema(config) },
+        ...(homepageFaqs.length > 0
+          ? [
+              {
+                id: "faq-jsonld",
+                data: buildFaqSchema(homepageFaqs),
+              },
+            ]
+          : []),
       ].map(({ id, data }) => (
         <Script
           key={id}

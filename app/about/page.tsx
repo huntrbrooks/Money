@@ -1,10 +1,11 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Script from "next/script"
 import { Mail, Phone, ArrowRight } from "lucide-react"
 import { Navigation, Footer } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
 import { readSiteConfig } from "@/lib/config"
-import { buildPageMetadata } from "@/lib/seo"
+import { buildBreadcrumbSchema, buildPageMetadata, buildPersonSchema } from "@/lib/seo"
 import { EmailLink } from "@/components/email-link"
 
 export const dynamic = 'force-dynamic'
@@ -117,7 +118,7 @@ export default async function AboutPage() {
                 <div className="flex flex-wrap gap-4 pt-4">
                   <Button asChild className="bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 shadow-md">
                     <Link href="/bookings">
-                      Book a Session
+                      Book a consultation
                       <ArrowRight className="ml-2 w-4 h-4" />
                     </Link>
                   </Button>
@@ -198,6 +199,37 @@ export default async function AboutPage() {
         </section>
       </main>
       <Footer backgroundColor="#d7e9ec" />
+      <Script
+        id="breadcrumb-schema-about"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            buildBreadcrumbSchema([
+              { name: "Home", url: "/" },
+              { name: "About Dan Lobel", url: "/about" },
+            ])
+          ),
+        }}
+      />
+      <Script
+        id="person-schema-dan-lobel"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            buildPersonSchema(config, {
+              name: "Dan Lobel",
+              description:
+                "Dan Lobel is a warm, trauma-informed counsellor specialising in monetary psychotherapy, financial trauma, and self-worth. Based in Melbourne, offering in-person and telehealth sessions.",
+              jobTitle: "Financial Abuse Therapist & Monetary Psychotherapist",
+              url: "/about",
+              telephone: phone,
+              image: config.hero?.imageUrl,
+            })
+          ),
+        }}
+      />
     </div>
   )
 }

@@ -21,7 +21,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
     ],
     sessionFormats: ["Telehealth or in‑person sessions.", "Structured sessions with practical takeaways you can practice between visits."],
     nextStepsLinks: [
-      { label: "Book a session", href: "/#book" },
+      { label: "Book a consultation", href: "/#book" },
       { label: "What is financial abuse?", href: "/content-sections/what-is-financial-abuse" },
       { label: "Monetary psychotherapy", href: "/content-sections/monetary-psychotherapy" },
     ],
@@ -60,7 +60,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
     ],
     sessionFormats: ["Trauma‑informed counselling sessions in person or via telehealth.", "Paced work focused on safety, clarity, and practical steps."],
     nextStepsLinks: [
-      { label: "Book a session", href: "/#book" },
+      { label: "Book a consultation", href: "/#book" },
       { label: "Financial trauma", href: "/content-sections/financial-trauma" },
       { label: "Elderly/Disabled financial abuse", href: "/content-sections/elderly-disabled-financial-abuse" },
     ],

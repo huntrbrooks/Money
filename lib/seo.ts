@@ -110,7 +110,17 @@ export async function buildPageMetadata(options: BuildMetadataInput = {}): Promi
             follow: !options.noFollow,
           },
         }
-      : undefined,
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            "max-snippet": -1,
+            "max-image-preview": "large",
+            "max-video-preview": -1,
+          },
+        },
   }
 }
 
@@ -130,11 +140,26 @@ export function buildArticleSchema(options: ArticleSchemaInput) {
     "@type": "Article",
     headline: options.title,
     description: options.description,
-    author: { "@type": "Person", name: options.authorName ?? "Dan Lobel" },
-    publisher: { "@type": "Organization", name: "The Financial Therapist" },
+    author: {
+      "@type": "Person",
+      name: options.authorName ?? "Dan Lobel",
+      url: absoluteUrl("/about"),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "The Financial Therapist",
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl("/logo.svg"),
+      },
+    },
     datePublished: options.publishedTime,
     dateModified: options.modifiedTime ?? options.publishedTime,
-    mainEntityOfPage: absoluteUrl(options.slug),
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": absoluteUrl(options.slug),
+    },
     image: options.image ? absoluteUrl(options.image) : undefined,
   }
 }
@@ -277,7 +302,7 @@ export function buildPersonSchema(config: SiteConfig, options: PersonSchemaOptio
       name: config.brand?.name ?? "The Financial Therapist",
       url: SITE_URL,
     },
-    sameAs: options.sameAs ?? SOCIAL_PROFILES,
+    sameAs: options.sameAs ?? getSocialProfiles(config),
   }
 }
 
@@ -301,6 +326,24 @@ export function buildVideoSchema(options: VideoSchemaOptions) {
     thumbnailUrl: options.thumbnailUrl ? absoluteUrl(options.thumbnailUrl) : undefined,
     contentUrl: options.contentUrl ? absoluteUrl(options.contentUrl) : undefined,
     embedUrl: options.embedUrl ?? absoluteUrl(`/vlog/${options.slug}`),
+  }
+}
+
+type BreadcrumbItem = {
+  name: string
+  url: string
+}
+
+export function buildBreadcrumbSchema(items: BreadcrumbItem[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: absoluteUrl(item.url),
+    })),
   }
 }
 

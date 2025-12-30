@@ -54,7 +54,7 @@ export default async function ContemporaryIntegrativeCounsellingPage() {
               </p>
               <div className="flex flex-wrap gap-4 pt-4">
                 <Button asChild className="h-12 px-8 bg-[var(--accent)] text-white">
-                  <Link href="/bookings">Book a Session</Link>
+                  <Link href="/bookings">Book a consultation</Link>
                 </Button>
                 <Button asChild variant="outline" className="h-12 px-8">
                   <Link href="/about">Meet Dan</Link>

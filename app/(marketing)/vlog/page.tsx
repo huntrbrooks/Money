@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Script from "next/script"
 import { getAllVideosMeta } from "@/lib/mdx"
-import { buildPageMetadata } from "@/lib/seo"
+import { buildBreadcrumbSchema, buildPageMetadata } from "@/lib/seo"
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
@@ -49,6 +50,19 @@ export default async function VlogIndexPage() {
           </div>
         </div>
       </div>
+      <Script
+        id="breadcrumb-schema-vlog"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            buildBreadcrumbSchema([
+              { name: "Home", url: "/" },
+              { name: "Video Sessions", url: "/vlog" },
+            ])
+          ),
+        }}
+      />
     </div>
   )
 }

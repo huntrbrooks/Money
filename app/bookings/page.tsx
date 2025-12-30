@@ -2,12 +2,13 @@ import type { Metadata } from "next"
 import { Navigation, Footer } from "@/components/navigation"
 import { BookingOptions } from "@/components/booking-options"
 import { BookingScheduler } from "@/components/booking-scheduler"
+import { GoogleAdsConversion } from "@/components/google-ads-conversion"
 import { readSiteConfig } from "@/lib/config"
 import { buildPageMetadata } from "@/lib/seo"
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
-    title: "Book a Session | The Financial Therapist",
+    title: "Book a consultation | The Financial Therapist",
     description: "Choose your preferred consultation format and confirm a confidential session with Dan Lobel.",
     path: "/bookings",
     keywords: ["book counselling", "financial therapist appointment", "acuity scheduling"],
@@ -25,6 +26,7 @@ export default async function BookingsPage() {
     <div className="min-h-screen bg-muted">
       <Navigation />
       <main>
+        <GoogleAdsConversion />
         <section className="py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-8">
             <div className="mx-auto flex max-w-6xl flex-col gap-10">
@@ -41,8 +43,7 @@ export default async function BookingsPage() {
                 contactPhone={contactPhone || undefined}
               />
               <BookingScheduler
-                schedulerPoints={bookingCopy?.schedulerPoints}
-                helpText={bookingCopy?.schedulerHelpText}
+                bookingCopy={bookingCopy}
                 email={contactEmail || undefined}
                 phone={contactPhone || undefined}
               />

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { Navigation, Footer } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
 import { readSiteConfig } from "@/lib/config"
-import { buildFaqSchema, buildPageMetadata, buildServiceSchema } from "@/lib/seo"
+import { buildBreadcrumbSchema, buildFaqSchema, buildPageMetadata, buildServiceSchema } from "@/lib/seo"
 import Script from "next/script"
 import { ArrowRight } from "lucide-react"
 import { CONTENT_SECTION_PAGE_DEFAULTS, applyContentSectionDefaults } from "@/lib/content-section-defaults"
@@ -118,6 +118,10 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
     description: String(page?.seo?.metaDescription ?? page?.description ?? "").trim(),
     url: "/bookings",
   })
+  const breadcrumbJsonLd = buildBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: page?.title ?? section?.title ?? "Content", url: `/content-sections/${slug}` },
+  ])
 
   return (
     <div className="min-h-screen bg-muted">
@@ -139,7 +143,7 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
                 <div className="pt-4">
                   <Button asChild className="bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8">
                     <Link href="/#book" className="inline-flex items-center gap-2">
-                      Book a Session
+                      Book a consultation
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </Button>
@@ -219,7 +223,7 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
                 <div className="pt-8 border-t border-[var(--secondary)]">
                   <Button asChild className="bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8">
                     <Link href="/#book" className="inline-flex items-center gap-2">
-                      Book a Session
+                      Book a consultation
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </Button>
@@ -233,17 +237,25 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
       {page ? (
         <>
           <Script
+            id="content-section-breadcrumb"
+            type="application/ld+json"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+          />
+          <Script
             id="content-section-service"
             type="application/ld+json"
             strategy="afterInteractive"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
           />
-          <Script
-            id="content-section-faq"
-            type="application/ld+json"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-          />
+          {page.faqs && page.faqs.length > 0 ? (
+            <Script
+              id="content-section-faq"
+              type="application/ld+json"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+            />
+          ) : null}
         </>
       ) : null}
     </div>

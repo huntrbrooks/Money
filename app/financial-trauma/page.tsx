@@ -47,7 +47,7 @@ export default async function FinancialTraumaPage() {
                   href="/bookings"
                   aria-label="Book a counselling session"
                 >
-                  Book a Session
+                  Book a consultation
                 </Link>
                 <Link
                   className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--section-bg-1)] text-[var(--accent)] font-semibold border border-[var(--accent)] hover:bg-[var(--section-bg-2)]/60"

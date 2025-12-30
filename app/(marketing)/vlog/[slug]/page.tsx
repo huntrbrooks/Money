@@ -3,7 +3,7 @@ import Link from "next/link"
 import Script from "next/script"
 import { notFound } from "next/navigation"
 import { getAllVideosMeta, getVideoBySlug } from "@/lib/mdx"
-import { buildPageMetadata, buildVideoSchema } from "@/lib/seo"
+import { buildBreadcrumbSchema, buildPageMetadata, buildVideoSchema } from "@/lib/seo"
 import { absoluteUrl } from "@/lib/urls"
 import { SocialShare } from "@/components/social-share"
 
@@ -50,6 +50,11 @@ export default async function VlogPostPage({ params }: VlogPageProps) {
     uploadDate: video.frontmatter.date,
     embedUrl: video.frontmatter.videoUrl,
   })
+  const breadcrumbJsonLd = buildBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Video Sessions", url: "/vlog" },
+    { name: video.frontmatter.title, url: `/vlog/${video.frontmatter.slug}` },
+  ])
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -87,7 +92,7 @@ export default async function VlogPostPage({ params }: VlogPageProps) {
             href="/bookings"
             data-analytics-id="vlog-book-session"
           >
-            Book a Session
+            Book a consultation
           </Link>
           <Link
             className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--section-bg-1)] text-[var(--accent)] font-semibold border border-[var(--accent)] hover:bg-[var(--section-bg-2)]/60"
@@ -98,6 +103,12 @@ export default async function VlogPostPage({ params }: VlogPageProps) {
           </Link>
         </div>
       </article>
+      <Script
+        id={`breadcrumb-schema-${video.frontmatter.slug}`}
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <Script
         id={`video-schema-${video.frontmatter.slug}`}
         type="application/ld+json"

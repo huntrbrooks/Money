@@ -53,6 +53,13 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  alternates: {
+    canonical: SITE_URL,
+    languages: {
+      en: SITE_URL,
+      "en-AU": SITE_URL,
+    },
+  },
   icons: {
     icon: [
       { url: "/favicon_io/favicon.ico" },
@@ -103,6 +110,9 @@ export default async function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="theme-color" content={config.theme.background} />
+        <meta httpEquiv="content-language" content="en-AU" />
+        <meta name="geo.region" content="AU-VIC" />
+        <meta name="geo.placename" content="Melbourne" />
         <link rel="icon" href="/favicon_io/favicon.ico" sizes="any" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png" />

@@ -3,7 +3,7 @@ import Link from "next/link"
 import Script from "next/script"
 import { notFound } from "next/navigation"
 import { getAllPostsMeta, getPostBySlug } from "@/lib/mdx"
-import { buildArticleSchema, buildPageMetadata } from "@/lib/seo"
+import { buildArticleSchema, buildBreadcrumbSchema, buildPageMetadata } from "@/lib/seo"
 import { absoluteUrl } from "@/lib/urls"
 import { SocialShare } from "@/components/social-share"
 
@@ -11,12 +11,13 @@ type BlogPageProps = {
   params: { slug: string }
 }
 
-// Force static generation - don't generate pages on-demand for unknown slugs
-export const dynamicParams = false
-// Force static generation at build time
-export const dynamic = 'force-static'
+// Allow dynamic rendering for newly created posts (admin can create posts without redeploy)
+export const dynamicParams = true
+// Use dynamic rendering so new posts work immediately
+export const dynamic = 'force-dynamic'
 
 export async function generateStaticParams() {
+  // Pre-generate known posts at build time for performance
   const posts = await getAllPostsMeta()
   return posts.map((post) => ({ slug: post.slug }))
 }
@@ -54,7 +55,13 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
     description: post.frontmatter.description,
     slug: `/blog/${post.frontmatter.slug}`,
     publishedTime: post.frontmatter.date,
+    authorName: "Dan Lobel",
   })
+  const breadcrumbJsonLd = buildBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Blog", url: "/blog" },
+    { name: post.frontmatter.title, url: `/blog/${post.frontmatter.slug}` },
+  ])
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -77,7 +84,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
               aria-label="Book a counselling session"
               data-analytics-id="blog-book-session"
             >
-              Book a Session
+              Book a consultation
             </Link>
             <Link
               className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--section-bg-1)] text-[var(--accent)] font-semibold border border-[var(--accent)] hover:bg-[var(--section-bg-2)]/60"
@@ -96,6 +103,12 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
           {post.content}
         </div>
       </article>
+      <Script
+        id={`breadcrumb-schema-${post.frontmatter.slug}`}
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <Script
         id={`article-schema-${post.frontmatter.slug}`}
         type="application/ld+json"
