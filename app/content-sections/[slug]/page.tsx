@@ -12,6 +12,7 @@ export const dynamic = "force-dynamic"
 
 type ContentSectionPageProps = {
   params: { slug: string }
+  searchParams?: Record<string, string | string[] | undefined>
 }
 
 export async function generateMetadata({ params }: ContentSectionPageProps): Promise<Metadata> {
@@ -41,10 +42,48 @@ export async function generateMetadata({ params }: ContentSectionPageProps): Pro
   })
 }
 
-export default async function ContentSectionPage({ params }: ContentSectionPageProps) {
+function normalizeSlug(input: string): string {
+  return String(input ?? "").trim().toLowerCase()
+}
+
+export default async function ContentSectionPage({ params, searchParams }: ContentSectionPageProps) {
   const config = await readSiteConfig()
-  const page = (config.contentSectionPages ?? []).find((p) => p.slug === params.slug) ?? null
-  const section = config.contentSections?.find((s) => s.slug === params.slug) ?? null
+  const requested = normalizeSlug(params.slug)
+  const pages = Array.isArray(config.contentSectionPages) ? config.contentSectionPages : []
+  const sections = Array.isArray(config.contentSections) ? config.contentSections : []
+  const page = pages.find((p) => normalizeSlug(p.slug) === requested) ?? null
+  const section = sections.find((s) => normalizeSlug(s.slug) === requested) ?? null
+
+  const debug = String(searchParams?.debug ?? "") === "1"
+  if (debug) {
+    return (
+      <div className="min-h-screen bg-muted">
+        <Navigation />
+        <main className="container mx-auto px-4 py-10">
+          <h1 className="font-serif text-3xl text-[var(--foreground)] font-light">Content section debug</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            This view is only intended for diagnostics. Remove <code>?debug=1</code> to view the real page.
+          </p>
+          <div className="mt-6 rounded-lg border border-border/40 bg-background/70 p-4 text-sm">
+            <pre className="whitespace-pre-wrap break-words">
+              {JSON.stringify(
+                {
+                  requested: params.slug,
+                  normalizedRequested: requested,
+                  matched: { page: Boolean(page), section: Boolean(section) },
+                  contentSectionPages: { count: pages.length, slugs: pages.map((p) => p.slug) },
+                  contentSections: { count: sections.length, slugs: sections.map((s) => s.slug) },
+                },
+                null,
+                2,
+              )}
+            </pre>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
+  }
   if (!page && !section) notFound()
 
   const faqJsonLd = buildFaqSchema(page?.faqs ?? [])
