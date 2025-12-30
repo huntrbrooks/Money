@@ -797,10 +797,23 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
 
       const onFocus = () => {
         // When the file dialog closes, the window regains focus.
-        // If `change` didn't fire, resolve with whatever we have (often null).
-        setTimeout(() => {
-          settle(input.files?.[0] ?? null)
-        }, 0)
+        // Some browsers fire `focus` before the input `change` event, so `input.files`
+        // can still be empty here even when a file was selected. Poll briefly before
+        // treating this as a cancel.
+        const started = Date.now()
+        const check = () => {
+          const file = input.files?.[0] ?? null
+          if (file) {
+            settle(file)
+            return
+          }
+          if (Date.now() - started > 1500) {
+            settle(null)
+            return
+          }
+          setTimeout(check, 50)
+        }
+        setTimeout(check, 0)
       }
 
       input.addEventListener(
