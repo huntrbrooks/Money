@@ -225,6 +225,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   const [formPagesEditor, setFormPagesEditor] = useState<{ enquiry: string; intake: string; newsletter: string }>({ enquiry: "", intake: "", newsletter: "" })
   const [clientCare, setClientCare] = useState<SiteConfig["clientCare"]>({ downloads: [] })
   const [interactiveNewsletterHtml, setInteractiveNewsletterHtml] = useState<string>("")
+  const [newsletterHtmls, setNewsletterHtmls] = useState<Record<string, { html: string; loading: boolean; saving: boolean }>>({})
   const [contentSections, setContentSections] = useState<SiteConfig["contentSections"]>([])
   const [contentSectionPages, setContentSectionPages] = useState<SiteConfig["contentSectionPages"]>([])
   const pages = Array.isArray(contentSectionPages) && contentSectionPages.length ? contentSectionPages : []
@@ -989,6 +990,54 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     } catch (e: unknown) {
       toast({ title: "Save failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
       setPostEditor((prev) => ({ ...prev, saving: false }))
+    }
+  }
+
+  async function loadNewsletterHtml(slug: string) {
+    if (newsletterHtmls[slug]?.html || newsletterHtmls[slug]?.loading) return // Already loaded or loading
+    setNewsletterHtmls((prev) => ({ ...prev, [slug]: { html: prev[slug]?.html ?? "", loading: true, saving: false } }))
+    try {
+      const res = await fetch(`/api/newsletters/${encodeURIComponent(slug)}`, { cache: "no-store" })
+      if (!res.ok) {
+        if (res.status === 404) {
+          setNewsletterHtmls((prev) => ({ ...prev, [slug]: { html: "", loading: false, saving: false } }))
+          toast({ title: "Not found", description: `Newsletter HTML file for ${slug} not found. You can create it by pasting HTML and saving.` })
+          return
+        }
+        const err = (await res.json().catch(() => ({}))) as { error?: string }
+        throw new Error(err.error ?? "Unable to load newsletter HTML")
+      }
+      const data = (await res.json().catch(() => null)) as { html?: string } | null
+      setNewsletterHtmls((prev) => ({ ...prev, [slug]: { html: data?.html ?? "", loading: false, saving: false } }))
+    } catch (e: unknown) {
+      toast({ title: "Load failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+      setNewsletterHtmls((prev) => ({ ...prev, [slug]: { html: prev[slug]?.html ?? "", loading: false, saving: false } }))
+    }
+  }
+
+  async function saveNewsletterHtml(slug: string) {
+    const html = newsletterHtmls[slug]?.html ?? ""
+    setNewsletterHtmls((prev) => ({ ...prev, [slug]: { ...prev[slug], saving: true } }))
+    try {
+      const res = await fetch(`/api/newsletters/${encodeURIComponent(slug)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ html }),
+      })
+      if (res.status === 401) {
+        toast({ title: "Session expired", description: "Please sign in again.", variant: "destructive" })
+        redirectToLogin("/admin")
+        return
+      }
+      if (!res.ok) {
+        const err = (await res.json().catch(() => ({}))) as { error?: string }
+        throw new Error(err.error ?? "Save failed")
+      }
+      toast({ title: "Saved", description: "Newsletter HTML updated." })
+      setNewsletterHtmls((prev) => ({ ...prev, [slug]: { ...prev[slug], saving: false } }))
+    } catch (e: unknown) {
+      toast({ title: "Save failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+      setNewsletterHtmls((prev) => ({ ...prev, [slug]: { ...prev[slug], saving: false } }))
     }
   }
  
@@ -3869,6 +3918,9 @@ function CodeAgentBox() {
                         <Link href={`/blog/${post.slug}`} target="_blank" className="text-sm font-semibold text-[var(--accent)] underline">
                           View
                         </Link>
+                        <Link href={`/newsletters/${post.slug}.html`} target="_blank" className="text-sm font-semibold text-[var(--accent)] underline">
+                          Newsletter
+                        </Link>
                       </div>
                     </div>
                   ))}
@@ -3944,43 +3996,74 @@ function CodeAgentBox() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Interactive Newsletter</CardTitle>
-                <CardDescription>Edit the interactive newsletter HTML for why-money-triggers-anxiety.html</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label>HTML Content</Label>
-                    <div className="flex gap-3">
-                      <Link
-                        href="/why-money-triggers-anxiety.html"
-                        target="_blank"
-                        className="text-sm font-semibold text-[var(--accent)] underline flex items-center gap-1"
+            {postsMeta
+              .filter((post) => {
+                // Check if post has interactive newsletter format by checking MDX
+                return post.slug === "why-money-triggers-anxiety" || 
+                       post.slug === "the-psychology-behind-spending-habits" || 
+                       post.slug === "financial-abuse-and-emotional-healing"
+              })
+              .map((post) => {
+                const newsletterSlug = post.slug
+                const newsletterData = newsletterHtmls[newsletterSlug] ?? { html: "", loading: false, saving: false }
+                return (
+                  <Card key={newsletterSlug}>
+                    <CardHeader>
+                      <CardTitle>Newsletter: {post.title}</CardTitle>
+                      <CardDescription>Edit the interactive newsletter HTML for {newsletterSlug}.html</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label>HTML Content</Label>
+                          <div className="flex gap-3">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => loadNewsletterHtml(newsletterSlug)}
+                              disabled={newsletterData.loading}
+                            >
+                              {newsletterData.loading ? "Loading..." : "Load HTML"}
+                            </Button>
+                            <Link
+                              href={`/newsletters/${newsletterSlug}.html`}
+                              target="_blank"
+                              className="text-sm font-semibold text-[var(--accent)] underline flex items-center gap-1"
+                            >
+                              <Eye className="w-4 h-4" />
+                              Preview
+                            </Link>
+                          </div>
+                        </div>
+                        <Textarea
+                          rows={20}
+                          value={newsletterData.html}
+                          onChange={(e) =>
+                            setNewsletterHtmls((prev) => ({
+                              ...prev,
+                              [newsletterSlug]: { html: e.target.value, loading: prev[newsletterSlug]?.loading ?? false, saving: prev[newsletterSlug]?.saving ?? false },
+                            }))
+                          }
+                          placeholder="Click 'Load HTML' to load the current HTML, or paste new HTML content here..."
+                          className="font-mono text-xs"
+                          disabled={newsletterData.loading}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          This HTML will be served at <code className="px-1 py-0.5 bg-muted rounded">/newsletters/{newsletterSlug}.html</code>
+                        </p>
+                      </div>
+                      <Button
+                        onClick={() => saveNewsletterHtml(newsletterSlug)}
+                        disabled={newsletterData.saving || newsletterData.loading}
                       >
-                        <Eye className="w-4 h-4" />
-                        Preview
-                      </Link>
-                    </div>
-                  </div>
-                  <Textarea
-                    rows={20}
-                    value={interactiveNewsletterHtml}
-                    onChange={(e) => setInteractiveNewsletterHtml(e.target.value)}
-                    placeholder="Paste the full HTML content here..."
-                    className="font-mono text-xs"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    This HTML will be served at <code className="px-1 py-0.5 bg-muted rounded">/why-money-triggers-anxiety.html</code>
-                  </p>
-                </div>
-                <Button onClick={() => saveAll("Interactive Newsletter")} disabled={saving !== null}>
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Newsletter HTML
-                </Button>
-              </CardContent>
-            </Card>
+                        <Save className="w-4 h-4 mr-2" />
+                        {newsletterData.saving ? "Saving..." : "Save Newsletter HTML"}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )
+              })}
           </TabsContent>
 
           <Dialog
