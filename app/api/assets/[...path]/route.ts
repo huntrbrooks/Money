@@ -10,17 +10,24 @@ type Params = {
 
 export async function GET(_req: Request, { params }: Params) {
   const objectPath = (params.path ?? []).join("/")
-  const asset = await getAsset(objectPath)
-  if (!asset) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 })
+  try {
+    const asset = await getAsset(objectPath)
+    if (!asset) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 })
+    }
+    return new NextResponse(asset.bytes, {
+      status: 200,
+      headers: {
+        "Content-Type": asset.contentType,
+        "Cache-Control": "public, max-age=300, s-maxage=600, stale-while-revalidate=86400",
+      },
+    })
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Unable to load asset"
+    // Helpful for Vercel logs while still being safe for public error responses.
+    console.error("Asset proxy failed", { objectPath, message })
+    return NextResponse.json({ error: message, path: objectPath }, { status: 500 })
   }
-  return new NextResponse(asset.bytes, {
-    status: 200,
-    headers: {
-      "Content-Type": asset.contentType,
-      "Cache-Control": "public, max-age=300, s-maxage=600, stale-while-revalidate=86400",
-    },
-  })
 }
 
 
