@@ -4,7 +4,8 @@ import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { EmailLink, normalizeEmailAddress } from "@/components/email-link"
+import { EmailLink } from "@/components/email-link"
+import { normalizeEmailAddress } from "@/lib/email"
 
 type ConsentFormState = {
   firstName: string

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { EmailLink, normalizeEmailAddress } from "@/components/email-link"
+import { EmailLink } from "@/components/email-link"
+import { normalizeEmailAddress } from "@/lib/email"
 import type { BookingCopy, ConsultationOption } from "@/lib/config"
 import {
   Building,

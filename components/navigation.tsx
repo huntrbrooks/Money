@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Phone, Mail, Facebook, Instagram, Linkedin } from "lucide-react"
-import { EmailLink, normalizeEmailAddress } from "@/components/email-link"
+import { EmailLink } from "@/components/email-link"
+import { normalizeEmailAddress } from "@/lib/email"
 
 type NavLink = { label: string; href: string }
 type Config = {

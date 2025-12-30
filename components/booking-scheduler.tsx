@@ -1,6 +1,7 @@
 import Script from "next/script"
 import { Button } from "@/components/ui/button"
-import { EmailLink, normalizeEmailAddress } from "@/components/email-link"
+import { EmailLink } from "@/components/email-link"
+import { normalizeEmailAddress } from "@/lib/email"
 
 const SCHEDULER_URL = "https://app.acuityscheduling.com/schedule.php?owner=32223024"
 const SCHEDULER_EMBED_URL = `${SCHEDULER_URL}&ref=embedded_csp`
