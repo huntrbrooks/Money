@@ -224,6 +224,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   const [formPages, setFormPages] = useState<SiteConfig["formPages"]>({})
   const [formPagesEditor, setFormPagesEditor] = useState<{ enquiry: string; intake: string; newsletter: string }>({ enquiry: "", intake: "", newsletter: "" })
   const [clientCare, setClientCare] = useState<SiteConfig["clientCare"]>({ downloads: [] })
+  const [interactiveNewsletterHtml, setInteractiveNewsletterHtml] = useState<string>("")
   const [contentSections, setContentSections] = useState<SiteConfig["contentSections"]>([])
   const [contentSectionPages, setContentSectionPages] = useState<SiteConfig["contentSectionPages"]>([])
   const pages = Array.isArray(contentSectionPages) && contentSectionPages.length ? contentSectionPages : []
@@ -312,7 +313,8 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     loading: boolean
     saving: boolean
     source: string | null
-  }>({ open: false, slug: null, title: null, mdx: "", loading: false, saving: false, source: null })
+    pdfUrl: string | null
+  }>({ open: false, slug: null, title: null, mdx: "", loading: false, saving: false, source: null, pdfUrl: null })
 
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({})
 
@@ -344,6 +346,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     contentSectionPages,
     footer,
     bookingCopy,
+    interactiveNewsletterHtml: interactiveNewsletterHtml || undefined,
   })
 
   const currentSnapshot = stableStringify(buildSaveBody())
@@ -487,6 +490,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
         })
         setContentSections(Array.isArray(nextContentSections) ? nextContentSections : [])
        setContentSectionPages(Array.isArray(nextContentSectionPages) ? nextContentSectionPages : [])
+        setInteractiveNewsletterHtml(data.interactiveNewsletterHtml ?? "")
         setFooter({
           copyrightText: nextFooter.copyrightText ?? "",
           companyName: nextFooter.companyName ?? "",
@@ -590,6 +594,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
            schedulerPoints: Array.isArray(nextBookingCopy.schedulerPoints) ? nextBookingCopy.schedulerPoints : [],
            schedulerHelpText: nextBookingCopy.schedulerHelpText ?? "",
          },
+         interactiveNewsletterHtml: data.interactiveNewsletterHtml ?? undefined,
        }
        setLoadedConfig(baseline)
        setLoadedSnapshot(stableStringify({
@@ -614,6 +619,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          contentSectionPages: baseline.contentSectionPages,
          footer: baseline.footer,
          bookingCopy: baseline.bookingCopy,
+         interactiveNewsletterHtml: baseline.interactiveNewsletterHtml,
        }))
        setLastSavedAt(baseline.meta?.updatedAt ?? null)
        // Load version history (best-effort)
@@ -733,6 +739,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
       aftercareChecklist: loadedConfig.clientCare?.aftercareChecklist ?? [],
     })
     setContentSectionPages(loadedConfig.contentSectionPages ?? [])
+    setInteractiveNewsletterHtml(loadedConfig.interactiveNewsletterHtml ?? "")
     setFinancialAbusePage(loadedConfig.financialAbusePage ?? {
       title: "",
       description: "",
@@ -909,8 +916,38 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
       .replace(/^-+|-+$/g, "")
   }
 
+  function extractPdfUrlFromMdx(mdx: string): string | null {
+    const frontmatterMatch = mdx.match(/^---\n([\s\S]*?)\n---/)
+    if (!frontmatterMatch) return null
+    const frontmatter = frontmatterMatch[1]
+    const pdfUrlMatch = frontmatter.match(/^pdfUrl:\s*["']?([^"'\n]+)["']?/m)
+    return pdfUrlMatch ? pdfUrlMatch[1] : null
+  }
+
+  function updatePdfUrlInMdx(mdx: string, pdfUrl: string | null): string {
+    const frontmatterMatch = mdx.match(/^---\n([\s\S]*?)\n---/)
+    if (!frontmatterMatch) return mdx
+    let frontmatter = frontmatterMatch[1]
+    const rest = mdx.slice(frontmatterMatch[0].length)
+    
+    if (pdfUrl) {
+      // Update or add pdfUrl
+      if (frontmatter.match(/^pdfUrl:/m)) {
+        frontmatter = frontmatter.replace(/^pdfUrl:\s*["']?[^"'\n]*["']?/m, `pdfUrl: "${pdfUrl}"`)
+      } else {
+        // Add pdfUrl before the closing ---
+        frontmatter = frontmatter.trim() + `\npdfUrl: "${pdfUrl}"`
+      }
+    } else {
+      // Remove pdfUrl if null
+      frontmatter = frontmatter.replace(/^pdfUrl:\s*["']?[^"'\n]*["']?\n?/m, "")
+    }
+    
+    return `---\n${frontmatter}\n---${rest}`
+  }
+
   async function openPostEditor(post: PostMeta) {
-    setPostEditor({ open: true, slug: post.slug, title: post.title, mdx: "", loading: true, saving: false, source: null })
+    setPostEditor({ open: true, slug: post.slug, title: post.title, mdx: "", loading: true, saving: false, source: null, pdfUrl: post.pdfUrl ?? null })
     try {
       const res = await fetch(`/api/posts/${encodeURIComponent(post.slug)}`, { cache: "no-store" })
       if (!res.ok) {
@@ -918,7 +955,9 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
         throw new Error(err.error ?? "Unable to load article content")
       }
       const data = (await res.json().catch(() => null)) as { mdx?: string; source?: string } | null
-      setPostEditor((prev) => ({ ...prev, mdx: data?.mdx ?? "", source: data?.source ?? null, loading: false }))
+      const mdx = data?.mdx ?? ""
+      const pdfUrl = extractPdfUrlFromMdx(mdx) ?? post.pdfUrl ?? null
+      setPostEditor((prev) => ({ ...prev, mdx, source: data?.source ?? null, pdfUrl, loading: false }))
     } catch (e: unknown) {
       toast({ title: "Load failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
       setPostEditor((prev) => ({ ...prev, loading: false }))
@@ -3904,12 +3943,50 @@ function CodeAgentBox() {
                 </div>
               </CardContent>
             </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Interactive Newsletter</CardTitle>
+                <CardDescription>Edit the interactive newsletter HTML for why-money-triggers-anxiety.html</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>HTML Content</Label>
+                    <div className="flex gap-3">
+                      <Link
+                        href="/why-money-triggers-anxiety.html"
+                        target="_blank"
+                        className="text-sm font-semibold text-[var(--accent)] underline flex items-center gap-1"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Preview
+                      </Link>
+                    </div>
+                  </div>
+                  <Textarea
+                    rows={20}
+                    value={interactiveNewsletterHtml}
+                    onChange={(e) => setInteractiveNewsletterHtml(e.target.value)}
+                    placeholder="Paste the full HTML content here..."
+                    className="font-mono text-xs"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    This HTML will be served at <code className="px-1 py-0.5 bg-muted rounded">/why-money-triggers-anxiety.html</code>
+                  </p>
+                </div>
+                <Button onClick={() => saveAll("Interactive Newsletter")} disabled={saving !== null}>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Newsletter HTML
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <Dialog
             open={postEditor.open}
             onOpenChange={(open) => {
-              if (!open) setPostEditor({ open: false, slug: null, title: null, mdx: "", loading: false, saving: false, source: null })
+              if (!open) setPostEditor({ open: false, slug: null, title: null, mdx: "", loading: false, saving: false, source: null, pdfUrl: null })
             }}
           >
             <DialogContent className="max-w-3xl">
@@ -3926,14 +4003,63 @@ function CodeAgentBox() {
                   )}
                 </DialogDescription>
               </DialogHeader>
-              <div className="space-y-2">
-                <Label>MDX</Label>
-                <Textarea
-                  rows={18}
-                  value={postEditor.mdx}
-                  onChange={(e) => setPostEditor((prev) => ({ ...prev, mdx: e.target.value }))}
-                  disabled={postEditor.loading || postEditor.saving}
-                />
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>PDF Document</Label>
+                    <div className="flex gap-3">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => {
+                          try {
+                            const url = await uploadAsset({ path: `docs/articles/${postEditor.slug}{{ext}}`, accept: ".pdf" })
+                            if (!url) return
+                            const updatedMdx = updatePdfUrlInMdx(postEditor.mdx, url)
+                            setPostEditor((prev) => ({ ...prev, mdx: updatedMdx, pdfUrl: url }))
+                            toast({ title: "Uploaded", description: "PDF document uploaded successfully." })
+                          } catch (e: unknown) {
+                            toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
+                          }
+                        }}
+                        disabled={postEditor.loading || postEditor.saving || !postEditor.slug}
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        Upload PDF
+                      </Button>
+                      {postEditor.pdfUrl ? (
+                        <a
+                          className="text-sm font-semibold text-[var(--accent)] underline flex items-center gap-1"
+                          href={postEditor.pdfUrl}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                        >
+                          <FileText className="w-4 h-4" />
+                          Download PDF
+                        </a>
+                      ) : null}
+                    </div>
+                  </div>
+                  {postEditor.pdfUrl && (
+                    <p className="text-xs text-muted-foreground">
+                      PDF: <a href={postEditor.pdfUrl} target="_blank" rel="noreferrer noopener" className="underline">{postEditor.pdfUrl}</a>
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label>MDX</Label>
+                  <Textarea
+                    rows={18}
+                    value={postEditor.mdx}
+                    onChange={(e) => {
+                      const newMdx = e.target.value
+                      const pdfUrl = extractPdfUrlFromMdx(newMdx)
+                      setPostEditor((prev) => ({ ...prev, mdx: newMdx, pdfUrl: pdfUrl ?? prev.pdfUrl }))
+                    }}
+                    disabled={postEditor.loading || postEditor.saving}
+                  />
+                </div>
               </div>
               <DialogFooter className="sm:justify-between gap-3">
                 <div className="text-xs text-muted-foreground">

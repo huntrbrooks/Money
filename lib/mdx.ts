@@ -19,6 +19,7 @@ export type PostMeta = {
   slug: string
   tags?: string[]
   coverImage?: string
+  pdfUrl?: string
 }
 
 export type VideoMeta = {
@@ -64,6 +65,7 @@ export async function getAllPostsMeta(): Promise<PostMeta[]> {
       slug,
       tags: data.tags as string[] | undefined,
       coverImage: data.coverImage as string | undefined,
+      pdfUrl: data.pdfUrl as string | undefined,
     })
   }
 
@@ -82,6 +84,7 @@ export async function getAllPostsMeta(): Promise<PostMeta[]> {
         slug,
         tags: data.tags as string[] | undefined,
         coverImage: data.coverImage as string | undefined,
+        pdfUrl: data.pdfUrl as string | undefined,
       })
     }
   } catch {

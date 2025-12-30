@@ -474,6 +474,10 @@ export type SiteConfig = {
       slug: string
     }
   >
+  /**
+   * Interactive newsletter HTML content for why-money-triggers-anxiety.html
+   */
+  interactiveNewsletterHtml?: string
 }
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), "data", "site.json")
@@ -1364,6 +1368,7 @@ export const defaultConfig: SiteConfig = {
     showNewsletterSection: false,
     showLeadMagnet: false,
   },
+  interactiveNewsletterHtml: undefined,
 }
 
 function slugify(input: string): string {
