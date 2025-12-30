@@ -1713,7 +1713,7 @@ function CodeAgentBox() {
                    <FileText className="w-5 h-5" />
                    Pages
                  </CardTitle>
-                 <CardDescription>Edit the key standalone pages (grouped for easier navigation)</CardDescription>
+                <CardDescription>Edit the 9 homepage button pages (linked from the homepage “Important Links” section).</CardDescription>
                </CardHeader>
                <CardContent className="space-y-6">
                  <div className="grid gap-2 max-w-2xl">
@@ -1724,22 +1724,11 @@ function CodeAgentBox() {
                      value={pagesEditorKey}
                      onChange={(e) => setPagesEditorKey(e.target.value)}
                    >
-                     <optgroup label="Homepage button pages (editable)">
-                       {pages.map((p) => (
-                         <option key={`content-section:${p.slug}`} value={`content-section:${p.slug}`}>
-                           {p.title || p.slug} — /content-sections/{p.slug}
-                         </option>
-                       ))}
-                     </optgroup>
-                     <optgroup label="Standalone pages">
-                       <option value="standalone:financial-abuse">Financial Abuse — /financial-abuse</option>
-                       <option value="standalone:monetary-psychotherapy">Monetary Psychotherapy — /monetary-psychotherapy</option>
-                       <option value="standalone:financial-abuse-therapy">Financial Abuse Therapy — /financial-abuse-therapy</option>
-                       <option value="standalone:family-financial-assistance-inheritance">
-                         Family Financial Assistance — /family-financial-assistance-inheritance
-                       </option>
-                       <option value="standalone:financial-trauma">Financial Trauma — /financial-trauma</option>
-                     </optgroup>
+                    {pages.slice(0, 9).map((p) => (
+                      <option key={`content-section:${p.slug}`} value={`content-section:${p.slug}`}>
+                        {p.title || p.slug} — /content-sections/{p.slug}
+                      </option>
+                    ))}
                    </select>
                    <p className="text-xs text-muted-foreground">Only one editor is shown at a time.</p>
                  </div>
@@ -1747,22 +1736,7 @@ function CodeAgentBox() {
                  {pagesEditorKey.startsWith("content-section:") ? (
                   pages.length ? (
                     <Tabs value={pagesEditorKey.replace("content-section:", "")} className="space-y-6">
-                   <TabsList className="flex w-full flex-wrap gap-2">
-                        {pages.map((p) => (
-                          <TabsTrigger
-                            key={p.slug}
-                            value={p.slug}
-                            className="flex items-center gap-2"
-                            onClick={() => setPagesEditorKey(`content-section:${p.slug}`)}
-                          >
-                       <FileText className="w-4 h-4" />
-                            <span>{p.title || p.slug}</span>
-                            <span className="text-xs text-muted-foreground hidden md:inline">{`/content-sections/${p.slug}`}</span>
-                     </TabsTrigger>
-                        ))}
-                   </TabsList>
-
-                      {pages.map((p, idx) => (
+                      {pages.slice(0, 9).map((p, idx) => (
                         <TabsContent key={`page-${p.slug}`} value={p.slug} className="space-y-6">
                           <Card>
                             <CardHeader>

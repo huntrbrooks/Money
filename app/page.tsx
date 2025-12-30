@@ -87,11 +87,13 @@ export default async function HomePage() {
   const showLeadMagnet = config.experiments?.showLeadMagnet ?? sections.showLeadMagnet ?? false
 
   const otherAreas = homepageContent.otherAreas ?? []
-  // `readSiteConfig()` normalizes `contentSections` to a fixed list (9) so the homepage buttons are always present.
-  const contentSections = (config.contentSections ?? []).slice(0, 9)
-  // Convert content sections to nav links for display.
-  // IMPORTANT: homepage buttons should always go to a BOH-editable page (not a PDF, not hardcoded copy).
-  const allContentSectionLinks = contentSections.map((section) => ({
+  // Homepage “Important Links” buttons should match the Admin-managed pages.
+  // Prefer `contentSectionPages` (the editable page configs) and fall back to legacy `contentSections`.
+  const contentSectionNavSource =
+    Array.isArray(config.contentSectionPages) && config.contentSectionPages.length
+      ? config.contentSectionPages
+      : config.contentSections ?? []
+  const allContentSectionLinks = contentSectionNavSource.slice(0, 9).map((section) => ({
     label: section.title,
     href: `/content-sections/${section.slug}`,
   }))
