@@ -9,6 +9,7 @@ import Script from "next/script"
 import { ArrowRight } from "lucide-react"
 
 export const dynamic = "force-dynamic"
+export const runtime = "nodejs"
 
 type ContentSectionPageProps = {
   params: { slug: string }
