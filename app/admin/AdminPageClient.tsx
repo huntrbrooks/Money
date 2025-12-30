@@ -345,7 +345,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
       setPagesEditorKey(`content-section:${defaultSlug}`)
       return
     }
-    setPagesEditorKey("standalone:financial-abuse")
+    setPagesEditorKey(`content-section:${defaultSlug}`)
   }, [pagesEditorKey, pages.length, defaultSlug])
  
    useEffect(() => {
@@ -557,7 +557,8 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
            prepChecklist: Array.isArray(nextClientCare.prepChecklist) ? nextClientCare.prepChecklist : [],
            aftercareChecklist: Array.isArray(nextClientCare.aftercareChecklist) ? nextClientCare.aftercareChecklist : [],
          },
-         contentSections: Array.isArray(nextContentSections) ? nextContentSections : [],
+        contentSections: Array.isArray(nextContentSections) ? nextContentSections : [],
+        contentSectionPages: Array.isArray(nextContentSectionPages) ? nextContentSectionPages : [],
          footer: {
            copyrightText: nextFooter.copyrightText ?? "",
            companyName: nextFooter.companyName ?? "",
@@ -592,6 +593,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          formPages: baseline.formPages,
          clientCare: baseline.clientCare,
          contentSections: baseline.contentSections,
+         contentSectionPages: baseline.contentSectionPages,
          footer: baseline.footer,
          bookingCopy: baseline.bookingCopy,
        }))

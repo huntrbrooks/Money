@@ -1452,6 +1452,170 @@ function normalizeContentSectionsFixedLength(
   return out
 }
 
+type ContentSectionPageConfig = NonNullable<SiteConfig["contentSectionPages"]>[number]
+
+function normalizeContentSectionPagesFixedLength(
+  stored: SiteConfig["contentSectionPages"] | undefined,
+  defaults: SiteConfig["contentSectionPages"] | undefined,
+): SiteConfig["contentSectionPages"] {
+  const storedArr = Array.isArray(stored) ? stored : []
+  const defaultsArr = Array.isArray(defaults) ? defaults : []
+
+  // If we have no defaults to anchor to, just sanitize + return the stored value (or empty).
+  if (defaultsArr.length === 0) {
+    return storedArr
+      .map((p) => ({
+        slug: String((p as ContentSectionPageConfig | null | undefined)?.slug ?? "").trim(),
+        eyebrow: String((p as ContentSectionPageConfig | null | undefined)?.eyebrow ?? ""),
+        title: String((p as ContentSectionPageConfig | null | undefined)?.title ?? "").trim(),
+        description: String((p as ContentSectionPageConfig | null | undefined)?.description ?? ""),
+        therapyApproach: Array.isArray((p as ContentSectionPageConfig | null | undefined)?.therapyApproach)
+          ? (p as ContentSectionPageConfig).therapyApproach!.map((x) => String(x))
+          : [],
+        sessionFormats: Array.isArray((p as ContentSectionPageConfig | null | undefined)?.sessionFormats)
+          ? (p as ContentSectionPageConfig).sessionFormats!.map((x) => String(x))
+          : [],
+        nextStepsLinks: Array.isArray((p as ContentSectionPageConfig | null | undefined)?.nextStepsLinks)
+          ? (p as ContentSectionPageConfig).nextStepsLinks!
+              .filter(Boolean)
+              .map((l) => ({ label: String((l as NavLink | null | undefined)?.label ?? ""), href: String((l as NavLink | null | undefined)?.href ?? "") }))
+              .filter((l) => l.label || l.href)
+          : [],
+        faqs: Array.isArray((p as ContentSectionPageConfig | null | undefined)?.faqs)
+          ? (p as ContentSectionPageConfig).faqs!
+              .filter(Boolean)
+              .map((f) => ({
+                question: String((f as FaqEntry | null | undefined)?.question ?? ""),
+                answer: String((f as FaqEntry | null | undefined)?.answer ?? ""),
+              }))
+              .filter((f) => f.question || f.answer)
+          : [],
+        seo: {
+          metaTitle: String((p as ContentSectionPageConfig | null | undefined)?.seo?.metaTitle ?? ""),
+          metaDescription: String((p as ContentSectionPageConfig | null | undefined)?.seo?.metaDescription ?? ""),
+        },
+      }))
+      .filter(
+        (p) =>
+          p.slug ||
+          p.title ||
+          p.description ||
+          p.eyebrow ||
+          p.therapyApproach.length ||
+          p.sessionFormats.length ||
+          p.nextStepsLinks.length ||
+          p.faqs.length ||
+          p.seo?.metaTitle ||
+          p.seo?.metaDescription,
+      )
+  }
+
+  /**
+   * IMPORTANT:
+   * `contentSectionPages` should behave like a fixed list (9 homepage buttons / BOH-editable pages).
+   * If the stored config ever drops an item, we must restore missing defaults so the homepage never
+   * loses a button (e.g. "About Dan").
+   */
+  const safeStored: ContentSectionPageConfig[] = storedArr
+    .map((p) => {
+      const page = (p as ContentSectionPageConfig | null | undefined) ?? ({} as ContentSectionPageConfig)
+      return {
+        slug: String(page.slug ?? "").trim(),
+        eyebrow: String(page.eyebrow ?? ""),
+        title: String(page.title ?? "").trim(),
+        description: String(page.description ?? ""),
+        therapyApproach: Array.isArray(page.therapyApproach) ? page.therapyApproach.map((x) => String(x)) : [],
+        sessionFormats: Array.isArray(page.sessionFormats) ? page.sessionFormats.map((x) => String(x)) : [],
+        nextStepsLinks: Array.isArray(page.nextStepsLinks)
+          ? page.nextStepsLinks
+              .filter(Boolean)
+              .map((l) => ({ label: String((l as NavLink | null | undefined)?.label ?? ""), href: String((l as NavLink | null | undefined)?.href ?? "") }))
+              .filter((l) => l.label || l.href)
+          : [],
+        faqs: Array.isArray(page.faqs)
+          ? page.faqs
+              .filter(Boolean)
+              .map((f) => ({
+                question: String((f as FaqEntry | null | undefined)?.question ?? ""),
+                answer: String((f as FaqEntry | null | undefined)?.answer ?? ""),
+              }))
+              .filter((f) => f.question || f.answer)
+          : [],
+        seo: {
+          metaTitle: String(page.seo?.metaTitle ?? ""),
+          metaDescription: String(page.seo?.metaDescription ?? ""),
+        },
+      }
+    })
+    .filter(
+      (p) =>
+        p.slug ||
+        p.title ||
+        p.description ||
+        p.eyebrow ||
+        p.therapyApproach.length ||
+        p.sessionFormats.length ||
+        p.nextStepsLinks.length ||
+        p.faqs.length ||
+        p.seo?.metaTitle ||
+        p.seo?.metaDescription,
+    )
+
+  const sameLength = safeStored.length === defaultsArr.length
+
+  const bySlug = new Map<string, ContentSectionPageConfig>()
+  const byTitle = new Map<string, ContentSectionPageConfig>()
+  if (!sameLength) {
+    for (const p of safeStored) {
+      if (p.slug) bySlug.set(normalizeKey(p.slug), p)
+      if (p.title) byTitle.set(normalizeKey(p.title), p)
+    }
+  }
+
+  const out: ContentSectionPageConfig[] = []
+  const usedSlugs = new Set<string>()
+
+  for (let i = 0; i < defaultsArr.length; i++) {
+    const def = (defaultsArr[i] ?? { slug: "", title: "", description: "" }) as ContentSectionPageConfig
+
+    const raw: ContentSectionPageConfig | undefined = sameLength
+      ? safeStored[i]
+      : bySlug.get(normalizeKey(def.slug)) ??
+        byTitle.get(normalizeKey(def.title)) ??
+        // If a stored item has a blank slug but a slugified title that matches the default slug, accept it.
+        (def.slug ? safeStored.find((p) => !p.slug && normalizeKey(slugify(p.title)) === normalizeKey(def.slug)) : undefined)
+
+    const merged: ContentSectionPageConfig = {
+      ...def,
+      ...raw,
+      // Slugs are the routing key; keep defaults stable.
+      slug: String(def.slug || raw?.slug || "").trim() || slugify(raw?.title ?? def.title ?? `page-${i + 1}`) || `page-${i + 1}`,
+      title: String(raw?.title ?? def.title ?? "").trim(),
+      description: String(raw?.description ?? def.description ?? ""),
+      eyebrow: String(raw?.eyebrow ?? def.eyebrow ?? ""),
+      therapyApproach: Array.isArray(raw?.therapyApproach) ? raw!.therapyApproach : Array.isArray(def.therapyApproach) ? def.therapyApproach : [],
+      sessionFormats: Array.isArray(raw?.sessionFormats) ? raw!.sessionFormats : Array.isArray(def.sessionFormats) ? def.sessionFormats : [],
+      nextStepsLinks: Array.isArray(raw?.nextStepsLinks) ? raw!.nextStepsLinks : Array.isArray(def.nextStepsLinks) ? def.nextStepsLinks : [],
+      faqs: Array.isArray(raw?.faqs) ? raw!.faqs : Array.isArray(def.faqs) ? def.faqs : [],
+      seo: { ...(def.seo ?? {}), ...(raw?.seo ?? {}) },
+    }
+
+    // Ensure unique slugs (avoid broken lookups/links).
+    let candidate = merged.slug
+    let n = 2
+    while (usedSlugs.has(candidate)) {
+      candidate = `${merged.slug}-${n}`
+      n += 1
+    }
+    merged.slug = candidate
+    usedSlugs.add(merged.slug)
+
+    out.push(merged)
+  }
+
+  return out
+}
+
 async function ensureDir(filePath: string) {
   const dir = path.dirname(filePath)
   try {
@@ -1497,7 +1661,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
             familyFinancialAssistanceInheritancePage:
               parsed.familyFinancialAssistanceInheritancePage ?? defaultConfig.familyFinancialAssistanceInheritancePage,
             financialTraumaPage: parsed.financialTraumaPage ?? defaultConfig.financialTraumaPage,
-            contentSectionPages: parsed.contentSectionPages ?? defaultConfig.contentSectionPages,
+            contentSectionPages: normalizeContentSectionPagesFixedLength(parsed.contentSectionPages, defaultConfig.contentSectionPages),
             bookingCopy: {
               ...(defaultConfig.bookingCopy ?? {}),
               ...(parsed.bookingCopy ?? {}),
@@ -1585,7 +1749,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       familyFinancialAssistanceInheritancePage:
         parsed.familyFinancialAssistanceInheritancePage ?? defaultConfig.familyFinancialAssistanceInheritancePage,
       financialTraumaPage: parsed.financialTraumaPage ?? defaultConfig.financialTraumaPage,
-      contentSectionPages: parsed.contentSectionPages ?? defaultConfig.contentSectionPages,
+      contentSectionPages: normalizeContentSectionPagesFixedLength(parsed.contentSectionPages, defaultConfig.contentSectionPages),
       bookingCopy: {
         ...(defaultConfig.bookingCopy ?? {}),
         ...(parsed.bookingCopy ?? {}),
@@ -1675,6 +1839,7 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
       consent: { ...(defaultConfig.legal?.consent ?? {}), ...(newConfig.legal?.consent ?? {}) },
     },
     contentSections: normalizeContentSectionsFixedLength(newConfig.contentSections, defaultConfig.contentSections),
+    contentSectionPages: normalizeContentSectionPagesFixedLength(newConfig.contentSectionPages, defaultConfig.contentSectionPages),
     footer: { ...defaultConfig.footer, ...(newConfig.footer ?? {}) },
     bookingCopy: {
       ...(defaultConfig.bookingCopy ?? {}),
