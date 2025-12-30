@@ -1367,10 +1367,6 @@ function CodeAgentBox() {
               <Layout className="w-4 h-4" />
               <span className="hidden sm:inline">Homepage</span>
             </TabsTrigger>
-            <TabsTrigger value="content-sections" className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              <span className="hidden sm:inline">Homepage Buttons</span>
-            </TabsTrigger>
             <TabsTrigger value="content" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
               <span className="hidden sm:inline">Blog & Videos</span>
@@ -4790,123 +4786,6 @@ function CodeAgentBox() {
 
                  <Button onClick={() => saveAll("Client care")} disabled={saving !== null}>
                    <Save className="w-4 h-4 mr-2" /> Save Client Care
-                 </Button>
-               </CardContent>
-             </Card>
-           </TabsContent>
-
-          {/* Homepage Buttons Tab */}
-           <TabsContent value="content-sections" className="space-y-6">
-             <Card>
-               <CardHeader>
-                <CardTitle>Homepage Buttons</CardTitle>
-                <CardDescription>Manage the 9 navy buttons shown in the homepage “Important Links” section.</CardDescription>
-               </CardHeader>
-               <CardContent className="space-y-6">
-                 {Array.from({ length: 9 }).map((_, idx) => {
-                   const section = contentSections?.[idx] ?? { title: "", slug: "", content: "", pdfUrl: "" }
-                   return (
-                     <div key={idx} className="space-y-4 rounded-lg border border-border/40 p-4">
-                       <p className="text-sm font-semibold text-[var(--foreground)]">Section {idx + 1}</p>
-                       <div className="grid gap-4 sm:grid-cols-2">
-                         <div className="space-y-2">
-                           <Label>Title</Label>
-                           <Input
-                             value={section.title}
-                             onChange={(e) => {
-                               const next = [...(contentSections ?? [])]
-                               while (next.length < 9) next.push({ title: "", slug: "", content: "", pdfUrl: "" })
-                               next[idx] = { ...next[idx], title: e.target.value }
-                               setContentSections(next)
-                             }}
-                           />
-                         </div>
-                         <div className="space-y-2">
-                           <Label>Slug (URL-friendly identifier)</Label>
-                           <Input
-                             value={section.slug}
-                             onChange={(e) => {
-                               const next = [...(contentSections ?? [])]
-                               while (next.length < 9) next.push({ title: "", slug: "", content: "", pdfUrl: "" })
-                               next[idx] = { ...next[idx], slug: e.target.value }
-                               setContentSections(next)
-                             }}
-                           />
-                         </div>
-                       </div>
-                       <div className="space-y-2">
-                         <Label>Content (Markdown or plain text)</Label>
-                         <Textarea
-                           rows={8}
-                           value={section.content}
-                           onChange={(e) => {
-                             const next = [...(contentSections ?? [])]
-                             while (next.length < 9) next.push({ title: "", slug: "", content: "", pdfUrl: "" })
-                             next[idx] = { ...next[idx], content: e.target.value }
-                             setContentSections(next)
-                           }}
-                         />
-                       </div>
-                       <div className="space-y-2">
-                         <Label>PDF Document URL</Label>
-                         <div className="flex gap-3">
-                           <Input
-                             value={section.pdfUrl ?? ""}
-                             onChange={(e) => {
-                               const next = [...(contentSections ?? [])]
-                               while (next.length < 9) next.push({ title: "", slug: "", content: "", pdfUrl: "" })
-                               next[idx] = { ...next[idx], pdfUrl: e.target.value }
-                               setContentSections(next)
-                             }}
-                             placeholder="PDF URL or leave empty"
-                           />
-                           <Button
-                             type="button"
-                             variant="outline"
-                             onClick={async () => {
-                               try {
-                                 const rawSlug = String(section.slug ?? "").trim()
-                                 const slugKey = slugifyAdmin(rawSlug) || slugifyAdmin(String(section.title ?? "")) || `section-${idx + 1}`
-                                 // Store PDFs at a stable slug-based path so replacements overwrite the canonical file.
-                                 const url = await uploadAsset({ path: `docs/content-sections/${slugKey}.pdf`, accept: ".pdf" })
-                                 if (!url) return
-                                 const next = [...(contentSections ?? [])]
-                                 while (next.length < 9) next.push({ title: "", slug: "", content: "", pdfUrl: "" })
-                                 // Ensure slug is URL-safe so the public button routes correctly.
-                                 next[idx] = { ...next[idx], slug: slugKey, pdfUrl: url }
-                                 setContentSections(next)
-                                 toast({ title: "Uploaded", description: `PDF uploaded for section ${idx + 1}.` })
-                                 // Persist immediately so uploads never get "lost" if user forgets to click Save.
-                                 // Wait a tick so dirty tracking sees the updated state.
-                                 await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
-                                 void saveAll("Content sections")
-                               } catch (e: unknown) {
-                                 toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
-                               }
-                             }}
-                           >
-                             <Upload className="w-4 h-4 mr-2" />
-                             Upload PDF
-                           </Button>
-                         </div>
-                         {section.pdfUrl ? (
-                           <a className="text-sm underline text-[var(--accent)]" href={section.pdfUrl} target="_blank" rel="noopener noreferrer">
-                             View PDF
-                           </a>
-                         ) : null}
-                       </div>
-                       {section.slug ? (
-                         <div>
-                           <Link href={`/content-sections/${section.slug}`} target="_blank" className="text-sm underline text-[var(--accent)]">
-                             View page →
-                           </Link>
-                         </div>
-                       ) : null}
-                     </div>
-                   )
-                 })}
-                 <Button onClick={() => saveAll("Content sections")} disabled={saving !== null}>
-                   <Save className="w-4 h-4 mr-2" /> Save Content Sections
                  </Button>
                </CardContent>
              </Card>
