@@ -104,6 +104,10 @@ export type FinancialAbuseTherapyPageConfig = {
   sessionFormats?: string[]
   nextStepsLinks?: NavLink[]
   faqs?: FaqEntry[]
+  seo?: {
+    metaTitle?: string
+    metaDescription?: string
+  }
 }
 
 export type FooterConfig = {
@@ -452,6 +456,8 @@ export type SiteConfig = {
   financialAbusePage?: FinancialAbusePageConfig
   monetaryPsychotherapyPage?: MonetaryPsychotherapyPageConfig
   financialAbuseTherapyPage?: FinancialAbuseTherapyPageConfig
+  familyFinancialAssistanceInheritancePage?: FinancialAbuseTherapyPageConfig
+  financialTraumaPage?: FinancialAbuseTherapyPageConfig
 }
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), "data", "site.json")
@@ -661,6 +667,75 @@ export const defaultConfig: SiteConfig = {
         answer: "Yes — Telehealth across Australia, as well as in-person sessions in Melbourne.",
       },
     ],
+  },
+  familyFinancialAssistanceInheritancePage: {
+    eyebrow: "Money, family roles, obligation, and recovery",
+    title: "Family Financial Assistance and Inheritance",
+    description:
+      "When support becomes leverage, guilt, or a bargaining chip, the relationship stops being about care and starts being about control. This page explains the hidden patterns of financial abuse that can show up in family assistance and inheritance, and how therapy can help you rebuild autonomy, boundaries, and self trust.\n\nLast updated: 30 Apr 2025",
+    therapyApproach: [
+      "Trauma-informed support that prioritises safety, consent, and pacing",
+      "Clarifying what is yours to carry, and what was pushed onto you",
+      "Boundary setting for money requests, debts, gifts, and family expectations",
+      "Reducing guilt and fear through nervous system regulation and skills",
+      "Practical next steps: scripts, plans, and decision support",
+    ],
+    sessionFormats: ["Telehealth (Australia)", "In-person (Melbourne)", "Walk and Discuss Therapy (by arrangement)"],
+    nextStepsLinks: [
+      { label: "What is Financial Abuse?", href: "/financial-abuse" },
+      { label: "Financial Abuse Therapy", href: "/financial-abuse-therapy" },
+      { label: "Financial Trauma", href: "/financial-trauma" },
+    ],
+    faqs: [
+      {
+        question: "When does family help cross the line into financial abuse?",
+        answer:
+          "When money is used to pressure, punish, monitor, control, or “buy” your choices. Common signs include strings attached, moving goalposts, guilt campaigns, threats to withdraw support, demands for access to accounts, using gifts as debt, forcing you into secrecy, or making your independence feel like betrayal.",
+      },
+      {
+        question: "What if the money was a gift, but they keep bringing it up?",
+        answer:
+          "A gift is not a lifetime contract. If someone repeatedly uses past help to override your decisions, that is leverage. Therapy can help you separate gratitude from obligation, decide what you want to acknowledge, and set a boundary that ends the ongoing price tag.",
+      },
+      {
+        question: "I feel guilty saying no, even when the request is unreasonable. Why?",
+        answer:
+          "Guilt is often a learned alarm system, not a moral truth. In some families, saying no triggers fear of rejection, anger, or withdrawal of love. We work on the emotional pattern underneath, then build practical skills so your boundaries hold even under pressure.",
+      },
+      {
+        question: "How do inheritances get weaponised?",
+        answer:
+          "Through threats, conditional promises, sudden changes, secrecy, triangulation between siblings, or “loyalty tests” that require obedience to stay included. Even when no one says it directly, the inheritance can become a silent leash. Therapy helps you get clear on your values and make decisions that protect your dignity.",
+      },
+      {
+        question: "Should I keep accepting money if it helps me survive?",
+        answer:
+          "Sometimes you need short-term stability, and that does not make you weak. We can work on a safer plan: what support is worth taking, what conditions you refuse, how to document agreements, how to reduce exposure to control, and how to build a realistic path toward independence.",
+      },
+      {
+        question: "Can therapy help with the practical side, not just feelings?",
+        answer:
+          "Yes. We can map the money dynamics, create boundaries, write scripts for hard conversations, plan for predictable flare-ups, and decide next steps. The goal is stability and autonomy, not just insight.",
+      },
+    ],
+    seo: {
+      metaTitle: "Family Financial Assistance and Inheritance | Dan Lobel",
+      metaDescription:
+        "How family help and inheritance can become control, guilt, or coercion, and how financial abuse therapy supports autonomy, boundaries, and recovery.",
+    },
+  },
+  financialTraumaPage: {
+    eyebrow: "",
+    title: "Financial Trauma",
+    description: "",
+    therapyApproach: [],
+    sessionFormats: [],
+    nextStepsLinks: [],
+    faqs: [],
+    seo: {
+      metaTitle: "Financial Trauma | Dan Lobel",
+      metaDescription: "",
+    },
   },
   hero: {
     eyebrow: "Financial Trauma & Monetary Psychotherapy",
@@ -1399,6 +1474,9 @@ export async function readSiteConfig(): Promise<SiteConfig> {
             financialAbusePage: parsed.financialAbusePage ?? defaultConfig.financialAbusePage,
             monetaryPsychotherapyPage: parsed.monetaryPsychotherapyPage ?? defaultConfig.monetaryPsychotherapyPage,
             financialAbuseTherapyPage: parsed.financialAbuseTherapyPage ?? defaultConfig.financialAbuseTherapyPage,
+            familyFinancialAssistanceInheritancePage:
+              parsed.familyFinancialAssistanceInheritancePage ?? defaultConfig.familyFinancialAssistanceInheritancePage,
+            financialTraumaPage: parsed.financialTraumaPage ?? defaultConfig.financialTraumaPage,
             bookingCopy: {
               ...(defaultConfig.bookingCopy ?? {}),
               ...(parsed.bookingCopy ?? {}),
@@ -1483,6 +1561,9 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       financialAbusePage: parsed.financialAbusePage ?? defaultConfig.financialAbusePage,
       monetaryPsychotherapyPage: parsed.monetaryPsychotherapyPage ?? defaultConfig.monetaryPsychotherapyPage,
       financialAbuseTherapyPage: parsed.financialAbuseTherapyPage ?? defaultConfig.financialAbuseTherapyPage,
+      familyFinancialAssistanceInheritancePage:
+        parsed.familyFinancialAssistanceInheritancePage ?? defaultConfig.familyFinancialAssistanceInheritancePage,
+      financialTraumaPage: parsed.financialTraumaPage ?? defaultConfig.financialTraumaPage,
       bookingCopy: {
         ...(defaultConfig.bookingCopy ?? {}),
         ...(parsed.bookingCopy ?? {}),

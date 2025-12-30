@@ -263,6 +263,31 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     sessionFormats: [],
     nextStepsLinks: [],
     faqs: [],
+    seo: { metaTitle: "", metaDescription: "" },
+  })
+
+  const [familyFinancialAssistanceInheritancePage, setFamilyFinancialAssistanceInheritancePage] = useState<
+    SiteConfig["familyFinancialAssistanceInheritancePage"]
+  >({
+    eyebrow: "",
+    title: "",
+    description: "",
+    therapyApproach: [],
+    sessionFormats: [],
+    nextStepsLinks: [],
+    faqs: [],
+    seo: { metaTitle: "", metaDescription: "" },
+  })
+
+  const [financialTraumaPage, setFinancialTraumaPage] = useState<SiteConfig["financialTraumaPage"]>({
+    eyebrow: "",
+    title: "",
+    description: "",
+    therapyApproach: [],
+    sessionFormats: [],
+    nextStepsLinks: [],
+    faqs: [],
+    seo: { metaTitle: "", metaDescription: "" },
   })
 
   const [postEditor, setPostEditor] = useState<{
@@ -285,6 +310,8 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     financialAbusePage,
     monetaryPsychotherapyPage,
     financialAbuseTherapyPage,
+    familyFinancialAssistanceInheritancePage,
+    financialTraumaPage,
     services,
     brand,
     seo,
@@ -370,11 +397,34 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          sessionFormats: [],
          nextStepsLinks: [],
          faqs: [],
+         seo: { metaTitle: "", metaDescription: "" },
+       }
+       const nextFamilyFinancialAssistanceInheritancePage = data.familyFinancialAssistanceInheritancePage ?? {
+         eyebrow: "",
+         title: "",
+         description: "",
+         therapyApproach: [],
+         sessionFormats: [],
+         nextStepsLinks: [],
+         faqs: [],
+         seo: { metaTitle: "", metaDescription: "" },
+       }
+       const nextFinancialTraumaPage = data.financialTraumaPage ?? {
+         eyebrow: "",
+         title: "",
+         description: "",
+         therapyApproach: [],
+         sessionFormats: [],
+         nextStepsLinks: [],
+         faqs: [],
+         seo: { metaTitle: "", metaDescription: "" },
        }
         setAboutContent(nextAbout)
         setFinancialAbusePage(nextFinancialAbusePage)
         setMonetaryPsychotherapyPage(nextMonetaryPsychotherapyPage)
         setFinancialAbuseTherapyPage(nextFinancialAbuseTherapyPage)
+       setFamilyFinancialAssistanceInheritancePage(nextFamilyFinancialAssistanceInheritancePage)
+       setFinancialTraumaPage(nextFinancialTraumaPage)
         setServices(nextServices)
         setBrand(nextBrand)
         setSeo(nextSeo)
@@ -662,6 +712,27 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
       sessionFormats: [],
       nextStepsLinks: [],
       faqs: [],
+      seo: { metaTitle: "", metaDescription: "" },
+    })
+    setFamilyFinancialAssistanceInheritancePage(loadedConfig.familyFinancialAssistanceInheritancePage ?? {
+      eyebrow: "",
+      title: "",
+      description: "",
+      therapyApproach: [],
+      sessionFormats: [],
+      nextStepsLinks: [],
+      faqs: [],
+      seo: { metaTitle: "", metaDescription: "" },
+    })
+    setFinancialTraumaPage(loadedConfig.financialTraumaPage ?? {
+      eyebrow: "",
+      title: "",
+      description: "",
+      therapyApproach: [],
+      sessionFormats: [],
+      nextStepsLinks: [],
+      faqs: [],
+      seo: { metaTitle: "", metaDescription: "" },
     })
     setBookingCopy({
       billingHighlights: loadedConfig.bookingCopy?.billingHighlights ?? [],
@@ -1649,6 +1720,16 @@ function CodeAgentBox() {
                        <span>Financial Abuse Therapy</span>
                        <span className="text-xs text-muted-foreground hidden md:inline">/financial-abuse-therapy</span>
                      </TabsTrigger>
+                    <TabsTrigger value="family-financial-assistance-inheritance" className="flex items-center gap-2">
+                      <FileText className="w-4 h-4" />
+                      <span>Family Financial Assistance</span>
+                      <span className="text-xs text-muted-foreground hidden md:inline">/family-financial-assistance-inheritance</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="financial-trauma" className="flex items-center gap-2">
+                      <FileText className="w-4 h-4" />
+                      <span>Financial Trauma</span>
+                      <span className="text-xs text-muted-foreground hidden md:inline">/financial-trauma</span>
+                    </TabsTrigger>
                    </TabsList>
 
                    <TabsContent value="financial-abuse" className="space-y-6">
@@ -2073,6 +2154,409 @@ function CodeAgentBox() {
                        </CardContent>
                      </Card>
                    </TabsContent>
+
+                  <TabsContent value="family-financial-assistance-inheritance" className="space-y-6">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <FileText className="w-5 h-5" />
+                          Edit Family Financial Assistance Page
+                        </CardTitle>
+                        <CardDescription>Update content for /family-financial-assistance-inheritance page</CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label>Eyebrow Text</Label>
+                          <Input
+                            value={familyFinancialAssistanceInheritancePage?.eyebrow ?? ""}
+                            onChange={(e) =>
+                              setFamilyFinancialAssistanceInheritancePage({
+                                ...familyFinancialAssistanceInheritancePage,
+                                eyebrow: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Title</Label>
+                          <Input
+                            value={familyFinancialAssistanceInheritancePage?.title ?? ""}
+                            onChange={(e) =>
+                              setFamilyFinancialAssistanceInheritancePage({
+                                ...familyFinancialAssistanceInheritancePage,
+                                title: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Description</Label>
+                          <Textarea
+                            value={familyFinancialAssistanceInheritancePage?.description ?? ""}
+                            onChange={(e) =>
+                              setFamilyFinancialAssistanceInheritancePage({
+                                ...familyFinancialAssistanceInheritancePage,
+                                description: e.target.value,
+                              })
+                            }
+                            rows={4}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Therapy Approach (one per line)</Label>
+                          <Textarea
+                            value={(familyFinancialAssistanceInheritancePage?.therapyApproach ?? []).join("\n")}
+                            onChange={(e) =>
+                              setFamilyFinancialAssistanceInheritancePage({
+                                ...familyFinancialAssistanceInheritancePage,
+                                therapyApproach: e.target.value.split("\n").filter(Boolean),
+                              })
+                            }
+                            rows={5}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Session Formats (one per line)</Label>
+                          <Textarea
+                            value={(familyFinancialAssistanceInheritancePage?.sessionFormats ?? []).join("\n")}
+                            onChange={(e) =>
+                              setFamilyFinancialAssistanceInheritancePage({
+                                ...familyFinancialAssistanceInheritancePage,
+                                sessionFormats: e.target.value.split("\n").filter(Boolean),
+                              })
+                            }
+                            rows={4}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Next Steps Links</Label>
+                          {(familyFinancialAssistanceInheritancePage?.nextStepsLinks ?? []).map((link, idx) => (
+                            <div key={idx} className="flex gap-2">
+                              <Input
+                                placeholder="Label"
+                                value={link.label}
+                                onChange={(e) => {
+                                  const next = [...(familyFinancialAssistanceInheritancePage?.nextStepsLinks ?? [])]
+                                  next[idx] = { ...next[idx], label: e.target.value }
+                                  setFamilyFinancialAssistanceInheritancePage({
+                                    ...familyFinancialAssistanceInheritancePage,
+                                    nextStepsLinks: next,
+                                  })
+                                }}
+                              />
+                              <Input
+                                placeholder="URL"
+                                value={link.href}
+                                onChange={(e) => {
+                                  const next = [...(familyFinancialAssistanceInheritancePage?.nextStepsLinks ?? [])]
+                                  next[idx] = { ...next[idx], href: e.target.value }
+                                  setFamilyFinancialAssistanceInheritancePage({
+                                    ...familyFinancialAssistanceInheritancePage,
+                                    nextStepsLinks: next,
+                                  })
+                                }}
+                              />
+                              <Button
+                                variant="outline"
+                                onClick={() => {
+                                  const next = [...(familyFinancialAssistanceInheritancePage?.nextStepsLinks ?? [])]
+                                  next.splice(idx, 1)
+                                  setFamilyFinancialAssistanceInheritancePage({
+                                    ...familyFinancialAssistanceInheritancePage,
+                                    nextStepsLinks: next,
+                                  })
+                                }}
+                              >
+                                Remove
+                              </Button>
+                            </div>
+                          ))}
+                          <Button
+                            variant="outline"
+                            onClick={() =>
+                              setFamilyFinancialAssistanceInheritancePage({
+                                ...familyFinancialAssistanceInheritancePage,
+                                nextStepsLinks: [
+                                  ...(familyFinancialAssistanceInheritancePage?.nextStepsLinks ?? []),
+                                  { label: "", href: "" },
+                                ],
+                              })
+                            }
+                          >
+                            + Add Link
+                          </Button>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>FAQs</Label>
+                          {(familyFinancialAssistanceInheritancePage?.faqs ?? []).map((faq, idx) => (
+                            <div key={idx} className="border rounded-lg p-4 space-y-2">
+                              <Input
+                                placeholder="Question"
+                                value={faq.question}
+                                onChange={(e) => {
+                                  const next = [...(familyFinancialAssistanceInheritancePage?.faqs ?? [])]
+                                  next[idx] = { ...next[idx], question: e.target.value }
+                                  setFamilyFinancialAssistanceInheritancePage({
+                                    ...familyFinancialAssistanceInheritancePage,
+                                    faqs: next,
+                                  })
+                                }}
+                              />
+                              <Textarea
+                                placeholder="Answer"
+                                value={faq.answer}
+                                onChange={(e) => {
+                                  const next = [...(familyFinancialAssistanceInheritancePage?.faqs ?? [])]
+                                  next[idx] = { ...next[idx], answer: e.target.value }
+                                  setFamilyFinancialAssistanceInheritancePage({
+                                    ...familyFinancialAssistanceInheritancePage,
+                                    faqs: next,
+                                  })
+                                }}
+                                rows={3}
+                              />
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  const next = [...(familyFinancialAssistanceInheritancePage?.faqs ?? [])]
+                                  next.splice(idx, 1)
+                                  setFamilyFinancialAssistanceInheritancePage({
+                                    ...familyFinancialAssistanceInheritancePage,
+                                    faqs: next,
+                                  })
+                                }}
+                              >
+                                Remove
+                              </Button>
+                            </div>
+                          ))}
+                          <Button
+                            variant="outline"
+                            onClick={() =>
+                              setFamilyFinancialAssistanceInheritancePage({
+                                ...familyFinancialAssistanceInheritancePage,
+                                faqs: [...(familyFinancialAssistanceInheritancePage?.faqs ?? []), { question: "", answer: "" }],
+                              })
+                            }
+                          >
+                            + Add FAQ
+                          </Button>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>SEO Meta Title</Label>
+                          <Input
+                            value={familyFinancialAssistanceInheritancePage?.seo?.metaTitle ?? ""}
+                            onChange={(e) =>
+                              setFamilyFinancialAssistanceInheritancePage({
+                                ...familyFinancialAssistanceInheritancePage,
+                                seo: { ...(familyFinancialAssistanceInheritancePage?.seo ?? {}), metaTitle: e.target.value },
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>SEO Meta Description</Label>
+                          <Textarea
+                            value={familyFinancialAssistanceInheritancePage?.seo?.metaDescription ?? ""}
+                            onChange={(e) =>
+                              setFamilyFinancialAssistanceInheritancePage({
+                                ...familyFinancialAssistanceInheritancePage,
+                                seo: { ...(familyFinancialAssistanceInheritancePage?.seo ?? {}), metaDescription: e.target.value },
+                              })
+                            }
+                            rows={2}
+                          />
+                        </div>
+                        <Button onClick={() => saveAll("Family Financial Assistance Page")} disabled={saving !== null}>
+                          <Save className="w-4 h-4 mr-2" />
+                          Save Changes
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+
+                  <TabsContent value="financial-trauma" className="space-y-6">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <FileText className="w-5 h-5" />
+                          Edit Financial Trauma Page
+                        </CardTitle>
+                        <CardDescription>Update content for /financial-trauma page</CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label>Eyebrow Text</Label>
+                          <Input
+                            value={financialTraumaPage?.eyebrow ?? ""}
+                            onChange={(e) => setFinancialTraumaPage({ ...financialTraumaPage, eyebrow: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Title</Label>
+                          <Input
+                            value={financialTraumaPage?.title ?? ""}
+                            onChange={(e) => setFinancialTraumaPage({ ...financialTraumaPage, title: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Description</Label>
+                          <Textarea
+                            value={financialTraumaPage?.description ?? ""}
+                            onChange={(e) => setFinancialTraumaPage({ ...financialTraumaPage, description: e.target.value })}
+                            rows={4}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Therapy Approach (one per line)</Label>
+                          <Textarea
+                            value={(financialTraumaPage?.therapyApproach ?? []).join("\n")}
+                            onChange={(e) =>
+                              setFinancialTraumaPage({
+                                ...financialTraumaPage,
+                                therapyApproach: e.target.value.split("\n").filter(Boolean),
+                              })
+                            }
+                            rows={5}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Session Formats (one per line)</Label>
+                          <Textarea
+                            value={(financialTraumaPage?.sessionFormats ?? []).join("\n")}
+                            onChange={(e) =>
+                              setFinancialTraumaPage({
+                                ...financialTraumaPage,
+                                sessionFormats: e.target.value.split("\n").filter(Boolean),
+                              })
+                            }
+                            rows={4}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Next Steps Links</Label>
+                          {(financialTraumaPage?.nextStepsLinks ?? []).map((link, idx) => (
+                            <div key={idx} className="flex gap-2">
+                              <Input
+                                placeholder="Label"
+                                value={link.label}
+                                onChange={(e) => {
+                                  const next = [...(financialTraumaPage?.nextStepsLinks ?? [])]
+                                  next[idx] = { ...next[idx], label: e.target.value }
+                                  setFinancialTraumaPage({ ...financialTraumaPage, nextStepsLinks: next })
+                                }}
+                              />
+                              <Input
+                                placeholder="URL"
+                                value={link.href}
+                                onChange={(e) => {
+                                  const next = [...(financialTraumaPage?.nextStepsLinks ?? [])]
+                                  next[idx] = { ...next[idx], href: e.target.value }
+                                  setFinancialTraumaPage({ ...financialTraumaPage, nextStepsLinks: next })
+                                }}
+                              />
+                              <Button
+                                variant="outline"
+                                onClick={() => {
+                                  const next = [...(financialTraumaPage?.nextStepsLinks ?? [])]
+                                  next.splice(idx, 1)
+                                  setFinancialTraumaPage({ ...financialTraumaPage, nextStepsLinks: next })
+                                }}
+                              >
+                                Remove
+                              </Button>
+                            </div>
+                          ))}
+                          <Button
+                            variant="outline"
+                            onClick={() =>
+                              setFinancialTraumaPage({
+                                ...financialTraumaPage,
+                                nextStepsLinks: [...(financialTraumaPage?.nextStepsLinks ?? []), { label: "", href: "" }],
+                              })
+                            }
+                          >
+                            + Add Link
+                          </Button>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>FAQs</Label>
+                          {(financialTraumaPage?.faqs ?? []).map((faq, idx) => (
+                            <div key={idx} className="border rounded-lg p-4 space-y-2">
+                              <Input
+                                placeholder="Question"
+                                value={faq.question}
+                                onChange={(e) => {
+                                  const next = [...(financialTraumaPage?.faqs ?? [])]
+                                  next[idx] = { ...next[idx], question: e.target.value }
+                                  setFinancialTraumaPage({ ...financialTraumaPage, faqs: next })
+                                }}
+                              />
+                              <Textarea
+                                placeholder="Answer"
+                                value={faq.answer}
+                                onChange={(e) => {
+                                  const next = [...(financialTraumaPage?.faqs ?? [])]
+                                  next[idx] = { ...next[idx], answer: e.target.value }
+                                  setFinancialTraumaPage({ ...financialTraumaPage, faqs: next })
+                                }}
+                                rows={3}
+                              />
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  const next = [...(financialTraumaPage?.faqs ?? [])]
+                                  next.splice(idx, 1)
+                                  setFinancialTraumaPage({ ...financialTraumaPage, faqs: next })
+                                }}
+                              >
+                                Remove
+                              </Button>
+                            </div>
+                          ))}
+                          <Button
+                            variant="outline"
+                            onClick={() =>
+                              setFinancialTraumaPage({ ...financialTraumaPage, faqs: [...(financialTraumaPage?.faqs ?? []), { question: "", answer: "" }] })
+                            }
+                          >
+                            + Add FAQ
+                          </Button>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>SEO Meta Title</Label>
+                          <Input
+                            value={financialTraumaPage?.seo?.metaTitle ?? ""}
+                            onChange={(e) =>
+                              setFinancialTraumaPage({
+                                ...financialTraumaPage,
+                                seo: { ...(financialTraumaPage?.seo ?? {}), metaTitle: e.target.value },
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>SEO Meta Description</Label>
+                          <Textarea
+                            value={financialTraumaPage?.seo?.metaDescription ?? ""}
+                            onChange={(e) =>
+                              setFinancialTraumaPage({
+                                ...financialTraumaPage,
+                                seo: { ...(financialTraumaPage?.seo ?? {}), metaDescription: e.target.value },
+                              })
+                            }
+                            rows={2}
+                          />
+                        </div>
+                        <Button onClick={() => saveAll("Financial Trauma Page")} disabled={saving !== null}>
+                          <Save className="w-4 h-4 mr-2" />
+                          Save Changes
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
                  </Tabs>
                </CardContent>
              </Card>
