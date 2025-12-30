@@ -17,35 +17,46 @@ type ContentSectionPageProps = {
 }
 
 export async function generateMetadata({ params }: ContentSectionPageProps): Promise<Metadata> {
-  const config = await readSiteConfig()
-  const requested = normalizeSlug(params.slug)
-  const pages = Array.isArray(config.contentSectionPages) ? config.contentSectionPages : []
-  const sections = Array.isArray(config.contentSections) ? config.contentSections : []
-  const page = pages.find((p) => normalizeSlug(p.slug) === requested) ?? null
-  if (!page) {
-    // Fallback to legacy contentSections if present.
-    const section = sections.find((s) => normalizeSlug(s.slug) === requested) ?? null
-    if (!section) {
-      return buildPageMetadata({
-        title: "Section not found",
-        description: "The requested section could not be located.",
-        path: `/content-sections/${params.slug}`,
-        noIndex: true,
+  const path = `/content-sections/${params.slug}`
+  try {
+    const config = await readSiteConfig()
+    const requested = normalizeSlug(params.slug)
+    const pages = Array.isArray(config.contentSectionPages) ? config.contentSectionPages : []
+    const sections = Array.isArray(config.contentSections) ? config.contentSections : []
+    const page = pages.find((p) => normalizeSlug(p.slug) === requested) ?? null
+    if (!page) {
+      // Fallback to legacy contentSections if present.
+      const section = sections.find((s) => normalizeSlug(s.slug) === requested) ?? null
+      if (!section) {
+        return await buildPageMetadata({
+          title: "Section not found",
+          description: "The requested section could not be located.",
+          path,
+          noIndex: true,
+        })
+      }
+      const sectionTitle = String(section.title ?? "").trim() || "Content"
+      const sectionDesc = String((section as { content?: string } | null)?.content ?? "")
+      return await buildPageMetadata({
+        title: `${sectionTitle} | Financial Abuse Therapist`,
+        description: sectionDesc.slice(0, 160) || `Learn about ${sectionTitle}`,
+        path: `/content-sections/${section.slug}`,
       })
     }
-    const sectionTitle = String(section.title ?? "").trim() || "Content"
-    const sectionDesc = String((section as { content?: string } | null)?.content ?? "")
-    return buildPageMetadata({
-      title: `${sectionTitle} | Financial Abuse Therapist`,
-      description: sectionDesc.slice(0, 160) || `Learn about ${sectionTitle}`,
-      path: `/content-sections/${section.slug}`,
+    return await buildPageMetadata({
+      title: page.seo?.metaTitle?.trim() || `${page.title} | Financial Abuse Therapist`,
+      description: page.seo?.metaDescription?.trim() || String(page.description ?? "").slice(0, 160),
+      path,
     })
+  } catch {
+    // Never allow metadata generation errors to break page rendering.
+    return {
+      title: "Financial Abuse Therapist",
+      description: "Content page.",
+      robots: { index: false, follow: false },
+      alternates: { canonical: path },
+    }
   }
-  return buildPageMetadata({
-    title: page.seo?.metaTitle?.trim() || `${page.title} | Financial Abuse Therapist`,
-    description: page.seo?.metaDescription?.trim() || String(page.description ?? "").slice(0, 160),
-    path: `/content-sections/${params.slug}`,
-  })
 }
 
 function normalizeSlug(input: string): string {
