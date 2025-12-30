@@ -41,6 +41,7 @@
     .topbar{
       position: sticky; top: 0; z-index: 5;
       background: rgba(246,247,251,.86);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--line);
     }
@@ -292,7 +293,7 @@
       </div>
 
       <div class="progress" aria-label="Reading progress">
-        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Reading progress" title="Reading progress">
           <span id="progressFill"></span>
         </div>
         <div class="barlabel" id="progressLabel">0% read</div>
