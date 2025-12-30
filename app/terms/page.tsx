@@ -22,8 +22,10 @@ export default async function TermsPage() {
   const legal = config?.legal
   const terms = legal?.terms
   const title = terms?.title?.trim() || "Terms of Service"
-  const downloadUrl = terms?.downloadUrl?.trim() || "/Terms%20of%20Service.docx"
+  const downloadUrl = terms?.downloadUrl?.trim() || "/Terms%20of%20Service.pdf"
   const isPdf = downloadUrl.toLowerCase().split("?")[0].endsWith(".pdf")
+  // For PDF viewer: hide toolbar and navigation panes, enable scrolling
+  const pdfViewerUrl = isPdf ? `${downloadUrl.split("#")[0]}#toolbar=0&navpanes=0&scrollbar=1` : downloadUrl
   const source = terms?.bodyMdx?.trim() || ""
   let mdx: Awaited<ReturnType<typeof compileMDX>> | null = null
   if (source) {
@@ -49,7 +51,7 @@ export default async function TermsPage() {
         <p className="text-[var(--primary)] leading-relaxed">
           You can view the latest Terms of Service document below. You may also{" "}
           <a href={downloadUrl} className="underline" download>
-            download the Word document
+            download the PDF
           </a>
           .
         </p>
@@ -60,7 +62,12 @@ export default async function TermsPage() {
         ) : isPdf ? (
           <>
             <div className="w-full overflow-hidden rounded-md border border-[var(--secondary)] bg-[var(--section-bg-1)]">
-              <iframe title="Terms of Service" src={downloadUrl} className="w-full" style={{ minHeight: "900px" }} />
+              <iframe 
+                title="Terms of Service" 
+                src={pdfViewerUrl} 
+                className="w-full" 
+                style={{ minHeight: "900px" }}
+              />
             </div>
             <p className="text-[var(--primary)] text-sm">
               If the embedded PDF does not load,{" "}
