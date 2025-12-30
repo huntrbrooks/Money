@@ -89,22 +89,11 @@ export default async function HomePage() {
   const otherAreas = homepageContent.otherAreas ?? []
   // `readSiteConfig()` normalizes `contentSections` to a fixed list (9) so the homepage buttons are always present.
   const contentSections = (config.contentSections ?? []).slice(0, 9)
-  // Map content sections to their correct routes (dedicated pages take priority)
-  const contentSectionRouteMap: Record<string, string> = {
-    // This route will either show the legacy article (so it’s never blank) or redirect to the admin-editable Content Section when filled.
-    "why-money-triggers-anxiety": "/why-money-triggers-anxiety",
-    "what-is-financial-abuse": "/financial-abuse",
-    "monetary-psychotherapy": "/monetary-psychotherapy",
-    "financial-abuse-therapy": "/financial-abuse-therapy",
-    "about-dan": "/about",
-  }
-  // Convert content sections to nav links for display
+  // Convert content sections to nav links for display.
+  // IMPORTANT: homepage buttons should always go to a BOH-editable page (not a PDF, not hardcoded copy).
   const allContentSectionLinks = contentSections.map((section) => ({
     label: section.title,
-    href: String(section.pdfUrl ?? "").trim()
-      ? String(section.pdfUrl ?? "").trim()
-      : (contentSectionRouteMap[section.slug] ?? `/content-sections/${section.slug}`),
-    external: Boolean(String(section.pdfUrl ?? "").trim()),
+    href: `/content-sections/${section.slug}`,
   }))
   const consultationOptions = config.consultations ?? []
   const bookingCopy = config.bookingCopy
@@ -269,15 +258,9 @@ export default async function HomePage() {
                             asChild
                             className="w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm"
                           >
-                            {link.external ? (
-                              <a href={link.href} target="_blank" rel="noopener noreferrer" className="no-underline">
-                                {link.label}
-                              </a>
-                            ) : (
-                              <Link href={link.href} className="no-underline">
-                                {link.label}
-                              </Link>
-                            )}
+                            <Link href={link.href} className="no-underline">
+                              {link.label}
+                            </Link>
                           </Button>
                         ))}
                       </div>

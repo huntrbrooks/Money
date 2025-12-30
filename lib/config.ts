@@ -458,6 +458,14 @@ export type SiteConfig = {
   financialAbuseTherapyPage?: FinancialAbuseTherapyPageConfig
   familyFinancialAssistanceInheritancePage?: FinancialAbuseTherapyPageConfig
   financialTraumaPage?: FinancialAbuseTherapyPageConfig
+  contentSectionPages?: Array<
+    FinancialAbuseTherapyPageConfig & {
+      /**
+       * The content-section slug (no leading slash), e.g. "elderly-disabled-financial-abuse"
+       */
+      slug: string
+    }
+  >
 }
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), "data", "site.json")
@@ -737,6 +745,18 @@ export const defaultConfig: SiteConfig = {
       metaDescription: "",
     },
   },
+  contentSectionPages: [
+    // These correspond to the 9 homepage “Important Links” buttons (when using /content-sections/<slug> routes).
+    { slug: "why-money-triggers-anxiety", eyebrow: "", title: "Why money triggers anxiety", description: "", therapyApproach: [], sessionFormats: [], nextStepsLinks: [], faqs: [], seo: { metaTitle: "", metaDescription: "" } },
+    { slug: "what-is-financial-abuse", eyebrow: "", title: "What is Financial Abuse", description: "", therapyApproach: [], sessionFormats: [], nextStepsLinks: [], faqs: [], seo: { metaTitle: "", metaDescription: "" } },
+    { slug: "elderly-disabled-financial-abuse", eyebrow: "", title: "Elderly/Disabled Financial Abuse", description: "", therapyApproach: [], sessionFormats: [], nextStepsLinks: [], faqs: [], seo: { metaTitle: "", metaDescription: "" } },
+    { slug: "monetary-psychotherapy", eyebrow: "", title: "Monetary Psychotherapy", description: "", therapyApproach: [], sessionFormats: [], nextStepsLinks: [], faqs: [], seo: { metaTitle: "", metaDescription: "" } },
+    { slug: "financial-trauma", eyebrow: "", title: "Financial Trauma", description: "", therapyApproach: [], sessionFormats: [], nextStepsLinks: [], faqs: [], seo: { metaTitle: "", metaDescription: "" } },
+    { slug: "family-financial-assistance-inheritance", eyebrow: "", title: "Family Financial Assistance. Inheritance.", description: "", therapyApproach: [], sessionFormats: [], nextStepsLinks: [], faqs: [], seo: { metaTitle: "", metaDescription: "" } },
+    { slug: "estrangement", eyebrow: "", title: "Estrangement", description: "", therapyApproach: [], sessionFormats: [], nextStepsLinks: [], faqs: [], seo: { metaTitle: "", metaDescription: "" } },
+    { slug: "financial-abuse-therapy", eyebrow: "", title: "Financial Abuse Therapy", description: "", therapyApproach: [], sessionFormats: [], nextStepsLinks: [], faqs: [], seo: { metaTitle: "", metaDescription: "" } },
+    { slug: "about-dan", eyebrow: "", title: "About Dan", description: "", therapyApproach: [], sessionFormats: [], nextStepsLinks: [], faqs: [], seo: { metaTitle: "", metaDescription: "" } },
+  ],
   hero: {
     eyebrow: "Financial Trauma & Monetary Psychotherapy",
     title: "The guided solo journey with practitioner",
@@ -1477,6 +1497,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
             familyFinancialAssistanceInheritancePage:
               parsed.familyFinancialAssistanceInheritancePage ?? defaultConfig.familyFinancialAssistanceInheritancePage,
             financialTraumaPage: parsed.financialTraumaPage ?? defaultConfig.financialTraumaPage,
+            contentSectionPages: parsed.contentSectionPages ?? defaultConfig.contentSectionPages,
             bookingCopy: {
               ...(defaultConfig.bookingCopy ?? {}),
               ...(parsed.bookingCopy ?? {}),
@@ -1564,6 +1585,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       familyFinancialAssistanceInheritancePage:
         parsed.familyFinancialAssistanceInheritancePage ?? defaultConfig.familyFinancialAssistanceInheritancePage,
       financialTraumaPage: parsed.financialTraumaPage ?? defaultConfig.financialTraumaPage,
+      contentSectionPages: parsed.contentSectionPages ?? defaultConfig.contentSectionPages,
       bookingCopy: {
         ...(defaultConfig.bookingCopy ?? {}),
         ...(parsed.bookingCopy ?? {}),
