@@ -224,6 +224,8 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   const [clientCare, setClientCare] = useState<SiteConfig["clientCare"]>({ downloads: [] })
   const [contentSections, setContentSections] = useState<SiteConfig["contentSections"]>([])
   const [contentSectionPages, setContentSectionPages] = useState<SiteConfig["contentSectionPages"]>([])
+  const pages = Array.isArray(contentSectionPages) && contentSectionPages.length ? contentSectionPages : []
+  const defaultSlug = pages[0]?.slug ?? "why-money-triggers-anxiety"
   const [footer, setFooter] = useState<SiteConfig["footer"]>({
     copyrightText: "",
     companyName: "",
@@ -1704,10 +1706,7 @@ function CodeAgentBox() {
                  <CardDescription>Edit the key standalone pages (grouped for easier navigation)</CardDescription>
                </CardHeader>
                <CardContent className="space-y-6">
-                {(() => {
-                  const pages = Array.isArray(contentSectionPages) && contentSectionPages.length ? contentSectionPages : []
-                  const defaultSlug = pages[0]?.slug ?? "why-money-triggers-anxiety"
-                  return (
+                  {pages.length ? (
                     <Tabs defaultValue={defaultSlug} className="space-y-6">
                       <TabsList className="flex w-full flex-wrap gap-2">
                         {pages.map((p) => (
@@ -1719,223 +1718,227 @@ function CodeAgentBox() {
                         ))}
                       </TabsList>
 
-                  {pages.map((p, idx) => (
-                    <TabsContent key={`page-${p.slug}`} value={p.slug} className="space-y-6">
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="flex items-center gap-2">
-                            <FileText className="w-5 h-5" />
-                            Edit Page
-                          </CardTitle>
-                          <CardDescription>{`Update content for /content-sections/${p.slug}`}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          <div className="space-y-2">
-                            <Label>Eyebrow Text</Label>
-                            <Input
-                              value={p.eyebrow ?? ""}
-                              onChange={(e) => {
-                                const next = [...pages]
-                                next[idx] = { ...next[idx], eyebrow: e.target.value }
-                                setContentSectionPages(next)
-                              }}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Title</Label>
-                            <Input
-                              value={p.title ?? ""}
-                              onChange={(e) => {
-                                const next = [...pages]
-                                next[idx] = { ...next[idx], title: e.target.value }
-                                setContentSectionPages(next)
-                              }}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Description</Label>
-                            <Textarea
-                              value={p.description ?? ""}
-                              onChange={(e) => {
-                                const next = [...pages]
-                                next[idx] = { ...next[idx], description: e.target.value }
-                                setContentSectionPages(next)
-                              }}
-                              rows={4}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Therapy Approach (one per line)</Label>
-                            <Textarea
-                              value={(p.therapyApproach ?? []).join("\n")}
-                              onChange={(e) => {
-                                const next = [...pages]
-                                next[idx] = { ...next[idx], therapyApproach: e.target.value.split("\n").filter(Boolean) }
-                                setContentSectionPages(next)
-                              }}
-                              rows={5}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Session Formats (one per line)</Label>
-                            <Textarea
-                              value={(p.sessionFormats ?? []).join("\n")}
-                              onChange={(e) => {
-                                const next = [...pages]
-                                next[idx] = { ...next[idx], sessionFormats: e.target.value.split("\n").filter(Boolean) }
-                                setContentSectionPages(next)
-                              }}
-                              rows={4}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Next Steps Links</Label>
-                            {(p.nextStepsLinks ?? []).map((link, linkIdx) => (
-                              <div key={`${p.slug}-link-${linkIdx}`} className="flex gap-2">
+                      {pages.map((p, idx) => (
+                        <TabsContent key={`page-${p.slug}`} value={p.slug} className="space-y-6">
+                          <Card>
+                            <CardHeader>
+                              <CardTitle className="flex items-center gap-2">
+                                <FileText className="w-5 h-5" />
+                                Edit Page
+                              </CardTitle>
+                              <CardDescription>{`Update content for /content-sections/${p.slug}`}</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                              <div className="space-y-2">
+                                <Label>Eyebrow Text</Label>
                                 <Input
-                                  placeholder="Label"
-                                  value={link.label}
+                                  value={p.eyebrow ?? ""}
                                   onChange={(e) => {
                                     const next = [...pages]
-                                    const links = [...(next[idx].nextStepsLinks ?? [])]
-                                    links[linkIdx] = { ...links[linkIdx], label: e.target.value }
-                                    next[idx] = { ...next[idx], nextStepsLinks: links }
+                                    next[idx] = { ...next[idx], eyebrow: e.target.value }
                                     setContentSectionPages(next)
                                   }}
                                 />
-                                <Input
-                                  placeholder="URL"
-                                  value={link.href}
-                                  onChange={(e) => {
-                                    const next = [...pages]
-                                    const links = [...(next[idx].nextStepsLinks ?? [])]
-                                    links[linkIdx] = { ...links[linkIdx], href: e.target.value }
-                                    next[idx] = { ...next[idx], nextStepsLinks: links }
-                                    setContentSectionPages(next)
-                                  }}
-                                />
-                                <Button
-                                  variant="outline"
-                                  onClick={() => {
-                                    const next = [...pages]
-                                    const links = [...(next[idx].nextStepsLinks ?? [])]
-                                    links.splice(linkIdx, 1)
-                                    next[idx] = { ...next[idx], nextStepsLinks: links }
-                                    setContentSectionPages(next)
-                                  }}
-                                >
-                                  Remove
-                                </Button>
                               </div>
-                            ))}
-                            <Button
-                              variant="outline"
-                              onClick={() => {
-                                const next = [...pages]
-                                next[idx] = { ...next[idx], nextStepsLinks: [...(next[idx].nextStepsLinks ?? []), { label: "", href: "" }] }
-                                setContentSectionPages(next)
-                              }}
-                            >
-                              + Add Link
-                            </Button>
-                          </div>
-                          <div className="space-y-2">
-                            <Label>FAQs</Label>
-                            {(p.faqs ?? []).map((faq, faqIdx) => (
-                              <div key={`${p.slug}-faq-${faqIdx}`} className="border rounded-lg p-4 space-y-2">
+                              <div className="space-y-2">
+                                <Label>Title</Label>
                                 <Input
-                                  placeholder="Question"
-                                  value={faq.question}
+                                  value={p.title ?? ""}
                                   onChange={(e) => {
                                     const next = [...pages]
-                                    const faqs = [...(next[idx].faqs ?? [])]
-                                    faqs[faqIdx] = { ...faqs[faqIdx], question: e.target.value }
-                                    next[idx] = { ...next[idx], faqs }
+                                    next[idx] = { ...next[idx], title: e.target.value }
                                     setContentSectionPages(next)
                                   }}
                                 />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Description</Label>
                                 <Textarea
-                                  placeholder="Answer"
-                                  value={faq.answer}
+                                  value={p.description ?? ""}
                                   onChange={(e) => {
                                     const next = [...pages]
-                                    const faqs = [...(next[idx].faqs ?? [])]
-                                    faqs[faqIdx] = { ...faqs[faqIdx], answer: e.target.value }
-                                    next[idx] = { ...next[idx], faqs }
+                                    next[idx] = { ...next[idx], description: e.target.value }
                                     setContentSectionPages(next)
                                   }}
-                                  rows={3}
+                                  rows={4}
                                 />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Therapy Approach (one per line)</Label>
+                                <Textarea
+                                  value={(p.therapyApproach ?? []).join("\n")}
+                                  onChange={(e) => {
+                                    const next = [...pages]
+                                    next[idx] = { ...next[idx], therapyApproach: e.target.value.split("\n").filter(Boolean) }
+                                    setContentSectionPages(next)
+                                  }}
+                                  rows={5}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Session Formats (one per line)</Label>
+                                <Textarea
+                                  value={(p.sessionFormats ?? []).join("\n")}
+                                  onChange={(e) => {
+                                    const next = [...pages]
+                                    next[idx] = { ...next[idx], sessionFormats: e.target.value.split("\n").filter(Boolean) }
+                                    setContentSectionPages(next)
+                                  }}
+                                  rows={4}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Next Steps Links</Label>
+                                {(p.nextStepsLinks ?? []).map((link, linkIdx) => (
+                                  <div key={`${p.slug}-link-${linkIdx}`} className="flex gap-2">
+                                    <Input
+                                      placeholder="Label"
+                                      value={link.label}
+                                      onChange={(e) => {
+                                        const next = [...pages]
+                                        const links = [...(next[idx].nextStepsLinks ?? [])]
+                                        links[linkIdx] = { ...links[linkIdx], label: e.target.value }
+                                        next[idx] = { ...next[idx], nextStepsLinks: links }
+                                        setContentSectionPages(next)
+                                      }}
+                                    />
+                                    <Input
+                                      placeholder="URL"
+                                      value={link.href}
+                                      onChange={(e) => {
+                                        const next = [...pages]
+                                        const links = [...(next[idx].nextStepsLinks ?? [])]
+                                        links[linkIdx] = { ...links[linkIdx], href: e.target.value }
+                                        next[idx] = { ...next[idx], nextStepsLinks: links }
+                                        setContentSectionPages(next)
+                                      }}
+                                    />
+                                    <Button
+                                      variant="outline"
+                                      onClick={() => {
+                                        const next = [...pages]
+                                        const links = [...(next[idx].nextStepsLinks ?? [])]
+                                        links.splice(linkIdx, 1)
+                                        next[idx] = { ...next[idx], nextStepsLinks: links }
+                                        setContentSectionPages(next)
+                                      }}
+                                    >
+                                      Remove
+                                    </Button>
+                                  </div>
+                                ))}
                                 <Button
                                   variant="outline"
-                                  size="sm"
                                   onClick={() => {
                                     const next = [...pages]
-                                    const faqs = [...(next[idx].faqs ?? [])]
-                                    faqs.splice(faqIdx, 1)
-                                    next[idx] = { ...next[idx], faqs }
+                                    next[idx] = {
+                                      ...next[idx],
+                                      nextStepsLinks: [...(next[idx].nextStepsLinks ?? []), { label: "", href: "" }],
+                                    }
                                     setContentSectionPages(next)
                                   }}
                                 >
-                                  Remove
+                                  + Add Link
                                 </Button>
                               </div>
-                            ))}
-                            <Button
-                              variant="outline"
-                              onClick={() => {
-                                const next = [...pages]
-                                next[idx] = { ...next[idx], faqs: [...(next[idx].faqs ?? []), { question: "", answer: "" }] }
-                                setContentSectionPages(next)
-                              }}
-                            >
-                              + Add FAQ
-                            </Button>
-                          </div>
-                          <div className="space-y-2">
-                            <Label>SEO Meta Title</Label>
-                            <Input
-                              value={p.seo?.metaTitle ?? ""}
-                              onChange={(e) => {
-                                const next = [...pages]
-                                next[idx] = { ...next[idx], seo: { ...(next[idx].seo ?? {}), metaTitle: e.target.value } }
-                                setContentSectionPages(next)
-                              }}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>SEO Meta Description</Label>
-                            <Textarea
-                              value={p.seo?.metaDescription ?? ""}
-                              onChange={(e) => {
-                                const next = [...pages]
-                                next[idx] = { ...next[idx], seo: { ...(next[idx].seo ?? {}), metaDescription: e.target.value } }
-                                setContentSectionPages(next)
-                              }}
-                              rows={2}
-                            />
-                          </div>
-                          <div className="flex flex-wrap gap-3">
-                            <Button onClick={() => saveAll("Pages")} disabled={saving !== null}>
-                              <Save className="w-4 h-4 mr-2" />
-                              Save Changes
-                            </Button>
-                            <a
-                              className="text-sm underline text-[var(--accent)] self-center"
-                              href={`/content-sections/${p.slug}`}
-                              target="_blank"
-                              rel="noreferrer noopener"
-                            >
-                              View page →
-                            </a>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </TabsContent>
-                  ))}
+                              <div className="space-y-2">
+                                <Label>FAQs</Label>
+                                {(p.faqs ?? []).map((faq, faqIdx) => (
+                                  <div key={`${p.slug}-faq-${faqIdx}`} className="border rounded-lg p-4 space-y-2">
+                                    <Input
+                                      placeholder="Question"
+                                      value={faq.question}
+                                      onChange={(e) => {
+                                        const next = [...pages]
+                                        const faqs = [...(next[idx].faqs ?? [])]
+                                        faqs[faqIdx] = { ...faqs[faqIdx], question: e.target.value }
+                                        next[idx] = { ...next[idx], faqs }
+                                        setContentSectionPages(next)
+                                      }}
+                                    />
+                                    <Textarea
+                                      placeholder="Answer"
+                                      value={faq.answer}
+                                      onChange={(e) => {
+                                        const next = [...pages]
+                                        const faqs = [...(next[idx].faqs ?? [])]
+                                        faqs[faqIdx] = { ...faqs[faqIdx], answer: e.target.value }
+                                        next[idx] = { ...next[idx], faqs }
+                                        setContentSectionPages(next)
+                                      }}
+                                      rows={3}
+                                    />
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        const next = [...pages]
+                                        const faqs = [...(next[idx].faqs ?? [])]
+                                        faqs.splice(faqIdx, 1)
+                                        next[idx] = { ...next[idx], faqs }
+                                        setContentSectionPages(next)
+                                      }}
+                                    >
+                                      Remove
+                                    </Button>
+                                  </div>
+                                ))}
+                                <Button
+                                  variant="outline"
+                                  onClick={() => {
+                                    const next = [...pages]
+                                    next[idx] = { ...next[idx], faqs: [...(next[idx].faqs ?? []), { question: "", answer: "" }] }
+                                    setContentSectionPages(next)
+                                  }}
+                                >
+                                  + Add FAQ
+                                </Button>
+                              </div>
+                              <div className="space-y-2">
+                                <Label>SEO Meta Title</Label>
+                                <Input
+                                  value={p.seo?.metaTitle ?? ""}
+                                  onChange={(e) => {
+                                    const next = [...pages]
+                                    next[idx] = { ...next[idx], seo: { ...(next[idx].seo ?? {}), metaTitle: e.target.value } }
+                                    setContentSectionPages(next)
+                                  }}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>SEO Meta Description</Label>
+                                <Textarea
+                                  value={p.seo?.metaDescription ?? ""}
+                                  onChange={(e) => {
+                                    const next = [...pages]
+                                    next[idx] = { ...next[idx], seo: { ...(next[idx].seo ?? {}), metaDescription: e.target.value } }
+                                    setContentSectionPages(next)
+                                  }}
+                                  rows={2}
+                                />
+                              </div>
+                              <div className="flex flex-wrap gap-3">
+                                <Button onClick={() => saveAll("Pages")} disabled={saving !== null}>
+                                  <Save className="w-4 h-4 mr-2" />
+                                  Save Changes
+                                </Button>
+                                <a
+                                  className="text-sm underline text-[var(--accent)] self-center"
+                                  href={`/content-sections/${p.slug}`}
+                                  target="_blank"
+                                  rel="noreferrer noopener"
+                                >
+                                  View page →
+                                </a>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </TabsContent>
+                      ))}
                     </Tabs>
-                  )
-                })()}
+                  ) : (
+                    <div className="text-sm text-muted-foreground">No content-section pages found.</div>
+                  )}
                      <Card>
                        <CardHeader>
                          <CardTitle className="flex items-center gap-2">
@@ -2055,7 +2058,6 @@ function CodeAgentBox() {
                          </Button>
                        </CardContent>
                      </Card>
-                   </TabsContent>
 
                    <TabsContent value="monetary-psychotherapy" className="space-y-6">
                      <Card>
@@ -2760,7 +2762,6 @@ function CodeAgentBox() {
                       </CardContent>
                     </Card>
                   </TabsContent>
-                 </Tabs>
                </CardContent>
              </Card>
            </TabsContent>

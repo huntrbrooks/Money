@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
 import { AUTH_COOKIE_NAME, getEnvVar, verifyAuthToken } from "@/lib/auth"
 import { normalizeAssetPath, putAsset } from "@/lib/assets"
+import { hasSupabase } from "@/lib/supabase-rest"
 import path from "path"
 
 export const runtime = "nodejs"
@@ -112,7 +113,7 @@ export async function POST(request: Request) {
 
   // Always return our proxy URL so assets are served consistently (Supabase/private or local).
   const url = `/api/assets/${encodeURI(objectPath)}`
-  return NextResponse.json({ ok: true, path: objectPath, url })
+  return NextResponse.json({ ok: true, path: objectPath, url, storage: hasSupabase() ? "supabase" : "local" })
 }
 
 
