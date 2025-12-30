@@ -710,7 +710,9 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     }
     const data = (await res.json().catch(() => null)) as { url?: string } | null
     if (!data?.url) throw new Error("Upload did not return a URL")
-    return data.url
+    // Cache-bust: many assets are uploaded to a stable path (upsert). Append a version query so
+    // browsers/CDNs will fetch the new bytes immediately after replacement.
+    return `${data.url}${data.url.includes("?") ? "&" : "?"}v=${Date.now()}`
   }
 
   async function openPostEditor(post: PostMeta) {
@@ -3663,8 +3665,7 @@ function CodeAgentBox() {
                              try {
                               const url = await uploadAsset({ path: "docs/privacy-policy{{ext}}", accept: ".docx,.pdf" })
                                if (!url) return
-                              const versionedUrl = `${url}${url.includes("?") ? "&" : "?"}v=${Date.now()}`
-                              setLegal((prev) => ({ ...prev, privacy: { ...(prev.privacy ?? {}), downloadUrl: versionedUrl } }))
+                              setLegal((prev) => ({ ...prev, privacy: { ...(prev.privacy ?? {}), downloadUrl: url } }))
                                toast({ title: "Uploaded", description: "Privacy Policy document updated." })
                              } catch (e: unknown) {
                                toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
@@ -3718,8 +3719,7 @@ function CodeAgentBox() {
                              try {
                               const url = await uploadAsset({ path: "docs/terms-of-service{{ext}}", accept: ".docx,.pdf" })
                                if (!url) return
-                              const versionedUrl = `${url}${url.includes("?") ? "&" : "?"}v=${Date.now()}`
-                              setLegal((prev) => ({ ...prev, terms: { ...(prev.terms ?? {}), downloadUrl: versionedUrl } }))
+                              setLegal((prev) => ({ ...prev, terms: { ...(prev.terms ?? {}), downloadUrl: url } }))
                                toast({ title: "Uploaded", description: "Terms of Service document updated." })
                              } catch (e: unknown) {
                                toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
@@ -3783,8 +3783,7 @@ function CodeAgentBox() {
                             try {
                               const url = await uploadAsset({ path: "docs/consent-and-policies{{ext}}", accept: ".docx,.pdf" })
                               if (!url) return
-                              const versionedUrl = `${url}${url.includes("?") ? "&" : "?"}v=${Date.now()}`
-                              setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), downloadUrl: versionedUrl } }))
+                              setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), downloadUrl: url } }))
                               toast({ title: "Uploaded", description: "Consent & Policies document updated." })
                             } catch (e: unknown) {
                               toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
