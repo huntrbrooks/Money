@@ -72,6 +72,14 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
   const section = sections.find((s) => normalizeSlug(s.slug) === requested) ?? null
 
   const debug = String(searchParams?.debug ?? "") === "1"
+  const debugPayload = {
+    requested: params.slug,
+    normalizedRequested: requested,
+    matched: { page: Boolean(page), section: Boolean(section) },
+    contentSectionPages: { count: pages.length, slugs: pages.map((p) => p.slug) },
+    contentSections: { count: sections.length, slugs: sections.map((s) => s.slug) },
+  }
+
   if (debug) {
     return (
       <div className="min-h-screen bg-muted">
@@ -83,17 +91,7 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
           </p>
           <div className="mt-6 rounded-lg border border-border/40 bg-background/70 p-4 text-sm">
             <pre className="whitespace-pre-wrap break-words">
-              {JSON.stringify(
-                {
-                  requested: params.slug,
-                  normalizedRequested: requested,
-                  matched: { page: Boolean(page), section: Boolean(section) },
-                  contentSectionPages: { count: pages.length, slugs: pages.map((p) => p.slug) },
-                  contentSections: { count: sections.length, slugs: sections.map((s) => s.slug) },
-                },
-                null,
-                2,
-              )}
+              {JSON.stringify(debugPayload, null, 2)}
             </pre>
           </div>
         </main>
@@ -101,7 +99,35 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
       </div>
     )
   }
-  if (!page && !section) notFound()
+  // IMPORTANT: do not hard-404 here. In production this page was returning an HTTP 404 fallback even when
+  // config contained the slug. Render a safe fallback to keep links usable and allow diagnosis.
+  const missing = !page && !section
+  if (missing) {
+    return (
+      <div className="min-h-screen bg-muted">
+        <Navigation />
+        <main className="container mx-auto px-4 py-16">
+          <div className="max-w-3xl mx-auto space-y-6">
+            <Link
+              href="/"
+              className="text-sm text-[var(--primary)]/80 hover:text-[var(--primary)] underline inline-flex items-center gap-2"
+            >
+              ← Back to Home
+            </Link>
+            <h1 className="font-serif text-4xl text-[var(--foreground)] font-light">Section not available</h1>
+            <p className="text-[var(--primary)]">
+              This page is still being set up. Please check back soon.
+            </p>
+            <div className="rounded-lg border border-border/40 bg-background/70 p-4 text-sm">
+              <p className="text-muted-foreground mb-2">Diagnostics (temporary)</p>
+              <pre className="whitespace-pre-wrap break-words">{JSON.stringify(debugPayload, null, 2)}</pre>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
+  }
 
   const faqJsonLd = buildFaqSchema(page?.faqs ?? [])
   const serviceJsonLd = buildServiceSchema(config, {
