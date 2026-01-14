@@ -28,12 +28,6 @@ export default async function AboutPage() {
   const emailAlt = config.contact?.emailAlt ?? ""
   const phone = config.contact?.phone ?? "+61 488 222 137"
   const credentials = ["D.Couns.", "B.Couns.", "MCouns&Psych"]
-  const focusAreas = [
-    "Financial trauma, money shame, and inequality",
-    "Self-worth, consent, and nervous-system safety",
-    "Grief, life transitions, and identity work",
-    "Generational money stories and relationship dynamics",
-  ]
 
   return (
     <div className="min-h-screen bg-muted">
@@ -124,73 +118,6 @@ export default async function AboutPage() {
                   </Button>
                   <Button asChild variant="outline" className="h-12 px-8">
                     <Link href="/monetary-psychotherapy">Explore Monetary Psychotherapy</Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section
-          className="py-24 md:py-32"
-          style={{
-            background:
-              "linear-gradient(180deg, #e5eed2 0%, rgba(229,238,210,0.95) 30%, rgba(222,237,226,0.9) 55%, rgba(217,235,234,0.92) 75%, #d7e9ec 100%)",
-          }}
-        >
-          <div className="container mx-auto px-6 md:px-8">
-            <div className="max-w-5xl mx-auto space-y-10">
-              <div className="space-y-4">
-                <p className="text-xs uppercase tracking-[0.15em] text-[var(--primary)] font-bold">Therapeutic focus</p>
-                <h2 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">
-                  What sessions with Dan prioritise
-                </h2>
-                <p className="text-lg text-[var(--primary)] leading-relaxed">
-                  Every session is paced with consent and clarity. There is never pressure to disclose more than feels safe.
-                  Together you explore the emotional, relational, and practical dimensions of money, identity, and belonging.
-                </p>
-              </div>
-              <div className="grid gap-6 md:grid-cols-2">
-                {focusAreas.map((area) => (
-                  <div key={area} className="rounded-2xl border border-[var(--secondary)] bg-[var(--section-bg-2)]/80 p-6 shadow-sm space-y-3">
-                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)]/15 text-[var(--accent)] font-semibold text-lg uppercase">
-                      {area.slice(0, 1)}
-                    </span>
-                    <p className="text-[var(--foreground)] font-serif text-2xl leading-tight">{area}</p>
-                    <p className="text-[var(--primary)]">
-                      Dan helps you identify what safety feels like in your body, honours ambivalence, and supports small, grounded actions that align with your values.
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section
-          className="py-24 md:py-32"
-          style={{
-            background:
-              "linear-gradient(180deg, #d7e9ec 0%, rgba(215,233,236,0.95) 40%, rgba(222,237,226,0.85) 70%, #e5eed2 100%)",
-          }}
-        >
-          <div className="container mx-auto px-6 md:px-8">
-            <div className="max-w-4xl mx-auto space-y-8 text-[var(--primary)] leading-relaxed">
-              <h2 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">Practice foundations</h2>
-              {(config.about?.paragraphs ?? []).map((paragraph, idx) => (
-                <p key={idx}>{paragraph}</p>
-              ))}
-              <div className="rounded-2xl border border-[var(--secondary)] bg-[var(--section-bg-1)]/85 p-8 space-y-4">
-                <p className="text-xs uppercase tracking-[0.15em] text-[var(--primary)] font-bold">Ready when you are</p>
-                <p className="text-2xl font-serif text-[var(--foreground)]">
-                  Therapy is collaborative. You choose the format, pace, and boundaries that protect your nervous system.
-                </p>
-                <div className="flex flex-wrap gap-4">
-                  <Button asChild className="h-12 px-7 bg-[var(--accent)] text-white">
-                    <Link href="/bookings">Book an Initial Consultation</Link>
-                  </Button>
-                  <Button asChild variant="outline" className="h-12 px-7">
-                    <Link href="/enquiry">Have Questions? Reach Out</Link>
                   </Button>
                 </div>
               </div>

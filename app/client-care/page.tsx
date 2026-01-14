@@ -104,25 +104,6 @@ export default async function ClientCarePage() {
           </div>
         </section>
 
-        <section className="py-16">
-          <div className="container mx-auto px-4 sm:px-6 md:px-8 space-y-6">
-            <div className="text-center space-y-2">
-              <h3 className="font-serif text-3xl text-[var(--foreground)] font-light">Need support between sessions?</h3>
-              <p className="text-[var(--primary)]">
-                Book a check-in or send a secure message if something urgent shifts.
-              </p>
-            </div>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button asChild className="h-12 px-8 bg-[var(--accent)] text-white">
-                <Link href="/bookings">Book a check-in</Link>
-              </Button>
-              <Button asChild variant="outline" className="h-12 px-8">
-                <Link href="/enquiry">Send a message</Link>
-              </Button>
-            </div>
-          </div>
-        </section>
-
         <section className="py-16 bg-[var(--section-bg-1)]">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 space-y-6">
             <div className="text-center space-y-2">

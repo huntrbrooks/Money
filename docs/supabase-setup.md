@@ -74,3 +74,4 @@ After setup, verify:
 2. Make a small change in Admin → Save → Refresh → confirm it persists
 3. Upload a test PDF/image → confirm it's accessible via `/api/assets/...`
 
+

@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { Navigation, Footer } from "@/components/navigation"
 import { readSiteConfig } from "@/lib/config"
 import { DynamicForm } from "@/components/forms/DynamicForm"
@@ -52,15 +51,6 @@ export default async function EnquiryPage() {
               <div className="mb-10 text-center">
                 <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">{page.title}</h1>
                 {page.subtitle ? <p className="text-[var(--primary)] mt-2">{page.subtitle}</p> : null}
-                <p className="text-sm text-[var(--primary)]/80 mt-3">
-                  <Link className="underline" href="/consent">
-                    Consent &amp; Policies
-                  </Link>{" "}
-                  ·{" "}
-                  <Link className="underline" href="/client-care">
-                    Client Care Hub
-                  </Link>
-                </p>
               </div>
 
               <DynamicForm page={page} />

@@ -537,12 +537,6 @@ export const defaultConfig: SiteConfig = {
       downloadUrl: "/Terms%20of%20Service.pdf",
       bodyMdx: "",
     },
-    consent: {
-      title: "Consent & Policies",
-      downloadUrl: "/Consent%20and%20Policies.docx",
-      bodyMdx: "",
-      requiredStatement: "I have read & I understand the contents of this document",
-    },
   },
   clientCare: {
     downloads: [
@@ -864,22 +858,16 @@ export const defaultConfig: SiteConfig = {
   ],
   forms: {
     enquiry: "",
-    consent: "",
     intake: "",
   },
   formPages: {
     enquiry: {
       title: "Enquiry Form",
-      subtitle: "We’ll get back to you as soon as possible.",
+      subtitle: "We'll get back to you as soon as possible.",
       action: "/api/enquiry",
       submitLabel: "Send",
       successMessage: "Thank you — your enquiry has been sent.",
       errorMessageMissingRequired: "Please complete all required fields.",
-      steps: [
-        { label: "About you", completeWhenAllOf: ["firstName", "email", "phone"] },
-        { label: "Support focus", completeWhenAllOf: ["message"] },
-        { label: "Consent", completeWhenAllOf: ["consentAccepted"] },
-      ],
       sections: [
         {
           title: "About you",
@@ -917,27 +905,6 @@ export const defaultConfig: SiteConfig = {
                 { value: "Walk & Discuss", label: "Walk & Discuss therapy" },
                 { value: "Not sure", label: "Not sure yet" },
               ],
-            },
-          ],
-        },
-        {
-          title: "Consent",
-          layout: "stack",
-          fields: [
-            {
-              type: "checkbox",
-              name: "updatesOptIn",
-              label: "Send me the Financial Safety Check-in and occasional updates (you can unsubscribe anytime).",
-              required: false,
-              defaultChecked: false,
-            },
-            {
-              type: "checkbox",
-              name: "consentAccepted",
-              label: "I’ve read the consent & policies and understand urgent support is available in the Client Care Hub.",
-              required: true,
-              mustBeTrue: true,
-              defaultChecked: false,
             },
           ],
         },
@@ -1028,8 +995,6 @@ export const defaultConfig: SiteConfig = {
                 { value: "prefer_not", label: "Prefer not to say" },
               ],
             },
-            { type: "text", name: "nextOfKinName", label: "Next of Kin (In case of emergency)", required: false },
-            { type: "tel", name: "nextOfKinPhone", label: "Phone number for Next of Kin", required: false },
           ],
         },
         {
@@ -1150,27 +1115,6 @@ export const defaultConfig: SiteConfig = {
           fields: [
             { type: "textarea", name: "mainReason", label: "What is the main reason/s you are seeking therapy?", required: false, rows: 6 },
             { type: "textarea", name: "otherInformation", label: "Is there any other information you think might be important?", required: false, rows: 5 },
-          ],
-        },
-      ],
-    },
-    consent: {
-      title: "Consent Acknowledgement",
-      subtitle: "Complete the acknowledgement below.",
-      action: "/api/consent",
-      submitLabel: "Send",
-      successMessage: "Thank you — your consent has been recorded and sent.",
-      errorMessageMissingRequired: "Please complete all required fields.",
-      sections: [
-        {
-          title: "Acknowledgement",
-          layout: "stack",
-          fields: [
-            { type: "text", name: "statement", label: "Required statement", required: true },
-            { type: "text", name: "firstName", label: "First Name", required: true },
-            { type: "text", name: "lastName", label: "Last Name", required: true },
-            { type: "text", name: "date", label: "Date (dd/mm/yyyy)", required: true, placeholder: "dd/mm/yyyy" },
-            { type: "text", name: "fullName", label: "Print Full Name", required: true },
           ],
         },
       ],
@@ -1667,7 +1611,6 @@ export async function readSiteConfig(): Promise<SiteConfig> {
             legal: {
               privacy: { ...(defaultConfig.legal?.privacy ?? {}), ...(parsed.legal?.privacy ?? {}) },
               terms: { ...(defaultConfig.legal?.terms ?? {}), ...(parsed.legal?.terms ?? {}) },
-              consent: { ...(defaultConfig.legal?.consent ?? {}), ...(parsed.legal?.consent ?? {}) },
             },
             clientCare: {
               downloads: parsed.clientCare?.downloads ?? defaultConfig.clientCare?.downloads,
@@ -1763,7 +1706,6 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       legal: {
         privacy: { ...(defaultConfig.legal?.privacy ?? {}), ...(parsed.legal?.privacy ?? {}) },
         terms: { ...(defaultConfig.legal?.terms ?? {}), ...(parsed.legal?.terms ?? {}) },
-        consent: { ...(defaultConfig.legal?.consent ?? {}), ...(parsed.legal?.consent ?? {}) },
       },
       clientCare: {
         downloads: parsed.clientCare?.downloads ?? defaultConfig.clientCare?.downloads,
@@ -1870,11 +1812,10 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
     navigation: newConfig.navigation ?? defaultConfig.navigation,
     contact: { ...defaultConfig.contact, ...(newConfig.contact ?? {}) },
     social: { ...(defaultConfig.social ?? {}), ...(newConfig.social ?? {}) },
-    legal: {
-      privacy: { ...(defaultConfig.legal?.privacy ?? {}), ...(newConfig.legal?.privacy ?? {}) },
-      terms: { ...(defaultConfig.legal?.terms ?? {}), ...(newConfig.legal?.terms ?? {}) },
-      consent: { ...(defaultConfig.legal?.consent ?? {}), ...(newConfig.legal?.consent ?? {}) },
-    },
+      legal: {
+        privacy: { ...(defaultConfig.legal?.privacy ?? {}), ...(newConfig.legal?.privacy ?? {}) },
+        terms: { ...(defaultConfig.legal?.terms ?? {}), ...(newConfig.legal?.terms ?? {}) },
+      },
     contentSections: normalizeContentSectionsFixedLength(newConfig.contentSections, defaultConfig.contentSections),
     contentSectionPages: normalizeContentSectionPagesFixedLength(newConfig.contentSectionPages, defaultConfig.contentSectionPages),
     footer: { ...defaultConfig.footer, ...(newConfig.footer ?? {}) },

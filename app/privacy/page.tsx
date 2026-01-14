@@ -47,13 +47,6 @@ export default async function PrivacyPage() {
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-5xl mx-auto space-y-6">
         <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">{title}</h1>
-        <p className="text-[var(--primary)] leading-relaxed">
-          You can view the latest Privacy Policy below. You may also{" "}
-          <a href={downloadUrl} className="underline" download>
-            download the Word document
-          </a>
-          .
-        </p>
         {mdx ? (
           <div className="rounded-md border border-[var(--secondary)] bg-[var(--section-bg-1)] p-6">
             <div className="mdx-content space-y-4 text-[var(--primary)] leading-relaxed">{mdx.content}</div>

@@ -196,3 +196,4 @@ Use this checklist to verify all changes are working correctly after Supabase se
    - Verify page components use the config value, not hardcoded text
    - Clear browser cache
 
+

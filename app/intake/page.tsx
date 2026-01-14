@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { Navigation, Footer } from "@/components/navigation"
 import { readSiteConfig } from "@/lib/config"
 import { DynamicForm } from "@/components/forms/DynamicForm"
@@ -52,14 +51,6 @@ export default async function IntakePage() {
                 <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">{page.title}</h1>
                 {page.subtitle ? <p className="text-[var(--primary)] mt-2">{page.subtitle}</p> : null}
               </div>
-
-              <p className="text-sm text-[var(--primary)] pb-4">
-                Need a pause? Take a break and return when you feel ready. Grounding resources live in the{" "}
-                <Link href="/client-care" className="underline">
-                  Client Care Hub
-                </Link>
-                .
-              </p>
 
               <DynamicForm page={page} />
             </div>

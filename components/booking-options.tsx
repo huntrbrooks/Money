@@ -180,7 +180,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
                   className="mt-6 w-full rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90"
                 >
                   <a href={buildBookingUrl(option.typeId)} target="_blank" rel="noopener noreferrer">
-                    Book this session
+                    Book this consultation
                   </a>
                 </Button>
               </article>

@@ -193,7 +193,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const toAddress = cfg.contact?.email || process.env.FALLBACK_TO_EMAIL
+  const toAddress = "dan@financialabusetherapy.com.au"
   const data: EnquiryPayload = {
     firstName,
     lastName,

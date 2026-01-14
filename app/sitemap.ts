@@ -35,7 +35,6 @@ const MARKETING_ROUTES: RouteConfig[] = [
   { path: "/client-care", changeFrequency: "monthly", priority: 0.7 },
   { path: "/enquiry", changeFrequency: "monthly", priority: 0.6 },
   { path: "/intake", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/consent", changeFrequency: "yearly", priority: 0.5 },
   { path: "/newsletter", changeFrequency: "monthly", priority: 0.5 },
   
   // Legal/static pages - lower priority

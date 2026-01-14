@@ -18,8 +18,6 @@ type IntakePayload = {
   occupation?: string
   relationshipStatus?: string
   haveChildren?: string
-  nextOfKinName?: string
-  nextOfKinPhone?: string
   generalHealth?: number
   seenCounsellor?: string
   onMedication?: string
@@ -192,8 +190,6 @@ function compileText(data: IntakePayload) {
     `Occupation: ${data.occupation || "-"}`,
     `Relationship status: ${labelForRelationship(data.relationshipStatus)}`,
     `Have children: ${labelYesNo(data.haveChildren)}`,
-    `Next of kin: ${data.nextOfKinName || "-"}`,
-    `Next of kin phone: ${data.nextOfKinPhone || "-"}`,
     ``,
     `General health (1–5): ${String(data.generalHealth ?? "-")}`,
     `Seen counsellor/psychologist before: ${labelYesNo(data.seenCounsellor)}`,
@@ -245,8 +241,6 @@ function compileHtml(data: IntakePayload) {
       <p><strong>Occupation:</strong> ${sanitizeOrDash(data.occupation)}</p>
       <p><strong>Relationship status:</strong> ${sanitizeOrDash(labelForRelationship(data.relationshipStatus))}</p>
       <p><strong>Have children:</strong> ${sanitizeOrDash(labelYesNo(data.haveChildren))}</p>
-      <p><strong>Next of kin:</strong> ${sanitizeOrDash(data.nextOfKinName)}</p>
-      <p><strong>Next of kin phone:</strong> ${sanitizeOrDash(data.nextOfKinPhone)}</p>
       <p><strong>General health (1–5):</strong> ${sanitizeOrDash(String(data.generalHealth ?? "-"))}</p>
       <p><strong>Seen counsellor/psychologist before:</strong> ${sanitizeOrDash(labelYesNo(data.seenCounsellor))}</p>
       <p><strong>On medication from any previous issue:</strong> ${sanitizeOrDash(labelYesNo(data.onMedication))}</p>
@@ -460,8 +454,6 @@ export async function POST(req: Request) {
     occupation: s(rawLegacy.occupation, 200),
     relationshipStatus: s(rawLegacy.relationshipStatus, 40),
     haveChildren: s(rawLegacy.haveChildren, 40),
-    nextOfKinName: s(rawLegacy.nextOfKinName, 200),
-    nextOfKinPhone: s(rawLegacy.nextOfKinPhone, 60),
     generalHealth: sn(rawLegacy.generalHealth),
     seenCounsellor: s(rawLegacy.seenCounsellor, 10),
     onMedication: s(rawLegacy.onMedication, 10),

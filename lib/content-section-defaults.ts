@@ -98,7 +98,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       "Plan for steady, realistic steps (documentation, advocacy, support services).",
     ],
     sessionFormats: ["Telehealth is available for accessibility.", "Sessions can include planning, scripts, and support for difficult family dynamics."],
-    nextStepsLinks: [{ label: "Book a session", href: "/#book" }, { label: "What is financial abuse?", href: "/content-sections/what-is-financial-abuse" }],
+    nextStepsLinks: [{ label: "Book a consultation", href: "/#book" }, { label: "What is financial abuse?", href: "/content-sections/what-is-financial-abuse" }],
     faqs: [
       {
         question: "What makes this type of abuse hard to spot?",
@@ -128,7 +128,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       "Strengthen communication around money (requests, refusals, agreements).",
     ],
     sessionFormats: ["Telehealth and in‑person sessions.", "A balance of insight + practical tools you can apply immediately."],
-    nextStepsLinks: [{ label: "Book a session", href: "/#book" }, { label: "Why money triggers anxiety", href: "/content-sections/why-money-triggers-anxiety" }],
+    nextStepsLinks: [{ label: "Book a consultation", href: "/#book" }, { label: "Why money triggers anxiety", href: "/content-sections/why-money-triggers-anxiety" }],
     faqs: [
       {
         question: "Is this the same as financial coaching?",
@@ -158,7 +158,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       "Shift from survival strategies to sustainable choices.",
     ],
     sessionFormats: ["Telehealth or in‑person sessions.", "Structured support for both emotions and practical decision-making."],
-    nextStepsLinks: [{ label: "Book a session", href: "/#book" }, { label: "What is financial abuse?", href: "/content-sections/what-is-financial-abuse" }],
+    nextStepsLinks: [{ label: "Book a consultation", href: "/#book" }, { label: "What is financial abuse?", href: "/content-sections/what-is-financial-abuse" }],
     faqs: [
       {
         question: "Is financial trauma a real thing?",
@@ -188,7 +188,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       "Plan steps that reduce leverage and increase independence over time.",
     ],
     sessionFormats: ["Telehealth or in‑person sessions.", "Practical boundary and communication work alongside emotional support."],
-    nextStepsLinks: [{ label: "Book a session", href: "/#book" }, { label: "Estrangement", href: "/content-sections/estrangement" }],
+    nextStepsLinks: [{ label: "Book a consultation", href: "/#book" }, { label: "Estrangement", href: "/content-sections/estrangement" }],
     faqs: [
       {
         question: "Is it wrong to accept help if I need it?",
@@ -218,7 +218,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       "Plan for predictable triggers (holidays, family events, money requests).",
     ],
     sessionFormats: ["Telehealth or in‑person sessions.", "Consent-led pacing and clear, practical tools."],
-    nextStepsLinks: [{ label: "Book a session", href: "/#book" }, { label: "Family financial assistance", href: "/content-sections/family-financial-assistance-inheritance" }],
+    nextStepsLinks: [{ label: "Book a consultation", href: "/#book" }, { label: "Family financial assistance", href: "/content-sections/family-financial-assistance-inheritance" }],
     faqs: [
       {
         question: "Is estrangement always permanent?",
@@ -248,7 +248,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       "Integrate: strengthen trust in your decisions and relationships.",
     ],
     sessionFormats: ["Telehealth or in‑person sessions.", "A mix of emotional processing and practical planning."],
-    nextStepsLinks: [{ label: "Book a session", href: "/#book" }, { label: "What is financial abuse?", href: "/content-sections/what-is-financial-abuse" }],
+    nextStepsLinks: [{ label: "Book a consultation", href: "/#book" }, { label: "What is financial abuse?", href: "/content-sections/what-is-financial-abuse" }],
     faqs: [
       {
         question: "Do I need to leave the relationship first?",
@@ -277,7 +277,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       "A focus on autonomy, boundaries, and nervous-system safety.",
     ],
     sessionFormats: ["Telehealth and in‑person options depending on availability.", "Clear session structure with next steps you can actually use."],
-    nextStepsLinks: [{ label: "Book a session", href: "/#book" }, { label: "Read the About page", href: "/about" }],
+    nextStepsLinks: [{ label: "Book a consultation", href: "/#book" }, { label: "Read the About page", href: "/about" }],
     faqs: [
       {
         question: "What can I bring to the first session?",
