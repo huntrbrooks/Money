@@ -267,7 +267,7 @@ export default async function HomePage() {
                         ))}
                       </div>
 
-                      {/* Book a Session (under the 9 navy buttons) */}
+                      {/* Book a consultation (under the 9 navy buttons) */}
                       <div className="col-span-full flex justify-center pt-2">
                         <Button
                           asChild
@@ -364,7 +364,7 @@ export default async function HomePage() {
                     <div className="flex justify-center pt-6">
                       <Button asChild className="bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-lg">
                         <Link href="/#book" className="no-underline" data-analytics-id="other-areas-book">
-                          Book a Session
+                          Book a consultation
                         </Link>
                       </Button>
                     </div>
