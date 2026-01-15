@@ -17,8 +17,12 @@ type ContentSectionPageProps = {
   searchParams?: Record<string, string | string[] | undefined>
 }
 
+function isThenable(value: unknown): value is Promise<unknown> {
+  return typeof (value as { then?: unknown })?.then === "function"
+}
+
 export async function generateMetadata({ params }: ContentSectionPageProps): Promise<Metadata> {
-  const paramsObj = typeof (params as any)?.then === "function" ? await (params as any) : (params as any)
+  const paramsObj = isThenable(params) ? await params : params
   const slug = String(paramsObj?.slug ?? "")
   const path = `/content-sections/${slug}`
   try {
@@ -68,7 +72,7 @@ function normalizeSlug(input: string): string {
 }
 
 export default async function ContentSectionPage({ params, searchParams }: ContentSectionPageProps) {
-  const paramsObj = typeof (params as any)?.then === "function" ? await (params as any) : (params as any)
+  const paramsObj = isThenable(params) ? await params : params
   const slug = String(paramsObj?.slug ?? "")
   const config = await readSiteConfig()
   const requested = normalizeSlug(slug)
@@ -83,8 +87,8 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
     requested: slug,
     normalizedRequested: requested,
     paramsShape: {
-      isThenable: typeof (params as any)?.then === "function",
-      keys: params && typeof params === "object" ? Object.keys(params as any) : [],
+      isThenable: isThenable(params),
+      keys: params && typeof params === "object" ? Object.keys(params as Record<string, unknown>) : [],
     },
     matched: { page: Boolean(page), section: Boolean(section) },
     contentSectionPages: { count: pages.length, slugs: pages.map((p) => p.slug) },

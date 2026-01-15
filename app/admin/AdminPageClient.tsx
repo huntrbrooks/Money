@@ -896,15 +896,6 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     return `${data.url}${data.url.includes("?") ? "&" : "?"}v=${Date.now()}`
   }
 
-  function slugifyAdmin(input: string): string {
-    return String(input ?? "")
-      .toLowerCase()
-      .trim()
-      .replace(/['"]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-  }
-
   function extractPdfUrlFromMdx(mdx: string): string | null {
     const frontmatterMatch = mdx.match(/^---\n([\s\S]*?)\n---/)
     if (!frontmatterMatch) return null
