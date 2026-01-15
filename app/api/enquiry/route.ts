@@ -358,8 +358,6 @@ export async function POST(req: Request) {
   const subject = compileSubject(data)
   const text = page ? compileTextFromSchema(page, extracted, data) : compileText(data)
   const html = page ? compileHtmlFromSchema(page, extracted, data) : compileHtml(data)
-  const fromDan = "Dan <dan@financialabusetherapist.com.au>"
-  const adminRecipient = process.env.ADMIN_NOTIFICATION_EMAIL || "danlobel@icloud.com"
   const adminSubject = compileAdminNoticeSubject(data)
   const adminText = compileAdminNoticeText(data)
   const adminHtml = compileAdminNoticeHtml(data)
