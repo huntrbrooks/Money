@@ -72,7 +72,7 @@ export default async function ClientCarePage() {
                   className="w-full h-12 font-medium bg-[var(--section-bg-2)] text-[var(--foreground)] border-transparent hover:opacity-90 shadow-sm rounded-lg"
                 >
                   <Link href="/enquiry" className="no-underline">
-                    Inquiry Form
+                    Enquiry Form
                   </Link>
                 </Button>
                 <Button

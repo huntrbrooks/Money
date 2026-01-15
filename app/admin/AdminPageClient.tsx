@@ -189,7 +189,7 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
   const [navigation, setNavigation] = useState<{ label: string; href: string }[]>([])
   const [contact, setContact] = useState<{ phone?: string; email?: string; emailAlt?: string }>({})
   const [social, setSocial] = useState<NonNullable<SiteConfig["social"]>>({ facebook: "", instagram: "", linkedin: "" })
-  const [consultations, setConsultations] = useState<{ format: string; price: string; duration: string }[]>([])
+  const [consultations, setConsultations] = useState<NonNullable<SiteConfig["consultations"]>>([])
   const [resources, setResources] = useState<
     Array<{
       name: string
@@ -5307,7 +5307,7 @@ function CodeAgentBox() {
                  </div>
 
                 <div className="space-y-3">
-                  <p className="text-sm font-semibold text-[var(--foreground)]">Downloads & forms (Note: Page shows Inquiry Form, Intake Form, Privacy Policy, and Terms of Service as fixed buttons)</p>
+                  <p className="text-sm font-semibold text-[var(--foreground)]">Downloads & forms (Note: Page shows Enquiry Form, Intake Form, Privacy Policy, and Terms of Service as fixed buttons)</p>
                   <p className="text-xs text-[var(--primary)]/70">The downloads array is kept for backwards compatibility but the page displays fixed buttons.</p>
                   {Array.from({ length: 2 }).map((_, idx) => {
                     const link = clientCare?.downloads?.[idx] ?? { label: "", href: "" }
@@ -5361,51 +5361,156 @@ function CodeAgentBox() {
                  <CardDescription>Manage session formats and pricing</CardDescription>
                </CardHeader>
                <CardContent className="space-y-4">
-                 {consultations.map((opt, idx) => (
-                   <div key={idx} className="grid sm:grid-cols-3 gap-3 items-end bg-muted p-3 rounded-md">
-                     <div className="space-y-2">
-                       <Label>Format</Label>
-                       <Input
-                         value={opt.format}
-                         onChange={(e) => {
-                           const next = [...consultations]
-                           next[idx] = { ...next[idx], format: e.target.value }
-                           setConsultations(next)
-                         }}
-                       />
-                     </div>
-                     <div className="space-y-2">
-                       <Label>Price</Label>
-                       <Input
-                         value={opt.price}
-                         onChange={(e) => {
-                           const next = [...consultations]
-                           next[idx] = { ...next[idx], price: e.target.value }
-                           setConsultations(next)
-                         }}
-                       />
-                     </div>
-                     <div className="space-y-2">
-                       <Label>Duration</Label>
-                       <Input
-                         value={opt.duration}
-                         onChange={(e) => {
-                           const next = [...consultations]
-                           next[idx] = { ...next[idx], duration: e.target.value }
-                           setConsultations(next)
-                         }}
-                       />
-                     </div>
-                   </div>
-                 ))}
-                 <div className="flex gap-3">
-                   <Button variant="outline" onClick={() => setConsultations((p) => [...p, { format: "New", price: "$0", duration: "60 min" }])}>
-                     Add Option
-                   </Button>
-                   <Button onClick={() => saveAll("Consultations")} disabled={saving !== null}>
-                     <Save className="w-4 h-4 mr-2" /> Save Consultations
-                   </Button>
-                 </div>
+                {consultations.map((opt, idx) => (
+                  <div key={idx} className="space-y-3 rounded-md border border-border/40 bg-muted/60 p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <p className="text-sm font-semibold text-[var(--foreground)]">Option {idx + 1}</p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setConsultations((prev) => prev.filter((_, i) => i !== idx))}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <div className="space-y-2">
+                        <Label>Format</Label>
+                        <Input
+                          value={opt.format ?? ""}
+                          onChange={(e) => {
+                            const next = [...consultations]
+                            next[idx] = { ...next[idx], format: e.target.value }
+                            setConsultations(next)
+                          }}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Price</Label>
+                        <Input
+                          value={opt.price ?? ""}
+                          onChange={(e) => {
+                            const next = [...consultations]
+                            next[idx] = { ...next[idx], price: e.target.value }
+                            setConsultations(next)
+                          }}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Duration</Label>
+                        <Input
+                          value={opt.duration ?? ""}
+                          onChange={(e) => {
+                            const next = [...consultations]
+                            next[idx] = { ...next[idx], duration: e.target.value }
+                            setConsultations(next)
+                          }}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Mode</Label>
+                        <Input
+                          value={opt.mode ?? ""}
+                          onChange={(e) => {
+                            const next = [...consultations]
+                            next[idx] = { ...next[idx], mode: e.target.value }
+                            setConsultations(next)
+                          }}
+                          placeholder="e.g. Telehealth"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Location</Label>
+                        <Input
+                          value={opt.location ?? ""}
+                          onChange={(e) => {
+                            const next = [...consultations]
+                            next[idx] = { ...next[idx], location: e.target.value }
+                            setConsultations(next)
+                          }}
+                          placeholder="e.g. St Kilda Rd"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Highlight</Label>
+                        <Input
+                          value={opt.highlight ?? ""}
+                          onChange={(e) => {
+                            const next = [...consultations]
+                            next[idx] = { ...next[idx], highlight: e.target.value }
+                            setConsultations(next)
+                          }}
+                          placeholder="e.g. Most popular"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Booking Type ID</Label>
+                        <Input
+                          type="number"
+                          value={opt.typeId ?? ""}
+                          onChange={(e) => {
+                            const raw = e.target.value
+                            const parsed = raw === "" ? undefined : Number(raw)
+                            const next = [...consultations]
+                            next[idx] = { ...next[idx], typeId: Number.isFinite(parsed) ? parsed : undefined }
+                            setConsultations(next)
+                          }}
+                          placeholder="Acuity appointment type"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Payment note</Label>
+                        <Input
+                          value={opt.paymentNote ?? ""}
+                          onChange={(e) => {
+                            const next = [...consultations]
+                            next[idx] = { ...next[idx], paymentNote: e.target.value }
+                            setConsultations(next)
+                          }}
+                          placeholder="Optional"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Description</Label>
+                      <Textarea
+                        value={opt.description ?? ""}
+                        onChange={(e) => {
+                          const next = [...consultations]
+                          next[idx] = { ...next[idx], description: e.target.value }
+                          setConsultations(next)
+                        }}
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                ))}
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() =>
+                      setConsultations((prev) => [
+                        ...prev,
+                        {
+                          format: "New",
+                          price: "$0",
+                          duration: "60 min",
+                          mode: "",
+                          location: "",
+                          description: "",
+                          highlight: "",
+                          paymentNote: "",
+                          typeId: undefined,
+                        },
+                      ])
+                    }
+                  >
+                    Add Option
+                  </Button>
+                  <Button onClick={() => saveAll("Consultations")} disabled={saving !== null}>
+                    <Save className="w-4 h-4 mr-2" /> Save Consultations
+                  </Button>
+                </div>
                </CardContent>
              </Card>
 

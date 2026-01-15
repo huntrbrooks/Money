@@ -65,7 +65,14 @@ type BookingOptionsProps = {
 }
 
 export function BookingOptions({ options = [], bookingCopy, contactEmail, contactPhone }: BookingOptionsProps) {
-  if (!options.length) {
+  const visibleOptions = options.filter((option) => {
+    const format = String(option.format ?? "").trim()
+    const price = String(option.price ?? "").trim()
+    const duration = String(option.duration ?? "").trim()
+    return format.length > 0 && price.length > 0 && duration.length > 0
+  })
+
+  if (!visibleOptions.length) {
     return null
   }
 
@@ -91,7 +98,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
         {/* Mobile: compact dropdowns (accordion) */}
         <div className="sm:hidden">
           <Accordion type="single" collapsible className="divide-y rounded-3xl border border-[#d4ddd8] bg-[var(--section-bg-2)]/60">
-            {options.map((option) => {
+            {visibleOptions.map((option) => {
               const value = `consultation-${option.typeId ?? option.format}`
               const location = option.location ?? ""
               return (
@@ -143,7 +150,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
 
         {/* Desktop: existing cards */}
         <div className="hidden gap-5 sm:grid sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {options.map((option) => {
+          {visibleOptions.map((option) => {
             const location = option.location ?? ""
             return (
               <article

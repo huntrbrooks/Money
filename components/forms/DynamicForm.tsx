@@ -70,6 +70,7 @@ export function DynamicForm({ page }: { page: FormPage }) {
       return isFilled(field, values[name])
     }),
   }))
+  const showSteps = stepStates.length > 0 && page.action !== "/api/enquiry"
 
   const requiredFields = fields.filter((f) => {
     if (f.type === "checkbox" && f.mustBeTrue) return true
@@ -136,7 +137,7 @@ export function DynamicForm({ page }: { page: FormPage }) {
 
   return (
     <form onSubmit={onSubmit} className="bg-[var(--section-bg-2)] border border-[var(--secondary)] rounded-xl p-6 md:p-10 space-y-8">
-      {stepStates.length ? (
+      {showSteps ? (
         <div className="mb-2 grid gap-4 sm:grid-cols-3">
           {stepStates.map((step, idx) => (
             <div
@@ -189,6 +190,8 @@ export function DynamicForm({ page }: { page: FormPage }) {
                     </Label>
                     <select
                       id={field.name}
+                      aria-label={field.label || field.name}
+                      title={field.label || field.name}
                       className="w-full rounded-md border border-input bg-[var(--section-bg-1)] px-3 py-2 text-sm text-[var(--foreground)]"
                       value={String(value ?? "")}
                       onChange={(e) => setValues((prev) => ({ ...prev, [field.name]: e.target.value }))}

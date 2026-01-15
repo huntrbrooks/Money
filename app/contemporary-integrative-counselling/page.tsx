@@ -120,7 +120,7 @@ export default async function ContemporaryIntegrativeCounsellingPage() {
                   <Link href="/monetary-psychotherapy">Discover Monetary Psychotherapy</Link>
                 </Button>
                 <Button asChild variant="outline" className="h-12 px-8">
-                  <Link href="/bookings">Schedule a Session</Link>
+                  <Link href="/bookings">Schedule a consultation</Link>
                 </Button>
               </div>
             </div>

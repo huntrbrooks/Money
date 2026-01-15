@@ -76,7 +76,7 @@ export default async function FinancialAbusePage() {
             <Link
               className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--accent)] text-white font-semibold border border-[var(--accent)] hover:opacity-90"
               href="/bookings"
-              aria-label="Book a counselling session"
+              aria-label="Schedule a consultation"
             >
               Book a consultation
             </Link>

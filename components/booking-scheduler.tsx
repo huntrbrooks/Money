@@ -21,6 +21,7 @@ export function BookingScheduler({
   phone = "0467 477 786",
 }: BookingSchedulerProps) {
   const normalizedEmail = normalizeEmailAddress(email)
+  const displayPhone = phone ? phone.replace(/\s+/g, "") : ""
   const schedulerPoints = bookingCopy?.schedulerPoints ?? [
     "Fees shown above already include GST and reflect the exact session length.",
     "Payments are captured through Square inside the secure Acuity portal.",
@@ -54,32 +55,40 @@ export function BookingScheduler({
         </div>
 
         <div className="rounded-[28px] border border-[#c7d1cc] bg-[var(--section-bg-2)] p-5 sm:p-6 shadow-[inset_0_0_0_1px_rgba(229,238,210,0.85)]">
-          <div className="space-y-4 text-[#33444b]">
-            <p className="text-sm leading-relaxed">
-              {helpText}{" "}
-              <span className="break-words">{normalizedEmail || String(email ?? "").trim()}</span>
-              {phone ? <span> or call {phone}</span> : null}
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button
-                asChild
-                className="flex-1 rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90 focus-visible:ring-[var(--accent)]"
-              >
-                <a href={SCHEDULER_URL} target="_blank" rel="noopener noreferrer">
-                  {buttonLabel}
-                </a>
-              </Button>
+          <div className="flex h-full flex-col items-center gap-6 text-center text-[#33444b]">
+            {helpText ? <p className="text-sm leading-relaxed">{helpText}</p> : null}
+            <div className="space-y-1 text-base">
+              <p>
+                <span className="font-semibold">Email:</span>{" "}
+                <span className="font-semibold break-words">{normalizedEmail || String(email ?? "").trim()}</span>
+              </p>
+              <p className="text-sm uppercase tracking-[0.2em] text-[#5a7264]">or</p>
+              {displayPhone ? (
+                <p>
+                  <span className="font-semibold">Call:</span> <span className="font-semibold">{displayPhone}</span>
+                </p>
+              ) : null}
+            </div>
+            <div className="flex w-full flex-col items-center gap-3">
               <Button
                 asChild
                 variant="outline"
-                className="flex-1 rounded-full border-[#c8d4cf] bg-[var(--section-bg-1)] text-[#3f4f57] hover:bg-[var(--section-bg-1)]/90"
+                className="w-full max-w-sm rounded-full border-[#c8d4cf] bg-[var(--section-bg-1)] text-[#3f4f57] hover:bg-[var(--section-bg-1)]/90"
               >
                 <EmailLink email={email} subject="Booking Inquiry">
                   {emailButtonLabel}
                 </EmailLink>
               </Button>
+              <Button
+                asChild
+                className="w-full max-w-sm rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90 focus-visible:ring-[var(--accent)]"
+              >
+                <a href={SCHEDULER_URL} target="_blank" rel="noopener noreferrer">
+                  {buttonLabel}
+                </a>
+              </Button>
             </div>
-            <p className="text-xs text-[#4a5c63]">
+            <p className="mt-auto text-xs text-[#4a5c63] text-center">
               {receiptNote}
             </p>
           </div>
@@ -88,8 +97,8 @@ export function BookingScheduler({
 
       {showEmbedToggle && (
         <details className="group rounded-[32px] border border-dashed border-[#c8d4cf] bg-[var(--section-bg-2)]/90 p-5 sm:p-6">
-          <summary className="flex cursor-pointer items-center justify-between gap-4 text-sm font-semibold text-[#4a5c63] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7b8c45] focus-visible:ring-offset-2 list-none">
-            <span>{embedToggleLabel}</span>
+          <summary className="flex cursor-pointer items-center gap-4 text-base font-semibold text-[#4a5c63] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7b8c45] focus-visible:ring-offset-2 list-none">
+            <span className="flex-1 text-center font-semibold">{embedToggleLabel}</span>
             <span className="text-base text-[#7b8c45] transition-transform duration-200 group-open:rotate-45">+</span>
           </summary>
           <div className="mt-5 space-y-4">
