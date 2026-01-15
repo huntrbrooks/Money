@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { readSiteConfig } from "@/lib/config"
 import { sendLeadToCrm } from "@/lib/crm"
-import type { FormField, FormPage } from "@/lib/config"
+import type { FormField, FormPage, FormSection } from "@/lib/config"
 
 type EnquiryPayload = {
   firstName?: string
@@ -44,11 +44,107 @@ function isFilled(field: FormField, value: unknown): boolean {
   return String(value ?? "").trim().length > 0
 }
 
+function displayValue(field: FormField, rawValue: unknown): string {
+  if (field.type === "select") {
+    const v = String(rawValue ?? "")
+    const match = field.options?.find((o) => o.value === v)
+    return match?.label ?? (v || "-")
+  }
+  if (field.type === "checkbox") {
+    return rawValue ? "Yes" : "No"
+  }
+  if (field.type === "slider") {
+    return typeof rawValue === "number" ? String(rawValue) : "-"
+  }
+  const s = String(rawValue ?? "").trim()
+  return s.length ? s : "-"
+}
+
+function compileTextFromSchema(page: FormPage, values: Record<string, unknown>, sender: EnquiryPayload): string {
+  const lines: string[] = []
+  lines.push(`New website enquiry`)
+  lines.push("")
+  lines.push("Sender")
+  lines.push("------")
+  lines.push(`Name: ${[sender.firstName, sender.lastName].filter(Boolean).join(" ") || "-"}`)
+  lines.push(`Email: ${sender.email || "-"}`)
+  lines.push(`Phone: ${sender.phone || "-"}`)
+  lines.push("")
+  for (const section of page.sections) {
+    if (section.title) {
+      lines.push(section.title)
+      lines.push("-".repeat(Math.min(40, section.title.length)))
+    }
+    for (const field of section.fields) {
+      lines.push(`${field.label}: ${displayValue(field, values[field.name])}`)
+    }
+    lines.push("")
+  }
+  return lines.join("\n").trim()
+}
+
+function compileHtmlFromSchema(page: FormPage, values: Record<string, unknown>, sender: EnquiryPayload): string {
+  const esc = (v: string) => sanitize(v)
+  const rows = (section: FormSection) =>
+    section.fields
+      .map((field) => {
+        const v = displayValue(field, values[field.name])
+        return `<tr><td style="padding:6px 10px;border:1px solid #e5e7eb;vertical-align:top"><strong>${esc(
+          field.label,
+        )}</strong></td><td style="padding:6px 10px;border:1px solid #e5e7eb;vertical-align:top">${esc(v)}</td></tr>`
+      })
+      .join("")
+
+  return `
+    <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#222">
+      <h2>New website enquiry</h2>
+      <h3 style="margin-top:18px">Sender</h3>
+      <p><strong>Name:</strong> ${esc([sender.firstName, sender.lastName].filter(Boolean).join(" ") || "-")}</p>
+      <p><strong>Email:</strong> ${esc(sender.email || "-")}</p>
+      <p><strong>Phone:</strong> ${esc(sender.phone || "-")}</p>
+      ${page.sections
+        .map((section) => {
+          const title = section.title ? `<h3 style="margin-top:18px">${esc(section.title)}</h3>` : ""
+          return `${title}<table style="border-collapse:collapse;width:100%">${rows(section)}</table>`
+        })
+        .join("")}
+    </div>
+  `
+}
+
 function compileSubject(data: EnquiryPayload) {
   const name = [data.firstName, data.lastName].filter(Boolean).join(" ").trim() || "New Enquiry"
   return `New Enquiry — ${name}`
 }
 
+function compileAdminNoticeSubject(data: EnquiryPayload) {
+  const name = [data.firstName, data.lastName].filter(Boolean).join(" ").trim() || "New Enquiry"
+  return `Enquiry received — ${name}`
+}
+
+function compileAdminNoticeText(data: EnquiryPayload) {
+  return [
+    "A new enquiry has been submitted.",
+    "",
+    `Name: ${[data.firstName, data.lastName].filter(Boolean).join(" ") || "-"}`,
+    `Email: ${data.email || "-"}`,
+    `Phone: ${data.phone || "-"}`,
+    "",
+    "Full submission delivered to dan@financialabusetherapist.com.au.",
+  ].join("\n")
+}
+
+function compileAdminNoticeHtml(data: EnquiryPayload) {
+  return `
+    <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#222">
+      <p>A new enquiry has been submitted.</p>
+      <p><strong>Name:</strong> ${sanitize([data.firstName, data.lastName].filter(Boolean).join(" ") || "-")}</p>
+      <p><strong>Email:</strong> ${sanitize(data.email || "-")}</p>
+      <p><strong>Phone:</strong> ${sanitize(data.phone || "-")}</p>
+      <p>Full submission delivered to <strong>dan@financialabusetherapist.com.au</strong>.</p>
+    </div>
+  `
+}
 function compileText(data: EnquiryPayload) {
   return [
     `New website enquiry`,
@@ -85,9 +181,52 @@ function compileHtml(data: EnquiryPayload) {
   `
 }
 
-async function sendViaResend(to: string, replyTo: string | undefined, data: EnquiryPayload) {
+function compileConfirmationSubject() {
+  return "I've received your enquiry"
+}
+
+function confirmationGreeting(firstName?: string) {
+  const name = String(firstName ?? "").trim()
+  return `Hi ${name || "there"},`
+}
+
+function compileConfirmationText(firstName?: string) {
+  return [
+    confirmationGreeting(firstName),
+    "",
+    "Thanks for getting in touch. I just wanted to let you know that your enquiry has come through successfully.",
+    "",
+    "I personally review every message and will get back to you as soon as possible. If your enquiry is time-sensitive, please know it has been received and is on my radar.",
+    "",
+    "In the meantime, take care of yourself, and thank you for reaching out.",
+    "",
+    "Kind regards,",
+    "Dan",
+  ].join("\n")
+}
+
+function compileConfirmationHtml(firstName?: string) {
+  return `
+    <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#222">
+      <p>${sanitize(confirmationGreeting(firstName))}</p>
+      <p>Thanks for getting in touch. I just wanted to let you know that your enquiry has come through successfully.</p>
+      <p>I personally review every message and will get back to you as soon as possible. If your enquiry is time-sensitive, please know it has been received and is on my radar.</p>
+      <p>In the meantime, take care of yourself, and thank you for reaching out.</p>
+      <p>Kind regards,<br />Dan</p>
+    </div>
+  `
+}
+
+async function sendViaResend(
+  to: string,
+  replyTo: string | undefined,
+  subject: string,
+  text: string,
+  html: string,
+  fromOverride?: string,
+) {
   const apiKey = process.env.RESEND_API_KEY
-  const from = process.env.EMAIL_FROM || "Enquiries <onboarding@resend.dev>"
+  const from = fromOverride || process.env.EMAIL_FROM || "Enquiries <onboarding@resend.dev>"
   if (!apiKey) return { ok: false as const, error: "RESEND_API_KEY not set" }
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -98,9 +237,9 @@ async function sendViaResend(to: string, replyTo: string | undefined, data: Enqu
     body: JSON.stringify({
       from,
       to: [to],
-      subject: compileSubject(data),
-      text: compileText(data),
-      html: compileHtml(data),
+      subject,
+      text,
+      html,
       reply_to: replyTo ? [replyTo] : undefined,
     }),
   })
@@ -111,7 +250,14 @@ async function sendViaResend(to: string, replyTo: string | undefined, data: Enqu
   return { ok: true as const }
 }
 
-async function sendViaSmtp(to: string, replyTo: string | undefined, data: EnquiryPayload) {
+async function sendViaSmtp(
+  to: string,
+  replyTo: string | undefined,
+  subject: string,
+  text: string,
+  html: string,
+  fromOverride?: string,
+) {
   // Only import when needed to avoid build-time dependency
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -123,16 +269,16 @@ async function sendViaSmtp(to: string, replyTo: string | undefined, data: Enquir
   const user = process.env.SMTP_USER
   const pass = process.env.SMTP_PASS
   const secure = String(process.env.SMTP_SECURE || "").toLowerCase() === "true"
-  const from = process.env.EMAIL_FROM || `Enquiries <${user ?? "no-reply@example.com"}>`
+  const from = fromOverride || process.env.EMAIL_FROM || `Enquiries <${user ?? "no-reply@example.com"}>`
   if (!host || !user || !pass) return { ok: false as const, error: "SMTP configuration missing" }
 
   const transporter = nodemailer.createTransport({ host, port, secure, auth: { user, pass } })
   await transporter.sendMail({
     from,
     to,
-    subject: compileSubject(data),
-    text: compileText(data),
-    html: compileHtml(data),
+    subject,
+    text,
+    html,
     replyTo: replyTo,
   })
   return { ok: true as const }
@@ -146,6 +292,8 @@ function resolveErrorMessage(error: unknown, fallback: string) {
 }
 
 export async function POST(req: Request) {
+  const url = new URL(req.url)
+  const dryRun = url.searchParams.get("dryRun") === "true"
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null
   if (!body) return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
 
@@ -193,7 +341,9 @@ export async function POST(req: Request) {
     }
   }
 
-  const toAddress = "dan@financialabusetherapy.com.au"
+  const formRecipient = "dan@financialabusetherapist.com.au"
+  const adminRecipient = process.env.ADMIN_NOTIFICATION_EMAIL || "danlobel@icloud.com"
+  const fromDan = "Dan <dan@financialabusetherapist.com.au>"
   const data: EnquiryPayload = {
     firstName,
     lastName,
@@ -205,19 +355,64 @@ export async function POST(req: Request) {
     updatesOptIn: Boolean(extracted.updatesOptIn ?? body.updatesOptIn),
   }
 
+  const subject = compileSubject(data)
+  const text = page ? compileTextFromSchema(page, extracted, data) : compileText(data)
+  const html = page ? compileHtmlFromSchema(page, extracted, data) : compileHtml(data)
+  const fromDan = "Dan <dan@financialabusetherapist.com.au>"
+  const adminRecipient = process.env.ADMIN_NOTIFICATION_EMAIL || "danlobel@icloud.com"
+  const adminSubject = compileAdminNoticeSubject(data)
+  const adminText = compileAdminNoticeText(data)
+  const adminHtml = compileAdminNoticeHtml(data)
+  const confirmationSubject = compileConfirmationSubject()
+  const confirmationText = compileConfirmationText(firstName)
+  const confirmationHtml = compileConfirmationHtml(firstName)
+
+  if (dryRun) {
+    return NextResponse.json({
+      ok: true,
+      dryRun: true,
+      deliveries: {
+        form: {
+          to: formRecipient,
+          from: fromDan,
+          replyTo: email,
+          subject,
+          text,
+          html,
+        },
+        admin: {
+          to: adminRecipient,
+          from: fromDan,
+          replyTo: email,
+          subject: adminSubject,
+          text: adminText,
+          html: adminHtml,
+        },
+        confirmation: {
+          to: email,
+          from: fromDan,
+          replyTo: formRecipient,
+          subject: confirmationSubject,
+          text: confirmationText,
+          html: confirmationHtml,
+        },
+      },
+    })
+  }
+
   // Try SMTP first if configured, otherwise fall back to Resend
   let result:
     | { ok: true }
     | { ok: false; error: string } = { ok: false, error: "No email provider configured" }
-  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && toAddress) {
+  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && formRecipient) {
     try {
-      result = await sendViaSmtp(toAddress, email, data)
+      result = await sendViaSmtp(formRecipient, email, subject, text, html, fromDan)
     } catch (error) {
       result = { ok: false as const, error: resolveErrorMessage(error, "SMTP error") }
     }
-  } else if (process.env.RESEND_API_KEY && toAddress) {
+  } else if (process.env.RESEND_API_KEY && formRecipient) {
     try {
-      result = await sendViaResend(toAddress, email, data)
+      result = await sendViaResend(formRecipient, email, subject, text, html, fromDan)
     } catch (error) {
       result = { ok: false as const, error: resolveErrorMessage(error, "Resend error") }
     }
@@ -230,13 +425,43 @@ export async function POST(req: Request) {
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 500 })
   }
+
+  if (adminRecipient) {
+    try {
+      if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+        await sendViaSmtp(adminRecipient, email, adminSubject, adminText, adminHtml, fromDan)
+      } else if (process.env.RESEND_API_KEY) {
+        await sendViaResend(adminRecipient, email, adminSubject, adminText, adminHtml, fromDan)
+      }
+    } catch (error) {
+      console.warn("[enquiry] admin notification failed", error)
+    }
+  }
+
+  if (email) {
+    const confirmationFrom = fromDan
+    try {
+      if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+        await sendViaSmtp(email, formRecipient, confirmationSubject, confirmationText, confirmationHtml, confirmationFrom)
+      } else if (process.env.RESEND_API_KEY) {
+        await sendViaResend(email, formRecipient, confirmationSubject, confirmationText, confirmationHtml, confirmationFrom)
+      }
+    } catch (error) {
+      console.warn("[enquiry] confirmation email failed", error)
+    }
+  }
+
   void sendLeadToCrm({
     type: "enquiry",
     email,
     name: [firstName, lastName].filter(Boolean).join(" "),
     phone,
     tags: ["website-enquiry"],
-    payload: { supportFocus, preferredFormat, updatesOptIn },
+    payload: {
+      supportFocus: data.supportFocus,
+      preferredFormat: data.preferredFormat,
+      updatesOptIn: data.updatesOptIn,
+    },
   })
   return NextResponse.json({ ok: true })
 }

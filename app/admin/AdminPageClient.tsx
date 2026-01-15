@@ -139,6 +139,8 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
   const [versions, setVersions] = useState<Array<{ id: number; version: number; updated_at: string }>>([])
   const [versionsLoading, setVersionsLoading] = useState(false)
   const [storageStatus, setStorageStatus] = useState<{ storage: string; bucket?: string } | null>(null)
+  const [formDryRunLoading, setFormDryRunLoading] = useState<null | "enquiry" | "intake">(null)
+  const [formDryRunOutput, setFormDryRunOutput] = useState<string>("")
 
   const showSaveBar = saveUi.phase !== "idle"
 
@@ -160,6 +162,71 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
       return out
     }
     return JSON.stringify(normalize(value))
+  }
+
+  async function runFormDryRun(kind: "enquiry" | "intake") {
+    setFormDryRunLoading(kind)
+    try {
+      const endpoint = kind === "enquiry" ? "/api/enquiry?dryRun=true" : "/api/intake?dryRun=true"
+      const payload =
+        kind === "enquiry"
+          ? {
+              firstName: "Test",
+              lastName: "User",
+              email: "test.user@example.com",
+              phone: "0400 000 000",
+              message: "This is a dry-run test submission.",
+              supportFocus: "Testing admin dry-run email preview.",
+              preferredFormat: "Telehealth",
+              updatesOptIn: true,
+            }
+          : {
+              firstName: "Test",
+              lastName: "User",
+              email: "test.user@example.com",
+              phone: "0400 000 000",
+              country: "Australia",
+              address1: "1 Example Street",
+              address2: "",
+              suburb: "Melbourne",
+              state: "VIC",
+              postcode: "3000",
+              date: "01/01/2026",
+              occupation: "Tester",
+              relationshipStatus: "single",
+              haveChildren: "no",
+              generalHealth: 3,
+              seenCounsellor: "no",
+              onMedication: "no",
+              medicationDetails: "",
+              experiencingDepression: "no",
+              suicidalThoughts: "no",
+              otherInformation: "Dry-run test details only.",
+              familyMentalHealthHistory: "no",
+              sleepingHabits: 3,
+              physicalHealth: 3,
+              exerciseFrequency: "1-2_per_week",
+              mainReason: "Testing intake dry-run email preview.",
+            }
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        throw new Error(data?.error || "Dry-run failed.")
+      }
+      setFormDryRunOutput(JSON.stringify(data, null, 2))
+      toast({ title: "Dry run complete", description: `Preview loaded for ${kind} form.` })
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Dry-run failed."
+      setFormDryRunOutput(message)
+      toast({ title: "Dry run failed", description: message, variant: "destructive" })
+    } finally {
+      setFormDryRunLoading(null)
+    }
   }
 
    // Theme state
@@ -5115,6 +5182,37 @@ function CodeAgentBox() {
                  </Button>
                </CardContent>
              </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Form email dry run</CardTitle>
+                <CardDescription>Preview email payloads without sending any emails.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={formDryRunLoading !== null}
+                    onClick={() => runFormDryRun("enquiry")}
+                  >
+                    {formDryRunLoading === "enquiry" ? "Testing Enquiry…" : "Test Enquiry Email"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={formDryRunLoading !== null}
+                    onClick={() => runFormDryRun("intake")}
+                  >
+                    {formDryRunLoading === "intake" ? "Testing Intake…" : "Test Intake Email"}
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <Label>Dry run output (JSON)</Label>
+                  <Textarea value={formDryRunOutput} readOnly rows={10} className="font-mono text-xs" />
+                </div>
+              </CardContent>
+            </Card>
 
              <Card>
                <CardHeader>

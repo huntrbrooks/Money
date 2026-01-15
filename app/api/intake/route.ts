@@ -253,9 +253,144 @@ function compileHtml(data: IntakePayload) {
   `
 }
 
-async function sendViaResend(to: string, replyTo: string | undefined, data: IntakePayload) {
+function compileAdminNoticeSubject(data: IntakePayload) {
+  const name = [data.firstName, data.lastName].filter(Boolean).join(" ").trim() || "New Intake"
+  return `Intake received — ${name}`
+}
+
+function compileAdminNoticeText(data: IntakePayload) {
+  return [
+    "A new intake form has been submitted.",
+    "",
+    `Name: ${[data.firstName, data.lastName].filter(Boolean).join(" ") || "-"}`,
+    `Email: ${data.email || "-"}`,
+    `Phone: ${data.phone || "-"}`,
+    "",
+    "Full submission delivered to dan@financialabusetherapist.com.au.",
+  ].join("\n")
+}
+
+function compileAdminNoticeHtml(data: IntakePayload) {
+  return `
+    <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#222">
+      <p>A new intake form has been submitted.</p>
+      <p><strong>Name:</strong> ${sanitize([data.firstName, data.lastName].filter(Boolean).join(" ") || "-")}</p>
+      <p><strong>Email:</strong> ${sanitize(data.email || "-")}</p>
+      <p><strong>Phone:</strong> ${sanitize(data.phone || "-")}</p>
+      <p>Full submission delivered to <strong>dan@financialabusetherapist.com.au</strong>.</p>
+    </div>
+  `
+}
+
+function compileConfirmationSubject() {
+  return "Your intake form has been received"
+}
+
+function confirmationGreeting(firstName?: string) {
+  const name = String(firstName ?? "").trim()
+  return `Hi ${name || "there"},`
+}
+
+function compileConfirmationText(firstName?: string) {
+  return [
+    confirmationGreeting(firstName),
+    "",
+    "I'm writing to confirm that your intake form has been submitted successfully. Thank you for taking the time to complete it.",
+    "",
+    "I'll review the information you've shared carefully. Everything you've provided is treated with respect and confidentiality.",
+    "",
+    "If there are any next steps or clarifications needed, I'll be in touch. Otherwise, I'll speak with you soon as planned.",
+    "",
+    "Thank you again for your openness and trust.",
+    "",
+    "Warm regards,",
+    "Dan",
+  ].join("\n")
+}
+
+function compileConfirmationHtml(firstName?: string) {
+  return `
+    <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#222">
+      <p>${sanitize(confirmationGreeting(firstName))}</p>
+      <p>I'm writing to confirm that your intake form has been submitted successfully. Thank you for taking the time to complete it.</p>
+      <p>I'll review the information you've shared carefully. Everything you've provided is treated with respect and confidentiality.</p>
+      <p>If there are any next steps or clarifications needed, I'll be in touch. Otherwise, I'll speak with you soon as planned.</p>
+      <p>Thank you again for your openness and trust.</p>
+      <p>Warm regards,<br />Dan</p>
+    </div>
+  `
+}
+
+async function sendResendEmail(
+  to: string,
+  replyTo: string | undefined,
+  subject: string,
+  text: string,
+  html: string,
+  fromOverride?: string,
+) {
   const apiKey = process.env.RESEND_API_KEY
-  const from = process.env.EMAIL_FROM || "Intake <onboarding@resend.dev>"
+  const from = fromOverride || process.env.EMAIL_FROM || "Intake <onboarding@resend.dev>"
+  if (!apiKey) return { ok: false as const, error: "RESEND_API_KEY not set" }
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      subject,
+      text,
+      html,
+      reply_to: replyTo ? [replyTo] : undefined,
+    }),
+  })
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "")
+    return { ok: false as const, error: `Resend error: ${detail || res.statusText}` }
+  }
+  return { ok: true as const }
+}
+
+async function sendSmtpEmail(
+  to: string,
+  replyTo: string | undefined,
+  subject: string,
+  text: string,
+  html: string,
+  fromOverride?: string,
+) {
+  // Only import when needed
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const nodemailer = await import("nodemailer").catch(() => null)
+  if (!nodemailer) return { ok: false as const, error: "nodemailer not installed" }
+
+  const host = process.env.SMTP_HOST
+  const port = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 587
+  const user = process.env.SMTP_USER
+  const pass = process.env.SMTP_PASS
+  const secure = String(process.env.SMTP_SECURE || "").toLowerCase() === "true"
+  const from = fromOverride || process.env.EMAIL_FROM || `Intake <${user ?? "no-reply@example.com"}>`
+  if (!host || !user || !pass) return { ok: false as const, error: "SMTP configuration missing" }
+
+  const transporter = nodemailer.createTransport({ host, port, secure, auth: { user, pass } })
+  await transporter.sendMail({
+    from,
+    to,
+    subject,
+    text,
+    html,
+    replyTo: replyTo,
+  })
+  return { ok: true as const }
+}
+
+async function sendViaResend(to: string, replyTo: string | undefined, data: IntakePayload, fromOverride?: string) {
+  const apiKey = process.env.RESEND_API_KEY
+  const from = fromOverride || process.env.EMAIL_FROM || "Intake <onboarding@resend.dev>"
   if (!apiKey) return { ok: false as const, error: "RESEND_API_KEY not set" }
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -279,7 +414,7 @@ async function sendViaResend(to: string, replyTo: string | undefined, data: Inta
   return { ok: true as const }
 }
 
-async function sendViaSmtp(to: string, replyTo: string | undefined, data: IntakePayload) {
+async function sendViaSmtp(to: string, replyTo: string | undefined, data: IntakePayload, fromOverride?: string) {
   // Only import when needed
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -291,7 +426,7 @@ async function sendViaSmtp(to: string, replyTo: string | undefined, data: Intake
   const user = process.env.SMTP_USER
   const pass = process.env.SMTP_PASS
   const secure = String(process.env.SMTP_SECURE || "").toLowerCase() === "true"
-  const from = process.env.EMAIL_FROM || `Intake <${user ?? "no-reply@example.com"}>`
+  const from = fromOverride || process.env.EMAIL_FROM || `Intake <${user ?? "no-reply@example.com"}>`
   if (!host || !user || !pass) return { ok: false as const, error: "SMTP configuration missing" }
 
   const transporter = nodemailer.createTransport({ host, port, secure, auth: { user, pass } })
@@ -314,6 +449,8 @@ function resolveErrorMessage(error: unknown, fallback: string) {
 }
 
 export async function POST(req: Request) {
+  const url = new URL(req.url)
+  const dryRun = url.searchParams.get("dryRun") === "true"
   const raw = (await req.json().catch(() => null)) as Record<string, unknown> | null
   if (!raw) return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
 
@@ -344,8 +481,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid date format" }, { status: 400 })
     }
 
-    const toAddress = cfg.contact?.email || process.env.FALLBACK_TO_EMAIL
-    if (!toAddress) return NextResponse.json({ error: "No destination email configured" }, { status: 500 })
+    const formRecipient = "dan@financialabusetherapist.com.au"
+    const adminRecipient = process.env.ADMIN_NOTIFICATION_EMAIL || "danlobel@icloud.com"
+    const fromDan = "Dan <dan@financialabusetherapist.com.au>"
 
     const firstName = sanitize(String(values.firstName ?? "")).slice(0, 200)
     const lastName = sanitize(String(values.lastName ?? "")).slice(0, 200)
@@ -354,9 +492,49 @@ export async function POST(req: Request) {
     const text = compileTextFromSchema(page, values)
     const html = compileHtmlFromSchema(page, values)
 
+    const adminSubject = compileAdminNoticeSubject({ firstName, lastName, email, phone: typeof values.phone === "string" ? values.phone : undefined })
+    const adminText = compileAdminNoticeText({ firstName, lastName, email, phone: typeof values.phone === "string" ? values.phone : undefined })
+    const adminHtml = compileAdminNoticeHtml({ firstName, lastName, email, phone: typeof values.phone === "string" ? values.phone : undefined })
+    const confirmationSubject = compileConfirmationSubject()
+    const confirmationText = compileConfirmationText(firstName)
+    const confirmationHtml = compileConfirmationHtml(firstName)
+
+    if (dryRun) {
+      return NextResponse.json({
+        ok: true,
+        dryRun: true,
+        deliveries: {
+          form: {
+            to: formRecipient,
+            from: fromDan,
+            replyTo: email || undefined,
+            subject,
+            text,
+            html,
+          },
+          admin: {
+            to: adminRecipient,
+            from: fromDan,
+            replyTo: email || undefined,
+            subject: adminSubject,
+            text: adminText,
+            html: adminHtml,
+          },
+          confirmation: {
+            to: email || undefined,
+            from: fromDan,
+            replyTo: formRecipient,
+            subject: confirmationSubject,
+            text: confirmationText,
+            html: confirmationHtml,
+          },
+        },
+      })
+    }
+
     // Try SMTP first if configured, otherwise fall back to Resend, otherwise log in dev
     let result: { ok: true } | { ok: false; error: string } = { ok: false, error: "No email provider configured" }
-    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && toAddress) {
+    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && formRecipient) {
       try {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -369,8 +547,8 @@ export async function POST(req: Request) {
           auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
         })
         await transporter.sendMail({
-          from: process.env.EMAIL_FROM || `Intake <${process.env.SMTP_USER ?? "no-reply@example.com"}>`,
-          to: toAddress,
+          from: fromDan,
+          to: formRecipient,
           subject,
           text,
           html,
@@ -380,16 +558,16 @@ export async function POST(req: Request) {
       } catch (error) {
         result = { ok: false as const, error: resolveErrorMessage(error, "SMTP error") }
       }
-    } else if (process.env.RESEND_API_KEY && toAddress) {
+    } else if (process.env.RESEND_API_KEY && formRecipient) {
       try {
         const apiKey = process.env.RESEND_API_KEY
-        const from = process.env.EMAIL_FROM || "Intake <onboarding@resend.dev>"
+        const from = fromDan
         const res = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
           body: JSON.stringify({
             from,
-            to: [toAddress],
+            to: [formRecipient],
             subject,
             text,
             html,
@@ -412,6 +590,31 @@ export async function POST(req: Request) {
 
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: 500 })
+    }
+
+    if (adminRecipient) {
+      try {
+        if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+          await sendSmtpEmail(adminRecipient, email || undefined, adminSubject, adminText, adminHtml, fromDan)
+        } else if (process.env.RESEND_API_KEY) {
+          await sendResendEmail(adminRecipient, email || undefined, adminSubject, adminText, adminHtml, fromDan)
+        }
+      } catch (error) {
+        console.warn("[intake] admin notification failed", error)
+      }
+    }
+
+    if (email) {
+      const confirmationFrom = fromDan
+      try {
+        if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+          await sendSmtpEmail(email, formRecipient, confirmationSubject, confirmationText, confirmationHtml, confirmationFrom)
+        } else if (process.env.RESEND_API_KEY) {
+          await sendResendEmail(email, formRecipient, confirmationSubject, confirmationText, confirmationHtml, confirmationFrom)
+        }
+      } catch (error) {
+        console.warn("[intake] confirmation email failed", error)
+      }
     }
 
     void sendLeadToCrm({
@@ -471,19 +674,60 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid date format" }, { status: 400 })
   }
 
-  const toAddress = cfg.contact?.email || process.env.FALLBACK_TO_EMAIL
+  const formRecipient = "dan@financialabusetherapist.com.au"
+  const adminRecipient = process.env.ADMIN_NOTIFICATION_EMAIL || "danlobel@icloud.com"
+  const fromDan = "Dan <dan@financialabusetherapist.com.au>"
+  const adminSubject = compileAdminNoticeSubject(data)
+  const adminText = compileAdminNoticeText(data)
+  const adminHtml = compileAdminNoticeHtml(data)
+  const confirmationSubject = compileConfirmationSubject()
+  const confirmationText = compileConfirmationText(data.firstName)
+  const confirmationHtml = compileConfirmationHtml(data.firstName)
+
+  if (dryRun) {
+    return NextResponse.json({
+      ok: true,
+      dryRun: true,
+      deliveries: {
+        form: {
+          to: formRecipient,
+          from: fromDan,
+          replyTo: data.email,
+          subject: compileSubject(data),
+          text: compileText(data),
+          html: compileHtml(data),
+        },
+        admin: {
+          to: adminRecipient,
+          from: fromDan,
+          replyTo: data.email,
+          subject: adminSubject,
+          text: adminText,
+          html: adminHtml,
+        },
+        confirmation: {
+          to: data.email,
+          from: fromDan,
+          replyTo: formRecipient,
+          subject: confirmationSubject,
+          text: confirmationText,
+          html: confirmationHtml,
+        },
+      },
+    })
+  }
 
   // Try SMTP first if configured, otherwise fall back to Resend, otherwise log in dev
   let result: { ok: true } | { ok: false; error: string } = { ok: false, error: "No email provider configured" }
-  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && toAddress) {
+  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && formRecipient) {
     try {
-      result = await sendViaSmtp(toAddress, data.email, data)
+      result = await sendViaSmtp(formRecipient, data.email, data, fromDan)
     } catch (error) {
       result = { ok: false as const, error: resolveErrorMessage(error, "SMTP error") }
     }
-  } else if (process.env.RESEND_API_KEY && toAddress) {
+  } else if (process.env.RESEND_API_KEY && formRecipient) {
     try {
-      result = await sendViaResend(toAddress, data.email, data)
+      result = await sendViaResend(formRecipient, data.email, data, fromDan)
     } catch (error) {
       result = { ok: false as const, error: resolveErrorMessage(error, "Resend error") }
     }
@@ -494,6 +738,31 @@ export async function POST(req: Request) {
 
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 500 })
+  }
+
+    if (adminRecipient) {
+    try {
+      if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+          await sendSmtpEmail(adminRecipient, data.email, adminSubject, adminText, adminHtml, fromDan)
+      } else if (process.env.RESEND_API_KEY) {
+          await sendResendEmail(adminRecipient, data.email, adminSubject, adminText, adminHtml, fromDan)
+      }
+    } catch (error) {
+      console.warn("[intake] admin notification failed", error)
+    }
+  }
+
+  if (data.email) {
+    const confirmationFrom = fromDan
+    try {
+      if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+        await sendSmtpEmail(data.email, formRecipient, confirmationSubject, confirmationText, confirmationHtml, confirmationFrom)
+      } else if (process.env.RESEND_API_KEY) {
+        await sendResendEmail(data.email, formRecipient, confirmationSubject, confirmationText, confirmationHtml, confirmationFrom)
+      }
+    } catch (error) {
+      console.warn("[intake] confirmation email failed", error)
+    }
   }
   void sendLeadToCrm({
     type: "intake",
