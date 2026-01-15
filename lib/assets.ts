@@ -14,12 +14,6 @@ function env(name: string): string | undefined {
   return t.length ? t : undefined
 }
 
-function requireEnv(name: string): string {
-  const v = env(name)
-  if (!v) throw new Error(`Missing required environment variable: ${name}`)
-  return v
-}
-
 // We intentionally serve all uploaded assets through our own API route so:
 // - the bucket can remain private
 // - we don't need to manage signed URL expiries
