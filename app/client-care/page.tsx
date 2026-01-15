@@ -11,6 +11,10 @@ export const metadata = {
 
 export default async function ClientCarePage() {
   const config = await readSiteConfig()
+  const heroEyebrow = config.clientCare?.heroEyebrow ?? "Client care hub"
+  const heroTitle = config.clientCare?.heroTitle ?? "Grounding resources for before and after session"
+  const heroSubtitle =
+    config.clientCare?.heroSubtitle ?? "Save this page to revisit rituals, crisis contacts, and downloads whenever you need them."
   const prepChecklist = config.clientCare?.prepChecklist ?? []
   const aftercare = config.clientCare?.aftercareChecklist ?? []
   return (
@@ -20,13 +24,9 @@ export default async function ClientCarePage() {
         <section className="py-16 md:py-24 bg-[var(--section-bg-1)]">
           <div className="container mx-auto px-4 sm:px-6 md:px-8">
             <div className="max-w-4xl mx-auto text-center space-y-4">
-              <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary)] font-semibold">Client care hub</p>
-              <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">
-                Grounding resources for before and after session
-              </h1>
-              <p className="text-[var(--primary)] text-lg">
-                Save this page to revisit rituals, crisis contacts, and downloads whenever you need them.
-              </p>
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary)] font-semibold">{heroEyebrow}</p>
+              <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">{heroTitle}</h1>
+              <p className="text-[var(--primary)] text-lg">{heroSubtitle}</p>
             </div>
           </div>
         </section>

@@ -29,9 +29,6 @@ type IntakePayload = {
   sleepingHabits?: number
   physicalHealth?: number
   exerciseFrequency?: string
-  chronicPain?: string
-  useAlcoholOrDrugsForPain?: string
-  recentRecreationalDrugUse?: string
   mainReason?: string
 }
 
@@ -201,9 +198,6 @@ function compileText(data: IntakePayload) {
     `Sleeping habits (1–5): ${String(data.sleepingHabits ?? "-")}`,
     `Physical health (1–5): ${String(data.physicalHealth ?? "-")}`,
     `Exercise frequency: ${labelExercise(data.exerciseFrequency)}`,
-    `Chronic pain: ${labelYesNo(data.chronicPain)}`,
-    `Alcohol/drugs for pain management: ${labelYesNo(data.useAlcoholOrDrugsForPain)}`,
-    `Recent recreational drug use: ${labelYesNo(data.recentRecreationalDrugUse)}`,
     ``,
     `Main reason(s) seeking therapy:`,
     `${data.mainReason || "-"}`,
@@ -251,9 +245,6 @@ function compileHtml(data: IntakePayload) {
       <p><strong>Sleeping habits (1–5):</strong> ${sanitizeOrDash(String(data.sleepingHabits ?? "-"))}</p>
       <p><strong>Physical health (1–5):</strong> ${sanitizeOrDash(String(data.physicalHealth ?? "-"))}</p>
       <p><strong>Exercise frequency:</strong> ${sanitizeOrDash(labelExercise(data.exerciseFrequency))}</p>
-      <p><strong>Chronic pain:</strong> ${sanitizeOrDash(labelYesNo(data.chronicPain))}</p>
-      <p><strong>Alcohol/drugs for pain management:</strong> ${sanitizeOrDash(labelYesNo(data.useAlcoholOrDrugsForPain))}</p>
-      <p><strong>Recent recreational drug use:</strong> ${sanitizeOrDash(labelYesNo(data.recentRecreationalDrugUse))}</p>
       <p><strong>Main reason(s) seeking therapy:</strong></p>
       ${pre(data.mainReason)}
       <p><strong>Other important information:</strong></p>
@@ -465,9 +456,6 @@ export async function POST(req: Request) {
     sleepingHabits: sn(rawLegacy.sleepingHabits),
     physicalHealth: sn(rawLegacy.physicalHealth),
     exerciseFrequency: s(rawLegacy.exerciseFrequency, 30),
-    chronicPain: s(rawLegacy.chronicPain, 10),
-    useAlcoholOrDrugsForPain: s(rawLegacy.useAlcoholOrDrugsForPain, 10),
-    recentRecreationalDrugUse: s(rawLegacy.recentRecreationalDrugUse, 10),
     mainReason: s(rawLegacy.mainReason, 8000),
   }
 

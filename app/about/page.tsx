@@ -28,6 +28,7 @@ export default async function AboutPage() {
   const emailAlt = config.contact?.emailAlt ?? ""
   const phone = config.contact?.phone ?? "+61 488 222 137"
   const credentials = ["D.Couns.", "B.Couns.", "MCouns&Psych"]
+  const aboutContent = config.about ?? { title: "", paragraphs: [] }
 
   return (
     <div className="min-h-screen bg-muted">
@@ -60,20 +61,17 @@ export default async function AboutPage() {
                 </ul>
               </div>
               <div className="lg:col-span-3 space-y-6 text-lg leading-relaxed text-[var(--foreground)]/80 sm:text-[var(--primary)]">
-                <p className="text-xl text-[var(--foreground)] font-medium">
-                  Dan is a warm, empathic counsellor with a deep understanding of human behaviour and emotional complexity.
-                  He combines contemporary integrative counselling with behavioural psychology to help clients understand
-                  the “why” behind their feelings and choices — particularly around money, self-worth, grief, and life transitions.
-                </p>
-                <blockquote className="font-serif text-2xl md:text-3xl text-[var(--primary)] leading-[1.3] font-light italic">
-                  “I believe that financial wellbeing isn’t just about numbers — it’s about emotional safety, self-trust, and our
-                  relationship with value.”
-                </blockquote>
-                <p>
-                  Dan’s approach is inclusive, trauma-informed, and non-judgemental. He supports women who have felt
-                  disempowered by financial control, inequality, or generational money patterns, offering a pace that respects the
-                  nervous system and honours personal boundaries.
-                </p>
+                {aboutContent.title ? (
+                  <p className="text-xl text-[var(--foreground)] font-medium">{aboutContent.title}</p>
+                ) : null}
+                {aboutContent.paragraphs?.[0] ? (
+                  <blockquote className="font-serif text-2xl md:text-3xl text-[var(--primary)] leading-[1.3] font-light italic">
+                    {aboutContent.paragraphs[0]}
+                  </blockquote>
+                ) : null}
+                {aboutContent.paragraphs?.slice(1).map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
                 <div className="grid gap-3 md:grid-cols-2 pt-2">
                   <p className="text-sm text-[var(--foreground)]/80 sm:text-[var(--primary)]/90">
                     📍 Based in Melbourne | Online &amp; In-Person Sessions

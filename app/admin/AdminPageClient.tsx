@@ -214,16 +214,19 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   const [legal, setLegal] = useState<NonNullable<SiteConfig["legal"]>>({
     privacy: { title: "Privacy Policy", bodyMdx: "", downloadUrl: "" },
     terms: { title: "Terms of Service", bodyMdx: "", downloadUrl: "" },
-    consent: { title: "Consent & Policies", bodyMdx: "", downloadUrl: "", requiredStatement: "" },
   })
   const [forms, setForms] = useState<NonNullable<SiteConfig["forms"]>>({
     enquiry: "/enquiry",
-    consent: "/consent",
     intake: "/intake",
   })
   const [formPages, setFormPages] = useState<SiteConfig["formPages"]>({})
   const [formPagesEditor, setFormPagesEditor] = useState<{ enquiry: string; intake: string; newsletter: string }>({ enquiry: "", intake: "", newsletter: "" })
-  const [clientCare, setClientCare] = useState<SiteConfig["clientCare"]>({ downloads: [] })
+  const [clientCare, setClientCare] = useState<SiteConfig["clientCare"]>({
+    heroEyebrow: "",
+    heroTitle: "",
+    heroSubtitle: "",
+    downloads: [],
+  })
   const [interactiveNewsletterHtml, setInteractiveNewsletterHtml] = useState<string>("")
   const [newsletterHtmls, setNewsletterHtmls] = useState<Record<string, { html: string; loading: boolean; saving: boolean }>>({})
   const [contentSections, setContentSections] = useState<SiteConfig["contentSections"]>([])
@@ -465,17 +468,9 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
         setLegal({
           privacy: { title: "Privacy Policy", bodyMdx: "", downloadUrl: "", ...(nextLegal.privacy ?? {}) },
           terms: { title: "Terms of Service", bodyMdx: "", downloadUrl: "", ...(nextLegal.terms ?? {}) },
-          consent: {
-            title: "Consent & Policies",
-            bodyMdx: "",
-            downloadUrl: "",
-            requiredStatement: "",
-            ...(nextLegal.consent ?? {}),
-          },
         })
         setForms({
           enquiry: nextForms.enquiry ?? "/enquiry",
-          consent: nextForms.consent ?? "/consent",
           intake: nextForms.intake ?? "/intake",
         })
         setFormPages(nextFormPages)
@@ -485,6 +480,9 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
           newsletter: JSON.stringify(nextFormPages?.newsletter ?? {}, null, 2),
         })
         setClientCare({
+          heroEyebrow: nextClientCare.heroEyebrow ?? "",
+          heroTitle: nextClientCare.heroTitle ?? "",
+          heroSubtitle: nextClientCare.heroSubtitle ?? "",
           downloads: Array.isArray(nextClientCare.downloads) ? nextClientCare.downloads : [],
           prepChecklist: Array.isArray(nextClientCare.prepChecklist) ? nextClientCare.prepChecklist : [],
           aftercareChecklist: Array.isArray(nextClientCare.aftercareChecklist) ? nextClientCare.aftercareChecklist : [],
@@ -561,21 +559,16 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
          legal: {
            privacy: { title: "Privacy Policy", bodyMdx: "", downloadUrl: "", ...(nextLegal.privacy ?? {}) },
            terms: { title: "Terms of Service", bodyMdx: "", downloadUrl: "", ...(nextLegal.terms ?? {}) },
-          consent: {
-            title: "Consent & Policies",
-            bodyMdx: "",
-            downloadUrl: "",
-            requiredStatement: "",
-            ...(nextLegal.consent ?? {}),
-          },
          },
          forms: {
            enquiry: nextForms.enquiry ?? "/enquiry",
-           consent: nextForms.consent ?? "/consent",
            intake: nextForms.intake ?? "/intake",
          },
         formPages: nextFormPages ?? {},
          clientCare: {
+          heroEyebrow: nextClientCare.heroEyebrow ?? "",
+          heroTitle: nextClientCare.heroTitle ?? "",
+          heroSubtitle: nextClientCare.heroSubtitle ?? "",
            downloads: Array.isArray(nextClientCare.downloads) ? nextClientCare.downloads : [],
            prepChecklist: Array.isArray(nextClientCare.prepChecklist) ? nextClientCare.prepChecklist : [],
            aftercareChecklist: Array.isArray(nextClientCare.aftercareChecklist) ? nextClientCare.aftercareChecklist : [],
@@ -715,17 +708,9 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     setLegal({
       privacy: { title: "Privacy Policy", bodyMdx: "", downloadUrl: "", ...(loadedConfig.legal?.privacy ?? {}) },
       terms: { title: "Terms of Service", bodyMdx: "", downloadUrl: "", ...(loadedConfig.legal?.terms ?? {}) },
-      consent: {
-        title: "Consent & Policies",
-        bodyMdx: "",
-        downloadUrl: "",
-        requiredStatement: "",
-        ...(loadedConfig.legal?.consent ?? {}),
-      },
     })
     setForms({
       enquiry: loadedConfig.forms?.enquiry ?? "/enquiry",
-      consent: loadedConfig.forms?.consent ?? "/consent",
       intake: loadedConfig.forms?.intake ?? "/intake",
     })
     setFormPages(loadedConfig.formPages ?? {})
@@ -735,6 +720,9 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
       newsletter: JSON.stringify(loadedConfig.formPages?.newsletter ?? {}, null, 2),
     })
     setClientCare({
+      heroEyebrow: loadedConfig.clientCare?.heroEyebrow ?? "",
+      heroTitle: loadedConfig.clientCare?.heroTitle ?? "",
+      heroSubtitle: loadedConfig.clientCare?.heroSubtitle ?? "",
       downloads: loadedConfig.clientCare?.downloads ?? [],
       prepChecklist: loadedConfig.clientCare?.prepChecklist ?? [],
       aftercareChecklist: loadedConfig.clientCare?.aftercareChecklist ?? [],
@@ -1857,7 +1845,7 @@ function CodeAgentBox() {
                </CardHeader>
                <CardContent className="space-y-4">
                  <div className="space-y-2">
-                   <Label htmlFor="about-title">Section Title</Label>
+                  <Label htmlFor="about-title">Lead paragraph</Label>
                    <Input
                      id="about-title"
                      value={aboutContent.title}
@@ -1866,7 +1854,7 @@ function CodeAgentBox() {
                    />
                  </div>
                  <div className="space-y-2">
-                   <Label htmlFor="about-para1">Paragraph 1</Label>
+                  <Label htmlFor="about-para1">Quote</Label>
                    <Textarea
                      id="about-para1"
                      value={aboutContent.paragraphs[0]}
@@ -1879,7 +1867,7 @@ function CodeAgentBox() {
                    />
                  </div>
                  <div className="space-y-2">
-                   <Label htmlFor="about-para2">Paragraph 2</Label>
+                  <Label htmlFor="about-para2">Body paragraph</Label>
                    <Textarea
                      id="about-para2"
                      value={aboutContent.paragraphs[1]}
@@ -4999,10 +4987,10 @@ function CodeAgentBox() {
            {/* Documents Tab */}
            <TabsContent value="documents" className="space-y-6">
              <Card>
-               <CardHeader>
-                 <CardTitle>Legal pages</CardTitle>
-                <CardDescription>Manage Privacy Policy, Terms of Service, and Consent &amp; Policies content and downloadable files.</CardDescription>
-               </CardHeader>
+              <CardHeader>
+                <CardTitle>Legal pages</CardTitle>
+                <CardDescription>Manage Privacy Policy and Terms of Service content and downloadable files.</CardDescription>
+              </CardHeader>
                <CardContent className="space-y-8">
                 <div className="grid gap-6 lg:grid-cols-3">
                    <div className="space-y-3 rounded-lg border border-border/40 p-4">
@@ -5113,69 +5101,6 @@ function CodeAgentBox() {
                      </div>
                    </div>
 
-                  <div className="space-y-3 rounded-lg border border-border/40 p-4">
-                    <p className="font-semibold text-[var(--foreground)]">Consent &amp; Policies</p>
-                    <div className="space-y-2">
-                      <Label>Title</Label>
-                      <Input
-                        value={legal.consent?.title ?? ""}
-                        onChange={(e) => setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), title: e.target.value } }))}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Required statement (must be typed exactly)</Label>
-                      <Input
-                        value={legal.consent?.requiredStatement ?? ""}
-                        onChange={(e) =>
-                          setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), requiredStatement: e.target.value } }))
-                        }
-                        placeholder="I have read & I understand the contents of this document"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Download URL</Label>
-                      <Input
-                        value={legal.consent?.downloadUrl ?? ""}
-                        onChange={(e) =>
-                          setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), downloadUrl: e.target.value } }))
-                        }
-                      />
-                      <div className="flex flex-wrap gap-3">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={async () => {
-                            try {
-                              const url = await uploadAsset({ path: "docs/consent-and-policies{{ext}}", accept: ".docx,.pdf" })
-                              if (!url) return
-                              setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), downloadUrl: url } }))
-                              toast({ title: "Uploaded", description: "Consent & Policies document updated." })
-                            } catch (e: unknown) {
-                              toast({ title: "Upload failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" })
-                            }
-                          }}
-                        >
-                          <Upload className="w-4 h-4 mr-2" />
-                          Replace file
-                        </Button>
-                        {legal.consent?.downloadUrl ? (
-                          <a className="text-sm underline text-[var(--accent)]" href={legal.consent.downloadUrl} target="_blank" rel="noreferrer noopener">
-                            View file
-                          </a>
-                        ) : null}
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Body (MDX/Markdown)</Label>
-                      <Textarea
-                        rows={10}
-                        value={legal.consent?.bodyMdx ?? ""}
-                        onChange={(e) =>
-                          setLegal((prev) => ({ ...prev, consent: { ...(prev.consent ?? {}), bodyMdx: e.target.value } }))
-                        }
-                      />
-                    </div>
-                  </div>
                  </div>
                </CardContent>
              </Card>
@@ -5189,10 +5114,6 @@ function CodeAgentBox() {
                  <div className="space-y-2">
                    <Label>Enquiry</Label>
                    <Input value={forms.enquiry ?? ""} onChange={(e) => setForms((p) => ({ ...p, enquiry: e.target.value }))} />
-                 </div>
-                 <div className="space-y-2">
-                   <Label>Consent</Label>
-                   <Input value={forms.consent ?? ""} onChange={(e) => setForms((p) => ({ ...p, consent: e.target.value }))} />
                  </div>
                  <div className="space-y-2">
                    <Label>Intake</Label>
@@ -5328,6 +5249,32 @@ function CodeAgentBox() {
                  <CardDescription>Edit the Client Care Hub checklists and downloads.</CardDescription>
                </CardHeader>
                <CardContent className="space-y-6">
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-[var(--foreground)]">Hero copy</p>
+                  <div className="space-y-2">
+                    <Label>Eyebrow</Label>
+                    <Input
+                      value={clientCare?.heroEyebrow ?? ""}
+                      onChange={(e) => setClientCare((prev) => ({ ...(prev ?? {}), heroEyebrow: e.target.value }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Title</Label>
+                    <Input
+                      value={clientCare?.heroTitle ?? ""}
+                      onChange={(e) => setClientCare((prev) => ({ ...(prev ?? {}), heroTitle: e.target.value }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Subtitle</Label>
+                    <Textarea
+                      rows={2}
+                      value={clientCare?.heroSubtitle ?? ""}
+                      onChange={(e) => setClientCare((prev) => ({ ...(prev ?? {}), heroSubtitle: e.target.value }))}
+                    />
+                  </div>
+                </div>
+
                  <div className="space-y-3">
                    <p className="text-sm font-semibold text-[var(--foreground)]">Session preparation (3)</p>
                    {Array.from({ length: 3 }).map((_, idx) => (

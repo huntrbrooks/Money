@@ -56,10 +56,12 @@ export type LegalPageConfig = {
 export type LegalConfig = {
   privacy?: LegalPageConfig
   terms?: LegalPageConfig
-  consent?: LegalPageConfig
 }
 
 export type ClientCareConfig = {
+  heroEyebrow?: string
+  heroTitle?: string
+  heroSubtitle?: string
   downloads?: NavLink[]
   prepChecklist?: string[]
   aftercareChecklist?: string[]
@@ -202,7 +204,6 @@ export function normalizeCarouselResources(resources: CrisisResource[] | undefin
 
 export type FormsConfig = {
   enquiry?: string
-  consent?: string
   intake?: string
 }
 
@@ -295,7 +296,6 @@ export type FormPage = {
 export type FormPagesConfig = {
   enquiry?: FormPage
   intake?: FormPage
-  consent?: FormPage
   newsletter?: FormPage
 }
 
@@ -539,6 +539,9 @@ export const defaultConfig: SiteConfig = {
     },
   },
   clientCare: {
+    heroEyebrow: "Client care hub",
+    heroTitle: "Grounding resources for before and after session",
+    heroSubtitle: "Save this page to revisit rituals, crisis contacts, and downloads whenever you need them.",
     downloads: [
       { label: "Enquiry Form", href: "/enquiry" },
       { label: "Intake Form", href: "/intake" },
@@ -788,10 +791,11 @@ export const defaultConfig: SiteConfig = {
     ],
   },
   about: {
-    title: "Contemporary Integrative Counselling",
+    title:
+      "Dan is a warm, empathic counsellor with a deep understanding of human behaviour and emotional complexity. He combines contemporary integrative counselling with behavioural psychology to help clients understand the “why” behind their feelings and choices — particularly around money, self-worth, grief, and life transitions.",
     paragraphs: [
-      "Dan's contemporary integrative counselling employs a comprehensive, evidence-based approach to therapy, integrating various therapeutic modalities to adapt to each client's unique needs and circumstances.",
-      "With a person-centered, intuitive approach, Dan places great focus on candid communication accompanied by acute empathy and profound awareness of people. He promotes the importance of expressing feelings, fostering personal growth, and addressing issues realistically, whilst always prioritising mental health and wellbeing.",
+      "“I believe that financial wellbeing isn’t just about numbers — it’s about emotional safety, self-trust, and our relationship with value.”",
+      "Dan’s approach is inclusive, trauma-informed, and non-judgemental. He supports women who have felt disempowered by financial control, inequality, or generational money patterns, offering a pace that respects the nervous system and honours personal boundaries.",
     ],
   },
   services: [
@@ -1072,39 +1076,6 @@ export const defaultConfig: SiteConfig = {
                 { value: "1-2_per_week", label: "1–2 times per week" },
                 { value: "3-4_per_week", label: "3–4 times per week" },
                 { value: "5+_per_week", label: "5+ times per week" },
-              ],
-            },
-            {
-              type: "select",
-              name: "chronicPain",
-              label: "Are you currently experiencing any form of chronic pain?",
-              required: false,
-              options: [
-                { value: "", label: "Select" },
-                { value: "yes", label: "Yes" },
-                { value: "no", label: "No" },
-              ],
-            },
-            {
-              type: "select",
-              name: "useAlcoholOrDrugsForPain",
-              label: "Are you currently using any alcohol or drugs for pain management?",
-              required: false,
-              options: [
-                { value: "", label: "Select" },
-                { value: "yes", label: "Yes" },
-                { value: "no", label: "No" },
-              ],
-            },
-            {
-              type: "select",
-              name: "recentRecreationalDrugUse",
-              label: "Have you recently used any recreational drugs?",
-              required: false,
-              options: [
-                { value: "", label: "Select" },
-                { value: "yes", label: "Yes" },
-                { value: "no", label: "No" },
               ],
             },
           ],
@@ -1613,6 +1584,9 @@ export async function readSiteConfig(): Promise<SiteConfig> {
               terms: { ...(defaultConfig.legal?.terms ?? {}), ...(parsed.legal?.terms ?? {}) },
             },
             clientCare: {
+              heroEyebrow: parsed.clientCare?.heroEyebrow ?? defaultConfig.clientCare?.heroEyebrow,
+              heroTitle: parsed.clientCare?.heroTitle ?? defaultConfig.clientCare?.heroTitle,
+              heroSubtitle: parsed.clientCare?.heroSubtitle ?? defaultConfig.clientCare?.heroSubtitle,
               downloads: parsed.clientCare?.downloads ?? defaultConfig.clientCare?.downloads,
               prepChecklist: parsed.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
               aftercareChecklist: parsed.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
@@ -1708,6 +1682,9 @@ export async function readSiteConfig(): Promise<SiteConfig> {
         terms: { ...(defaultConfig.legal?.terms ?? {}), ...(parsed.legal?.terms ?? {}) },
       },
       clientCare: {
+        heroEyebrow: parsed.clientCare?.heroEyebrow ?? defaultConfig.clientCare?.heroEyebrow,
+        heroTitle: parsed.clientCare?.heroTitle ?? defaultConfig.clientCare?.heroTitle,
+        heroSubtitle: parsed.clientCare?.heroSubtitle ?? defaultConfig.clientCare?.heroSubtitle,
         downloads: parsed.clientCare?.downloads ?? defaultConfig.clientCare?.downloads,
         prepChecklist: parsed.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
         aftercareChecklist: parsed.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
@@ -1873,6 +1850,9 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
     })(),
     experiments: { ...defaultConfig.experiments, ...(newConfig.experiments ?? {}) },
     clientCare: {
+      heroEyebrow: newConfig.clientCare?.heroEyebrow ?? defaultConfig.clientCare?.heroEyebrow,
+      heroTitle: newConfig.clientCare?.heroTitle ?? defaultConfig.clientCare?.heroTitle,
+      heroSubtitle: newConfig.clientCare?.heroSubtitle ?? defaultConfig.clientCare?.heroSubtitle,
       downloads: newConfig.clientCare?.downloads ?? defaultConfig.clientCare?.downloads,
       prepChecklist: newConfig.clientCare?.prepChecklist ?? defaultConfig.clientCare?.prepChecklist,
       aftercareChecklist: newConfig.clientCare?.aftercareChecklist ?? defaultConfig.clientCare?.aftercareChecklist,
