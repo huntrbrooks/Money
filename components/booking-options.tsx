@@ -98,8 +98,9 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
         {/* Mobile: compact dropdowns (accordion) */}
         <div className="sm:hidden">
           <Accordion type="single" collapsible className="divide-y rounded-3xl border border-[#d4ddd8] bg-[var(--section-bg-2)]/60">
-            {visibleOptions.map((option) => {
-              const value = `consultation-${option.typeId ?? option.format}`
+            {visibleOptions.map((option, idx) => {
+              const optionKey = option.typeId ?? `${option.format ?? "option"}-${idx}`
+              const value = `consultation-${optionKey}`
               const location = option.location ?? ""
               return (
                 <AccordionItem key={value} value={value} className="px-4">
@@ -150,11 +151,12 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
 
         {/* Desktop: existing cards */}
         <div className="hidden gap-5 sm:grid sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {visibleOptions.map((option) => {
+          {visibleOptions.map((option, idx) => {
             const location = option.location ?? ""
+            const optionKey = option.typeId ?? `${option.format ?? "option"}-${idx}`
             return (
               <article
-                key={option.format}
+                key={optionKey}
                 className="group flex h-full flex-col rounded-[28px] border border-[#d4ddd8] bg-[var(--section-bg-2)] p-6 shadow-[0_25px_55px_rgba(42,63,70,0.12)] transition hover:-translate-y-1 hover:shadow-[0_35px_80px_rgba(42,63,70,0.16)]"
               >
                 <div className="flex items-start justify-between gap-4">
