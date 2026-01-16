@@ -99,7 +99,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
         <div className="sm:hidden">
           <Accordion type="single" collapsible className="divide-y rounded-3xl border border-[#d4ddd8] bg-[var(--section-bg-2)]/60">
             {visibleOptions.map((option, idx) => {
-              const optionKey = option.typeId ?? `${option.format ?? "option"}-${idx}`
+              const optionKey = `${option.typeId ?? option.format ?? "option"}-${idx}`
               const value = `consultation-${optionKey}`
               const location = option.location ?? ""
               return (
@@ -118,6 +118,17 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
                       </div>
                     </div>
                   </AccordionTrigger>
+                  <div className="pb-4">
+                    <Button
+                      asChild
+                      size="lg"
+                      className="w-full rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90"
+                    >
+                      <a href={buildBookingUrl(option.typeId)} target="_blank" rel="noopener noreferrer">
+                        Book this consultation
+                      </a>
+                    </Button>
+                  </div>
                   <AccordionContent className="pb-5 text-[#4a5c63]">
                     <div className="space-y-3">
                       {option.highlight && (
@@ -132,15 +143,6 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
                         <span aria-hidden="true" className="inline-block h-4 w-4" />
                         {location ? <span>{location}</span> : <span aria-hidden="true">&nbsp;</span>}
                       </div>
-                      <Button
-                        asChild
-                        size="lg"
-                        className="w-full rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90"
-                      >
-                        <a href={buildBookingUrl(option.typeId)} target="_blank" rel="noopener noreferrer">
-                          Book this consultation
-                        </a>
-                      </Button>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -153,7 +155,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
         <div className="hidden gap-5 sm:grid sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {visibleOptions.map((option, idx) => {
             const location = option.location ?? ""
-            const optionKey = option.typeId ?? `${option.format ?? "option"}-${idx}`
+            const optionKey = `${option.typeId ?? option.format ?? "option"}-${idx}`
             return (
               <article
                 key={optionKey}
@@ -172,26 +174,28 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
                     </span>
                   )}
                 </div>
-                {option.description && (
-                  <p className="mt-4 flex-1 text-sm leading-relaxed text-[#4a5a61]">{option.description}</p>
-                )}
-                <div className="mt-6 flex flex-wrap items-baseline gap-2">
-                  <span className="font-serif text-4xl text-[#1f2d38]">{option.price}</span>
-                  <span className="text-sm text-[#4a5c63]">{option.duration}</span>
+                <div className="mt-4 flex flex-1 flex-col">
+                  {option.description && (
+                    <p className="text-sm leading-relaxed text-[#4a5a61]">{option.description}</p>
+                  )}
+                  <div className={`${option.description ? "mt-6" : "mt-0"} flex flex-wrap items-baseline gap-2`}>
+                    <span className="font-serif text-4xl text-[#1f2d38]">{option.price}</span>
+                    <span className="text-sm text-[#4a5c63]">{option.duration}</span>
+                  </div>
+                  <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-[#4a5c63]">
+                    <span aria-hidden="true" className="inline-block h-4 w-4" />
+                    {location ? <span>{location}</span> : <span aria-hidden="true">&nbsp;</span>}
+                  </div>
+                  <Button
+                    asChild
+                    size="lg"
+                    className="mt-auto w-full rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90"
+                  >
+                    <a href={buildBookingUrl(option.typeId)} target="_blank" rel="noopener noreferrer">
+                      Book this consultation
+                    </a>
+                  </Button>
                 </div>
-                <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-[#4a5c63]">
-                  <span aria-hidden="true" className="inline-block h-4 w-4" />
-                  {location ? <span>{location}</span> : <span aria-hidden="true">&nbsp;</span>}
-                </div>
-                <Button
-                  asChild
-                  size="lg"
-                  className="mt-6 w-full rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90"
-                >
-                  <a href={buildBookingUrl(option.typeId)} target="_blank" rel="noopener noreferrer">
-                    Book this consultation
-                  </a>
-                </Button>
               </article>
             )
           })}

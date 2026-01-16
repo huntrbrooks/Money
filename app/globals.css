@@ -167,6 +167,7 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
     background-image: var(--bg-radial-1), var(--bg-radial-2);
     background-attachment: fixed, fixed;
     background-size: auto, auto;
