@@ -22,6 +22,11 @@ function flattenSections(sections: FormSection[]): FormField[] {
 function defaultValueForField(field: FormField): FieldValue {
   if (field.type === "checkbox") return Boolean(field.defaultChecked)
   if (field.type === "slider") return typeof field.defaultValue === "number" ? field.defaultValue : field.min
+  if (field.type === "select") {
+    const hasBlank = field.options.some((opt) => String(opt.value) === "")
+    if (hasBlank) return ""
+    return field.options[0]?.value ?? ""
+  }
   return ""
 }
 

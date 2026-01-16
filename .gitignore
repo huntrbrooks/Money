@@ -38,6 +38,7 @@ public/.DS_Store
 .cookies.txt
 .vscode/
 .next-start-*.log
+invoices/
 
 # cursor
 .cursor/

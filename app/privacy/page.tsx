@@ -25,6 +25,8 @@ export default async function PrivacyPage() {
   const title = privacy?.title?.trim() || "Privacy Policy"
   const downloadUrl = privacy?.downloadUrl?.trim() || "/Privacy%20Policy.docx"
   const isPdf = downloadUrl.toLowerCase().split("?")[0].endsWith(".pdf")
+  // For PDF viewer: hide toolbar and navigation panes, enable scrolling
+  const pdfViewerUrl = isPdf ? `${downloadUrl.split("#")[0]}#toolbar=0&navpanes=0&scrollbar=1` : downloadUrl
   const source = privacy?.bodyMdx?.trim() || ""
   let mdx: Awaited<ReturnType<typeof compileMDX>> | null = null
   if (source) {
@@ -54,7 +56,7 @@ export default async function PrivacyPage() {
         ) : isPdf ? (
           <>
             <div className="w-full overflow-hidden rounded-md border border-[var(--secondary)] bg-[var(--section-bg-1)]">
-              <iframe title="Privacy Policy" src={downloadUrl} className="w-full" style={{ minHeight: "900px" }} />
+              <iframe title="Privacy Policy" src={pdfViewerUrl} className="w-full" style={{ minHeight: "900px" }} />
             </div>
             <p className="text-[var(--primary)] text-sm">
               If the embedded PDF does not load,{" "}
