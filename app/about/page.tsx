@@ -27,7 +27,6 @@ export default async function AboutPage() {
   const email = config.contact?.email ?? "dan@financialabusetherapist.com.au"
   const emailAlt = config.contact?.emailAlt ?? ""
   const phone = config.contact?.phone ?? "+61 488 222 137"
-  const credentials = ["D.Couns.", "B.Couns.", "MCouns&Psych"]
   const aboutContent = config.about ?? { title: "", paragraphs: [] }
 
   return (
@@ -48,17 +47,8 @@ export default async function AboutPage() {
                   About Dan
                 </p>
                 <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[var(--foreground)] leading-[1.1] font-light">
-                  Dan Lobel, D.Couns., B.Couns., MCouns&Psych
+                  Dan Lobel
                 </h1>
-                <p className="text-[var(--foreground)]/80 sm:text-[var(--primary)]/90">The Financial Therapist</p>
-                <ul className="space-y-2 text-[var(--foreground)]/80 sm:text-[var(--primary)]">
-                  {credentials.map((item) => (
-                    <li key={item} className="flex items-center gap-2">
-                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
               <div className="lg:col-span-3 space-y-6 text-lg leading-relaxed text-[var(--foreground)]/80 sm:text-[var(--primary)]">
                 {aboutContent.title ? (

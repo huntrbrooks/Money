@@ -155,9 +155,7 @@ export function Navigation() {
           </Link>
         ))}
       </nav>
-      <div className="px-6 md:px-10 py-6 border-t border-[var(--foreground)]/20 text-center text-sm text-[var(--foreground)]/85">
-        <p className="font-serif tracking-wide text-[var(--foreground)]">Trauma-informed counselling for financial wellbeing</p>
-      </div>
+      <div className="px-6 md:px-10 py-6 border-t border-[var(--foreground)]/20 text-center text-sm text-[var(--foreground)]/85" />
     </>
   )
 
@@ -202,7 +200,6 @@ export function Navigation() {
             <button
               onClick={handleMenuToggle}
               className={`${menuButtonClasses} -translate-y-1/2`}
-              aria-expanded={isMenuOpen ? "true" : "false"}
               aria-haspopup="true"
               aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             >

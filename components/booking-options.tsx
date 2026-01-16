@@ -105,14 +105,14 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
               return (
                 <AccordionItem key={value} value={value} className="px-4">
                   <AccordionTrigger className="py-4 text-left">
-                    <div className="flex w-full items-center justify-between gap-3 pr-2">
+                    <div className="flex w-full flex-col gap-2 pr-2 text-left">
                       <div className="min-w-0">
                         {option.mode && option.mode !== "Flexible Delivery" && (
                           <p className="text-[11px] uppercase tracking-[0.25em] text-[#5a7264]">{option.mode}</p>
                         )}
-                        <p className="font-serif text-lg text-[#1f2d38] leading-snug truncate">{option.format}</p>
+                        <p className="font-serif text-lg text-[#1f2d38] leading-snug break-words">{option.format}</p>
                       </div>
-                      <div className="flex items-baseline gap-2 shrink-0">
+                      <div className="flex flex-wrap items-baseline gap-2">
                         <span className="font-serif text-2xl text-[#1f2d38]">{option.price}</span>
                         <span className="text-xs text-[#4a5c63]">{option.duration}</span>
                       </div>
