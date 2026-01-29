@@ -30,9 +30,7 @@ export default async function TermsPage() {
     ? `${downloadUrl.split("#")[0]}#toolbar=0&navpanes=0&scrollbar=1&zoom=page-width`
     : downloadUrl
   const pdfFileUrl = downloadUrl.split("#")[0]
-  const mobileViewerUrl = isPdf
-    ? `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(absoluteUrl(pdfFileUrl))}`
-    : downloadUrl
+  const mobileViewerUrl = isPdf ? pdfViewerUrl : downloadUrl
   const source = terms?.bodyMdx?.trim() || ""
   let mdx: Awaited<ReturnType<typeof compileMDX>> | null = null
   if (source) {
@@ -65,7 +63,9 @@ export default async function TermsPage() {
               <iframe
                 title="Terms of Service (Mobile)"
                 src={mobileViewerUrl}
-                className="w-full h-[80vh] bg-white md:hidden"
+                className="w-full h-[90vh] bg-white md:hidden"
+                scrolling="yes"
+                allow="fullscreen"
               />
               <iframe
                 title="Terms of Service"
