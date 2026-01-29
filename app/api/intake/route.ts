@@ -283,7 +283,7 @@ function compileAdminNoticeHtml(data: IntakePayload, recipient: string) {
 }
 
 function compileConfirmationSubject() {
-  return "Your intake form has been received"
+  return "Thanks for completing your intake form"
 }
 
 function confirmationGreeting(firstName?: string) {
@@ -354,40 +354,6 @@ async function sendResendEmail(
   return { ok: true as const }
 }
 
-async function sendSmtpEmail(
-  to: string,
-  replyTo: string | undefined,
-  subject: string,
-  text: string,
-  html: string,
-  fromOverride?: string,
-) {
-  // Only import when needed
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const nodemailer = await import("nodemailer").catch(() => null)
-  if (!nodemailer) return { ok: false as const, error: "nodemailer not installed" }
-
-  const host = process.env.SMTP_HOST
-  const port = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 587
-  const user = process.env.SMTP_USER
-  const pass = process.env.SMTP_PASS
-  const secure = String(process.env.SMTP_SECURE || "").toLowerCase() === "true"
-  const from = fromOverride || process.env.EMAIL_FROM || `Intake <${user ?? "no-reply@example.com"}>`
-  if (!host || !user || !pass) return { ok: false as const, error: "SMTP configuration missing" }
-
-  const transporter = nodemailer.createTransport({ host, port, secure, auth: { user, pass } })
-  await transporter.sendMail({
-    from,
-    to,
-    subject,
-    text,
-    html,
-    replyTo: replyTo,
-  })
-  return { ok: true as const }
-}
-
 async function sendViaResend(to: string, replyTo: string | undefined, data: IntakePayload, fromOverride?: string) {
   const apiKey = process.env.RESEND_API_KEY
   const from = fromOverride || process.env.EMAIL_FROM || "Intake <onboarding@resend.dev>"
@@ -411,33 +377,6 @@ async function sendViaResend(to: string, replyTo: string | undefined, data: Inta
     const detail = await res.text().catch(() => "")
     return { ok: false as const, error: `Resend error: ${detail || res.statusText}` }
   }
-  return { ok: true as const }
-}
-
-async function sendViaSmtp(to: string, replyTo: string | undefined, data: IntakePayload, fromOverride?: string) {
-  // Only import when needed
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const nodemailer = await import("nodemailer").catch(() => null)
-  if (!nodemailer) return { ok: false as const, error: "nodemailer not installed" }
-
-  const host = process.env.SMTP_HOST
-  const port = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 587
-  const user = process.env.SMTP_USER
-  const pass = process.env.SMTP_PASS
-  const secure = String(process.env.SMTP_SECURE || "").toLowerCase() === "true"
-  const from = fromOverride || process.env.EMAIL_FROM || `Intake <${user ?? "no-reply@example.com"}>`
-  if (!host || !user || !pass) return { ok: false as const, error: "SMTP configuration missing" }
-
-  const transporter = nodemailer.createTransport({ host, port, secure, auth: { user, pass } })
-  await transporter.sendMail({
-    from,
-    to,
-    subject: compileSubject(data),
-    text: compileText(data),
-    html: compileHtml(data),
-    replyTo: replyTo,
-  })
   return { ok: true as const }
 }
 
@@ -532,33 +471,9 @@ export async function POST(req: Request) {
       })
     }
 
-    // Try SMTP first if configured, otherwise fall back to Resend, otherwise log in dev
+    // Force Resend for all deliveries
     let result: { ok: true } | { ok: false; error: string } = { ok: false, error: "No email provider configured" }
-    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && formRecipient) {
-      try {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const nodemailer = await import("nodemailer").catch(() => null)
-        if (!nodemailer) return NextResponse.json({ error: "nodemailer not installed" }, { status: 500 })
-        const transporter = nodemailer.createTransport({
-          host: process.env.SMTP_HOST,
-          port: process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 587,
-          secure: String(process.env.SMTP_SECURE || "").toLowerCase() === "true",
-          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-        })
-        await transporter.sendMail({
-          from: fromDan,
-          to: formRecipient,
-          subject,
-          text,
-          html,
-          replyTo: email || undefined,
-        })
-        result = { ok: true as const }
-      } catch (error) {
-        result = { ok: false as const, error: resolveErrorMessage(error, "SMTP error") }
-      }
-    } else if (process.env.RESEND_API_KEY && formRecipient) {
+    if (process.env.RESEND_API_KEY && formRecipient) {
       try {
         const apiKey = process.env.RESEND_API_KEY
         const from = fromDan
@@ -594,9 +509,7 @@ export async function POST(req: Request) {
 
     if (adminRecipient) {
       try {
-        if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-          await sendSmtpEmail(adminRecipient, email || undefined, adminSubject, adminText, adminHtml, fromDan)
-        } else if (process.env.RESEND_API_KEY) {
+        if (process.env.RESEND_API_KEY) {
           await sendResendEmail(adminRecipient, email || undefined, adminSubject, adminText, adminHtml, fromDan)
         }
       } catch (error) {
@@ -607,9 +520,7 @@ export async function POST(req: Request) {
     if (email) {
       const confirmationFrom = fromDan
       try {
-        if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-          await sendSmtpEmail(email, formRecipient, confirmationSubject, confirmationText, confirmationHtml, confirmationFrom)
-        } else if (process.env.RESEND_API_KEY) {
+        if (process.env.RESEND_API_KEY) {
           await sendResendEmail(email, formRecipient, confirmationSubject, confirmationText, confirmationHtml, confirmationFrom)
         }
       } catch (error) {
@@ -717,15 +628,9 @@ export async function POST(req: Request) {
     })
   }
 
-  // Try SMTP first if configured, otherwise fall back to Resend, otherwise log in dev
+  // Force Resend for all deliveries
   let result: { ok: true } | { ok: false; error: string } = { ok: false, error: "No email provider configured" }
-  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && formRecipient) {
-    try {
-      result = await sendViaSmtp(formRecipient, data.email, data, fromDan)
-    } catch (error) {
-      result = { ok: false as const, error: resolveErrorMessage(error, "SMTP error") }
-    }
-  } else if (process.env.RESEND_API_KEY && formRecipient) {
+  if (process.env.RESEND_API_KEY && formRecipient) {
     try {
       result = await sendViaResend(formRecipient, data.email, data, fromDan)
     } catch (error) {
@@ -740,12 +645,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: result.error }, { status: 500 })
   }
 
-    if (adminRecipient) {
+  if (adminRecipient) {
     try {
-      if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-          await sendSmtpEmail(adminRecipient, data.email, adminSubject, adminText, adminHtml, fromDan)
-      } else if (process.env.RESEND_API_KEY) {
-          await sendResendEmail(adminRecipient, data.email, adminSubject, adminText, adminHtml, fromDan)
+      if (process.env.RESEND_API_KEY) {
+        await sendResendEmail(adminRecipient, data.email, adminSubject, adminText, adminHtml, fromDan)
       }
     } catch (error) {
       console.warn("[intake] admin notification failed", error)
@@ -755,9 +658,7 @@ export async function POST(req: Request) {
   if (data.email) {
     const confirmationFrom = fromDan
     try {
-      if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-        await sendSmtpEmail(data.email, formRecipient, confirmationSubject, confirmationText, confirmationHtml, confirmationFrom)
-      } else if (process.env.RESEND_API_KEY) {
+      if (process.env.RESEND_API_KEY) {
         await sendResendEmail(data.email, formRecipient, confirmationSubject, confirmationText, confirmationHtml, confirmationFrom)
       }
     } catch (error) {

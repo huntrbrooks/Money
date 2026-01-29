@@ -182,7 +182,7 @@ function compileHtml(data: EnquiryPayload) {
 }
 
 function compileConfirmationSubject() {
-  return "I've received your enquiry"
+  return "Thanks for your enquiry"
 }
 
 function confirmationGreeting(firstName?: string) {
@@ -194,9 +194,9 @@ function compileConfirmationText(firstName?: string) {
   return [
     confirmationGreeting(firstName),
     "",
-    "Thanks for getting in touch. I just wanted to let you know that your enquiry has come through successfully.",
+    "Thanks for getting in touch. This is a quick note to confirm I have received your enquiry.",
     "",
-    "I personally review every message and will get back to you as soon as possible. If your enquiry is time-sensitive, please know it has been received and is on my radar.",
+    "I personally review each message and will get back to you as soon as possible.",
     "",
     "In the meantime, take care of yourself, and thank you for reaching out.",
     "",
@@ -209,8 +209,8 @@ function compileConfirmationHtml(firstName?: string) {
   return `
     <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#222">
       <p>${sanitize(confirmationGreeting(firstName))}</p>
-      <p>Thanks for getting in touch. I just wanted to let you know that your enquiry has come through successfully.</p>
-      <p>I personally review every message and will get back to you as soon as possible. If your enquiry is time-sensitive, please know it has been received and is on my radar.</p>
+      <p>Thanks for getting in touch. This is a quick note to confirm I have received your enquiry.</p>
+      <p>I personally review each message and will get back to you as soon as possible.</p>
       <p>In the meantime, take care of yourself, and thank you for reaching out.</p>
       <p>Kind regards,<br />Dan</p>
     </div>
@@ -247,40 +247,6 @@ async function sendViaResend(
     const detail = await res.text().catch(() => "")
     return { ok: false as const, error: `Resend error: ${detail || res.statusText}` }
   }
-  return { ok: true as const }
-}
-
-async function sendViaSmtp(
-  to: string,
-  replyTo: string | undefined,
-  subject: string,
-  text: string,
-  html: string,
-  fromOverride?: string,
-) {
-  // Only import when needed to avoid build-time dependency
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const nodemailer = await import("nodemailer").catch(() => null)
-  if (!nodemailer) return { ok: false as const, error: "nodemailer not installed" }
-
-  const host = process.env.SMTP_HOST
-  const port = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 587
-  const user = process.env.SMTP_USER
-  const pass = process.env.SMTP_PASS
-  const secure = String(process.env.SMTP_SECURE || "").toLowerCase() === "true"
-  const from = fromOverride || process.env.EMAIL_FROM || `Enquiries <${user ?? "no-reply@example.com"}>`
-  if (!host || !user || !pass) return { ok: false as const, error: "SMTP configuration missing" }
-
-  const transporter = nodemailer.createTransport({ host, port, secure, auth: { user, pass } })
-  await transporter.sendMail({
-    from,
-    to,
-    subject,
-    text,
-    html,
-    replyTo: replyTo,
-  })
   return { ok: true as const }
 }
 
@@ -398,17 +364,11 @@ export async function POST(req: Request) {
     })
   }
 
-  // Try SMTP first if configured, otherwise fall back to Resend
+  // Force Resend for all deliveries
   let result:
     | { ok: true }
     | { ok: false; error: string } = { ok: false, error: "No email provider configured" }
-  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS && formRecipient) {
-    try {
-      result = await sendViaSmtp(formRecipient, email, subject, text, html, fromDan)
-    } catch (error) {
-      result = { ok: false as const, error: resolveErrorMessage(error, "SMTP error") }
-    }
-  } else if (process.env.RESEND_API_KEY && formRecipient) {
+  if (process.env.RESEND_API_KEY && formRecipient) {
     try {
       result = await sendViaResend(formRecipient, email, subject, text, html, fromDan)
     } catch (error) {
@@ -426,9 +386,7 @@ export async function POST(req: Request) {
 
   if (adminRecipient) {
     try {
-      if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-        await sendViaSmtp(adminRecipient, email, adminSubject, adminText, adminHtml, fromDan)
-      } else if (process.env.RESEND_API_KEY) {
+      if (process.env.RESEND_API_KEY) {
         await sendViaResend(adminRecipient, email, adminSubject, adminText, adminHtml, fromDan)
       }
     } catch (error) {
@@ -439,9 +397,7 @@ export async function POST(req: Request) {
   if (email) {
     const confirmationFrom = fromDan
     try {
-      if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-        await sendViaSmtp(email, formRecipient, confirmationSubject, confirmationText, confirmationHtml, confirmationFrom)
-      } else if (process.env.RESEND_API_KEY) {
+      if (process.env.RESEND_API_KEY) {
         await sendViaResend(email, formRecipient, confirmationSubject, confirmationText, confirmationHtml, confirmationFrom)
       }
     } catch (error) {
