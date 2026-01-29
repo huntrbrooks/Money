@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { buildPageMetadata } from "@/lib/seo"
 import { readSiteConfig } from "@/lib/config"
 import { absoluteUrl } from "@/lib/urls"
-import PdfImageFallback from "@/components/PdfImageFallback"
+import ResponsivePdfEmbed from "@/components/ResponsivePdfEmbed"
 import { compileMDX } from "next-mdx-remote/rsc"
 import remarkGfm from "remark-gfm"
 import rehypeSlug from "rehype-slug"
@@ -61,13 +61,11 @@ export default async function TermsPage() {
         ) : isPdf ? (
           <>
             <div className="w-full rounded-md border border-[var(--secondary)] bg-[var(--section-bg-1)]">
-              <div className="md:hidden p-4">
-                <PdfImageFallback fileUrl={mobileFileUrl} title={title} />
-              </div>
-              <iframe
-                title="Terms of Service"
-                src={pdfViewerUrl}
-                className="hidden w-full h-[80vh] md:h-[900px] bg-white md:block"
+              <ResponsivePdfEmbed
+                title={title}
+                fileUrl={mobileFileUrl}
+                viewerUrl={pdfViewerUrl}
+                openLabel="Open terms of service PDF"
               />
             </div>
             <p className="text-[var(--primary)] text-sm">
