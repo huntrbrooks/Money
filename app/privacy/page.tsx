@@ -25,9 +25,9 @@ export default async function PrivacyPage() {
   const title = privacy?.title?.trim() || "Privacy Policy"
   const downloadUrl = privacy?.downloadUrl?.trim() || "/Privacy%20Policy.docx"
   const isPdf = downloadUrl.toLowerCase().split("?")[0].endsWith(".pdf")
-  // For PDF viewer: hide toolbar + panes, enable scroll, fit to width on mobile.
+  // For PDF viewer: hide toolbar + panes, enable scroll, fit to page width on mobile.
   const pdfViewerUrl = isPdf
-    ? `${downloadUrl.split("#")[0]}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`
+    ? `${downloadUrl.split("#")[0]}#toolbar=0&navpanes=0&scrollbar=1&zoom=page-width`
     : downloadUrl
   const source = privacy?.bodyMdx?.trim() || ""
   let mdx: Awaited<ReturnType<typeof compileMDX>> | null = null
@@ -61,7 +61,7 @@ export default async function PrivacyPage() {
               <iframe
                 title="Privacy Policy"
                 src={pdfViewerUrl}
-                className="w-full h-[75vh] md:h-[900px]"
+                className="w-full h-[80vh] md:h-[900px] bg-white"
               />
             </div>
             <p className="text-[var(--primary)] text-sm">

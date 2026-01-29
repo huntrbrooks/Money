@@ -24,9 +24,9 @@ export default async function TermsPage() {
   const title = terms?.title?.trim() || "Terms of Service"
   const downloadUrl = terms?.downloadUrl?.trim() || "/Terms%20of%20Service.pdf"
   const isPdf = downloadUrl.toLowerCase().split("?")[0].endsWith(".pdf")
-  // For PDF viewer: hide toolbar + panes, enable scroll, fit to width on mobile.
+  // For PDF viewer: hide toolbar + panes, enable scroll, fit to page width on mobile.
   const pdfViewerUrl = isPdf
-    ? `${downloadUrl.split("#")[0]}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`
+    ? `${downloadUrl.split("#")[0]}#toolbar=0&navpanes=0&scrollbar=1&zoom=page-width`
     : downloadUrl
   const source = terms?.bodyMdx?.trim() || ""
   let mdx: Awaited<ReturnType<typeof compileMDX>> | null = null
@@ -60,7 +60,7 @@ export default async function TermsPage() {
               <iframe
                 title="Terms of Service"
                 src={pdfViewerUrl}
-                className="w-full h-[75vh] md:h-[900px]"
+                className="w-full h-[80vh] md:h-[900px] bg-white"
               />
             </div>
             <p className="text-[var(--primary)] text-sm">
