@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { buildPageMetadata } from "@/lib/seo"
 import { readSiteConfig } from "@/lib/config"
 import { absoluteUrl } from "@/lib/urls"
+import PdfImageFallback from "@/components/PdfImageFallback"
 import { compileMDX } from "next-mdx-remote/rsc"
 import remarkGfm from "remark-gfm"
 import rehypeSlug from "rehype-slug"
@@ -30,7 +31,7 @@ export default async function TermsPage() {
     ? `${downloadUrl.split("#")[0]}#toolbar=0&navpanes=0&scrollbar=1&zoom=page-width`
     : downloadUrl
   const pdfFileUrl = downloadUrl.split("#")[0]
-  const mobileViewerUrl = isPdf ? pdfViewerUrl : downloadUrl
+  const mobileFileUrl = absoluteUrl(pdfFileUrl)
   const source = terms?.bodyMdx?.trim() || ""
   let mdx: Awaited<ReturnType<typeof compileMDX>> | null = null
   if (source) {
@@ -60,13 +61,9 @@ export default async function TermsPage() {
         ) : isPdf ? (
           <>
             <div className="w-full rounded-md border border-[var(--secondary)] bg-[var(--section-bg-1)]">
-              <iframe
-                title="Terms of Service (Mobile)"
-                src={mobileViewerUrl}
-                className="w-full h-[90vh] bg-white md:hidden"
-                scrolling="yes"
-                allow="fullscreen"
-              />
+              <div className="md:hidden p-4">
+                <PdfImageFallback fileUrl={mobileFileUrl} title={title} />
+              </div>
               <iframe
                 title="Terms of Service"
                 src={pdfViewerUrl}
