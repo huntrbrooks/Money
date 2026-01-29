@@ -6,7 +6,7 @@ import { absoluteUrl, SITE_URL } from "@/lib/urls"
 
 const DEFAULT_TITLE = "Financial Trauma Therapist — Dan Lobel"
 const DEFAULT_DESCRIPTION =
-  "Trauma-informed counselling in Melbourne focused on financial abuse recovery, financial trauma, money anxiety and monetary psychotherapy."
+  "Trauma-informed counselling in Melbourne focused on financial trauma recovery, money anxiety, and monetary psychotherapy."
 const DEFAULT_OG_IMAGE = "/og.jpg"
 
 const DEFAULT_KEYWORDS = [
@@ -195,7 +195,7 @@ export function buildServiceSchema(config: SiteConfig, options: ServiceSchemaOpt
   return {
     "@context": "https://schema.org",
     "@type": "Service",
-    serviceType: options.serviceType ?? "Financial abuse therapy",
+    serviceType: options.serviceType ?? "Financial trauma therapy",
     description: options.description,
     provider: {
       "@type": "Organization",
