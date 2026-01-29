@@ -32,7 +32,7 @@ export default async function PrivacyPage() {
     : downloadUrl
   const pdfFileUrl = downloadUrl.split("#")[0]
   const mobileViewerUrl = isPdf
-    ? `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(absoluteUrl(pdfFileUrl))}`
+    ? `https://drive.google.com/viewerng/viewer?embedded=true&url=${encodeURIComponent(absoluteUrl(pdfFileUrl))}`
     : downloadUrl
   const source = privacy?.bodyMdx?.trim() || ""
   let mdx: Awaited<ReturnType<typeof compileMDX>> | null = null
