@@ -178,6 +178,8 @@ function normalizeLegacyBranding(value: unknown): unknown {
     return value
       .replace(/financial abuse therapist/gi, "Financial Trauma Therapist")
       .replace(/dan@financialabusetherapist\.com\.au/gi, "dan@financialtraumatherapist.com.au")
+      .replace(/\/logo%20header-text\.png/gi, "/logo.png")
+      .replace(/\/logo header-text\.png/gi, "/logo.png")
   }
   if (Array.isArray(value)) {
     return value.map((item) => normalizeLegacyBranding(item))
