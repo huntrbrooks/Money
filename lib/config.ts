@@ -173,6 +173,29 @@ const LOCKED_CAROUSEL_RESOURCES: Array<Pick<CrisisResource, "name" | "number">> 
   { name: "Blue Knot Foundation", number: "1300 657 380" },
 ]
 
+function normalizeLegacyBranding(value: unknown): unknown {
+  if (typeof value === "string") {
+    return value
+      .replace(/financial abuse therapist/gi, "Financial Trauma Therapist")
+      .replace(/dan@financialabusetherapist\.com\.au/gi, "dan@financialtraumatherapist.com.au")
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => normalizeLegacyBranding(item))
+  }
+  if (value && typeof value === "object") {
+    const out: Record<string, unknown> = {}
+    for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+      out[key] = normalizeLegacyBranding(val)
+    }
+    return out
+  }
+  return value
+}
+
+function normalizeConfigBranding(config: SiteConfig): SiteConfig {
+  return normalizeLegacyBranding(config) as SiteConfig
+}
+
 function normalizeKey(input: string): string {
   return String(input ?? "")
     .toLowerCase()
@@ -1570,7 +1593,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
         const sbData = await sbGetSiteConfigJson()
         if (sbData) {
           const parsed = sbData as Record<string, unknown>
-          return {
+          const merged = {
             ...defaultConfig,
             ...parsed,
             theme: { ...defaultConfig.theme, ...(parsed.theme ?? {}) },
@@ -1655,20 +1678,21 @@ export async function readSiteConfig(): Promise<SiteConfig> {
             meta: { ...(defaultConfig.meta ?? { version: 1, updatedAt: new Date().toISOString() }), ...(parsed.meta ?? {}) },
             experiments: { ...defaultConfig.experiments, ...(parsed.experiments ?? {}) },
           }
+          return normalizeConfigBranding(merged)
         }
       } catch {
         // If Supabase fetch fails (network error, timeout, etc.), fall through to file system or defaults
         // Don't throw - gracefully degrade to file system or default config
         // In production, if Supabase is configured, skip file system read (it's read-only anyway)
         if (process.env.NODE_ENV === "production") {
-          return defaultConfig
+          return normalizeConfigBranding(defaultConfig)
         }
       }
     }
     // Only try file system read if not in production or if Supabase is not configured
     const raw = await fs.readFile(CONFIG_FILE_PATH, "utf8")
     const parsed = JSON.parse(raw)
-    return {
+    const merged = {
       ...defaultConfig,
       ...parsed,
       theme: { ...defaultConfig.theme, ...(parsed.theme ?? {}) },
@@ -1753,14 +1777,15 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       meta: { ...(defaultConfig.meta ?? { version: 1, updatedAt: new Date().toISOString() }), ...(parsed.meta ?? {}) },
       experiments: { ...defaultConfig.experiments, ...(parsed.experiments ?? {}) },
     }
+    return normalizeConfigBranding(merged)
   } catch {
     if (hasSupabase()) {
-      return defaultConfig
+      return normalizeConfigBranding(defaultConfig)
     }
     // On Vercel (production), the filesystem is not a safe persistence layer.
     // If Supabase isn't configured, return defaults instead of trying to write files (which can cause 500s).
     if (process.env.NODE_ENV === "production") {
-      return defaultConfig
+      return normalizeConfigBranding(defaultConfig)
     }
     await ensureDir(CONFIG_FILE_PATH)
     await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(defaultConfig, null, 2), "utf8")
