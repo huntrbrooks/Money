@@ -12,7 +12,7 @@ const DEFAULT_OG_IMAGE = "/og.jpg"
 const DEFAULT_KEYWORDS = [
   "financial abuse",
   "financial abuse therapy",
-  "financial abuse therapist",
+  "Financial Trauma Therapist",
   "financial trauma therapy",
   "monetary psychotherapy",
   "economic abuse counselling",

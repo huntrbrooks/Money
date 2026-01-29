@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   keywords: [
     "financial abuse",
     "financial abuse therapy",
-    "financial abuse therapist",
+    "Financial Trauma Therapist",
     "financial trauma therapy Melbourne",
     "monetary psychotherapy",
     "economic abuse counselling",

@@ -7,7 +7,7 @@ import { buildPageMetadata, buildPersonSchema } from "@/lib/seo"
 const PAGE_TITLE = "Financial Trauma Therapist | Dan Lobel"
 const PAGE_DESCRIPTION =
   "Work with a Financial Trauma Therapist. Trauma-informed counselling focused on safety, dignity, and practical confidence. Melbourne & Telehealth."
-const PAGE_KEYWORDS = ["financial abuse therapist", "financial trauma counsellor", "melbourne telehealth therapist"]
+const PAGE_KEYWORDS = ["Financial Trauma Therapist", "financial trauma counsellor", "melbourne telehealth therapist"]
 
 // This page uses readSiteConfig() which uses noStore(), so it must be dynamic
 export const dynamic = 'force-dynamic'
