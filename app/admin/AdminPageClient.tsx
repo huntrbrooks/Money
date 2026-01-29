@@ -101,7 +101,7 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
     specialistLinks: [
       { label: "Financial Abuse", href: "/financial-abuse" },
       { label: "Financial Abuse Therapy", href: "/financial-abuse-therapy" },
-      { label: "Financial Abuse Therapist", href: "/financial-abuse-therapist" },
+      { label: "Financial Trauma Therapist", href: "/financial-abuse-therapist" },
     ],
   },
   importantSectionLinks: [
@@ -4669,7 +4669,7 @@ function CodeAgentBox() {
                  <div className="space-y-2">
                    <Label>Site Name</Label>
                    <p className="text-xs text-muted-foreground">Your practice or business name as it appears throughout the site</p>
-                   <Input value={brand.name} onChange={(e) => setBrand({ ...brand, name: e.target.value })} placeholder="e.g., Financial Abuse Therapist" />
+                  <Input value={brand.name} onChange={(e) => setBrand({ ...brand, name: e.target.value })} placeholder="e.g., Financial Trauma Therapist" />
                  </div>
                  <div className="space-y-2">
                    <Label>Subtitle</Label>
@@ -4753,7 +4753,7 @@ function CodeAgentBox() {
                  <div className="space-y-2">
                    <Label>Email</Label>
                    <p className="text-xs text-muted-foreground">Primary contact email address</p>
-                   <Input value={contact.email ?? ""} onChange={(e) => setContact({ ...contact, email: e.target.value })} type="email" placeholder="dan@financialabusetherapist.com.au" />
+                   <Input value={contact.email ?? ""} onChange={(e) => setContact({ ...contact, email: e.target.value })} type="email" placeholder="dan@financialtraumatherapist.com.au" />
                  </div>
                 <div className="space-y-2">
                   <Label>Alternate Email (optional)</Label>

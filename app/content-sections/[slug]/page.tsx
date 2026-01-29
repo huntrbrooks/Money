@@ -46,20 +46,20 @@ export async function generateMetadata({ params }: ContentSectionPageProps): Pro
       const sectionTitle = String(section.title ?? "").trim() || "Content"
       const sectionDesc = String((section as { content?: string } | null)?.content ?? "")
       return await buildPageMetadata({
-        title: `${sectionTitle} | Financial Abuse Therapist`,
+        title: `${sectionTitle} | Financial Trauma Therapist`,
         description: sectionDesc.slice(0, 160) || `Learn about ${sectionTitle}`,
         path: `/content-sections/${section.slug}`,
       })
     }
     return await buildPageMetadata({
-      title: page.seo?.metaTitle?.trim() || `${page.title} | Financial Abuse Therapist`,
+      title: page.seo?.metaTitle?.trim() || `${page.title} | Financial Trauma Therapist`,
       description: page.seo?.metaDescription?.trim() || String(page.description ?? "").slice(0, 160),
       path,
     })
   } catch {
     // Never allow metadata generation errors to break page rendering.
     return {
-      title: "Financial Abuse Therapist",
+      title: "Financial Trauma Therapist",
       description: "Content page.",
       robots: { index: false, follow: false },
       alternates: { canonical: path },

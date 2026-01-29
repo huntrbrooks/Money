@@ -17,7 +17,7 @@ type BookingSchedulerProps = {
 export function BookingScheduler({
   showEmbedToggle = true,
   bookingCopy,
-  email = "dan@financialabusetherapist.com.au",
+  email = "dan@financialtraumatherapist.com.au",
   phone = "0467 477 786",
 }: BookingSchedulerProps) {
   const normalizedEmail = normalizeEmailAddress(email)

@@ -76,7 +76,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
     return null
   }
 
-  const email = contactEmail || "dan@financialabusetherapist.com.au"
+  const email = contactEmail || "dan@financialtraumatherapist.com.au"
   const normalizedEmail = normalizeEmailAddress(email)
   const phone = contactPhone || "0467 477 786"
   const billingHighlights = (bookingCopy?.billingHighlights ?? defaultBillingHighlights).map((item, idx) => ({

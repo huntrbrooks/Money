@@ -20,7 +20,7 @@ export async function GET() {
   const rss = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
   <channel>
-    <title><![CDATA[Financial Abuse Therapist — Articles]]></title>
+    <title><![CDATA[Financial Trauma Therapist — Articles]]></title>
     <link>${SITE_URL}/blog</link>
     <description><![CDATA[Articles by Dan Lobel on financial abuse recovery and monetary psychotherapy.]]></description>
     ${items}

@@ -499,12 +499,12 @@ export const defaultConfig: SiteConfig = {
     fontSerif: "\"Cormorant Garamond\", Georgia, serif",
   },
   seo: {
-    title: "Finacial Abuse Therapist | Dan Lobel",
+    title: "Financial Trauma Therapist | Dan Lobel",
     description: "Professional counselling services in Melbourne. Specialising in grief, trauma, anxiety, depression, and relationship therapy.",
     ogImage: "/placeholder.jpg",
   },
   brand: {
-    name: "Finacial Abuse Therapist",
+    name: "Financial Trauma Therapist",
     subtitle: "Dan Lobel",
     tagline: "Trauma‑informed care with safety, dignity and choice.",
     logoUrl: "/placeholder-logo.svg",
@@ -518,7 +518,7 @@ export const defaultConfig: SiteConfig = {
   ],
   contact: {
     phone: "0467 477 786",
-    email: "dan@financialabusetherapist.com.au",
+    email: "dan@financialtraumatherapist.com.au",
     emailAlt: "",
   },
   social: {
@@ -619,7 +619,7 @@ export const defaultConfig: SiteConfig = {
     crisisText: "If you're in immediate danger, call 000. You can also reach Lifeline on 13 11 14 (24/7).",
     nextStepsLinks: [
       { label: "Learn about Financial Abuse Therapy", href: "/financial-abuse-therapy" },
-      { label: "Work with a Financial Abuse Therapist", href: "/financial-abuse-therapist" },
+      { label: "Work with a Financial Trauma Therapist", href: "/financial-abuse-therapist" },
     ],
   },
   monetaryPsychotherapyPage: {
@@ -676,7 +676,7 @@ export const defaultConfig: SiteConfig = {
     ],
     nextStepsLinks: [
       { label: "What is Financial Abuse?", href: "/financial-abuse" },
-      { label: "Find a Financial Abuse Therapist", href: "/financial-abuse-therapist" },
+      { label: "Find a Financial Trauma Therapist", href: "/financial-abuse-therapist" },
     ],
     faqs: [
       {
@@ -1174,7 +1174,7 @@ export const defaultConfig: SiteConfig = {
       specialistLinks: [
         { label: "Financial Abuse", href: "/financial-abuse" },
         { label: "Financial Abuse Therapy", href: "/financial-abuse-therapy" },
-        { label: "Financial Abuse Therapist", href: "/financial-abuse-therapist" },
+        { label: "Financial Trauma Therapist", href: "/financial-abuse-therapist" },
       ],
     },
     importantSectionLinks: [

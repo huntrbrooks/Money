@@ -4,7 +4,7 @@ import { readSiteConfig } from "@/lib/config"
 import type { SiteConfig } from "@/lib/config"
 import { absoluteUrl, SITE_URL } from "@/lib/urls"
 
-const DEFAULT_TITLE = "Financial Abuse Therapist — Dan Lobel"
+const DEFAULT_TITLE = "Financial Trauma Therapist — Dan Lobel"
 const DEFAULT_DESCRIPTION =
   "Trauma-informed counselling in Melbourne focused on financial abuse recovery, financial trauma, money anxiety and monetary psychotherapy."
 const DEFAULT_OG_IMAGE = "/og.jpg"
@@ -58,7 +58,7 @@ type BuildMetadataInput = {
 
 export async function buildPageMetadata(options: BuildMetadataInput = {}): Promise<Metadata> {
   const config = await readSiteConfig()
-  const brandName = config.brand?.name ?? "The Financial Therapist"
+  const brandName = config.brand?.name ?? "Financial Trauma Therapist"
   const title = options.title ?? config.seo?.title ?? DEFAULT_TITLE
   const description = options.description ?? config.seo?.description ?? DEFAULT_DESCRIPTION
   const canonicalUrl = options.canonical ?? absoluteUrl(options.path ?? "/")
@@ -147,7 +147,7 @@ export function buildArticleSchema(options: ArticleSchemaInput) {
     },
     publisher: {
       "@type": "Organization",
-      name: "The Financial Therapist",
+      name: "Financial Trauma Therapist",
       url: SITE_URL,
       logo: {
         "@type": "ImageObject",
@@ -199,7 +199,7 @@ export function buildServiceSchema(config: SiteConfig, options: ServiceSchemaOpt
     description: options.description,
     provider: {
       "@type": "Organization",
-      name: config.brand?.name ?? "The Financial Therapist",
+      name: config.brand?.name ?? "Financial Trauma Therapist",
       url: SITE_URL,
     },
     areaServed: options.areaServed ?? ["Melbourne", "Victoria", "Australia"],
@@ -215,7 +215,7 @@ export function buildOrganizationSchema(config: SiteConfig) {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: config.brand?.name ?? "The Financial Therapist",
+    name: config.brand?.name ?? "Financial Trauma Therapist",
     url: SITE_URL,
     logo: absoluteUrl(config.brand?.logoUrl ?? "/logo.svg"),
     sameAs: getSocialProfiles(config),
@@ -251,7 +251,7 @@ export function buildLocalBusinessSchema(config: SiteConfig, options: LocalBusin
   return {
     "@context": "https://schema.org",
     "@type": ["LocalBusiness", "ProfessionalService"],
-    name: config.brand?.name ?? "The Financial Therapist",
+    name: config.brand?.name ?? "Financial Trauma Therapist",
     url: SITE_URL,
     image: absoluteUrl(config.seo?.ogImage ?? config.brand?.logoUrl ?? DEFAULT_OG_IMAGE),
     telephone,
@@ -299,7 +299,7 @@ export function buildPersonSchema(config: SiteConfig, options: PersonSchemaOptio
     telephone: options.telephone,
     worksFor: {
       "@type": "Organization",
-      name: config.brand?.name ?? "The Financial Therapist",
+      name: config.brand?.name ?? "Financial Trauma Therapist",
       url: SITE_URL,
     },
     sameAs: options.sameAs ?? getSocialProfiles(config),

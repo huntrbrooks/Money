@@ -26,6 +26,8 @@ function supabaseBaseUrl(): string {
     env("SUPABASE_URL") ??
     env("supabase_URL") ??
     env("NEXT_PUBLIC_SUPABASE_URL") ??
+    env("Financialtraumatherapist_SUPABASE_URL") ??
+    env("NEXT_PUBLIC_Financialtraumatherapist_SUPABASE_URL") ??
     env("Financialabusetherapist_SUPABASE_URL") ??
     env("NEXT_PUBLIC_Financialabusetherapist_SUPABASE_URL")
   if (!base) throw new Error("SUPABASE_URL missing")
@@ -41,6 +43,7 @@ async function sbFetch(url: string, init?: RequestInit): Promise<Response> {
   const key =
     env("SUPABASE_SERVICE_ROLE_KEY") ??
     env("supabase_SERVICE_ROLE_KEY") ??
+    env("Financialtraumatherapist_SUPABASE_SERVICE_ROLE_KEY") ??
     env("Financialabusetherapist_SUPABASE_SERVICE_ROLE_KEY")
   if (!key) throw new Error("SUPABASE_SERVICE_ROLE_KEY missing")
   const headers = new Headers(init?.headers)

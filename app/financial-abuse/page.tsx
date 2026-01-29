@@ -5,7 +5,7 @@ import { Navigation, Footer } from "@/components/navigation"
 import { readSiteConfig } from "@/lib/config"
 import { buildArticleSchema, buildFaqSchema, buildPageMetadata } from "@/lib/seo"
 
-const PAGE_TITLE = "Financial Abuse | Signs, Safety, and Support — Financial Abuse Therapist"
+const PAGE_TITLE = "Financial Abuse | Signs, Safety, and Support — Financial Trauma Therapist"
 const PAGE_DESCRIPTION =
   "Understand financial abuse: the signs, effects, and how trauma-informed therapy supports safety, self-trust, and recovery. Melbourne and Telehealth (Australia)."
 const PAGE_KEYWORDS = ["financial abuse signs", "economic abuse support", "family violence finances"]

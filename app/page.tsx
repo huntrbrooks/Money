@@ -476,7 +476,7 @@ export default async function HomePage() {
                           </a>
 
                           <EmailLink
-                            email={contactEmail || "dan@financialabusetherapist.com.au"}
+                            email={contactEmail || "dan@financialtraumatherapist.com.au"}
                             subject="Contact Request"
                             className="flex flex-col items-center md:items-start gap-4 p-6 bg-transparent rounded-lg hover:shadow-lg transition-all group border border-transparent hover:border-[var(--accent)] sm:flex-row sm:items-center cursor-pointer"
                           >

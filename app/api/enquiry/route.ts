@@ -122,7 +122,7 @@ function compileAdminNoticeSubject(data: EnquiryPayload) {
   return `Enquiry received — ${name}`
 }
 
-function compileAdminNoticeText(data: EnquiryPayload) {
+function compileAdminNoticeText(data: EnquiryPayload, recipient: string) {
   return [
     "A new enquiry has been submitted.",
     "",
@@ -130,18 +130,18 @@ function compileAdminNoticeText(data: EnquiryPayload) {
     `Email: ${data.email || "-"}`,
     `Phone: ${data.phone || "-"}`,
     "",
-    "Full submission delivered to dan@financialabusetherapist.com.au.",
+    `Full submission delivered to ${recipient}.`,
   ].join("\n")
 }
 
-function compileAdminNoticeHtml(data: EnquiryPayload) {
+function compileAdminNoticeHtml(data: EnquiryPayload, recipient: string) {
   return `
     <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#222">
       <p>A new enquiry has been submitted.</p>
       <p><strong>Name:</strong> ${sanitize([data.firstName, data.lastName].filter(Boolean).join(" ") || "-")}</p>
       <p><strong>Email:</strong> ${sanitize(data.email || "-")}</p>
       <p><strong>Phone:</strong> ${sanitize(data.phone || "-")}</p>
-      <p>Full submission delivered to <strong>dan@financialabusetherapist.com.au</strong>.</p>
+      <p>Full submission delivered to <strong>${sanitize(recipient)}</strong>.</p>
     </div>
   `
 }
@@ -341,9 +341,9 @@ export async function POST(req: Request) {
     }
   }
 
-  const formRecipient = "dan@financialabusetherapist.com.au"
+  const formRecipient = cfg.contact?.email || "dan@financialtraumatherapist.com.au"
   const adminRecipient = process.env.ADMIN_NOTIFICATION_EMAIL || "danlobel@icloud.com"
-  const fromDan = "Dan <dan@financialabusetherapist.com.au>"
+  const fromDan = `Dan <${formRecipient}>`
   const data: EnquiryPayload = {
     firstName,
     lastName,
@@ -359,8 +359,8 @@ export async function POST(req: Request) {
   const text = page ? compileTextFromSchema(page, extracted, data) : compileText(data)
   const html = page ? compileHtmlFromSchema(page, extracted, data) : compileHtml(data)
   const adminSubject = compileAdminNoticeSubject(data)
-  const adminText = compileAdminNoticeText(data)
-  const adminHtml = compileAdminNoticeHtml(data)
+  const adminText = compileAdminNoticeText(data, formRecipient)
+  const adminHtml = compileAdminNoticeHtml(data, formRecipient)
   const confirmationSubject = compileConfirmationSubject()
   const confirmationText = compileConfirmationText(firstName)
   const confirmationHtml = compileConfirmationHtml(firstName)

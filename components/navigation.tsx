@@ -115,7 +115,7 @@ export function Navigation() {
     if ((l.href ?? "") === "/#about") return { ...l, href: "/about" }
     return l
   })
-  const brandName = (cfg.brand?.name ?? "Financial Abuse Therapist").replace(/^\s*The\s+/i, "")
+  const brandName = (cfg.brand?.name ?? "Financial Trauma Therapist").replace(/^\s*The\s+/i, "")
   const menuButtonClasses =
     "flex items-center justify-center w-24 h-10 px-4 rounded-full border border-white/30 text-white text-sm font-serif tracking-[0.18em] uppercase bg-[#6ca4ac]/95 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.22)] hover:shadow-[0_18px_38px_rgba(32,56,91,0.30)] active:shadow-[0_10px_22px_rgba(32,56,91,0.20)] transition-[background-color,box-shadow,filter] hover:brightness-[1.02] active:brightness-[0.98] sm:w-32 sm:h-12 sm:px-6 sm:text-base sm:tracking-[0.2em]"
   // NOTE: global `a { color: var(--primary); text-decoration: underline; }` exists in `app/globals.css`.

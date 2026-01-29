@@ -15,7 +15,7 @@ const PAGE_DESCRIPTION =
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
-    title: "About Dan Lobel | Financial Abuse Therapist & Monetary Psychotherapist",
+    title: "About Dan Lobel | Financial Trauma Therapist & Monetary Psychotherapist",
     description: PAGE_DESCRIPTION,
     path: "/about",
     keywords: ["about financial therapist", "Dan Lobel counsellor", "monetary psychotherapy"],
@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   const config = await readSiteConfig()
-  const email = config.contact?.email ?? "dan@financialabusetherapist.com.au"
+  const email = config.contact?.email ?? "dan@financialtraumatherapist.com.au"
   const emailAlt = config.contact?.emailAlt ?? ""
   const phone = config.contact?.phone ?? "+61 488 222 137"
   const aboutContent = config.about ?? { title: "", paragraphs: [] }
@@ -137,7 +137,7 @@ export default async function AboutPage() {
               name: "Dan Lobel",
               description:
                 "Dan Lobel is a warm, trauma-informed counsellor specialising in monetary psychotherapy, financial trauma, and self-worth. Based in Melbourne, offering in-person and telehealth sessions.",
-              jobTitle: "Financial Abuse Therapist & Monetary Psychotherapist",
+              jobTitle: "Financial Trauma Therapist & Monetary Psychotherapist",
               url: "/about",
               telephone: phone,
               image: config.hero?.imageUrl,

@@ -24,7 +24,7 @@ export function OgTemplate({ width, height, badge, title, description, siteHostn
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 32 }}>
-        <span style={{ fontWeight: 600 }}>Financial Abuse Therapist</span>
+        <span style={{ fontWeight: 600 }}>Financial Trauma Therapist</span>
         <span
           style={{
             border: "2px solid rgba(32, 56, 91, 0.2)",

@@ -43,7 +43,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       },
     ],
     seo: {
-      metaTitle: "Why money triggers anxiety | Financial Abuse Therapist",
+      metaTitle: "Why money triggers anxiety | Financial Trauma Therapist",
       metaDescription: "Understand common money-anxiety patterns and how counselling supports steadier, safer financial decisions.",
     },
   },
@@ -82,7 +82,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       },
     ],
     seo: {
-      metaTitle: "What is financial abuse? | Financial Abuse Therapist",
+      metaTitle: "What is financial abuse? | Financial Trauma Therapist",
       metaDescription: "A clear explanation of financial (economic) abuse, common signs, and how counselling supports recovery and agency.",
     },
   },
@@ -112,7 +112,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       },
     ],
     seo: {
-      metaTitle: "Elderly and disability financial abuse | Financial Abuse Therapist",
+      metaTitle: "Elderly and disability financial abuse | Financial Trauma Therapist",
       metaDescription: "Common tactics and supportive next steps when financial abuse affects older people or people with disability.",
     },
   },
@@ -142,7 +142,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       },
     ],
     seo: {
-      metaTitle: "Monetary psychotherapy | Financial Abuse Therapist",
+      metaTitle: "Monetary psychotherapy | Financial Trauma Therapist",
       metaDescription: "Understand how emotions, shame, trauma and relationships shape money decisions — and how therapy supports steadier change.",
     },
   },
@@ -172,7 +172,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       },
     ],
     seo: {
-      metaTitle: "Financial trauma | Financial Abuse Therapist",
+      metaTitle: "Financial trauma | Financial Trauma Therapist",
       metaDescription: "Support for trauma-like responses around money: panic, avoidance, hypervigilance, shame — and a path toward steadier decisions.",
     },
   },
@@ -202,7 +202,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       },
     ],
     seo: {
-      metaTitle: "Family financial assistance & inheritance | Financial Abuse Therapist",
+      metaTitle: "Family financial assistance & inheritance | Financial Trauma Therapist",
       metaDescription: "Support with boundaries and family dynamics when money help or inheritances come with pressure, control, or strings attached.",
     },
   },
@@ -232,7 +232,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       },
     ],
     seo: {
-      metaTitle: "Estrangement support | Financial Abuse Therapist",
+      metaTitle: "Estrangement support | Financial Trauma Therapist",
       metaDescription: "Support for estrangement decisions: boundaries, grief, guilt, and practical next steps aligned with safety and values.",
     },
   },
@@ -262,7 +262,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       },
     ],
     seo: {
-      metaTitle: "Financial abuse therapy | Financial Abuse Therapist",
+      metaTitle: "Financial abuse therapy | Financial Trauma Therapist",
       metaDescription: "Trauma‑informed counselling for recovery from financial abuse: safety, boundaries, confidence, and steadier decision‑making.",
     },
   },
@@ -286,7 +286,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
       },
     ],
     seo: {
-      metaTitle: "About Dan Lobel | Financial Abuse Therapist",
+      metaTitle: "About Dan Lobel | Financial Trauma Therapist",
       metaDescription: "Learn about Dan’s trauma‑informed counselling approach for financial abuse recovery and financial trauma.",
     },
   },

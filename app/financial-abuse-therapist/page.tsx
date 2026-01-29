@@ -4,9 +4,9 @@ import Script from "next/script"
 import { defaultConfig, readSiteConfig, type SiteConfig } from "@/lib/config"
 import { buildPageMetadata, buildPersonSchema } from "@/lib/seo"
 
-const PAGE_TITLE = "Financial Abuse Therapist | The Financial Therapist — Dan Lobel"
+const PAGE_TITLE = "Financial Trauma Therapist | Dan Lobel"
 const PAGE_DESCRIPTION =
-  "Work with a Financial Abuse Therapist. Trauma-informed counselling focused on safety, dignity, and practical confidence. Melbourne & Telehealth."
+  "Work with a Financial Trauma Therapist. Trauma-informed counselling focused on safety, dignity, and practical confidence. Melbourne & Telehealth."
 const PAGE_KEYWORDS = ["financial abuse therapist", "financial trauma counsellor", "melbourne telehealth therapist"]
 
 // This page uses readSiteConfig() which uses noStore(), so it must be dynamic
@@ -38,7 +38,7 @@ export default async function FinancialAbuseTherapistPage() {
   }
   const personJsonLd = buildPersonSchema(config, {
     name: config.brand?.subtitle ?? "Dan Lobel",
-    description: "Financial Abuse Therapist — trauma-informed counselling and monetary psychotherapy.",
+    description: "Financial Trauma Therapist — trauma-informed counselling and monetary psychotherapy.",
     jobTitle: "Counsellor & Monetary Psychotherapist",
     image: config.hero?.imageUrl || "/Dan.png",
     url: "/financial-abuse-therapist",
@@ -52,7 +52,7 @@ export default async function FinancialAbuseTherapistPage() {
             Financial Trauma &amp; Monetary Psychotherapy
           </div>
           <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">
-            Financial Abuse Therapist — Work with Dan Lobel
+            Financial Trauma Therapist — Work with Dan Lobel
           </h1>
           <p className="text-[var(--primary)]">
             A calm, respectful space to heal from financial control and rebuild self‑trust at your pace.

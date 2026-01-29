@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: "Financial Abuse Counselling Melbourne | Dan Lobel",
-    template: "%s | Financial Abuse Therapist",
+    template: "%s | Financial Trauma Therapist",
   },
   description:
     "Trauma-informed counselling for financial abuse and money anxiety. Confidential support in Melbourne plus telehealth. Book a consultation with Dan Lobel.",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     title: "Financial Abuse Counselling Melbourne | Dan Lobel",
     description:
       "Trauma-informed counselling for financial abuse and money anxiety. Confidential support in Melbourne plus telehealth. Book a consultation with Dan Lobel.",
-    siteName: "The Financial Therapist",
+    siteName: "Financial Trauma Therapist",
     locale: "en_AU",
     images: [{ url: "/og.jpg" }],
   },

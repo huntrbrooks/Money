@@ -258,7 +258,7 @@ function compileAdminNoticeSubject(data: IntakePayload) {
   return `Intake received — ${name}`
 }
 
-function compileAdminNoticeText(data: IntakePayload) {
+function compileAdminNoticeText(data: IntakePayload, recipient: string) {
   return [
     "A new intake form has been submitted.",
     "",
@@ -266,18 +266,18 @@ function compileAdminNoticeText(data: IntakePayload) {
     `Email: ${data.email || "-"}`,
     `Phone: ${data.phone || "-"}`,
     "",
-    "Full submission delivered to dan@financialabusetherapist.com.au.",
+    `Full submission delivered to ${recipient}.`,
   ].join("\n")
 }
 
-function compileAdminNoticeHtml(data: IntakePayload) {
+function compileAdminNoticeHtml(data: IntakePayload, recipient: string) {
   return `
     <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#222">
       <p>A new intake form has been submitted.</p>
       <p><strong>Name:</strong> ${sanitize([data.firstName, data.lastName].filter(Boolean).join(" ") || "-")}</p>
       <p><strong>Email:</strong> ${sanitize(data.email || "-")}</p>
       <p><strong>Phone:</strong> ${sanitize(data.phone || "-")}</p>
-      <p>Full submission delivered to <strong>dan@financialabusetherapist.com.au</strong>.</p>
+      <p>Full submission delivered to <strong>${sanitize(recipient)}</strong>.</p>
     </div>
   `
 }
@@ -481,9 +481,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid date format" }, { status: 400 })
     }
 
-    const formRecipient = "dan@financialabusetherapist.com.au"
+    const formRecipient = cfg.contact?.email || "dan@financialtraumatherapist.com.au"
     const adminRecipient = process.env.ADMIN_NOTIFICATION_EMAIL || "danlobel@icloud.com"
-    const fromDan = "Dan <dan@financialabusetherapist.com.au>"
+    const fromDan = `Dan <${formRecipient}>`
 
     const firstName = sanitize(String(values.firstName ?? "")).slice(0, 200)
     const lastName = sanitize(String(values.lastName ?? "")).slice(0, 200)
@@ -493,8 +493,8 @@ export async function POST(req: Request) {
     const html = compileHtmlFromSchema(page, values)
 
     const adminSubject = compileAdminNoticeSubject({ firstName, lastName, email, phone: typeof values.phone === "string" ? values.phone : undefined })
-    const adminText = compileAdminNoticeText({ firstName, lastName, email, phone: typeof values.phone === "string" ? values.phone : undefined })
-    const adminHtml = compileAdminNoticeHtml({ firstName, lastName, email, phone: typeof values.phone === "string" ? values.phone : undefined })
+    const adminText = compileAdminNoticeText({ firstName, lastName, email, phone: typeof values.phone === "string" ? values.phone : undefined }, formRecipient)
+    const adminHtml = compileAdminNoticeHtml({ firstName, lastName, email, phone: typeof values.phone === "string" ? values.phone : undefined }, formRecipient)
     const confirmationSubject = compileConfirmationSubject()
     const confirmationText = compileConfirmationText(firstName)
     const confirmationHtml = compileConfirmationHtml(firstName)
@@ -674,12 +674,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid date format" }, { status: 400 })
   }
 
-  const formRecipient = "dan@financialabusetherapist.com.au"
+  const formRecipient = cfg.contact?.email || "dan@financialtraumatherapist.com.au"
   const adminRecipient = process.env.ADMIN_NOTIFICATION_EMAIL || "danlobel@icloud.com"
-  const fromDan = "Dan <dan@financialabusetherapist.com.au>"
+  const fromDan = `Dan <${formRecipient}>`
   const adminSubject = compileAdminNoticeSubject(data)
-  const adminText = compileAdminNoticeText(data)
-  const adminHtml = compileAdminNoticeHtml(data)
+  const adminText = compileAdminNoticeText(data, formRecipient)
+  const adminHtml = compileAdminNoticeHtml(data, formRecipient)
   const confirmationSubject = compileConfirmationSubject()
   const confirmationText = compileConfirmationText(data.firstName)
   const confirmationHtml = compileConfirmationHtml(data.firstName)

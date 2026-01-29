@@ -6,7 +6,7 @@ import { buildBreadcrumbSchema, buildPageMetadata } from "@/lib/seo"
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
-    title: "Articles & Resources | Financial Abuse Therapist",
+    title: "Articles & Resources | Financial Trauma Therapist",
     description: "Read trauma-informed articles about money anxiety, financial abuse recovery, and monetary psychotherapy.",
     path: "/blog",
     keywords: ["financial therapy articles", "money anxiety resources", "financial abuse blog"],

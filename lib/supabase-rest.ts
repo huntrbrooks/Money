@@ -13,6 +13,8 @@ const SUPABASE_URL =
   // Some environments may have been configured with non-standard casing; be forgiving.
   env("supabase_URL") ??
   env("NEXT_PUBLIC_SUPABASE_URL") ??
+  env("Financialtraumatherapist_SUPABASE_URL") ??
+  env("NEXT_PUBLIC_Financialtraumatherapist_SUPABASE_URL") ??
   env("Financialabusetherapist_SUPABASE_URL") ??
   env("NEXT_PUBLIC_Financialabusetherapist_SUPABASE_URL")
 
@@ -21,6 +23,7 @@ const SUPABASE_SERVICE_ROLE_KEY =
   env("SUPABASE_SERVICE_ROLE_KEY") ??
   // Some environments may have been configured with non-standard casing; be forgiving.
   env("supabase_SERVICE_ROLE_KEY") ??
+  env("Financialtraumatherapist_SUPABASE_SERVICE_ROLE_KEY") ??
   env("Financialabusetherapist_SUPABASE_SERVICE_ROLE_KEY")
 
 export function hasSupabase(): boolean {

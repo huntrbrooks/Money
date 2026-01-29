@@ -297,7 +297,7 @@ Notes:
 
 ## Hardening improvements (implemented in this pass)
 
-- Canonical base URL now matches requirement: `www.financialabusetherapist.com.au`
+- Canonical base URL now matches requirement: `financialtraumatherapist.com.au`
   - Updated in `lib/urls.ts` (affects metadata + sitemap + document viewer links).
 - Removed hidden localhost debug logging from `components/navigation.tsx`
   - Prevents noisy network errors and avoids sending interaction telemetry unintentionally.

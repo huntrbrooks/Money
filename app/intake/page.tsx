@@ -7,7 +7,7 @@ import { EmailLink } from "@/components/email-link"
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
-    title: "Intake Form | Financial Abuse Therapist",
+    title: "Intake Form | Financial Trauma Therapist",
     description: "Complete the intake form before your first appointment.",
     path: "/intake",
     keywords: ["intake form", "therapy intake", "client intake"],
@@ -26,11 +26,11 @@ export default async function IntakePage() {
           <p className="text-[var(--primary)] mt-2">
             The intake form is temporarily unavailable. Please email{" "}
             <EmailLink
-              email={config.contact?.email ?? "dan@financialabusetherapist.com.au"}
+              email={config.contact?.email ?? "dan@financialtraumatherapist.com.au"}
               subject="Intake Form Inquiry"
               className="underline cursor-pointer"
             >
-              {config.contact?.email ?? "dan@financialabusetherapist.com.au"}
+              {config.contact?.email ?? "dan@financialtraumatherapist.com.au"}
             </EmailLink>
             .
           </p>

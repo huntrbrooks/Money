@@ -71,7 +71,7 @@ async function resolveResource(slug: string, requestUrl: string): Promise<OgReso
 
 export async function GET(request: Request, { params }: Params) {
   const resource = await resolveResource(params.slug, request.url)
-  const title = resource?.title ?? "Financial Abuse Therapist"
+  const title = resource?.title ?? "Financial Trauma Therapist"
   const description =
     resource?.description ??
     "Trauma-informed counselling for financial abuse recovery, monetary psychotherapy, and money anxiety."
