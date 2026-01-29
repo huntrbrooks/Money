@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { buildPageMetadata } from "@/lib/seo"
 import { readSiteConfig } from "@/lib/config"
+import { absoluteUrl } from "@/lib/urls"
 import { compileMDX } from "next-mdx-remote/rsc"
 import remarkGfm from "remark-gfm"
 import rehypeSlug from "rehype-slug"
@@ -28,6 +29,10 @@ export default async function PrivacyPage() {
   // For PDF viewer: hide toolbar + panes, enable scroll, fit to page width on mobile.
   const pdfViewerUrl = isPdf
     ? `${downloadUrl.split("#")[0]}#toolbar=0&navpanes=0&scrollbar=1&zoom=page-width`
+    : downloadUrl
+  const pdfFileUrl = downloadUrl.split("#")[0]
+  const mobileViewerUrl = isPdf
+    ? `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(absoluteUrl(pdfFileUrl))}`
     : downloadUrl
   const source = privacy?.bodyMdx?.trim() || ""
   let mdx: Awaited<ReturnType<typeof compileMDX>> | null = null
@@ -59,9 +64,14 @@ export default async function PrivacyPage() {
           <>
             <div className="w-full rounded-md border border-[var(--secondary)] bg-[var(--section-bg-1)]">
               <iframe
+                title="Privacy Policy (Mobile)"
+                src={mobileViewerUrl}
+                className="w-full h-[80vh] bg-white md:hidden"
+              />
+              <iframe
                 title="Privacy Policy"
                 src={pdfViewerUrl}
-                className="w-full h-[80vh] md:h-[900px] bg-white"
+                className="hidden w-full h-[80vh] md:h-[900px] bg-white md:block"
               />
             </div>
             <p className="text-[var(--primary)] text-sm">
