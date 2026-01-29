@@ -10,7 +10,7 @@
   --brand-asparagus: #929D5B;
   --brand-pale-green: #E5EED2;
   --brand-pale-blue: #D7E9EC;
-  --brand-citrus: #DEEC4F;
+  --brand-citrus: #959D64;
 
   /* Base tokens driven by the palette */
   --background: var(--brand-pale-green);
