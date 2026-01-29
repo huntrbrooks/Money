@@ -31,7 +31,7 @@ export default async function TermsPage() {
     : downloadUrl
   const pdfFileUrl = downloadUrl.split("#")[0]
   const mobileViewerUrl = isPdf
-    ? `https://drive.google.com/viewerng/viewer?embedded=true&url=${encodeURIComponent(absoluteUrl(pdfFileUrl))}`
+    ? `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(absoluteUrl(pdfFileUrl))}`
     : downloadUrl
   const source = terms?.bodyMdx?.trim() || ""
   let mdx: Awaited<ReturnType<typeof compileMDX>> | null = null
