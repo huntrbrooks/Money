@@ -86,7 +86,7 @@ export default async function FinancialAbuseTherapyPage() {
         )}
 
         {page.sessionFormats && page.sessionFormats.length > 0 && (
-          <section className="space-y-4">
+          <section className="space-y-4 rounded-xl border border-[var(--secondary)] p-4">
             <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">Session formats</h2>
             <ul className="list-disc pl-6 text-[var(--primary)] space-y-2">
               {page.sessionFormats.map((item, idx) => (

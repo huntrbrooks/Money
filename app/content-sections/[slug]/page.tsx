@@ -166,7 +166,7 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
               ) : null}
 
               {page.sessionFormats?.length ? (
-                <section className="space-y-4">
+                <section className="space-y-4 rounded-xl border border-[var(--secondary)] p-4">
                   <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">Session formats</h2>
                   <ul className="list-disc pl-6 text-[var(--primary)] space-y-2">
                     {page.sessionFormats.map((item, idx) => (
@@ -190,7 +190,7 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
               ) : null}
 
               {page.faqs?.length ? (
-                <section className="space-y-4">
+                <section className="space-y-4 rounded-xl border border-[var(--secondary)] p-4">
                   <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">FAQs</h2>
                   <div className="space-y-4">
                     {page.faqs.map((faq, idx) => (

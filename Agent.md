@@ -7,7 +7,7 @@ This is a production therapy practice website. Make only safe, minimal changes a
 - Do not redesign UI or rewrite copy unless asked.
 - Any client‑requested content must be editable in Admin and persist after refresh/redeploy.
 - Do not add a third‑party CMS; extend the existing SiteConfig + Admin.
-- Keep canonical domain as `financialtraumatherapist.com.au`. Remove `.com` references where found.
+- Canonical domain should be `www.financialabusetherapist.com.au` (project requirement). Note: current code normalizes to `financialtraumatherapist.com.au` in `lib/urls.ts` and should be updated if this rule changes.
 - Validate file uploads (type + size) and ensure persistence.
 
 ## Repo map (authoritative areas)
@@ -38,12 +38,14 @@ Avoid the archive folder `Money-6300af3212092b6d99163e3570a53af22faf5083/` unles
 
 ## Admin + auth
 - Login: `POST /api/auth/login` (`app/api/auth/login/route.ts`)
-- Cookie: `auth_token` (HttpOnly)
-- Middleware: `proxy.ts` protects `/admin/*`
-- Use `requireAuth()` in protected API routes.
+- Cookie: `auth_token` (HttpOnly, set by login route)
+- Protection: Admin routes (`/admin/*`) are currently protected via client-side checks in `app/admin/page.tsx` and `app/admin/AdminPageClient.tsx`
+- Note: `proxy.ts` exists but is not wired as Next.js middleware. Consider adding `middleware.ts` for server-side protection if needed.
+- Use `requireAuth()` in protected API routes (see `app/api/admin/*`).
 
 ## Routing + SEO risk areas
 - High‑risk overlaps: `/blog/[slug]` vs legacy HTML in `public/*.html` and specialist pages in `app/`.
+- Legacy HTML pages are included in the sitemap but do not conflict with dynamic routes.
 - Do not introduce new conflicting routes.
 - Sitemap uses `app/sitemap.ts`; canonical helpers in `lib/urls.ts` and `lib/seo.ts`.
 
