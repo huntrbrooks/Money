@@ -341,7 +341,7 @@ export default async function HomePage() {
                     <Accordion
                       type="single"
                       collapsible
-                      className="bg-[var(--section-bg-1)] rounded-lg border-2 border-[var(--secondary)] divide-y"
+                      className="bg-[var(--section-bg-1)] rounded-lg border border-[var(--secondary)] divide-y"
                     >
                       {otherAreas.map((a, idx) => (
                         <AccordionItem
