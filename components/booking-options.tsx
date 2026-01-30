@@ -94,7 +94,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
 
   return (
     <div className="space-y-12">
-      <div className="rounded-[40px] border border-[#d3dcd9] bg-[var(--section-bg-1)]/85 p-5 sm:p-8 lg:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
+      <div className="rounded-[40px] border border-[#78a3ab] bg-[var(--section-bg-1)]/85 p-5 sm:p-8 lg:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
         {/* Mobile: compact dropdowns (accordion) */}
         <div className="sm:hidden">
           <Accordion type="single" collapsible className="divide-y rounded-3xl border border-[#d4ddd8] bg-[var(--section-bg-2)]/60">
@@ -246,7 +246,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
         </div>
       </div>
 
-      <div className="rounded-[32px] border border-dashed border-[#c8d4cf] bg-[#d7e9ec] p-5 sm:p-6 shadow-sm">
+      <div className="rounded-[32px] border border-[#78a3ab] bg-[#d7e9ec] p-5 sm:p-6 shadow-sm">
         <div className="mx-auto max-w-5xl space-y-6 text-center">
           <div className="grid gap-6 sm:grid-cols-2 justify-items-center">
             {paymentSupport.map(({ title, detail, icon: Icon }) => (

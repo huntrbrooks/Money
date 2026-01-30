@@ -38,7 +38,7 @@ export function BookingScheduler({
   const embedFallbackText = bookingCopy?.schedulerEmbedFallbackText ?? "If the scheduler does not load, please use the launch button above or email Dan for assistance."
 
   return (
-    <div className="space-y-8 rounded-[40px] border border-[#d3dcd9] bg-[var(--section-bg-1)]/85 p-5 sm:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
+    <div className="space-y-8 rounded-[40px] border border-[#78a3ab] bg-[var(--section-bg-1)]/85 p-5 sm:p-10 shadow-[0_30px_70px_rgba(45,69,78,0.12)] backdrop-blur">
       <div className="grid gap-8 lg:gap-10 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="space-y-5 text-[#4a5c63]">
           <p className="text-xs uppercase tracking-[0.25em] text-[#5a7264]">{eyebrow}</p>
