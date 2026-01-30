@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from \"react\"
+import { useEffect, useState } from "react"
 
 type PdfImageFallbackProps = {
   fileUrl: string
@@ -12,8 +12,28 @@ type RenderedPage = {
   dataUrl: string
 }
 
-const PDFJS_CDN = \"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js\"
-const PDFJS_WORKER = \"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js\"
+type PdfJsViewport = {
+  width: number
+  height: number
+}
+
+type PdfJsPage = {
+  getViewport: (options: { scale: number }) => PdfJsViewport
+  render: (options: { canvasContext: CanvasRenderingContext2D; viewport: PdfJsViewport }) => { promise: Promise<void> }
+}
+
+type PdfJsDocument = {
+  numPages: number
+  getPage: (pageNumber: number) => Promise<PdfJsPage>
+}
+
+type PdfJsLib = {
+  GlobalWorkerOptions: { workerSrc: string }
+  getDocument: (options: { url: string }) => { promise: Promise<PdfJsDocument> }
+}
+
+const PDFJS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+const PDFJS_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"
 
 export default function PdfImageFallback({ fileUrl, title }: PdfImageFallbackProps) {
   const [pages, setPages] = useState<RenderedPage[]>([])
@@ -26,17 +46,17 @@ export default function PdfImageFallback({ fileUrl, title }: PdfImageFallbackPro
     async function loadPdfJs() {
       if ((window as Window & { pdfjsLib?: unknown }).pdfjsLib) return
       await new Promise<void>((resolve, reject) => {
-        const existing = document.querySelector<HTMLScriptElement>(`script[src=\"${PDFJS_CDN}\"]`)
+        const existing = document.querySelector<HTMLScriptElement>(`script[src="${PDFJS_CDN}"]`)
         if (existing) {
-          existing.addEventListener(\"load\", () => resolve())
-          existing.addEventListener(\"error\", () => reject(new Error(\"PDF.js failed to load\")))
+          existing.addEventListener("load", () => resolve())
+          existing.addEventListener("error", () => reject(new Error("PDF.js failed to load")))
           return
         }
-        const script = document.createElement(\"script\")
+        const script = document.createElement("script")
         script.src = PDFJS_CDN
         script.async = true
         script.onload = () => resolve()
-        script.onerror = () => reject(new Error(\"PDF.js failed to load\"))
+        script.onerror = () => reject(new Error("PDF.js failed to load"))
         document.body.appendChild(script)
       })
     }
@@ -45,8 +65,8 @@ export default function PdfImageFallback({ fileUrl, title }: PdfImageFallbackPro
       try {
         setLoading(true)
         await loadPdfJs()
-        const pdfjsLib = (window as Window & { pdfjsLib?: any }).pdfjsLib
-        if (!pdfjsLib) throw new Error(\"PDF.js not available\")
+        const pdfjsLib = (window as Window & { pdfjsLib?: PdfJsLib }).pdfjsLib
+        if (!pdfjsLib) throw new Error("PDF.js not available")
         pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER
 
         const pdf = await pdfjsLib.getDocument({ url: fileUrl }).promise
@@ -54,13 +74,13 @@ export default function PdfImageFallback({ fileUrl, title }: PdfImageFallbackPro
         for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
           const page = await pdf.getPage(pageNumber)
           const viewport = page.getViewport({ scale: 1.4 })
-          const canvas = document.createElement(\"canvas\")
-          const context = canvas.getContext(\"2d\")
+          const canvas = document.createElement("canvas")
+          const context = canvas.getContext("2d")
           if (!context) continue
           canvas.width = viewport.width
           canvas.height = viewport.height
           await page.render({ canvasContext: context, viewport }).promise
-          rendered.push({ pageNumber, dataUrl: canvas.toDataURL(\"image/png\") })
+          rendered.push({ pageNumber, dataUrl: canvas.toDataURL("image/png") })
           if (cancelled) return
         }
         if (!cancelled) {
@@ -69,7 +89,7 @@ export default function PdfImageFallback({ fileUrl, title }: PdfImageFallbackPro
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : \"Unable to render PDF\")
+          setError(err instanceof Error ? err.message : "Unable to render PDF")
         }
       } finally {
         if (!cancelled) setLoading(false)
@@ -83,26 +103,26 @@ export default function PdfImageFallback({ fileUrl, title }: PdfImageFallbackPro
   }, [fileUrl])
 
   if (loading) {
-    return <div className=\"text-sm text-[var(--primary)]\">Loading document…</div>
+    return <div className="text-sm text-[var(--primary)]">Loading document…</div>
   }
 
   if (error) {
     return (
-      <div className=\"text-sm text-[var(--primary)]\">
+      <div className="text-sm text-[var(--primary)]">
         Unable to preview this document on mobile. Please open it in a new tab.
       </div>
     )
   }
 
   return (
-    <div className=\"space-y-4\">
+    <div className="space-y-4">
       {pages.map((page) => (
         <img
           key={page.pageNumber}
           src={page.dataUrl}
           alt={`${title} page ${page.pageNumber}`}
-          className=\"w-full rounded-sm border border-[var(--secondary)] bg-white\"
-          loading=\"lazy\"
+          className="w-full rounded-sm border border-[var(--secondary)] bg-white"
+          loading="lazy"
         />
       ))}
     </div>
