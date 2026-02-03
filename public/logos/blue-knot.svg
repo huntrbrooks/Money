@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1181" height="300" viewBox="0 0 1181 300">
+  <title>Blue Knot Foundation logo</title>
+  <!--
+    NOTE:
+    This is an SVG wrapper that references a raster image.
+    To use it, place the provided logo image at: /public/logos/blue-knot.png
+    If you later obtain an official vector logo (SVG/AI/EPS), replace this file with the true vector.
+  -->
+  <image href="/blue-knot.png" x="0" y="0" width="1181" height="300" preserveAspectRatio="xMidYMid meet" />
+</svg>
+
+

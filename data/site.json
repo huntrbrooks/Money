@@ -1,0 +1,254 @@
+{
+  "theme": {
+    "mode": "light",
+    "primary": "#6CA4AC",
+    "secondary": "#E5EED2",
+    "accent": "#929D5B",
+    "background": "#E5EED2",
+    "foreground": "#20385B",
+    "radius": "0.5rem",
+    "fontSans": "\"Geist\", system-ui, -apple-system, Segoe UI, Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", \"Liberation Sans\", sans-serif",
+    "fontSerif": "\"Cormorant Garamond\", Georgia, serif"
+  },
+  "seo": {
+    "title": "Financial Trauma Therapy Melbourne / Dan Lobel",
+    "description": "Trauma-informed therapy for financial trauma. Australia wide telehealth financial trauma therapy and Melbourne in person financial trauma therapy. Book a consultation with Dan Lobel.",
+    "ogImage": "/api/og"
+  },
+  "brand": {
+    "name": "Financial Trauma Therapist",
+    "subtitle": "Dan Lobel",
+    "tagline": "Trauma‑informed care with safety, dignity and choice.",
+    "logoUrl": "/logo.png",
+    "headerBannerUrl": "/logo%20header-background.png"
+  },
+  "navigation": [
+    {
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "label": "About",
+      "href": "/#about"
+    },
+    {
+      "label": "Services",
+      "href": "/#services"
+    },
+    {
+      "label": "Book",
+      "href": "/#book"
+    },
+    {
+      "label": "Client Care",
+      "href": "/client-care"
+    },
+    {
+      "label": "Contact",
+      "href": "/#contact"
+    }
+  ],
+  "contact": {
+    "phone": "+61 488 222 137",
+    "email": "dan@financialtraumatherapist.com.au",
+    "emailAlt": ""
+  },
+  "hero": {
+    "eyebrow": "Financial Trauma & Monetary Psychotherapy",
+    "title": "Reclaim Your Power. Heal Your Relationship With Money.",
+    "subtitle": "with Dan Lobel, D.Couns., B.Couns., MCouns&Psych",
+    "description": "Trauma-informed counselling for financial abuse recovery, economic stress, and nervous-system-aware money work.",
+    "imageUrl": "/og.png?v=20251128",
+    "primaryCta": {
+      "label": "Book a consultation",
+      "href": "/#book"
+    },
+    "secondaryCta": {
+      "label": "Learn about the approach",
+      "href": "/monetary-psychotherapy"
+    },
+    "stats": [
+      {
+        "label": "Clients supported",
+        "value": "400+"
+      },
+      {
+        "label": "Response time",
+        "value": "< 24 hrs"
+      },
+      {
+        "label": "Session formats",
+        "value": "Telehealth · In-person · Walk & Discuss"
+      }
+    ]
+  },
+  "about": {
+    "title": "Trauma‑Informed Financial Therapy",
+    "paragraphs": [
+      "Dan is a warm, empathic counsellor who combines contemporary integrative counselling with behavioural psychology to help you understand the “why” behind your feelings and choices — particularly around money, self‑worth, grief, and life transitions.",
+      "Therapy is paced by you. Consent, choice, and clear boundaries are central. You will never be asked to disclose more than feels safe. Sessions focus on restoring a felt sense of safety, strengthening self‑trust, and supporting practical next steps at a pace that respects your nervous system.",
+      "Drawing on monetary psychotherapy alongside integrative, evidence‑based modalities, Dan supports the emotional, relational, and practical dimensions of financial stress — helping you reconnect with agency, dignity, and hope."
+    ]
+  },
+  "services": [],
+  "consultations": [
+    {
+      "format": "Telehealth (Zoom)",
+      "price": "$160",
+      "duration": "50 mins"
+    },
+    {
+      "format": "In-Home Consultations",
+      "price": "$170",
+      "duration": "50 mins"
+    },
+    {
+      "format": "In-Room Consultations (St Kilda Rd)",
+      "price": "$180",
+      "duration": "50 mins"
+    },
+    {
+      "format": "Walk & Discuss Therapy",
+      "price": "$170",
+      "duration": "50 mins"
+    },
+    {
+      "format": "Extended Consultations",
+      "price": "From $220",
+      "duration": "Various"
+    },
+    {
+      "format": "Phone Consultations",
+      "price": "$160",
+      "duration": "50 mins"
+    }
+  ],
+  "resources": [
+    {
+      "name": "Lifeline",
+      "number": "13 11 14",
+      "website": "https://www.lifeline.org.au",
+      "description": "24/7 crisis support and suicide prevention services across Australia.",
+      "logoUrl": "/logos/Lifeline.webp",
+      "logoHeight": 80
+    },
+    {
+      "name": "Suicide Call Back Service",
+      "number": "1300 659 467",
+      "website": "https://www.suicidecallbackservice.org.au",
+      "description": "24/7 nationwide service offering free professional phone and online counselling for people affected by suicide.",
+      "logoUrl": "/logos/suicide%20services%20call%20back.webp"
+    },
+    {
+      "name": "Beyond Blue",
+      "number": "1300 22 4636",
+      "website": "https://www.beyondblue.org.au",
+      "description": "Support, advice and action for anxiety, depression and suicide prevention.",
+      "logoUrl": "/logos/beyond%20blue.webp"
+    },
+    {
+      "name": "MensLine Australia",
+      "number": "1300 78 99 78",
+      "website": "https://mensline.org.au",
+      "description": "24/7 counselling, information and referrals for men with family and relationship concerns.",
+      "logoUrl": "/logos/mensline.webp"
+    },
+    {
+      "name": "Kids Helpline",
+      "number": "1800 55 1800",
+      "website": "https://kidshelpline.com.au",
+      "description": "24/7 phone and online counselling for young people aged 5–25.",
+      "logoUrl": "/logos/Kids%20helpline.webp"
+    },
+    {
+      "name": "QLife",
+      "number": "1800 184 527",
+      "website": "https://qlife.org.au",
+      "description": "Australia‑wide anonymous LGBTIQ+ peer support and referral service.",
+      "logoUrl": "/logos/Qlife.webp"
+    }
+  ],
+  "forms": {
+    "enquiry": "/enquiry",
+    "consent": "/consent",
+    "intake": "/intake"
+  },
+  "homepage": {
+    "sections": {
+      "showTestimonials": false
+    },
+    "copy": {
+      "valuePropsEyebrow": "How financial trauma therapy with Dan Lobel may benefit you",
+      "valuePropsHeading": "Dan will concentrate on navigating these challenging constraints alongside you."
+    },
+    "valueProps": [
+      {
+        "title": "Understanding Financial Trauma",
+        "description": "Financial trauma is deep psychological distress from severe or prolonged money related issues. Many individuals may not initially identify with financial trauma, as the associated behaviours can be subtle and confusing. If you are experiencing distress when it comes to reviewing bills or checking your bank balance, if you find yourself being excluded from financial decisions, if you are experiencing anguish regarding loans or debts, if you are suffering limitations on your access to financial resources, you are probably going through financial trauma."
+      },
+      {
+        "title": "Understanding Financial Abuse",
+        "description": "Financial abuse, also referred to as economic abuse, involves an agonising pattern of behaviour where an individual utilises money, finances or financial decisions to exert control, impose restrictions, and torment another person. Financial abuse is one of the main causes of financial trauma. It is important to recognise that financial abuse is overwhelming, debilitating, and causes extreme agony. Understanding and confronting the associated emotions such as shame, guilt, fear or self-doubt are vital for moving forward."
+      },
+      {
+        "title": "Financial Trauma & Financial Abuse Impacts",
+        "description": "Clarifying and understanding what's been happening to you without blame or confusion whether it is financial trauma or financial abuse or both. Addressing and acknowledging the emotional and psychological impacts of the trauma or abuse has had or is still having on you. This can include anxiety, depression, PTSD among others. Examining strategies for restoring supportive connections, friends, and family. Restoring self-worth and fostering your confidence. Restoring a sense of safety and choice in your financial decisions."
+      },
+      {
+        "title": "Developing Rehabilitation Strategies",
+        "description": "Developing comprehensive strategies to change the current scenario. Engaging with specialised services which may include legal specialists. Formulating strategies for moving forward including educational or career opportunities. Rebuilding your confidence and self-trust around money matters."
+      },
+      {
+        "title": "Physical Security and Safety",
+        "description": "Addressing your immediate physical safety concerns. Discussing financial security measures that can be put in place for you. Discussing resources for your independence, housing, food, medical supplies, and other vital necessities. Learning practical tools and boundaries that hold up in real life."
+      },
+      {
+        "title": "Cultivating Future Autonomy",
+        "description": "Defining your pragmatic short-term and long-term objectives. Fostering your continuous recovery and ensuring financial stability. Addressing the complexities of debt and legal matters. Making decisions with support and clarity, even when emotions run high."
+      }
+    ],
+    "testimonials": [
+      {
+        "quote": "Dan’s presence is calm and respectful. I felt safe naming money shame for the first time.",
+        "author": "Amelia",
+        "context": "Telehealth Client"
+      },
+      {
+        "quote": "Sessions helped me rebuild self-trust and make decisions from care, not fear.",
+        "author": "Priya",
+        "context": "Melbourne"
+      },
+      {
+        "quote": "We moved at a pace my body could handle. The mix of practicality and kindness was exactly what I needed.",
+        "author": "Grace",
+        "context": "In-person Client"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Can I start with Telehealth?",
+        "answer": "Yes. Most clients begin online. You can shift to in-person or hybrid when it feels right."
+      },
+      {
+        "question": "Do I need to bring financial documents?",
+        "answer": "No. We focus on how money feels emotionally. Bring numbers only if it helps you feel grounded."
+      },
+      {
+        "question": "Is this therapy appropriate if I’m still experiencing coercion?",
+        "answer": "Absolutely. We prioritise safety planning and can liaise with other supports, with your consent."
+      }
+    ],
+    "leadMagnet": {
+      "heading": "Need a gentle starting point?",
+      "body": "Download the 5-step Financial Safety Check-in used in session to calm your system before money admin.",
+      "ctaLabel": "Get the check-in",
+      "ctaHref": "/enquiry",
+      "helper": "Requesting the guide acknowledges the consent statement in our client agreement."
+    }
+  },
+  "experiments": {
+    "showNewsletterSection": false,
+    "showLeadMagnet": false,
+    "showTestimonialsSection": false
+  }
+}
