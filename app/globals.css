@@ -327,13 +327,11 @@
     pointer-events: none;
     z-index: 0;
   }
-  .accordion-hover-card:hover,
-  .accordion-hover-card:focus-within {
+  .accordion-hover-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-soft);
   }
-  .accordion-hover-card:hover::before,
-  .accordion-hover-card:focus-within::before {
+  .accordion-hover-card:hover::before {
     opacity: 0.85;
     transform: scale(1);
     animation-play-state: running;
