@@ -5,10 +5,15 @@ import { normalizeEmailAddress } from "@/lib/email"
 import type { BookingCopy, ConsultationOption } from "@/lib/config"
 import {
   Building,
+  Clock,
   CreditCard,
+  Home,
+  Phone,
   RefreshCcw,
   ShieldCheck,
   Sparkles,
+  TreePine,
+  Video,
 } from "lucide-react"
 
 const OWNER_BOOKING_URL = "https://app.acuityscheduling.com/schedule.php?owner=32223024"
@@ -57,6 +62,17 @@ function buildBookingUrl(typeId?: number) {
   return `${OWNER_BOOKING_URL}&appointmentType=${typeId}`
 }
 
+function iconForFormat(format: string) {
+  const f = format.toLowerCase()
+  if (f.includes("zoom") || f.includes("telehealth")) return Video
+  if (f.includes("home")) return Home
+  if (f.includes("room") || f.includes("st kilda")) return Building
+  if (f.includes("walk") || f.includes("park")) return TreePine
+  if (f.includes("extended")) return Clock
+  if (f.includes("phone")) return Phone
+  return Sparkles
+}
+
 type BookingOptionsProps = {
   options: ConsultationOption[]
   bookingCopy?: BookingCopy
@@ -67,9 +83,8 @@ type BookingOptionsProps = {
 export function BookingOptions({ options = [], bookingCopy, contactEmail, contactPhone }: BookingOptionsProps) {
   const visibleOptions = options.filter((option) => {
     const format = String(option.format ?? "").trim()
-    const price = String(option.price ?? "").trim()
     const duration = String(option.duration ?? "").trim()
-    return format.length > 0 && price.length > 0 && duration.length > 0
+    return format.length > 0 && duration.length > 0
   })
 
   if (!visibleOptions.length) {
@@ -102,33 +117,23 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
               const optionKey = `${option.typeId ?? option.format ?? "option"}-${idx}`
               const value = `consultation-${optionKey}`
               const location = option.location ?? ""
+              const Icon = iconForFormat(option.format ?? "")
               return (
                 <AccordionItem key={value} value={value} className="px-4">
                   <AccordionTrigger className="py-4 text-left">
-                    <div className="flex w-full flex-col gap-2 pr-2 text-left">
+                    <div className="flex w-full items-center gap-3 pr-2 text-left">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[var(--brand-teal)]/15 text-[var(--brand-teal)]">
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </div>
                       <div className="min-w-0">
                         {option.mode && option.mode !== "Flexible Delivery" && (
                           <p className="text-[11px] uppercase tracking-[0.25em] text-[#5a7264]">{option.mode}</p>
                         )}
                         <p className="font-serif text-lg text-[#1f2d38] leading-snug break-words">{option.format}</p>
-                      </div>
-                      <div className="flex flex-wrap items-baseline gap-2">
-                        <span className="font-serif text-2xl text-[#1f2d38]">{option.price}</span>
                         <span className="text-xs text-[#4a5c63]">{option.duration}</span>
                       </div>
                     </div>
                   </AccordionTrigger>
-                  <div className="pb-4">
-                    <Button
-                      asChild
-                      size="lg"
-                      className="w-full rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90"
-                    >
-                      <a href={buildBookingUrl(option.typeId)} target="_blank" rel="noopener noreferrer">
-                        Book this consultation
-                      </a>
-                    </Button>
-                  </div>
                   <AccordionContent className="pb-5 text-[#4a5c63]">
                     <div className="space-y-3">
                       {option.highlight && (
@@ -139,10 +144,18 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
                       {option.description && (
                         <p className="text-sm leading-relaxed text-[#4a5a61]">{option.description}</p>
                       )}
-                      <div className="flex flex-wrap items-center gap-3 text-sm">
-                        <span aria-hidden="true" className="inline-block h-4 w-4" />
-                        {location ? <span>{location}</span> : <span aria-hidden="true">&nbsp;</span>}
-                      </div>
+                      {location && (
+                        <p className="text-sm text-[#4a5c63]">{location}</p>
+                      )}
+                      <Button
+                        asChild
+                        size="lg"
+                        className="w-full rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90"
+                      >
+                        <a href={buildBookingUrl(option.typeId)} target="_blank" rel="noopener noreferrer">
+                          Book this consultation
+                        </a>
+                      </Button>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -151,41 +164,44 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
           </Accordion>
         </div>
 
-        {/* Desktop: existing cards */}
+        {/* Desktop: icon-led cards */}
         <div className="hidden gap-5 sm:grid sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {visibleOptions.map((option, idx) => {
             const location = option.location ?? ""
             const optionKey = `${option.typeId ?? option.format ?? "option"}-${idx}`
+            const Icon = iconForFormat(option.format ?? "")
             return (
               <article
                 key={optionKey}
                 className="group flex h-full flex-col rounded-[28px] border border-[#d4ddd8] bg-[var(--section-bg-2)] p-6 shadow-[0_25px_55px_rgba(42,63,70,0.12)] transition hover:-translate-y-1 hover:shadow-[0_35px_80px_rgba(42,63,70,0.16)]"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--brand-teal)]/15 text-[var(--brand-teal)] transition-colors group-hover:bg-[var(--brand-teal)]/25">
+                    <Icon className="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0">
                     {option.mode && option.mode !== "Flexible Delivery" && (
                       <p className="text-xs uppercase tracking-[0.25em] text-[#5a7264]">{option.mode}</p>
                     )}
                     <h3 className="font-serif text-2xl text-[#1f2d38]">{option.format}</h3>
-                  </div>
-                  {option.highlight && (
-                    <span className="rounded-full bg-[#7b8c45]/15 px-3 py-1 text-xs font-semibold text-[#556026]">
-                      {option.highlight}
+                    <span className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-[var(--brand-navy)]/8 px-3 py-1 text-xs font-medium text-[var(--brand-navy)]">
+                      <Clock className="h-3 w-3" aria-hidden="true" />
+                      {option.duration}
                     </span>
-                  )}
+                  </div>
                 </div>
                 <div className="mt-4 flex flex-1 flex-col">
                   {option.description && (
                     <p className="text-sm leading-relaxed text-[#4a5a61]">{option.description}</p>
                   )}
-                  <div className={`${option.description ? "mt-6" : "mt-0"} flex flex-wrap items-baseline gap-2`}>
-                    <span className="font-serif text-4xl text-[#1f2d38]">{option.price}</span>
-                    <span className="text-sm text-[#4a5c63]">{option.duration}</span>
-                  </div>
-                  <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-[#4a5c63]">
-                    <span aria-hidden="true" className="inline-block h-4 w-4" />
-                    {location ? <span>{location}</span> : <span aria-hidden="true">&nbsp;</span>}
-                  </div>
+                  {option.highlight && (
+                    <span className="mt-3 inline-flex self-start rounded-full bg-[#7b8c45]/15 px-3 py-1 text-xs font-semibold text-[#556026]">
+                      {option.highlight}
+                    </span>
+                  )}
+                  {location && (
+                    <p className="mt-3 text-sm text-[#4a5c63]">{location}</p>
+                  )}
                   <Button
                     asChild
                     size="lg"

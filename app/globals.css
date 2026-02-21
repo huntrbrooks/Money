@@ -19,8 +19,8 @@
   --card-foreground: var(--brand-navy);
   --popover: var(--brand-pale-blue);
   --popover-foreground: var(--brand-navy);
-  /* Keep primary as teal for non-CTA buttons and links */
-  --primary: var(--brand-teal);
+  /* Primary text colour — navy for readability on mobile */
+  --primary: var(--brand-navy);
   --primary-foreground: #FFFFFF;
   /* Use teal for non‑CTA filled buttons */
   --secondary: var(--brand-teal);
