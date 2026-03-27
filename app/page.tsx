@@ -204,6 +204,39 @@ export default async function HomePage() {
             content: React.ReactNode
           }> = [
             {
+              key: "importantLinks",
+              enabled: showImportantLinks,
+              id: "important-links",
+              className: "py-12 sm:py-16 md:py-24",
+              content: (
+                <div className="container mx-auto px-4 sm:px-6 md:px-8">
+                  <div className="max-w-5xl mx-auto space-y-8">
+                    <div className="text-center space-y-3">
+                      <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-bold">
+                        Trauma, Abuse &amp; Exploitation
+                      </h2>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {/* All 9 content sections in navy buttons */}
+                      <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+                        {allContentSectionLinks.map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 px-4 py-2 has-[>svg]:px-3 w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm no-underline"
+                            data-slot="button"
+                          >
+                            {link.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ),
+            },
+            {
               key: "valueProps",
               enabled: showValueProps && valueProps.length > 0,
               className: "py-12 sm:py-16 md:py-24",
@@ -211,11 +244,8 @@ export default async function HomePage() {
                 <div className="container mx-auto px-4 sm:px-6 md:px-8">
                   <div className="max-w-5xl mx-auto space-y-8 text-center">
                     <div className="space-y-2">
-                      <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary)] font-semibold">
-                        {copy.valuePropsEyebrow ?? "What to expect"}
-                      </p>
-                      <h2 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">
-                        {copy.valuePropsHeading ?? "Therapy that honours your nervous system"}
+                      <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-bold">
+                        {copy.valuePropsHeading ?? "Financial Trauma Therapy:"}
                       </h2>
                     </div>
                     <div className="grid gap-6 md:grid-cols-3">
@@ -238,53 +268,15 @@ export default async function HomePage() {
                         </Collapsible>
                       ))}
                     </div>
-                  </div>
-                </div>
-              ),
-            },
-            {
-              key: "importantLinks",
-              enabled: showImportantLinks,
-              id: "important-links",
-              className: "py-12 sm:py-16 md:py-24",
-              content: (
-                <div className="container mx-auto px-4 sm:px-6 md:px-8">
-                  <div className="max-w-5xl mx-auto space-y-8">
-                    <div className="text-center space-y-3">
-                      <h2 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">
-                        {copy.importantLinksHeading ?? "Important Links"}
-                      </h2>
-                      <p className="text-[var(--primary)]">
-                        {copy.importantLinksSubheading ?? "Quick access to key information"}
-                      </p>
-                    </div>
-
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {/* All 9 content sections in navy buttons */}
-                      <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-                        {allContentSectionLinks.map((link) => (
-                          <Link
-                            key={link.href}
-                            href={link.href}
-                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 px-4 py-2 has-[>svg]:px-3 w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm no-underline"
-                            data-slot="button"
-                          >
-                            {link.label}
-                          </Link>
-                        ))}
-                      </div>
-
-                      {/* Book a consultation (under the 9 navy buttons) */}
-                      <div className="col-span-full flex justify-center pt-2">
-                        <Button
-                          asChild
-                          className="w-full sm:w-auto bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-lg"
-                        >
-                          <Link href="/#book" className="no-underline" data-analytics-id="important-links-book">
-                            Book a consultation
-                          </Link>
-                        </Button>
-                      </div>
+                    <div className="flex justify-center pt-4">
+                      <Button
+                        asChild
+                        className="w-full sm:w-auto bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-lg"
+                      >
+                        <Link href="/#book" className="no-underline" data-analytics-id="value-props-book">
+                          Book a consultation
+                        </Link>
+                      </Button>
                     </div>
                   </div>
                 </div>
