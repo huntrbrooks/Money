@@ -212,8 +212,8 @@ export default async function HomePage() {
                 <div className="container mx-auto px-4 sm:px-6 md:px-8">
                   <div className="max-w-5xl mx-auto space-y-8">
                     <div className="text-center space-y-3">
-                      <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-bold">
-                        Trauma, Abuse &amp; Exploitation
+                      <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-light">
+                        Financial Abuse &amp; Financial Trauma
                       </h2>
                     </div>
 
@@ -244,7 +244,7 @@ export default async function HomePage() {
                 <div className="container mx-auto px-4 sm:px-6 md:px-8">
                   <div className="max-w-5xl mx-auto space-y-8 text-center">
                     <div className="space-y-2">
-                      <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-bold">
+                      <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-light">
                         {copy.valuePropsHeading ?? "Financial Trauma Therapy:"}
                       </h2>
                     </div>
@@ -330,7 +330,7 @@ export default async function HomePage() {
                 <div className="container mx-auto px-4 sm:px-6 md:px-8">
                   <div className="max-w-5xl mx-auto space-y-12">
                     <div className="text-center space-y-5">
-                      <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-bold">
+                      <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-light">
                         {copy.otherAreasHeading ?? "Other Areas of Specialisation"}
                       </h2>
                       <p className="text-lg sm:text-xl text-[var(--primary)] max-w-2xl mx-auto leading-relaxed">
