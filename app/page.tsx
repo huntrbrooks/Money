@@ -8,7 +8,6 @@ import { BookingOptions } from "@/components/booking-options"
 import { BookingScheduler } from "@/components/booking-scheduler"
 import { readSiteConfig, defaultConfig } from "@/lib/config"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { CrisisBanner } from "@/components/crisis-banner"
 import { ResourcesCarousel } from "@/components/resources-carousel"
 import { LeadMagnet } from "@/components/lead-magnet"
@@ -32,6 +31,20 @@ const HOME_KEYWORDS = [
   "financial abuse counselling",
   "economic abuse recovery",
   "money anxiety therapy",
+]
+
+const DAN_BIO_PARAGRAPHS = [
+  "Financial related stress often transcends mere numerical values on a spreadsheet. Financial matters profoundly impact our sense of security, self-concept, and interpersonal trust, frequently leaving behind profound emotional and psychological wounds. Recognising these complex, often unaddressed dynamics is what led Dan Lobel to found Financial Trauma Therapy.",
+  "As a dedicated therapeutic specialist Dan connects the realms of psychological wellbeing and the burdensome emotional impact of financial challenges. Supporting individuals couples and families in recovering from financial distress and restoring their peace of mind.",
+  "Who is Dan?",
+  "Dan embodies a therapeutic demeanour that is welcoming, compassionately empathetic, and culturally humble. He brings an authentic, relational, non-judgmental presence to his work, ensuring that clients have a neutral, safe space to share their lived experiences and explore deep vulnerabilities without fear of stigma or criticism.",
+  "Guided by professional integrity and a profound respect for every client's unique journey, Dan is dedicated to assisting people navigate complex psychological barriers and emotional distress caused by financial trauma's.",
+  "Dan's practice is anchored by a robust academic foundation in modern therapeutic frameworks, paired with a sophisticated aptitude for understanding the complexities of human behaviour.",
+  "Credentials:",
+  "His professional qualifications include: Master of Counselling, Graduate Diploma of Counselling, Bachelor of Counselling, Diploma of Counselling.",
+  "Beyond his formal training, knowledge and experience, Dan's approach is profoundly influenced by the richness of his life's personal experiences. This provides him with a keen and perceptive framework to analyse the nuanced ways in which concealed shame, trauma, and relational dynamics shape our interactions with money.",
+  "Dan recognises that disputes over finances and past traumas possess a distinct toxicity. They employ more severe language, endure for extended periods, and impose an emotional burden similar to physical violations of trust. Dan serves as an essential support system by focusing solely on Financial Trauma.",
+  "Dan's therapeutic practice is heavily focused on equipping clients with evidence-based, actionable skills to manage acute distress, anxiety, or feelings of paralysis. Whether navigating an acute financial crisis or processing long-held anxieties, Dan offers a compassionate, secure space.",
 ]
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -74,6 +87,7 @@ export default async function HomePage() {
   const hasTestimonials = testimonials.length > 0
   const leadMagnet = homepageContent.leadMagnet
   const showValueProps = sections.showValueProps !== false
+  const showMeetDan = showValueProps && valueProps.length > 0
   const showImportantLinks = sections.showImportantLinks !== false
   const showTestimonials = sections.showTestimonials !== false
   const showOtherAreas = sections.showOtherAreas !== false
@@ -116,6 +130,7 @@ export default async function HomePage() {
   const bgForIndex = (idx: number) => (idx % 2 === 0 ? "var(--section-bg-2)" : "var(--section-bg-1)")
   const enabledFlowCount =
     (showValueProps && valueProps.length > 0 ? 1 : 0) +
+    (showMeetDan ? 1 : 0) +
     (showImportantLinks ? 1 : 0) +
     (showTestimonials && hasTestimonials ? 1 : 0) +
     (showOtherAreas ? 1 : 0) +
@@ -209,35 +224,96 @@ export default async function HomePage() {
               className: "py-12 sm:py-16 md:py-24",
               content: (
                 <div className="container mx-auto px-4 sm:px-6 md:px-8">
-                  <div className="max-w-5xl mx-auto space-y-8 text-center">
+                  <div className="max-w-5xl mx-auto space-y-8">
                     <div className="space-y-2">
                       <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary)] font-semibold">
                         {copy.valuePropsEyebrow ?? "What to expect"}
                       </p>
-                      <h2 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">
+                      <h2 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light text-balance">
                         {copy.valuePropsHeading ?? "Therapy that honours your nervous system"}
                       </h2>
                     </div>
-                    <div className="grid gap-6 md:grid-cols-3">
+                    <ul className="space-y-3 text-left text-xl sm:text-2xl font-serif text-[var(--foreground)]">
                       {valueProps.map((item, idx) => (
-                        <Collapsible
+                        <li
                           key={`value-prop-${idx}`}
-                          className="rounded-3xl border border-[var(--secondary)] bg-[var(--section-bg-1)]/80 p-6 shadow-sm transition-all duration-300 hover:shadow-md"
+                          className="flex gap-3 leading-snug"
                         >
-                          <CollapsibleTrigger className="w-full text-center cursor-pointer group">
-                            <h3 className="font-serif text-2xl text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">
-                              {item.title}
-                            </h3>
-                            <p className="text-xs text-[var(--primary)]/60 mt-2 group-data-[state=open]:hidden">
-                              Click to read more
-                            </p>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-                            <p className="text-[var(--primary)] mt-4 leading-relaxed text-center">{item.description}</p>
-                          </CollapsibleContent>
-                        </Collapsible>
+                          <span aria-hidden className="shrink-0 text-[var(--primary)]">
+                            -
+                          </span>
+                          <span>{item.title}</span>
+                        </li>
                       ))}
+                    </ul>
+                    <div className="space-y-8 rounded-lg border border-[var(--secondary)] bg-[var(--section-bg-1)]/75 p-6 sm:p-8 shadow-[0_18px_40px_rgba(32,56,91,0.06)]">
+                      <p className="font-serif text-xl text-[var(--foreground)]">
+                        Dan Lobel - Dip Couns., Bach Couns., Grad Cert Couns., Master Couns.
+                      </p>
+                      <div className="flex flex-col gap-3 sm:flex-row">
+                        <Button
+                          asChild
+                          className="w-full sm:w-auto min-w-[220px] bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-full"
+                        >
+                          <Link href="/#book" className="no-underline" data-analytics-id="value-props-book">
+                            Book a Consultation
+                            <ArrowRight className="ml-2 size-4" />
+                          </Link>
+                        </Button>
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="w-full sm:w-auto min-w-[220px] bg-[var(--section-bg-1)]/80 border border-[var(--section-bg-1)]/70 text-[var(--foreground)] hover:border-[var(--foreground)]/30 hover:bg-[var(--section-bg-2)] h-12 px-8 font-medium rounded-full"
+                        >
+                          <a href={callDanHref} aria-label="Call Dan" data-analytics-id="value-props-call">
+                            Call Dan
+                          </a>
+                        </Button>
+                      </div>
                     </div>
+                  </div>
+                </div>
+              ),
+            },
+            {
+              key: "meetDan",
+              enabled: showMeetDan,
+              className: "py-12 sm:py-16 md:py-24",
+              content: (
+                <div className="container mx-auto px-4 sm:px-6 md:px-8">
+                  <div className="max-w-5xl mx-auto space-y-8">
+                    <div className="space-y-3 text-center">
+                      <h2 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light text-balance">
+                        Meet Dan Lobel. Financial Trauma Therapist.
+                      </h2>
+                    </div>
+                    <Accordion
+                      type="single"
+                      collapsible
+                      className="rounded-lg border border-[var(--secondary)] bg-[var(--section-bg-1)]/80 px-4 sm:px-6 shadow-sm"
+                    >
+                      <AccordionItem value="meet-dan" className="border-none">
+                        <AccordionTrigger className="py-5 text-left font-serif text-2xl text-[var(--foreground)] hover:text-[var(--accent)]">
+                          Learn more about Dan
+                        </AccordionTrigger>
+                        <AccordionContent className="pb-6">
+                          <div className="space-y-5 text-base sm:text-lg leading-relaxed text-[var(--primary)]">
+                            {DAN_BIO_PARAGRAPHS.map((paragraph) =>
+                              paragraph.endsWith(":") || paragraph.endsWith("?") ? (
+                                <h3
+                                  key={paragraph}
+                                  className="pt-2 font-serif text-2xl text-[var(--foreground)]"
+                                >
+                                  {paragraph}
+                                </h3>
+                              ) : (
+                                <p key={paragraph}>{paragraph}</p>
+                              ),
+                            )}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
                   </div>
                 </div>
               ),
