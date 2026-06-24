@@ -196,7 +196,7 @@ export default async function HomePage() {
                 {eyebrow ? (
                   <p className="text-[#6b7d86] text-xs uppercase tracking-[0.3em] font-semibold">{eyebrow}</p>
                 ) : null}
-                <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-[var(--foreground)] leading-tight text-balance font-light">
+                <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[var(--foreground)] leading-tight text-balance font-light">
                   {hero.title}
                 </h1>
               </div>
