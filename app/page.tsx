@@ -8,6 +8,7 @@ import { BookingOptions } from "@/components/booking-options"
 import { BookingScheduler } from "@/components/booking-scheduler"
 import { readSiteConfig, defaultConfig } from "@/lib/config"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { CrisisBanner } from "@/components/crisis-banner"
 import { ResourcesCarousel } from "@/components/resources-carousel"
 import { LeadMagnet } from "@/components/lead-magnet"
@@ -33,6 +34,19 @@ const HOME_KEYWORDS = [
   "money anxiety therapy",
 ]
 
+const HERO_SECTION_A_ITEMS = [
+  "Marriage & Relationship Dissolution",
+  "Elder Financial Abuse",
+  "Cyber Financial Abuse",
+  "Exploitation",
+  "Family Inheritance & Estate Battles",
+  "Estrangement",
+  "Gambling",
+  "Financial Enmeshment",
+  "Dependence",
+  "Financial Abuse",
+]
+
 const DAN_BIO_PARAGRAPHS = [
   "Financial related stress often transcends mere numerical values on a spreadsheet. Financial matters profoundly impact our sense of security, self-concept, and interpersonal trust, frequently leaving behind profound emotional and psychological wounds. Recognising these complex, often unaddressed dynamics is what led Dan Lobel to found Financial Trauma Therapy.",
   "As a dedicated therapeutic specialist Dan connects the realms of psychological wellbeing and the burdensome emotional impact of financial challenges. Supporting individuals couples and families in recovering from financial distress and restoring their peace of mind.",
@@ -46,6 +60,33 @@ const DAN_BIO_PARAGRAPHS = [
   "Dan recognises that disputes over finances and past traumas possess a distinct toxicity. They employ more severe language, endure for extended periods, and impose an emotional burden similar to physical violations of trust. Dan serves as an essential support system by focusing solely on Financial Trauma.",
   "Dan's therapeutic practice is heavily focused on equipping clients with evidence-based, actionable skills to manage acute distress, anxiety, or feelings of paralysis. Whether navigating an acute financial crisis or processing long-held anxieties, Dan offers a compassionate, secure space.",
 ]
+
+function parseHeroSectionA(description: string | undefined) {
+  const text = String(description ?? "").trim()
+  const firstItemIndex = text.indexOf(`- ${HERO_SECTION_A_ITEMS[0]}`)
+
+  if (firstItemIndex === -1) {
+    return { intro: text, items: [] as string[], trailing: "" }
+  }
+
+  const intro = text.slice(0, firstItemIndex).trim()
+  const listAndTrailing = text.slice(firstItemIndex)
+  const lastItemNeedle = `- ${HERO_SECTION_A_ITEMS[HERO_SECTION_A_ITEMS.length - 1]}`
+  const lastItemIndex = listAndTrailing.lastIndexOf(lastItemNeedle)
+  const trailing =
+    lastItemIndex === -1
+      ? ""
+      : listAndTrailing
+          .slice(lastItemIndex + lastItemNeedle.length)
+          .replace(/^\s*\.\s*/, "")
+          .trim()
+
+  return {
+    intro,
+    items: HERO_SECTION_A_ITEMS,
+    trailing,
+  }
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const metadata = await buildPageMetadata({
@@ -87,7 +128,7 @@ export default async function HomePage() {
   const hasTestimonials = testimonials.length > 0
   const leadMagnet = homepageContent.leadMagnet
   const showValueProps = sections.showValueProps !== false
-  const showMeetDan = showValueProps && valueProps.length > 0
+  const showMeetDan = true
   const showImportantLinks = sections.showImportantLinks !== false
   const showTestimonials = sections.showTestimonials !== false
   const showOtherAreas = sections.showOtherAreas !== false
@@ -125,6 +166,7 @@ export default async function HomePage() {
     .replace(/\s*&\s*/g, " ")
     .replace(/\s{2,}/g, " ")
     .trim()
+  const heroSectionA = parseHeroSectionA(hero.description)
 
   const HERO_END_BG = "var(--section-bg-1)"
   const bgForIndex = (idx: number) => (idx % 2 === 0 ? "var(--section-bg-2)" : "var(--section-bg-1)")
@@ -166,7 +208,24 @@ export default async function HomePage() {
                 <p className="text-xl sm:text-2xl text-[var(--foreground)] font-serif font-medium">
                   {hero.subtitle}
                 </p>
-                <p className="text-[var(--foreground)]/80">{hero.description}</p>
+                {heroSectionA.items.length > 0 ? (
+                  <div className="space-y-4 text-left text-[var(--foreground)]/85">
+                    {heroSectionA.intro ? <p>{heroSectionA.intro}</p> : null}
+                    <ul className="space-y-1.5">
+                      {heroSectionA.items.map((item) => (
+                        <li key={item} className="flex gap-2 leading-relaxed">
+                          <span aria-hidden className="shrink-0">
+                            -
+                          </span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    {heroSectionA.trailing ? <p>{heroSectionA.trailing}</p> : null}
+                  </div>
+                ) : (
+                  <p className="text-[var(--foreground)]/80">{hero.description}</p>
+                )}
               </div>
 
               <div className="pt-4 flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
@@ -219,93 +278,6 @@ export default async function HomePage() {
             content: React.ReactNode
           }> = [
             {
-              key: "importantLinks",
-              enabled: showImportantLinks,
-              id: "important-links",
-              className: "py-12 sm:py-16 md:py-24",
-              content: (
-                <div className="container mx-auto px-4 sm:px-6 md:px-8">
-                  <div className="max-w-5xl mx-auto space-y-8">
-                    <div className="text-center space-y-3">
-                      <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-light">
-                        Financial Abuse &amp; Financial Trauma
-                      </h2>
-                    </div>
-
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {/* All 9 content sections in navy buttons */}
-                      <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-                        {allContentSectionLinks.map((link) => (
-                          <Link
-                            key={link.href}
-                            href={link.href}
-                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 px-4 py-2 has-[>svg]:px-3 w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm no-underline"
-                            data-slot="button"
-                          >
-                            {link.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ),
-            },
-            {
-              key: "valueProps",
-              enabled: showValueProps && valueProps.length > 0,
-              className: "py-12 sm:py-16 md:py-24",
-              content: (
-                <div className="container mx-auto px-4 sm:px-6 md:px-8">
-                  <div className="max-w-5xl mx-auto space-y-8">
-                    <div className="space-y-2">
-                      <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-light">
-                        {copy.valuePropsHeading ?? "Financial Trauma Therapy:"}
-                      </h2>
-                    </div>
-                    <ul className="space-y-3 text-left text-xl sm:text-2xl font-serif text-[var(--foreground)]">
-                      {valueProps.map((item, idx) => (
-                        <li
-                          key={`value-prop-${idx}`}
-                          className="flex gap-3 leading-snug"
-                        >
-                          <span aria-hidden className="shrink-0 text-[var(--primary)]">
-                            -
-                          </span>
-                          <span>{item.title}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="space-y-8 rounded-lg border border-[var(--secondary)] bg-[var(--section-bg-1)]/75 p-6 sm:p-8 shadow-[0_18px_40px_rgba(32,56,91,0.06)]">
-                      <p className="font-serif text-xl text-[var(--foreground)]">
-                        Dan Lobel - Dip Couns., Bach Couns., Grad Cert Couns., Master Couns.
-                      </p>
-                      <div className="flex flex-col gap-3 sm:flex-row">
-                        <Button
-                          asChild
-                          className="w-full sm:w-auto min-w-[220px] bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-full"
-                        >
-                          <Link href="/#book" className="no-underline" data-analytics-id="value-props-book">
-                            Book a Consultation
-                            <ArrowRight className="ml-2 size-4" />
-                          </Link>
-                        </Button>
-                        <Button
-                          asChild
-                          variant="outline"
-                          className="w-full sm:w-auto min-w-[220px] bg-[var(--section-bg-1)]/80 border border-[var(--section-bg-1)]/70 text-[var(--foreground)] hover:border-[var(--foreground)]/30 hover:bg-[var(--section-bg-2)] h-12 px-8 font-medium rounded-full"
-                        >
-                          <a href={callDanHref} aria-label="Call Dan" data-analytics-id="value-props-call">
-                            Call Dan
-                          </a>
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ),
-            },
-            {
               key: "meetDan",
               enabled: showMeetDan,
               className: "py-12 sm:py-16 md:py-24",
@@ -344,6 +316,85 @@ export default async function HomePage() {
                         </AccordionContent>
                       </AccordionItem>
                     </Accordion>
+                  </div>
+                </div>
+              ),
+            },
+            {
+              key: "importantLinks",
+              enabled: showImportantLinks,
+              id: "important-links",
+              className: "py-12 sm:py-16 md:py-24",
+              content: (
+                <div className="container mx-auto px-4 sm:px-6 md:px-8">
+                  <div className="max-w-5xl mx-auto space-y-8">
+                    <div className="text-center space-y-3">
+                      <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-light">
+                        Financial Abuse &amp; Financial Trauma
+                      </h2>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {/* All 9 content sections in navy buttons */}
+                      <div className="col-span-full grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+                        {allContentSectionLinks.map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 px-4 py-2 has-[>svg]:px-3 w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm no-underline"
+                            data-slot="button"
+                          >
+                            {link.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ),
+            },
+            {
+              key: "valueProps",
+              enabled: showValueProps && valueProps.length > 0,
+              className: "py-12 sm:py-16 md:py-24",
+              content: (
+                <div className="container mx-auto px-4 sm:px-6 md:px-8">
+                  <div className="max-w-5xl mx-auto space-y-8 text-center">
+                    <div className="space-y-2">
+                      <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-light">
+                        {copy.valuePropsHeading ?? "Financial Trauma Therapy:"}
+                      </h2>
+                    </div>
+                    <div className="grid gap-6 md:grid-cols-3">
+                      {valueProps.map((item, idx) => (
+                        <Collapsible
+                          key={`value-prop-${idx}`}
+                          className="rounded-3xl border border-[var(--secondary)] bg-[var(--section-bg-1)]/80 p-6 shadow-sm transition-all duration-300 hover:shadow-md"
+                        >
+                          <CollapsibleTrigger className="w-full text-center cursor-pointer group">
+                            <h3 className="font-serif text-2xl text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">
+                              {item.title}
+                            </h3>
+                            <p className="text-xs text-[var(--primary)]/60 mt-2 group-data-[state=open]:hidden">
+                              Click to read more
+                            </p>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+                            <p className="text-[var(--primary)] mt-4 leading-relaxed text-center">{item.description}</p>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      ))}
+                    </div>
+                    <div className="flex justify-center pt-4">
+                      <Button
+                        asChild
+                        className="w-full sm:w-auto bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-lg"
+                      >
+                        <Link href="/#book" className="no-underline" data-analytics-id="value-props-book">
+                          Book a consultation
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ),
