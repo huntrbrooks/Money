@@ -14,6 +14,7 @@ import { Upload, Save, Eye, LogOut, ImageIcon, FileText, DollarSign, Palette, Ho
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import type { SiteConfig } from "@/lib/config"
+import { DEFAULT_MEET_DAN_BODY } from "@/lib/meet-dan"
 import type { PostMeta, VideoMeta } from "@/lib/mdx"
 import { Switch } from "@/components/ui/switch"
 import { Progress } from "@/components/ui/progress"
@@ -112,6 +113,9 @@ const createEmptyHomepage = (): NonNullable<SiteConfig["homepage"]> => ({
   valueProps: [],
   testimonials: [],
   faqs: [],
+  meetDan: {
+    body: DEFAULT_MEET_DAN_BODY,
+  },
   leadMagnet: {
     heading: "",
     body: "",
@@ -592,6 +596,10 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
            specialistLinks: data.homepage?.importantLinks?.specialistLinks ?? homepageDefaults.importantLinks?.specialistLinks ?? [],
          },
          importantSectionLinks: data.homepage?.importantSectionLinks ?? homepageDefaults.importantSectionLinks ?? [],
+         meetDan: {
+           ...homepageDefaults.meetDan,
+           ...(data.homepage?.meetDan ?? {}),
+         },
          valueProps: data.homepage?.valueProps ?? [],
          testimonials: data.homepage?.testimonials ?? [],
          faqs: data.homepage?.faqs ?? [],
@@ -3276,6 +3284,20 @@ function CodeAgentBox() {
                           setHomepage((prev) => ({
                             ...prev,
                             copy: { ...(prev.copy ?? {}), importantLinksSubheading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label>Meet Dan dropdown content</Label>
+                      <Textarea
+                        rows={10}
+                        value={homepage.meetDan?.body ?? DEFAULT_MEET_DAN_BODY}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            meetDan: { ...(prev.meetDan ?? createEmptyHomepage().meetDan), body: e.target.value },
                           }))
                         }
                       />
