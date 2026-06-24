@@ -2,6 +2,7 @@ import { promises as fs } from "fs"
 import path from "path"
 import { hasSupabase, sbGetSiteConfigJson, sbInsertSiteConfigVersion, sbUpsertSiteConfigJson } from "@/lib/supabase-rest"
 import { unstable_noStore as noStore } from "next/cache"
+import { DEFAULT_MEET_DAN_BODY } from "@/lib/meet-dan"
 
 export type HeroButton = {
   label: string
@@ -348,6 +349,10 @@ export type LeadMagnetContent = {
   helper?: string
 }
 
+export type MeetDanContent = {
+  body?: string
+}
+
 export type HomepageSectionToggles = {
   showValueProps?: boolean
   showNewsletter?: boolean
@@ -406,6 +411,7 @@ export type OtherAreaCard = {
 export type HomepageContent = {
   sections?: HomepageSectionToggles
   copy?: HomepageCopy
+  meetDan?: MeetDanContent
   otherAreas?: OtherAreaCard[]
   importantLinks?: {
     // Row 3 (navy) in the Important Links section on the homepage.
@@ -1190,6 +1196,9 @@ export const defaultConfig: SiteConfig = {
       crisisBody: "You are not alone — help is available 24/7.",
       crisisNote: "If you or someone you know is in crisis and needs help now, call triple zero (000).",
     },
+    meetDan: {
+      body: DEFAULT_MEET_DAN_BODY,
+    },
     importantLinks: {
       blogLinks: [
         { label: "Why Money Triggers Anxiety", href: "/blog/why-money-triggers-anxiety" },
@@ -1663,6 +1672,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
                 ...hp,
                 sections: { ...(defaults.sections ?? {}), ...(hp.sections ?? {}) },
                 copy: { ...(defaults.copy ?? {}), ...(hp.copy ?? {}) },
+                meetDan: { ...(defaults.meetDan ?? { body: DEFAULT_MEET_DAN_BODY }), ...(hp.meetDan ?? {}) },
                 importantLinks: {
                   ...(defaults.importantLinks ?? {}),
                   ...(hp.importantLinks ?? {}),
@@ -1750,18 +1760,19 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       formPages: { ...(defaultConfig.formPages ?? {}), ...(parsed.formPages ?? {}) },
       homepage: (() => {
         const defaults = defaultConfig.homepage ?? {}
-      const hp = (parsed.homepage ?? {}) as Partial<HomepageContent>
-      const leadMagnetDefaults = defaults.leadMagnet ?? {
-        heading: "",
-        body: "",
-        ctaLabel: "",
-        ctaHref: "",
-      }
+        const hp = (parsed.homepage ?? {}) as Partial<HomepageContent>
+        const leadMagnetDefaults = defaults.leadMagnet ?? {
+          heading: "",
+          body: "",
+          ctaLabel: "",
+          ctaHref: "",
+        }
         return {
           ...defaults,
           ...hp,
           sections: { ...(defaults.sections ?? {}), ...(hp.sections ?? {}) },
           copy: { ...(defaults.copy ?? {}), ...(hp.copy ?? {}) },
+          meetDan: { ...(defaults.meetDan ?? { body: DEFAULT_MEET_DAN_BODY }), ...(hp.meetDan ?? {}) },
           importantLinks: {
             ...(defaults.importantLinks ?? {}),
             ...(hp.importantLinks ?? {}),
@@ -1861,12 +1872,13 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
         ...hp,
         sections: { ...(defaults.sections ?? {}), ...(hp.sections ?? {}) },
         copy: { ...(defaults.copy ?? {}), ...(hp.copy ?? {}) },
-      importantLinks: {
-        ...(defaults.importantLinks ?? {}),
-        ...(hp.importantLinks ?? {}),
-        blogLinks: hp.importantLinks?.blogLinks ?? defaults.importantLinks?.blogLinks,
-        specialistLinks: hp.importantLinks?.specialistLinks ?? defaults.importantLinks?.specialistLinks,
-      },
+        meetDan: { ...(defaults.meetDan ?? { body: DEFAULT_MEET_DAN_BODY }), ...(hp.meetDan ?? {}) },
+        importantLinks: {
+          ...(defaults.importantLinks ?? {}),
+          ...(hp.importantLinks ?? {}),
+          blogLinks: hp.importantLinks?.blogLinks ?? defaults.importantLinks?.blogLinks,
+          specialistLinks: hp.importantLinks?.specialistLinks ?? defaults.importantLinks?.specialistLinks,
+        },
         importantSectionLinks: hp.importantSectionLinks ?? defaults.importantSectionLinks,
         otherAreas: hp.otherAreas ?? defaults.otherAreas,
         valueProps: hp.valueProps ?? defaults.valueProps,
@@ -1905,5 +1917,3 @@ export async function writeSiteConfig(newConfig: SiteConfig): Promise<void> {
   await ensureDir(CONFIG_FILE_PATH)
   await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(merged, null, 2), "utf8")
 }
-
-
