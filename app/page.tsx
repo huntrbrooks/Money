@@ -166,7 +166,7 @@ export default async function HomePage() {
     .replace(/\s*&\s*/g, " ")
     .replace(/\s{2,}/g, " ")
     .trim()
-  const heroSectionA = parseHeroSectionA(hero.description)
+  const heroSectionA = parseHeroSectionA(hero.subtitle)
 
   const HERO_END_BG = "var(--section-bg-1)"
   const bgForIndex = (idx: number) => (idx % 2 === 0 ? "var(--section-bg-2)" : "var(--section-bg-1)")
@@ -205,9 +205,6 @@ export default async function HomePage() {
               </div>
 
               <div className="space-y-5 text-base sm:text-lg leading-relaxed text-[var(--foreground)]/90 max-w-2xl mx-auto lg:mx-0">
-                <p className="text-xl sm:text-2xl text-[var(--foreground)] font-serif font-medium">
-                  {hero.subtitle}
-                </p>
                 {heroSectionA.items.length > 0 ? (
                   <div className="space-y-4 text-left text-[var(--foreground)]/85">
                     {heroSectionA.intro ? <p>{heroSectionA.intro}</p> : null}
@@ -222,9 +219,15 @@ export default async function HomePage() {
                       ))}
                     </ul>
                     {heroSectionA.trailing ? <p>{heroSectionA.trailing}</p> : null}
+                    {hero.description ? <p>{hero.description}</p> : null}
                   </div>
                 ) : (
-                  <p className="text-[var(--foreground)]/80">{hero.description}</p>
+                  <>
+                    <p className="text-xl sm:text-2xl text-[var(--foreground)] font-serif font-medium">
+                      {hero.subtitle}
+                    </p>
+                    {hero.description ? <p className="text-[var(--foreground)]/80">{hero.description}</p> : null}
+                  </>
                 )}
               </div>
 
