@@ -35,46 +35,37 @@ const HOME_KEYWORDS = [
   "money anxiety therapy",
 ]
 
-const HERO_SECTION_A_ITEMS = [
-  "Marriage & Relationship Dissolution",
-  "Elder Financial Abuse",
-  "Cyber Financial Abuse",
-  "Exploitation",
-  "Family Inheritance & Estate Battles",
-  "Estrangement",
-  "Gambling",
-  "Financial Enmeshment",
-  "Dependence",
-  "Financial Abuse",
-]
-
 const SECTION_HEADING_CLASS = "font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light text-balance"
+const HERO_SECTION_A_ITEM_MARKER_RE = /(^|\s)-\s+/g
 const MEET_DAN_PARAGRAPH_SPLIT_RE = /\n{2,}/
 
 function parseHeroSectionA(description: string | undefined) {
   const text = String(description ?? "").trim()
-  const firstItemIndex = text.indexOf(`- ${HERO_SECTION_A_ITEMS[0]}`)
+  const itemMarkers = Array.from(text.matchAll(HERO_SECTION_A_ITEM_MARKER_RE), (match) => ({
+    markerStart: (match.index ?? 0) + match[1].length,
+    contentStart: (match.index ?? 0) + match[0].length,
+  }))
 
-  if (firstItemIndex === -1) {
+  if (itemMarkers.length === 0) {
     return { intro: text, items: [] as string[], trailing: "" }
   }
 
-  const intro = text.slice(0, firstItemIndex).trim()
-  const listAndTrailing = text.slice(firstItemIndex)
-  const lastItemNeedle = `- ${HERO_SECTION_A_ITEMS[HERO_SECTION_A_ITEMS.length - 1]}`
-  const lastItemIndex = listAndTrailing.lastIndexOf(lastItemNeedle)
-  const trailing =
-    lastItemIndex === -1
-      ? ""
-      : listAndTrailing
-          .slice(lastItemIndex + lastItemNeedle.length)
-          .replace(/^\s*\.\s*/, "")
-          .trim()
+  const intro = text.slice(0, itemMarkers[0].markerStart).trim()
+  const items = itemMarkers
+    .map((marker, index) => {
+      const nextMarker = itemMarkers[index + 1]
+      return text
+        .slice(marker.contentStart, nextMarker?.markerStart ?? text.length)
+        .trim()
+        .replace(/\s+/g, " ")
+        .replace(/\.$/, "")
+    })
+    .filter(Boolean)
 
   return {
     intro,
-    items: HERO_SECTION_A_ITEMS,
-    trailing,
+    items,
+    trailing: "",
   }
 }
 
