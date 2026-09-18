@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Phone, Mail, ArrowRight } from "lucide-react"
 import { Navigation, Footer } from "@/components/navigation"
 import { BookingOptions } from "@/components/booking-options"
-import { BookingScheduler } from "@/components/booking-scheduler"
+import { DownloadsForms } from "@/components/downloads-forms"
 import { readSiteConfig, defaultConfig } from "@/lib/config"
 import { DEFAULT_MEET_DAN_BODY } from "@/lib/meet-dan"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -147,8 +147,6 @@ export default async function HomePage() {
   const primaryCta = hero.primaryCta ?? { label: "Book a consultation", href: "/#book" }
   const contactPhone = config.contact?.phone ?? ""
   const contactEmail = config.contact?.email ?? ""
-  // Format phone number for tel: links - remove all spaces for proper tel: protocol
-  const callDanHref = contactPhone ? `tel:${contactPhone.replace(/\s+/g, "")}` : "tel:"
   const eyebrow = String(hero.eyebrow ?? "")
     .replace(/monetary psychotherapy/gi, "")
     .replace(/\s*&\s*/g, " ")
@@ -229,16 +227,6 @@ export default async function HomePage() {
                     {primaryCta.label}
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="w-full sm:w-auto min-w-[220px] bg-[var(--section-bg-2)]/85 border border-[var(--section-bg-2)]/70 text-[var(--foreground)] hover:border-[var(--foreground)]/30 hover:bg-[var(--section-bg-1)] text-base h-14 px-10 font-medium rounded-full flex items-center justify-center gap-2 shadow-[0_20px_35px_rgba(32,56,91,0.08)]"
-                >
-                  <a href={callDanHref} aria-label="Call Dan" data-analytics-id="hero-secondary-cta">
-                    Call Dan
-                  </a>
                 </Button>
               </div>
             </div>
@@ -502,11 +490,7 @@ export default async function HomePage() {
                       contactEmail={contactEmail || undefined}
                       contactPhone={contactPhone || undefined}
                     />
-                    <BookingScheduler
-                      bookingCopy={bookingCopy}
-                      email={contactEmail || undefined}
-                      phone={contactPhone || undefined}
-                    />
+                    <DownloadsForms />
                   </div>
                 </div>
               ),

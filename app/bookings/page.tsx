@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Navigation, Footer } from "@/components/navigation"
 import { BookingOptions } from "@/components/booking-options"
-import { BookingScheduler } from "@/components/booking-scheduler"
+import { DownloadsForms } from "@/components/downloads-forms"
 import { GoogleAdsConversion } from "@/components/google-ads-conversion"
 import { readSiteConfig } from "@/lib/config"
 import { buildPageMetadata } from "@/lib/seo"
@@ -42,11 +42,7 @@ export default async function BookingsPage() {
                 contactEmail={contactEmail || undefined}
                 contactPhone={contactPhone || undefined}
               />
-              <BookingScheduler
-                bookingCopy={bookingCopy}
-                email={contactEmail || undefined}
-                phone={contactPhone || undefined}
-              />
+              <DownloadsForms />
             </div>
           </div>
         </section>
