@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import Script from "next/script"
-import { Button } from "@/components/ui/button"
 import { Phone, Mail, ArrowRight } from "lucide-react"
 import { Navigation, Footer } from "@/components/navigation"
 import { BookingOptions } from "@/components/booking-options"
@@ -223,7 +223,7 @@ export default async function HomePage() {
                   href={primaryCta.href}
                   aria-label={primaryCta.label}
                   data-analytics-id="hero-primary-cta"
-                  className="flex w-full sm:w-auto min-w-[220px] items-center justify-center gap-2 whitespace-normal text-center rounded-full bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-[var(--accent-foreground)] border border-[var(--accent)]/40 text-base min-h-14 h-auto py-3 px-6 sm:px-10 font-semibold shadow-[0_0_35px_rgba(222,236,79,0.35)] transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] [&_svg]:pointer-events-none [&_svg]:shrink-0 no-underline"
+                  className="flex w-full sm:w-auto min-w-[220px] items-center justify-center gap-2 whitespace-normal text-center rounded-full bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-[#182a44] border border-[var(--accent)]/40 text-base min-h-14 h-auto py-3 px-6 sm:px-10 font-semibold shadow-[0_0_35px_rgba(222,236,79,0.35)] transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] [&_svg]:pointer-events-none [&_svg]:shrink-0 no-underline"
                 >
                   {primaryCta.label}
                   <ArrowRight className="ml-2 w-5 h-5" />
@@ -235,8 +235,13 @@ export default async function HomePage() {
             <div className="order-1 lg:order-2 relative lg:pl-8">
               <div className="relative mx-auto w-full max-w-[32rem] sm:max-w-[48rem] md:max-w-[56rem]">
                 <div className="overflow-hidden rounded-[30px] aspect-[4/3] sm:aspect-auto">
-                  <img
+                  <Image
                     src={hero.imageUrl || "/og.png?v=20251128"}
+                    width={633}
+                    height={476}
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    priority
+                    unoptimized={Boolean(hero.imageUrl && !hero.imageUrl.startsWith("/"))}
                     alt="Portrait of Dan Lobel, counsellor in Melbourne"
                     className="w-full h-full object-cover object-center"
                   />
@@ -354,7 +359,7 @@ export default async function HomePage() {
                             <h3 className="font-serif text-2xl text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">
                               {item.title}
                             </h3>
-                            <p className="text-xs text-[var(--primary)]/60 mt-2 group-data-[state=open]:hidden">
+                            <p className="text-xs text-[var(--primary)]/80 mt-2 group-data-[state=open]:hidden">
                               Click to read more
                             </p>
                           </CollapsibleTrigger>
@@ -365,14 +370,9 @@ export default async function HomePage() {
                       ))}
                     </div>
                     <div className="flex justify-center pt-4">
-                      <Button
-                        asChild
-                        className="w-full sm:w-auto bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-lg"
-                      >
-                        <Link href="/#book" className="no-underline" data-analytics-id="value-props-book">
+                      <Link href="/#book" data-analytics-id="value-props-book" className="w-full sm:w-auto bg-[var(--accent)] hover:opacity-90 text-[#182a44] h-12 px-8 font-medium shadow-md rounded-lg no-underline inline-flex items-center justify-center gap-2 rounded-md text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2">
                           Book a consultation
                         </Link>
-                      </Button>
                     </div>
                   </div>
                 </div>
@@ -457,11 +457,9 @@ export default async function HomePage() {
                       ))}
                     </Accordion>
                     <div className="flex justify-center pt-6">
-                      <Button asChild className="bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8 font-medium shadow-md rounded-lg">
-                        <Link href="/#book" className="no-underline" data-analytics-id="other-areas-book">
+                      <Link href="/#book" data-analytics-id="other-areas-book" className="bg-[var(--accent)] hover:opacity-90 text-[#182a44] h-12 px-8 font-medium shadow-md rounded-lg no-underline inline-flex items-center justify-center gap-2 rounded-md text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2">
                           Book a consultation
                         </Link>
-                      </Button>
                     </div>
                   </div>
                 </div>
@@ -582,14 +580,9 @@ export default async function HomePage() {
                         </div>
 
                         <div className="pt-4">
-                          <Button
-                            asChild
-                            className="w-full bg-[var(--accent)] hover:opacity-90 text-white h-14 font-medium text-base shadow-lg"
-                          >
-                            <Link href="/#book" data-analytics-id="contact-booking-cta">
+                          <Link href="/#book" data-analytics-id="contact-booking-cta" className="w-full bg-[var(--accent)] hover:opacity-90 text-[#182a44] h-14 font-medium text-base shadow-lg  inline-flex items-center justify-center gap-2 rounded-md text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2">
                               Book Appointment Online
                             </Link>
-                          </Button>
                         </div>
                       </div>
                     </div>

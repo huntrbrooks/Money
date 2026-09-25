@@ -127,7 +127,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
                       </div>
                       <div className="min-w-0">
                         {option.mode && option.mode !== "Flexible Delivery" && (
-                          <p className="text-[11px] uppercase tracking-[0.25em] text-[#5a7264]">{option.mode}</p>
+                          <p className="text-[11px] uppercase tracking-[0.25em] text-[#43594c]">{option.mode}</p>
                         )}
                         <p className="font-serif text-lg text-[#1f2d38] leading-snug break-words">{option.format}</p>
                         <span className="text-xs text-[#4a5c63]">{option.duration}</span>
@@ -181,7 +181,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
                   </div>
                   <div className="min-w-0">
                     {option.mode && option.mode !== "Flexible Delivery" && (
-                      <p className="text-xs uppercase tracking-[0.25em] text-[#5a7264]">{option.mode}</p>
+                      <p className="text-xs uppercase tracking-[0.25em] text-[#43594c]">{option.mode}</p>
                     )}
                     <h3 className="font-serif text-2xl text-[#1f2d38]">{option.format}</h3>
                     <span className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-[var(--brand-navy)]/8 px-3 py-1 text-xs font-medium text-[var(--brand-navy)]">

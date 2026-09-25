@@ -138,9 +138,9 @@ export function Navigation() {
     { label: "Contact", href: "/#contact" },
   ]
   const normalizedLinks = links.map(normalizeNavLink)
-  const brandName = (cfg.brand?.name ?? "Financial Trauma Therapist").replace(/^\s*The\s+/i, "")
+  const brandName = (cfg.brand?.name?.trim() || "Financial Trauma Therapist").replace(/^\s*The\s+/i, "")
   const menuButtonClasses =
-    "flex items-center justify-center w-24 h-10 px-4 rounded-full border border-white/30 text-white text-sm font-serif tracking-[0.18em] uppercase bg-[#6ca4ac]/95 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.22)] hover:shadow-[0_18px_38px_rgba(32,56,91,0.30)] active:shadow-[0_10px_22px_rgba(32,56,91,0.20)] transition-[background-color,box-shadow,filter] hover:brightness-[1.02] active:brightness-[0.98] sm:w-32 sm:h-12 sm:px-6 sm:text-base sm:tracking-[0.2em]"
+    "flex items-center justify-center w-24 h-10 px-4 rounded-full border border-white/30 text-[#182a44] text-sm font-serif tracking-[0.18em] uppercase bg-[#6ca4ac]/95 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.22)] hover:shadow-[0_18px_38px_rgba(32,56,91,0.30)] active:shadow-[0_10px_22px_rgba(32,56,91,0.20)] transition-[background-color,box-shadow,filter] hover:brightness-[1.02] active:brightness-[0.98] sm:w-32 sm:h-12 sm:px-6 sm:text-base sm:tracking-[0.2em]"
   // NOTE: global `a { color: var(--primary); text-decoration: underline; }` exists in `app/globals.css`.
   // For the full-screen menu we explicitly set link colors + remove underlines for legibility.
   const overlayBaseClasses =
@@ -199,6 +199,8 @@ export function Navigation() {
                     <img
                       src={brandLogo}
                       alt={brandName}
+                      width={2491}
+                      height={263}
                       className="header-logo-img header-logo-img--nav object-contain drop-shadow-[0_18px_35px_rgba(32,56,91,0.28)] transition-transform duration-[1400ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-[1.02]"
                     />
                   </span>
@@ -321,7 +323,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
 
           {/* Quick Links */}
           <div className="flex flex-col space-y-5 text-center md:text-left">
-            <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)] mb-1">Quick Links</h4>
+            <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--primary)] mb-1">Quick Links</h4>
             <nav className="flex flex-col gap-2.5">
               {allQuickLinks.map((l) => (
                 <Link key={l.href} href={l.href} className="text-[var(--primary)]/80 hover:text-[var(--primary)] transition-colors text-sm md:text-base underline decoration-[var(--primary)]/30 hover:decoration-[var(--primary)]">
@@ -334,7 +336,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
           {/* Contact */}
           <div className="flex flex-col space-y-6">
             <div className="space-y-5">
-              <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)] mb-1 text-center md:text-left">Contact</h4>
+              <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--primary)] mb-1 text-center md:text-left">Contact</h4>
               <div className="space-y-4">
                 {cfg.contact?.phone && (
                   <a
@@ -399,7 +401,7 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
       {/* Bottom Bar */}
       <div className="border-t border-[var(--secondary)]" style={{ backgroundColor, backgroundImage: "none" }}>
         <div className="container mx-auto px-6 md:px-8 py-8">
-          <div className="text-center space-y-3 text-sm text-[var(--primary)]/70 max-w-4xl mx-auto">
+          <div className="text-center space-y-3 text-sm text-[var(--primary)]/85 max-w-4xl mx-auto">
             {cfg.footer?.copyrightText && <p>{cfg.footer.copyrightText}</p>}
             {cfg.footer?.companyName && <p>{cfg.footer.companyName}</p>}
             {cfg.footer?.acknowledgementText && <p className="leading-relaxed">{cfg.footer.acknowledgementText}</p>}

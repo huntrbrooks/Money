@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Navigation, Footer } from "@/components/navigation"
-import { Button } from "@/components/ui/button"
 import { readSiteConfig } from "@/lib/config"
 import { buildBreadcrumbSchema, buildPageMetadata, buildServiceSchema } from "@/lib/seo"
 import Script from "next/script"
@@ -144,12 +143,10 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
                 <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">{page.title}</h1>
                 <p className="text-[var(--primary)] whitespace-pre-line">{page.description}</p>
                 <div className="pt-4">
-                  <Button asChild className="bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8">
-                    <Link href="/#book" className="inline-flex items-center gap-2">
+                  <Link href="/#book" className="bg-[var(--accent)] hover:opacity-90 text-[#182a44] h-12 px-8 inline-flex items-center gap-2 inline-flex items-center justify-center gap-2 rounded-md text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2">
                       Book a consultation
                       <ArrowRight className="w-4 h-4" />
                     </Link>
-                  </Button>
                 </div>
               </header>
 
@@ -176,12 +173,10 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
                   <p className="text-[var(--primary)]/70 italic">Content coming soon...</p>
                 )}
                 <div className="pt-8 border-t border-[var(--secondary)]">
-                  <Button asChild className="bg-[var(--accent)] hover:opacity-90 text-white h-12 px-8">
-                    <Link href="/#book" className="inline-flex items-center gap-2">
+                  <Link href="/#book" className="bg-[var(--accent)] hover:opacity-90 text-[#182a44] h-12 px-8 inline-flex items-center gap-2 inline-flex items-center justify-center gap-2 rounded-md text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2">
                       Book a consultation
                       <ArrowRight className="w-4 h-4" />
                     </Link>
-                  </Button>
                 </div>
               </div>
             </div>
