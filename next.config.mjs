@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Resolve CMS metadata before streaming HTML to keep hydration deterministic.
+  htmlLimitedBots: /.*/,
   async redirects() {
     return [
       { source: "/contact", destination: "/#contact", permanent: true },

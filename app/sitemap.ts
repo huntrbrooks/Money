@@ -105,7 +105,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Combine all routes and ensure proper formatting
   const allRoutes = [...staticRoutes, ...dynamicRoutes]
   
-  return allRoutes.map((route) => ({
+  const uniqueRoutes = [...new Map(allRoutes.map((route) => [route.path, route])).values()]
+
+  return uniqueRoutes.map((route) => ({
     url: `${SITE_URL}${route.path}`,
     lastModified: route.lastModified ?? now,
     changeFrequency: route.changeFrequency ?? "monthly",

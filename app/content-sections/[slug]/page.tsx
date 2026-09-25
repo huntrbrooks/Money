@@ -87,7 +87,7 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
     normalizedRequested: requested,
     paramsShape: {
       isThenable: isThenable(params),
-      keys: params && typeof params === "object" ? Object.keys(params as Record<string, unknown>) : [],
+      keys: paramsObj ? Object.keys(paramsObj) : [],
     },
     matched: { page: Boolean(page), section: Boolean(section) },
     contentSectionPages: { count: pages.length, slugs: pages.map((p) => p.slug) },
