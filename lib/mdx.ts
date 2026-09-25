@@ -24,6 +24,7 @@ export type PostMeta = {
 }
 
 export type VideoMeta = {
+  published?: boolean
   title: string
   description: string
   date: string
@@ -178,13 +179,14 @@ export async function getAllVideosMeta(): Promise<VideoMeta[]> {
       date: data.date as string,
       slug,
       videoUrl: data.videoUrl as string,
+      published: data.published !== false,
       platform: data.platform as string | undefined,
       duration: data.duration as string | undefined,
       tags: data.tags as string[] | undefined,
     })
   }
 
-  if (!hasSupabase()) return sortByDateDescending(fsMetas)
+  if (!hasSupabase()) return sortByDateDescending(fsMetas.filter(video => video.published !== false))
 
   let sbMetas: VideoMeta[] = []
   try {
@@ -198,6 +200,7 @@ export async function getAllVideosMeta(): Promise<VideoMeta[]> {
         date: data.date as string,
         slug,
         videoUrl: data.videoUrl as string,
+      published: data.published !== false,
         platform: data.platform as string | undefined,
         duration: data.duration as string | undefined,
         tags: data.tags as string[] | undefined,
@@ -210,7 +213,7 @@ export async function getAllVideosMeta(): Promise<VideoMeta[]> {
   const bySlug = new Map<string, VideoMeta>()
   for (const m of fsMetas) bySlug.set(m.slug, m)
   for (const m of sbMetas) bySlug.set(m.slug, m)
-  return sortByDateDescending(Array.from(bySlug.values()))
+  return sortByDateDescending(Array.from(bySlug.values()).filter(video => video.published !== false))
 }
 
 export async function getVideoBySlug(slug: string) {
@@ -228,6 +231,7 @@ export async function getVideoBySlug(slug: string) {
             },
           },
         })
+        if (frontmatter.published === false) return null
         return {
           content,
           frontmatter: {
@@ -253,6 +257,7 @@ export async function getVideoBySlug(slug: string) {
         },
       },
     })
+    if (frontmatter.published === false) return null
     return {
       content,
       frontmatter: {

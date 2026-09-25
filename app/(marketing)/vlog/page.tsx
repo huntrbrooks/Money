@@ -29,6 +29,11 @@ export default async function VlogIndexPage() {
             </p>
           </header>
 
+          {videos.length === 0 && (
+            <p className="text-center text-[var(--primary)]">
+              Video resources will appear here when available. <Link href="/client-care">Visit Client Care for current resources.</Link>
+            </p>
+          )}
           <div className="grid gap-6 md:grid-cols-2">
             {videos.map((video) => (
               <Link

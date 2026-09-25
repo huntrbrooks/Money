@@ -10,6 +10,7 @@ export const metadata = {
 
 export default async function NewsletterPage() {
   const config = await readSiteConfig()
+  const subscriptionsAvailable = Boolean(process.env.CRM_WEBHOOK_URL?.trim())
   const formPage = config.formPages?.newsletter
   const homepageCopy = config.homepage?.copy
 
@@ -35,15 +36,21 @@ export default async function NewsletterPage() {
             <div className="max-w-4xl mx-auto space-y-6 text-center">
               <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary)] font-semibold">Newsletter</p>
               <h1 className="font-serif text-4xl md:text-5xl text-[var(--foreground)] font-light">{pageTitle}</h1>
-              <p className="text-[var(--primary)] text-lg">{pageDescription}</p>
+              {subscriptionsAvailable && <p className="text-[var(--primary)] text-lg">{pageDescription}</p>}
               <div className="flex justify-center pt-2">
-                <NewsletterModal triggerLabel={triggerLabel} tags={tags} formPage={formPage} />
+                {subscriptionsAvailable ? (
+                  <NewsletterModal triggerLabel={triggerLabel?.trim() || "Subscribe"} tags={tags} formPage={formPage} />
+                ) : (
+                  <p className="text-[var(--primary)]">
+                    Newsletter subscriptions are currently unavailable. <a href="/enquiry">Contact Dan for updates and resources.</a>
+                  </p>
+                )}
               </div>
             </div>
           </div>
         </section>
 
-        <section className="py-16">
+        {subscriptionsAvailable && <section className="py-16">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 grid gap-6 lg:grid-cols-2">
             <Card>
               <CardHeader>
@@ -73,7 +80,7 @@ export default async function NewsletterPage() {
               </CardContent>
             </Card>
           </div>
-        </section>
+        </section>}
       </main>
       <Footer />
     </div>

@@ -64,6 +64,13 @@ export async function POST(request: Request) {
     }
   }
 
+  if (!process.env.CRM_WEBHOOK_URL?.trim()) {
+    return NextResponse.json(
+      { error: "Newsletter subscriptions are currently unavailable. Please contact Dan through the enquiry form." },
+      { status: 503 },
+    )
+  }
+
   const lead = await sendLeadToCrm({
     type: "newsletter",
     email: String(body.email ?? "").trim(),
