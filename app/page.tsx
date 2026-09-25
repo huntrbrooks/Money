@@ -314,7 +314,7 @@ export default async function HomePage() {
                   <div className="max-w-5xl mx-auto space-y-8">
                     <div className="text-center space-y-3">
                       <h2 className={SECTION_HEADING_CLASS}>
-                        {copy.importantLinksHeading?.trim() || "Financial Trauma Causes"}
+                        {copy.importantLinksHeading?.trim() || "Financial Trauma Crises:"}
                       </h2>
                     </div>
 

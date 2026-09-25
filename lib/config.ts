@@ -1174,7 +1174,7 @@ export const defaultConfig: SiteConfig = {
       newsletterCtaLabel: "Email me the check-in",
       newsletterTags: ["newsletter", "safety-check-in"],
 
-      importantLinksHeading: "Financial Trauma Causes",
+      importantLinksHeading: "Financial Trauma Crises:",
       downloadsHeading: "Downloads & Forms:",
       importantLinksSubheading: "Quick access to key information",
 
