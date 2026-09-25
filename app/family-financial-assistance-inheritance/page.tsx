@@ -43,14 +43,14 @@ export default async function FamilyFinancialAssistanceInheritancePage() {
               <p className="text-[var(--primary)] whitespace-pre-line">{page.description}</p>
               <div className="flex flex-wrap gap-3 pt-2">
                 <Link
-                  className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--accent)] text-white font-semibold border border-[var(--accent)] hover:opacity-90"
+                  className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--accent)] text-[#182a44] font-semibold border border-[var(--accent)] hover:opacity-90"
                   href="/bookings"
-                  aria-label="Schedule a consultation"
+                  aria-label="Book a consultation"
                 >
                   Book a consultation
                 </Link>
                 <Link
-                  className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--section-bg-1)] text-[var(--accent)] font-semibold border border-[var(--accent)] hover:bg-[var(--section-bg-2)]/60"
+                  className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--section-bg-1)] text-[var(--primary)] font-semibold border border-[var(--accent)] hover:bg-[var(--section-bg-2)]/60"
                   href="/enquiry"
                   aria-label="Contact"
                 >
@@ -84,7 +84,7 @@ export default async function FamilyFinancialAssistanceInheritancePage() {
             {page.nextStepsLinks?.length ? (
               <nav className="border border-[var(--secondary)] rounded-xl p-4 bg-[var(--section-bg-1)]">
                 <strong className="text-[var(--foreground)]">Explore more</strong>
-                <ul className="mt-2 grid gap-1 list-disc pl-5 text-[var(--accent)]">
+                <ul className="mt-2 grid gap-1 list-disc pl-5 text-[var(--primary)]">
                   {page.nextStepsLinks.map((link, idx) => (
                     <li key={idx}>
                       <Link href={link.href}>{link.label}</Link>

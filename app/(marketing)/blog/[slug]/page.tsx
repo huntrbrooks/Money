@@ -64,7 +64,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
   ])
 
   return (
-    <div className="container mx-auto px-4 py-16">
+    <main className="container mx-auto px-4 py-16">
       <article className="max-w-3xl mx-auto space-y-10">
         <header className="space-y-3 pb-6 border-b border-[var(--secondary)]">
           <p className="text-xs tracking-[0.3em] uppercase text-[var(--primary)]">
@@ -79,15 +79,15 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
           <p className="text-[var(--primary)]">{post.frontmatter.description}</p>
           <div className="flex flex-wrap gap-3 pt-2">
             <Link
-              className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--accent)] text-white font-semibold border border-[var(--accent)] hover:opacity-90"
+              className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--accent)] text-[#182a44] font-semibold border border-[var(--accent)] hover:opacity-90"
               href="/bookings"
-              aria-label="Schedule a consultation"
+              aria-label="Book a consultation"
               data-analytics-id="blog-book-session"
             >
               Book a consultation
             </Link>
             <Link
-              className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--section-bg-1)] text-[var(--accent)] font-semibold border border-[var(--accent)] hover:bg-[var(--section-bg-2)]/60"
+              className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--section-bg-1)] text-[var(--primary)] font-semibold border border-[var(--accent)] hover:bg-[var(--section-bg-2)]/60"
               href="/enquiry"
               aria-label="Contact Dan Lobel"
               data-analytics-id="blog-contact"
@@ -115,7 +115,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
-    </div>
+    </main>
   )
 }
 

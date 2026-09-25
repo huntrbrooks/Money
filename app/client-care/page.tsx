@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { readSiteConfig } from "@/lib/config"
 
 export const metadata = {
+  alternates: { canonical: "/client-care" },
   title: "Client Care Hub | The Financial Therapist",
   description: "Session preparation, aftercare rituals, and crisis resources for clients working with Dan Lobel.",
 }

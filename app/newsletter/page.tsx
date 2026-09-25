@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { readSiteConfig } from "@/lib/config"
 
 export const metadata = {
+  alternates: { canonical: "/newsletter" },
   title: "Newsletter & Safety Check-in | The Financial Therapist",
   description: "Subscribe to Dan's gentle updates and receive the 5-step Financial Safety Check-in to use between sessions.",
 }
