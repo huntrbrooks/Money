@@ -194,7 +194,7 @@ export function NewsletterModal({ triggerLabel = "Get the guide", tags = ["newsl
                   type={inputType}
                   value={String(value ?? "")}
                   onChange={(e) => setForm((prev) => ({ ...prev, [field.name]: e.target.value }))}
-                  placeholder={field.placeholder}
+                  placeholder={"placeholder" in field ? field.placeholder : undefined}
                   required={required}
                 />
                 {field.helperText ? <p className="text-xs text-[var(--primary)]/80">{field.helperText}</p> : null}

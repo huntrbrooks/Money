@@ -294,7 +294,7 @@ export const CONTENT_SECTION_PAGE_DEFAULTS: Record<string, Defaults> = {
 
 export function applyContentSectionDefaults(page: ContentSectionPageConfig, defaults: Defaults | null | undefined): ContentSectionPageConfig {
   if (!defaults) return page
-  const pickString = (value: string | undefined, fallback: string | undefined) => (String(value ?? "").trim() ? value : fallback ?? value ?? "")
+  const pickString = (value: string | undefined, fallback: string | undefined) => (String(value ?? "").trim() ? String(value) : fallback ?? value ?? "")
   return {
     ...page,
     eyebrow: pickString(page.eyebrow, defaults.eyebrow as string | undefined),

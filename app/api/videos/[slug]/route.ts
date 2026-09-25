@@ -8,7 +8,7 @@ import { hasSupabase, sbGetContent, sbInsertContent, sbUpdateContent } from "@/l
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
-type Params = { params: { slug: string } }
+type Params = { params: Promise<{ slug: string }> }
 
 async function requireAuth() {
   const cookieStore = await cookies()
@@ -25,7 +25,7 @@ function safeSlug(input: string): string {
 }
 
 export async function GET(_req: Request, { params }: Params) {
-  const slug = safeSlug(params.slug)
+  const slug = safeSlug((await params).slug)
 
   if (hasSupabase()) {
     const mdx = await sbGetContent("videos", slug)
@@ -50,7 +50,7 @@ export async function PUT(req: Request, { params }: Params) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const slug = safeSlug(params.slug)
+  const slug = safeSlug((await params).slug)
   const body = (await req.json().catch(() => null)) as { mdx?: string } | null
   const mdx = body?.mdx
   if (typeof mdx !== "string") {

@@ -17,7 +17,7 @@ export async function GET(_req: Request, { params }: Params) {
     if (!asset) {
       return NextResponse.json({ error: "Not found" }, { status: 404 })
     }
-    return new NextResponse(asset.bytes, {
+    return new NextResponse(new Uint8Array(asset.bytes), {
       status: 200,
       headers: {
         "Content-Type": asset.contentType,

@@ -8,7 +8,7 @@ import { absoluteUrl } from "@/lib/urls"
 import { SocialShare } from "@/components/social-share"
 
 type VlogPageProps = {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 export async function generateStaticParams() {
@@ -17,12 +17,12 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: VlogPageProps): Promise<Metadata> {
-  const video = await getVideoBySlug(params.slug)
+  const video = await getVideoBySlug((await params).slug)
   if (!video) {
     return buildPageMetadata({
       title: "Video not found",
       description: "The requested video could not be located.",
-      path: `/vlog/${params.slug}`,
+      path: `/vlog/${(await params).slug}`,
       noIndex: true,
     })
   }
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: VlogPageProps): Promise<Metad
 }
 
 export default async function VlogPostPage({ params }: VlogPageProps) {
-  const video = await getVideoBySlug(params.slug)
+  const video = await getVideoBySlug((await params).slug)
   if (!video) {
     notFound()
   }

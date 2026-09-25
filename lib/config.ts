@@ -379,6 +379,7 @@ export type HomepageCopy = {
 
   // Feature CTA shown above the Important Links section (calls the configured phone number).
   importantLinksCallCtaLabel?: string
+  downloadsHeading?: string
   importantLinksHeading?: string
   importantLinksSubheading?: string
 
@@ -1173,7 +1174,8 @@ export const defaultConfig: SiteConfig = {
       newsletterCtaLabel: "Email me the check-in",
       newsletterTags: ["newsletter", "safety-check-in"],
 
-      importantLinksHeading: "Important Links",
+      importantLinksHeading: "Financial Trauma Causes",
+      downloadsHeading: "Downloads & Forms:",
       importantLinksSubheading: "Quick access to key information",
 
       testimonialsEyebrow: "Gentle proof",
@@ -1603,13 +1605,13 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       try {
         const sbData = await sbGetSiteConfigJson()
         if (sbData) {
-          const parsed = sbData as Record<string, unknown>
+          const parsed = sbData as Partial<SiteConfig>
           const merged = {
             ...defaultConfig,
             ...parsed,
             theme: { ...defaultConfig.theme, ...(parsed.theme ?? {}) },
             seo: { ...defaultConfig.seo, ...(parsed.seo ?? {}) },
-            brand: { ...defaultConfig.brand, ...(parsed.brand ?? {}) },
+            brand: { name: defaultConfig.brand?.name ?? "Financial Trauma Therapist", ...defaultConfig.brand, ...(parsed.brand ?? {}) },
             navigation: parsed.navigation ?? defaultConfig.navigation,
             contact: { ...defaultConfig.contact, ...(parsed.contact ?? {}) },
             social: { ...(defaultConfig.social ?? {}), ...(parsed.social ?? {}) },
@@ -1709,7 +1711,7 @@ export async function readSiteConfig(): Promise<SiteConfig> {
       ...parsed,
       theme: { ...defaultConfig.theme, ...(parsed.theme ?? {}) },
       seo: { ...defaultConfig.seo, ...(parsed.seo ?? {}) },
-      brand: { ...defaultConfig.brand, ...(parsed.brand ?? {}) },
+      brand: { name: defaultConfig.brand?.name ?? "Financial Trauma Therapist", ...defaultConfig.brand, ...(parsed.brand ?? {}) },
       navigation: parsed.navigation ?? defaultConfig.navigation,
       contact: { ...defaultConfig.contact, ...(parsed.contact ?? {}) },
       social: { ...(defaultConfig.social ?? {}), ...(parsed.social ?? {}) },

@@ -6,7 +6,7 @@ import { OgTemplate } from "./template"
 export const runtime = "edge"
 
 type Params = {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 const WIDTH = 1200
@@ -70,7 +70,7 @@ async function resolveResource(slug: string, requestUrl: string): Promise<OgReso
 }
 
 export async function GET(request: Request, { params }: Params) {
-  const resource = await resolveResource(params.slug, request.url)
+  const resource = await resolveResource((await params).slug, request.url)
   const title = resource?.title ?? "Financial Trauma Therapist"
   const description =
     resource?.description ??

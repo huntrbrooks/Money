@@ -17,7 +17,7 @@ export default function ResponsivePdfEmbed({ title, fileUrl, viewerUrl, openLabe
     const mq = window.matchMedia("(max-width: 767px)")
     const update = () => setIsMobile(mq.matches)
     update()
-    if ("addEventListener" in mq) {
+    if (typeof mq.addEventListener === "function") {
       mq.addEventListener("change", update)
       return () => mq.removeEventListener("change", update)
     }

@@ -326,7 +326,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     schedulerEmbedToggleLabel: "",
     schedulerEmbedFallbackText: "",
   })
-  const [financialAbusePage, setFinancialAbusePage] = useState<SiteConfig["financialAbusePage"]>({
+  const [financialAbusePage, setFinancialAbusePage] = useState<NonNullable<SiteConfig["financialAbusePage"]>>({
     title: "",
     description: "",
     eyebrow: "",
@@ -335,7 +335,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     crisisText: "",
     nextStepsLinks: [],
   })
-  const [monetaryPsychotherapyPage, setMonetaryPsychotherapyPage] = useState<SiteConfig["monetaryPsychotherapyPage"]>({
+  const [monetaryPsychotherapyPage, setMonetaryPsychotherapyPage] = useState<NonNullable<SiteConfig["monetaryPsychotherapyPage"]>>({
     eyebrow: "",
     title: "",
     subtitle: "",
@@ -345,7 +345,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     therapeuticPrinciples: [],
     howWeBegin: [],
   })
-  const [financialAbuseTherapyPage, setFinancialAbuseTherapyPage] = useState<SiteConfig["financialAbuseTherapyPage"]>({
+  const [financialAbuseTherapyPage, setFinancialAbuseTherapyPage] = useState<NonNullable<SiteConfig["financialAbuseTherapyPage"]>>({
     eyebrow: "",
     title: "",
     description: "",
@@ -357,7 +357,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
   })
 
   const [familyFinancialAssistanceInheritancePage, setFamilyFinancialAssistanceInheritancePage] = useState<
-    SiteConfig["familyFinancialAssistanceInheritancePage"]
+    NonNullable<SiteConfig["familyFinancialAssistanceInheritancePage"]>
   >({
     eyebrow: "",
     title: "",
@@ -369,7 +369,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     seo: { metaTitle: "", metaDescription: "" },
   })
 
-  const [financialTraumaPage, setFinancialTraumaPage] = useState<SiteConfig["financialTraumaPage"]>({
+  const [financialTraumaPage, setFinancialTraumaPage] = useState<NonNullable<SiteConfig["financialTraumaPage"]>>({
     eyebrow: "",
     title: "",
     description: "",
@@ -771,7 +771,7 @@ const [experiments, setExperiments] = useState<SiteConfig["experiments"]>({
     setHeroContent(loadedConfig.hero)
     setAboutContent(loadedConfig.about)
     setServices(loadedConfig.services)
-    setBrand(loadedConfig.brand ?? {})
+    setBrand(loadedConfig.brand ?? { name: "" })
     setSeo(loadedConfig.seo ?? {})
     setNavigation(loadedConfig.navigation ?? [])
     setContact(loadedConfig.contact ?? {})
@@ -1478,8 +1478,7 @@ function CodeAgentBox() {
       }
       return next
     })
-    toast({ title: "Populated", description: "Filled empty fields for homepage button pages. Saving…" })
-    setAutoSaveRequest("Pages")
+    toast({ title: "Populated", description: "Filled empty fields for homepage button pages. Use Save Pages to publish these changes." })
   }
  
    return (
@@ -3160,6 +3159,18 @@ function CodeAgentBox() {
                   <p className="text-sm font-semibold">Homepage headings & copy</p>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
+                      <Label>Downloads & Forms heading</Label>
+                      <Input
+                        value={homepage.copy?.downloadsHeading ?? "Downloads & Forms:"}
+                        onChange={(e) =>
+                          setHomepage((prev) => ({
+                            ...prev,
+                            copy: { ...(prev.copy ?? {}), downloadsHeading: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
                       <Label>Value props eyebrow</Label>
                       <Input
                         value={homepage.copy?.valuePropsEyebrow ?? ""}
@@ -3893,7 +3904,7 @@ function CodeAgentBox() {
                     onChange={(e) =>
                       setHomepage((prev) => ({
                         ...prev,
-                        leadMagnet: { ...(prev.leadMagnet ?? createEmptyHomepage().leadMagnet), heading: e.target.value },
+                        leadMagnet: { ...(prev.leadMagnet ?? { heading: "", body: "", ctaLabel: "", ctaHref: "" }), heading: e.target.value },
                       }))
                     }
                   />
@@ -3906,7 +3917,7 @@ function CodeAgentBox() {
                     onChange={(e) =>
                       setHomepage((prev) => ({
                         ...prev,
-                        leadMagnet: { ...(prev.leadMagnet ?? createEmptyHomepage().leadMagnet), body: e.target.value },
+                        leadMagnet: { ...(prev.leadMagnet ?? { heading: "", body: "", ctaLabel: "", ctaHref: "" }), body: e.target.value },
                       }))
                     }
                   />
@@ -3919,7 +3930,7 @@ function CodeAgentBox() {
                       onChange={(e) =>
                         setHomepage((prev) => ({
                           ...prev,
-                          leadMagnet: { ...(prev.leadMagnet ?? createEmptyHomepage().leadMagnet), ctaLabel: e.target.value },
+                          leadMagnet: { ...(prev.leadMagnet ?? { heading: "", body: "", ctaLabel: "", ctaHref: "" }), ctaLabel: e.target.value },
                         }))
                       }
                     />
@@ -3931,7 +3942,7 @@ function CodeAgentBox() {
                       onChange={(e) =>
                         setHomepage((prev) => ({
                           ...prev,
-                          leadMagnet: { ...(prev.leadMagnet ?? createEmptyHomepage().leadMagnet), ctaHref: e.target.value },
+                          leadMagnet: { ...(prev.leadMagnet ?? { heading: "", body: "", ctaLabel: "", ctaHref: "" }), ctaHref: e.target.value },
                         }))
                       }
                     />
@@ -3945,7 +3956,7 @@ function CodeAgentBox() {
                     onChange={(e) =>
                       setHomepage((prev) => ({
                         ...prev,
-                        leadMagnet: { ...(prev.leadMagnet ?? createEmptyHomepage().leadMagnet), helper: e.target.value },
+                        leadMagnet: { ...(prev.leadMagnet ?? { heading: "", body: "", ctaLabel: "", ctaHref: "" }), helper: e.target.value },
                       }))
                     }
                   />

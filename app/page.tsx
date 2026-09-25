@@ -218,16 +218,16 @@ export default async function HomePage() {
               </div>
 
               <div className="pt-4 flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
-                <Button
-                  asChild
-                  size="lg"
-                  className="w-full sm:w-auto min-w-[220px] bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-[var(--accent-foreground)] border border-[var(--accent)]/40 text-base h-14 px-10 font-semibold rounded-full shadow-[0_0_35px_rgba(222,236,79,0.35)] flex items-center justify-center gap-2"
+                {/* Plain Link (not Button asChild) so the CTA is always in the server-rendered HTML. */}
+                <Link
+                  href={primaryCta.href}
+                  aria-label={primaryCta.label}
+                  data-analytics-id="hero-primary-cta"
+                  className="flex w-full sm:w-auto min-w-[220px] items-center justify-center gap-2 whitespace-normal text-center rounded-full bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-[var(--accent-foreground)] border border-[var(--accent)]/40 text-base min-h-14 h-auto py-3 px-6 sm:px-10 font-semibold shadow-[0_0_35px_rgba(222,236,79,0.35)] transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] [&_svg]:pointer-events-none [&_svg]:shrink-0 no-underline"
                 >
-                  <Link href={primaryCta.href} aria-label={primaryCta.label} data-analytics-id="hero-primary-cta">
-                    {primaryCta.label}
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Link>
-                </Button>
+                  {primaryCta.label}
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
               </div>
             </div>
 
@@ -309,7 +309,7 @@ export default async function HomePage() {
                   <div className="max-w-5xl mx-auto space-y-8">
                     <div className="text-center space-y-3">
                       <h2 className={SECTION_HEADING_CLASS}>
-                        Financial Abuse &amp; Financial Trauma
+                        {copy.importantLinksHeading?.trim() || "Financial Trauma Causes"}
                       </h2>
                     </div>
 
@@ -320,7 +320,7 @@ export default async function HomePage() {
                           <Link
                             key={link.href}
                             href={link.href}
-                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 px-4 py-2 has-[>svg]:px-3 w-full h-12 font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm no-underline"
+                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 px-4 py-2 has-[>svg]:px-3 w-full min-h-12 h-auto whitespace-normal text-balance font-medium bg-[var(--foreground)] text-white border-transparent hover:opacity-90 rounded-lg shadow-sm no-underline"
                             data-slot="button"
                           >
                             {link.label}
@@ -490,7 +490,7 @@ export default async function HomePage() {
                       contactEmail={contactEmail || undefined}
                       contactPhone={contactPhone || undefined}
                     />
-                    <DownloadsForms />
+                    <DownloadsForms heading={copy.downloadsHeading} />
                   </div>
                 </div>
               ),
@@ -541,7 +541,7 @@ export default async function HomePage() {
                     <div className="grid gap-12 lg:gap-16 md:grid-cols-2">
                       {/* Left - Heading */}
                       <div className="space-y-8 text-center md:text-left">
-                        <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[var(--foreground)] font-light">
+                        <h2 className={SECTION_HEADING_CLASS}>
                           {copy.contactHeading ?? "When you're ready, I'm here."}
                         </h2>
                         <p className="text-lg sm:text-xl text-[var(--primary)] leading-relaxed">

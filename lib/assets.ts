@@ -78,7 +78,7 @@ export async function putAsset(objectPath: string, asset: StoredAsset): Promise<
         "Content-Type": asset.contentType || "application/octet-stream",
         "x-upsert": "true",
       },
-      body: asset.bytes,
+      body: new Uint8Array(asset.bytes),
     })
     if (!res.ok) {
       const detail = await res.text().catch(() => "")

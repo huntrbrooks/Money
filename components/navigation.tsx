@@ -1,12 +1,24 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
-import { Phone, Mail, Facebook, Instagram, Linkedin } from "lucide-react"
+import { Phone, Mail, Linkedin } from "lucide-react"
 import { EmailLink } from "@/components/email-link"
 import { normalizeEmailAddress } from "@/lib/email"
 
 type NavLink = { label: string; href: string }
+
+// Tolerate whitespace and legacy anchors saved through the client's navigation editor.
+function normalizeNavLink(link: NavLink): NavLink {
+  const label = link.label.trim()
+  const href = link.href.trim()
+  if (/^downloads?\s*(?:&|and)\s*forms:?$/i.test(label)) {
+    return { label, href: "/#downloads-forms" }
+  }
+  if (label.toLowerCase() === "home") return { label, href: "/" }
+  if (label.toLowerCase() === "about" || href === "/#about") return { label, href: "/about" }
+  return { label, href }
+}
 type Config = {
   brand?: { name?: string; subtitle?: string; tagline?: string; logoUrl?: string; headerBannerUrl?: string }
   navigation?: NavLink[]
@@ -26,6 +38,8 @@ type Config = {
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
   const [cfg, setCfg] = useState<Config>({})
   const brandLogo = cfg.brand?.logoUrl || "/logo.png"
 
@@ -34,6 +48,7 @@ export function Navigation() {
   // private interaction data. If diagnostics are needed again, reintroduce via an explicit, opt-in flag.
   const isDebugLoggingEnabled = false
   const closeMenu = () => {
+    menuButtonRef.current?.focus({ preventScroll: true })
     setIsMenuOpen(false)
     if (isDebugLoggingEnabled) {
       // intentionally empty (kept as a placeholder)
@@ -83,13 +98,27 @@ export function Navigation() {
     if (!isMenuOpen) return
     const originalOverflow = document.body.style.overflow
     document.body.style.overflow = "hidden"
+    menuRef.current?.querySelector<HTMLButtonElement>("button")?.focus()
     if (isDebugLoggingEnabled) {
       void originalOverflow
       // intentionally empty (kept as a placeholder)
     }
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        menuButtonRef.current?.focus({ preventScroll: true })
         setIsMenuOpen(false)
+      }
+      if (event.key === "Tab") {
+        const focusable = menuRef.current?.querySelectorAll<HTMLElement>("a[href], button")
+        const first = focusable?.[0]
+        const last = focusable?.[focusable.length - 1]
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault()
+          last?.focus()
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault()
+          first?.focus()
+        }
       }
     }
     window.addEventListener("keydown", handleKeyDown)
@@ -108,20 +137,14 @@ export function Navigation() {
     { label: "Services", href: "/#services" },
     { label: "Contact", href: "/#contact" },
   ]
-  const normalizedLinks = links.map((l) => {
-    const label = (l.label ?? "").trim().toLowerCase()
-    if (label === "home") return { ...l, href: "/" }
-    if (label === "about") return { ...l, href: "/about" }
-    if ((l.href ?? "") === "/#about") return { ...l, href: "/about" }
-    return l
-  })
+  const normalizedLinks = links.map(normalizeNavLink)
   const brandName = (cfg.brand?.name ?? "Financial Trauma Therapist").replace(/^\s*The\s+/i, "")
   const menuButtonClasses =
     "flex items-center justify-center w-24 h-10 px-4 rounded-full border border-white/30 text-white text-sm font-serif tracking-[0.18em] uppercase bg-[#6ca4ac]/95 hover:bg-[#5d9199] shadow-[0_12px_25px_rgba(32,56,91,0.22)] hover:shadow-[0_18px_38px_rgba(32,56,91,0.30)] active:shadow-[0_10px_22px_rgba(32,56,91,0.20)] transition-[background-color,box-shadow,filter] hover:brightness-[1.02] active:brightness-[0.98] sm:w-32 sm:h-12 sm:px-6 sm:text-base sm:tracking-[0.2em]"
   // NOTE: global `a { color: var(--primary); text-decoration: underline; }` exists in `app/globals.css`.
   // For the full-screen menu we explicitly set link colors + remove underlines for legibility.
   const overlayBaseClasses =
-    "fixed inset-0 z-40 flex flex-col text-[var(--foreground)] transition duration-500 ease-out"
+    "fixed inset-0 z-40 flex flex-col overflow-y-auto text-[var(--foreground)] transition duration-500 ease-out"
   const overlayOpenClasses = "opacity-100 pointer-events-auto translate-y-0"
   const overlayClosedClasses = "opacity-0 pointer-events-none translate-y-2"
   const overlayStyle = {
@@ -198,9 +221,12 @@ export function Navigation() {
         <div className="container mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex justify-end pointer-events-auto">
             <button
+              ref={menuButtonRef}
               onClick={handleMenuToggle}
               className={`${menuButtonClasses} -translate-y-1/2`}
-              aria-haspopup="true"
+              aria-haspopup="dialog"
+              aria-expanded={isMenuOpen}
+              aria-controls="navigation-menu"
               aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             >
               Menu
@@ -211,6 +237,8 @@ export function Navigation() {
 
       {isMenuOpen ? (
         <div
+          ref={menuRef}
+          id="navigation-menu"
           role="dialog"
           aria-modal="true"
           aria-label="Navigation menu"
@@ -222,10 +250,13 @@ export function Navigation() {
         </div>
       ) : (
         <div
+          ref={menuRef}
+          id="navigation-menu"
           role="dialog"
           aria-modal="true"
           aria-label="Navigation menu"
           aria-hidden="true"
+          inert
           className={`${overlayBaseClasses} ${overlayClosedClasses}`}
           style={overlayStyle}
         >
@@ -252,8 +283,8 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
   const normalizedContactEmail = normalizeEmailAddress(cfg.contact?.email)
   const normalizedContactEmailAlt = normalizeEmailAddress(cfg.contact?.emailAlt)
 
-  const navigationLinks = (cfg.navigation ?? []).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
-  const footerQuickLinks = cfg.footer?.quickLinks ?? []
+  const navigationLinks = (cfg.navigation ?? []).map(normalizeNavLink).filter((l) => l.href !== "/bookings" && l.href !== "/#book")
+  const footerQuickLinks = (cfg.footer?.quickLinks ?? []).map(normalizeNavLink)
   const privacyLabel = String(cfg.legal?.privacy?.title ?? "").trim() || "Privacy Policy"
   const termsLabel = String(cfg.legal?.terms?.title ?? "").trim() || "Terms of Service"
 
@@ -349,28 +380,9 @@ export function Footer({ backgroundColor = "#d7e9ec" }: FooterProps = {}) {
 
             {/* Social */}
             <div className="space-y-4">
-              <h4 className="font-semibold text-sm uppercase tracking-[0.15em] text-[var(--accent)] mb-4 text-center md:text-left">Follow Dan</h4>
               <div className="flex items-center justify-center md:justify-start gap-3">
                 <a
-                  href={cfg.social?.facebook || "https://www.facebook.com/the.melbourne.counsellor/"}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  aria-label="Facebook"
-                  className="p-2.5 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition-all hover:scale-110"
-                >
-                  <Facebook className="w-5 h-5 text-[var(--primary)]" />
-                </a>
-                <a
-                  href={cfg.social?.instagram || "https://www.instagram.com/the.melbourne.counsellor/#"}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  aria-label="Instagram"
-                  className="p-2.5 rounded-full border border-[var(--secondary)] hover:bg-[var(--secondary)] transition-all hover:scale-110"
-                >
-                  <Instagram className="w-5 h-5 text-[var(--primary)]" />
-                </a>
-                <a
-                  href={cfg.social?.linkedin || "https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/"}
+                  href={cfg.social?.linkedin?.trim() || "https://www.linkedin.com/in/dan-lobel-the-melbourne-counsellor-769b61204/"}
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label="LinkedIn"

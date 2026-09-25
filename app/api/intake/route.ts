@@ -530,7 +530,7 @@ export async function POST(req: Request) {
 
     void sendLeadToCrm({
       type: "intake",
-      email: email || undefined,
+      email,
       name,
       phone: typeof values.phone === "string" ? values.phone : undefined,
       tags: ["intake"],

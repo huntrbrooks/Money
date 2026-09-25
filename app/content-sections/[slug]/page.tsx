@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { Navigation, Footer } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
 import { readSiteConfig } from "@/lib/config"
-import { buildBreadcrumbSchema, buildFaqSchema, buildPageMetadata, buildServiceSchema } from "@/lib/seo"
+import { buildBreadcrumbSchema, buildPageMetadata, buildServiceSchema } from "@/lib/seo"
 import Script from "next/script"
 import { ArrowRight } from "lucide-react"
 import { CONTENT_SECTION_PAGE_DEFAULTS, applyContentSectionDefaults } from "@/lib/content-section-defaults"
@@ -14,7 +14,7 @@ export const runtime = "nodejs"
 
 type ContentSectionPageProps = {
   params: { slug: string } | Promise<{ slug: string }>
-  searchParams?: Record<string, string | string[] | undefined>
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
 }
 
 function isThenable(value: unknown): value is Promise<unknown> {
@@ -82,7 +82,7 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
   const section = sections.find((s) => normalizeSlug(s.slug) === requested) ?? null
   const page = foundPage ? applyContentSectionDefaults(foundPage, CONTENT_SECTION_PAGE_DEFAULTS[requested]) : null
 
-  const debug = String(searchParams?.debug ?? "") === "1"
+  const debug = String((await searchParams)?.debug ?? "") === "1"
   const debugPayload = {
     requested: slug,
     normalizedRequested: requested,
@@ -116,7 +116,6 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
   }
   if (!page && !section) notFound()
 
-  const faqJsonLd = buildFaqSchema(page?.faqs ?? [])
   const serviceJsonLd = buildServiceSchema(config, {
     serviceType: "Financial abuse therapy",
     description: String(page?.seo?.metaDescription ?? page?.description ?? "").trim(),
@@ -134,7 +133,7 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
         {page ? (
           <div className="container mx-auto px-4 py-16">
             <article className="max-w-3xl mx-auto space-y-8">
-              <header className="space-y-2 pb-6 border-b border-[var(--secondary)]">
+              <header className="space-y-2">
                 <Link
                   href="/"
                   className="text-sm text-[var(--primary)]/80 hover:text-[var(--primary)] underline inline-flex items-center gap-2 mb-4"
@@ -154,54 +153,6 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
                 </div>
               </header>
 
-              {page.therapyApproach?.length ? (
-                <section className="space-y-4">
-                  <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">Therapy approach</h2>
-                  <ul className="list-disc pl-6 text-[var(--primary)] space-y-2">
-                    {page.therapyApproach.map((item, idx) => (
-                      <li key={idx}>{item}</li>
-                    ))}
-                  </ul>
-                </section>
-              ) : null}
-
-              {page.sessionFormats?.length ? (
-                <section className="space-y-4 rounded-xl border border-[var(--secondary)] p-4">
-                  <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">Session formats</h2>
-                  <ul className="list-disc pl-6 text-[var(--primary)] space-y-2">
-                    {page.sessionFormats.map((item, idx) => (
-                      <li key={idx}>{item}</li>
-                    ))}
-                  </ul>
-                </section>
-              ) : null}
-
-              {page.nextStepsLinks?.length ? (
-                <nav className="border border-[var(--secondary)] rounded-xl p-4 bg-[var(--section-bg-1)]">
-                  <strong className="text-[var(--foreground)]">Explore more</strong>
-                  <ul className="mt-2 grid gap-1 list-disc pl-5 text-[var(--accent)]">
-                    {page.nextStepsLinks.map((link, idx) => (
-                      <li key={idx}>
-                        <Link href={link.href}>{link.label}</Link>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              ) : null}
-
-              {page.faqs?.length ? (
-                <section className="space-y-4 rounded-xl border border-[var(--secondary)] p-4">
-                  <h2 className="font-serif text-2xl md:text-3xl text-[var(--foreground)] font-light">FAQs</h2>
-                  <div className="space-y-4">
-                    {page.faqs.map((faq, idx) => (
-                      <div key={idx} className="rounded-xl border border-[var(--secondary)] bg-[var(--section-bg-1)] p-4">
-                        <p className="font-semibold text-[var(--foreground)]">{faq.question}</p>
-                        <p className="mt-2 text-[var(--primary)] whitespace-pre-line">{faq.answer}</p>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
             </article>
           </div>
         ) : (
@@ -252,14 +203,6 @@ export default async function ContentSectionPage({ params, searchParams }: Conte
             strategy="afterInteractive"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
           />
-          {page.faqs && page.faqs.length > 0 ? (
-            <Script
-              id="content-section-faq"
-              type="application/ld+json"
-              strategy="afterInteractive"
-              dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-            />
-          ) : null}
         </>
       ) : null}
     </div>

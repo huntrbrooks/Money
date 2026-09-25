@@ -8,7 +8,7 @@ import { absoluteUrl } from "@/lib/urls"
 import { SocialShare } from "@/components/social-share"
 
 type BlogPageProps = {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 // Allow dynamic rendering for newly created posts (admin can create posts without redeploy)
@@ -23,12 +23,12 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
-  const post = await getPostBySlug(params.slug)
+  const post = await getPostBySlug((await params).slug)
   if (!post) {
     return buildPageMetadata({
       title: "Article not found",
       description: "The requested article could not be located.",
-      path: `/blog/${params.slug}`,
+      path: `/blog/${(await params).slug}`,
       noIndex: true,
     })
   }
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
 }
 
 export default async function BlogPostPage({ params }: BlogPageProps) {
-  const post = await getPostBySlug(params.slug)
+  const post = await getPostBySlug((await params).slug)
   if (!post) {
     notFound()
   }

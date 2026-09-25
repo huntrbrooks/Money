@@ -40,7 +40,7 @@ function getSocialProfiles(config: SiteConfig): string[] {
   return valid.length ? valid : fallback
 }
 
-type OpenGraphType = NonNullable<NonNullable<Metadata["openGraph"]>["type"]>
+type OpenGraphType = "website" | "article" | "profile"
 
 type BuildMetadataInput = {
   title?: string
@@ -75,12 +75,12 @@ export async function buildPageMetadata(options: BuildMetadataInput = {}): Promi
     locale: "en_AU",
   }
 
-  if (openGraph.type === "article" && (options.publishedTime || options.modifiedTime)) {
-    openGraph.article = {
+  if (options.type === "article" && (options.publishedTime || options.modifiedTime)) {
+    Object.assign(openGraph, {
       publishedTime: options.publishedTime,
       modifiedTime: options.modifiedTime ?? options.publishedTime,
       authors: [brandName],
-    }
+    })
   }
 
   return {

@@ -17,7 +17,7 @@ export async function sendLeadToCrm(lead: CrmLead) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: process.env.CRM_WEBHOOK_TOKEN ? `Bearer ${process.env.CRM_WEBHOOK_TOKEN}` : undefined,
+      ...(process.env.CRM_WEBHOOK_TOKEN ? { Authorization: `Bearer ${process.env.CRM_WEBHOOK_TOKEN}` } : {}),
     },
     body: JSON.stringify(lead),
   })
