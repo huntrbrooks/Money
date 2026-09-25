@@ -150,7 +150,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
                       <Button
                         asChild
                         size="lg"
-                        className="w-full rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90"
+                        className="w-full rounded-full bg-[var(--accent)] text-[#182a44] hover:bg-[var(--accent)]/90"
                       >
                         <a href={buildBookingUrl(option.typeId)} target="_blank" rel="noopener noreferrer">
                           Book this consultation
@@ -205,7 +205,7 @@ export function BookingOptions({ options = [], bookingCopy, contactEmail, contac
                   <Button
                     asChild
                     size="lg"
-                    className="mt-auto w-full rounded-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]/90"
+                    className="mt-auto w-full rounded-full bg-[var(--accent)] text-[#182a44] hover:bg-[var(--accent)]/90"
                   >
                     <a href={buildBookingUrl(option.typeId)} target="_blank" rel="noopener noreferrer">
                       Book this consultation
